@@ -1,0 +1,41 @@
+{% extends "admin/app_index.html" %}
+{% load i18n adminmedia %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}objectapp/css/jquery.autocomplete.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}objectapp/css/dashboard_objectapp.css" />
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/jquery.masonry.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/jquery.bgiframe.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="{% url admin:objectapp_gbobject_autocomplete_tags %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#content-main").masonry({
+    singleMode: true, itemSelector: ".module"
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  {% include "admin/objectapp/widgets/content_stats.html" %}
+
+  {% include "admin/objectapp/widgets/quickpost.html" %}
+
+  {% include "admin/objectapp/widgets/recent_comments.html" %}
+
+  {% include "admin/objectapp/widgets/draft_gbobjects.html" %}
+
+  {% include "admin/objectapp/widgets/recent_linkbacks.html" %}
+</div>
+{% endblock %}
+
+
+

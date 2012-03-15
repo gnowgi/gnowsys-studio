@@ -1,0 +1,8 @@
+{% load i18n %}
+{% for gbobject in gbobjects %}
+  {% with object=gbobject object_content=gbobject.html_content|truncatewords_html:100|safe %}
+  {% include "objectapp/_gbobject_detail.html" %}
+  {% endwith %}
+{% empty %}
+  <p class="notice">{% trans "No gbobjects yet." %}</p>
+{% endfor %}

@@ -1,0 +1,16 @@
+{% load i18n %}
+<ul>
+  {% for nodetype in nodetypes %}
+  <li>
+    <a href="{{ nodetype.get_absolute_url }}" title="{{ nodetype.title }}" rel="bookmark">{{ nodetype.title }}</a>
+    <br />
+    {% with nodetype.comments.count as comment_count %}
+    <a href="{{ nodetype.get_absolute_url }}#comments" title="{{ nodetype.title }}">{{ comment_count }} {% trans "comment" %}{{ comment_count|pluralize }}</a>
+    {% endwith %}
+  </li>
+  {% empty %}
+  <li>
+    {% trans "No nodetypes yet." %}
+  </li>
+  {% endfor %}
+</ul>

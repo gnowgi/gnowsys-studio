@@ -1,0 +1,22 @@
+{% extends "gstudio/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form method="post" action=".">
+{% csrf_token %}  
+<h2>Form to add Processes</h2>
+
+{% for field in formset %}
+
+     {{ field.label_tag }}:{{ field }}<br>
+     {{field.help_text}}<br>
+     {{ field.errors }}<br>
+
+
+{% endfor %}
+
+  <input type="Submit" value="{% trans 'ADD' %}" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}

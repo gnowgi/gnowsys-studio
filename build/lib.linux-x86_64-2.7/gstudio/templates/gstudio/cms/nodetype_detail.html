@@ -1,0 +1,8 @@
+{% load i18n %}
+{% for nodetype in nodetypes %}
+  {% with object=nodetype object_content=nodetype.html_content|truncatewords_html:100|safe %}
+  {% include "gstudio/_nodetype_detail.html" %}
+  {% endwith %}
+{% empty %}
+  <p class="notice">{% trans "No node types yet." %}</p>
+{% endfor %}

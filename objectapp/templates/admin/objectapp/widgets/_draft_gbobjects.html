@@ -1,0 +1,37 @@
+{% load i18n objectapp_tags %}
+
+{% for gbobject in gbobjects %}
+<tr>
+  <th>
+    <a href="{% url admin:objectapp_gbobject_change gbobject.pk %}"
+       title="{% trans "Edit the gbobject" %}">
+      {{ gbobject.title }}
+    </a>
+    {% trans "on" %}
+    <abbr>{{ gbobject.creation_date|date:"DATE_FORMAT" }}</abbr>
+    {{ gbobject.html_content|truncatewords_html:20|safe }}
+  </th>
+  <td>
+    <a href="{{ gbobject.get_absolute_url }}" class="previewlink">
+      {% trans "Preview" %}
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <th colspan="2">
+    {% trans "No draft gbobjects." %}
+  </th>
+</tr>
+{% endfor %}
+
+{% if gbobjects %}
+<tr>
+  <th colspan="2">
+    <a href="{% url admin:objectapp_gbobject_changelist %}?status__exact=0"
+       title="{% trans "View all draft gbobjects" %}" class="managelink">
+      {% trans "View all draft gbobjects" %}
+    </a>
+  </th>
+</tr>
+{% endif %}

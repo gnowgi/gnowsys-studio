@@ -1,0 +1,284 @@
+Metadata-Version: 1.0
+Name: django-gstudio
+Version: 0.3.dev
+Summary: A collaborative blogspace for constructing and publishing semantic knowledge networks and ontologies
+Home-page: http://github.com/gnowgi/django-gstudio
+Author: gnowgi
+Author-email: nagarjun@gnowledge.org
+License: BSD License
+Description: ==================
+        gstudio: Gnowledge Studio
+        ==================
+        
+        A collaborative workspace for constructing and publishing semantic
+        knowledge networks and ontologies as blogs. 
+        
+        Features taking shape
+        =====================
+        
+        As and when a feature is tested and working it will be listed below.
+        
+        Nodes implemented
+        =================
+        
+        Gstudio Components
+        ------------------
+        
+        * Metatypes
+        * Object types
+        * Relation types
+        * Attribute types
+        * System types
+        * Process types
+        * Attributes
+        * Relations
+        * Node Specification
+        * Relation Specification
+        * Attribute Specification
+        * Union
+        * Complement
+        * Intersection
+        
+        
+        Objectapp Components
+        ------------------
+        
+        * Objects
+        * Systems
+        * Processes
+        
+        Online Collaborative Platform
+        =============================
+        
+        The application is built as a collaborative on line platform.
+        
+        Version Control
+        ---------------
+        All the nodes above are also registered with django-reversion for
+        version control using django-reversion.
+        
+        User Registration
+        -----------------
+        
+        Basic registration using django-registration
+        
+        
+        Features you will see soon:
+        ===========================
+        
+        * neighbourhood graphs and concept graphs
+        * dynamic forms for adding attributes and relations following the
+          definition
+        
+        Other Semantic Web features to come
+        ===================================
+        
+        * data in RDF format
+        * rdf feed to a triple store
+        * sparql endpoint
+        * export and import of standard knowledge representation languages: CL, OWL, XTM etc.
+        
+        Features adopted from Django-Blog-Zinnia
+        ========================================
+        
+        The following features are adopted from django-blog-zinnia code base
+        with a lot of gratitude.  Thanks to an excellent codebase of
+        django-blog-zinnia, which taught us best software development
+        practices as well! After reviewing each feature for the purpose of
+        semantic blogging, we will retain or extend the following features.
+        
+        * Comments
+        * `Sitemaps`_
+        * Archives views
+        * Related entries
+        * Private entries
+        * RSS or Atom Feeds
+        * Tags and categories views
+        * `Advanced search engine`_
+        * Prepublication and expiration
+        * Edition in `MarkDown`_, `Textile`_ or `reStructuredText`_
+        * Widgets (Popular entries, Similar entries, ...)
+        * Spam protection with `Akismet`_ or `TypePad`_
+        * Admin dashboard
+        * `MetaWeblog API`_
+        * Ping Directories
+        * Ping External links
+        * `Bit.ly`_ support
+        * `Twitter`_ support
+        * `Gravatar`_ support
+        * `Django-CMS`_ plugins
+        * Collaborative work
+        * Tags autocompletion
+        * `Entry model extendable`_
+        * Pingback/Trackback support
+        * `Blogger conversion utility`_
+        * `WordPress conversion utility`_
+        * `WYMeditor`_, `TinyMCE`_ and `MarkItUp`_ support
+        * Ready to use and extendables templates
+        * `Windows Live Writer`_ compatibility
+        
+        Examples
+        ========
+        
+        We will soon create a sandbox site for users to play and test the features.
+        
+        Project Page
+        ============
+        
+        https://www.metastudio.org/groups/gstudio/overview
+        
+        ============
+        Installation
+        ============
+        
+        .. module:: gstudio
+        
+        .. _dependencies:
+        
+        Dependencies
+        ============
+        
+        Make sure to install these packages prior to installation :
+        
+        * `Python 2.x`_ >= 2.5
+        * `Django`_ >= 1.3
+        * `django-mptt`_ >= 0.4.2
+        * `django-tagging`_ >= 0.3.1
+        * `BeautifulSoup`_ >= 3.2.0
+        
+        The packages below are optionnal but needed for run the full test suite.
+        
+        * `pyparsing`_ >= 1.5.5
+        * `django-xmlrpc`_ >= 0.1.3
+        
+        Note that all the dependencies will be resolved if you install
+        Gstudio with :program:`pip` or :program:`easy_install`, excepting Django.
+        
+        .. _getting-the-code:
+        
+        Getting the code
+        ================
+        
+        .. highlight:: console
+        
+        For the latest stable version of Gstudio use :program:`easy_install`: ::
+        
+          $ easy_install django-gstudio
+        
+        or use :program:`pip`: ::
+        
+          $ pip install django-gstudio
+        
+        You could also retrieve the last sources from
+        https://github.com/gnowgi/django-gstudio. Clone the repository
+        using :program:`git` and run the installation script: ::
+        
+          $ git clone git://github.com/gnowgi/django-gstudio.git
+          $ cd django-gstudio
+          $ python setup.py install
+        
+        or more easily via :program:`pip`: ::
+        
+          $ pip install -e git://github.com/gnowgi/django-gstudio.git#egg=django-gstudio
+        
+        .. _applications:
+        
+        Applications
+        ============
+        
+        .. highlight:: python
+        
+        Then register :mod:`gstudio`, and these following applications in the
+        :setting:`INSTALLED_APPS` section of your project's settings. ::
+        
+          INSTALLED_APPS = (
+            # Your favorite apps
+            'django.contrib.contenttypes',
+            'django.contrib.comments',
+            'django.contrib.sessions',
+            'django.contrib.sites',
+            'django.contrib.admin',
+            'tagging',
+            'mptt',
+            'gstudio',)
+        
+        .. _template-context-processors:
+        
+        Template Context Processors
+        ===========================
+        
+        Add these following
+        :setting:`template context processors<TEMPLATE_CONTEXT_PROCESSORS>` if not
+        already present. ::
+        
+          TEMPLATE_CONTEXT_PROCESSORS = (
+            'django.core.context_processors.auth',
+            'django.core.context_processors.i18n',
+            'django.core.context_processors.request',
+            'django.core.context_processors.media',
+            'django.core.context_processors.static',
+            'gstudio.context_processors.version',) # Optional
+        
+        .. _urls:
+        
+        URLs
+        ====
+        
+        Add the following lines to your project's urls.py in order to display the
+        blog. ::
+        
+          url(r'^gstudio/', include('gstudio.urls')),
+          url(r'^comments/', include('django.contrib.comments.urls')),
+        
+        Note that the default gstudio URLset is provided for convenient usage, but
+        you can customize your URLs if you want. Here's how: ::
+        
+          url(r'^', include('gstudio.urls.capabilities')),
+          url(r'^search/', include('gstudio.urls.search')),
+          url(r'^sitemap/', include('gstudio.urls.sitemap')),
+          url(r'^trackback/', include('gstudio.urls.trackback')),
+          url(r'^gstudio/tags/', include('gstudio.urls.tags')),
+          url(r'^gstudio/feeds/', include('gstudio.urls.feeds')),
+          url(r'^gstudio/authors/', include('gstudio.urls.authors')),
+          url(r'^gstudio/categories/', include('gstudio.urls.categories')),
+          url(r'^gstudio/discussions/', include('gstudio.urls.discussions')),
+          url(r'^gstudio/', include('gstudio.urls.quick_entry')),
+          url(r'^gstudio/', include('gstudio.urls.entries')),
+          url(r'^comments/', include('django.contrib.comments.urls')),
+        
+        .. _static-files:
+        
+        Static Files
+        ============
+        
+        Since the version 1.3 of Django, Gstudio uses the
+        :mod:`django.contrib.staticfiles` application to serve the static files
+        needed. Please refer to
+        https://docs.djangoproject.com/en/dev/howto/static-files/ for more
+        informations about serving static files.
+        
+        .. _`Python 2.x`: http://www.python.org/
+        .. _`Django`: https://www.djangoproject.com/
+        .. _`django-mptt`: https://github.com/django-mptt/django-mptt/
+        .. _`django-tagging`: https://code.google.com/p/django-tagging/
+        .. _`BeautifulSoup`: http://www.crummy.com/software/BeautifulSoup/
+        .. _`pyparsing`: http://pyparsing.wikispaces.com/
+        .. _`django-xmlrpc`: https://github.com/Fantomas42/django-xmlrpc
+        
+        CHANGELOG
+        =========
+        
+        0.10
+        ----
+        
+        
+Keywords: django,blog,weblog,zinnia,post,news,gnowsys,gnowledge,semantic,networks,ontolgies
+Platform: UNKNOWN
+Classifier: Framework :: Django
+Classifier: Development Status :: 3 - Development/Alpha
+Classifier: Environment :: Web Environment
+Classifier: Programming Language :: Python
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

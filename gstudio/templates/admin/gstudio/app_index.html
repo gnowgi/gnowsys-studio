@@ -1,0 +1,41 @@
+{% extends "admin/app_index.html" %}
+{% load i18n adminmedia %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}gstudio/css/jquery.autocomplete.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}gstudio/css/dashboard_gstudio.css" />
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/jquery.masonry.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/jquery.bgiframe.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="{% url admin:gstudio_nodetype_autocomplete_tags %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#content-main").masonry({
+    singleMode: true, itemSelector: ".module"
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  {% include "admin/gstudio/widgets/content_stats.html" %}
+
+  {% include "admin/gstudio/widgets/quickpost.html" %}
+
+  {% include "admin/gstudio/widgets/recent_comments.html" %}
+
+  {% include "admin/gstudio/widgets/draft_nodetypes.html" %}
+
+  {% include "admin/gstudio/widgets/recent_linkbacks.html" %}
+</div>
+{% endblock %}
+
+
+

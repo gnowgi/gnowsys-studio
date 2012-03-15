@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% load gstudio_tags %}
+{% get_tags as nodetype_tags %}
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>{{ site.name }}</ShortName>
+  <LongName>{{ site.name }} - web search</LongName>
+  <Description>Make a search on {{ site.name }}.</Description>
+  <Attribution>{{ copyright }}</Attribution>
+  <Tags>{{ nodetype_tags|slice:":15"|join:" " }}</Tags>
+  <Url type="text/html" template="{{ protocol }}://{{ site.domain }}{% url gstudio_nodetype_search %}?pattern={searchTerms}" />
+  <Url type="application/{{ feeds_format }}+xml" template="{{ protocol }}://{{ site.domain }}{% url gstudio_nodetype_search_feed %}?pattern={searchTerms}" />
+  <Url type="application/opensearchdescription+xml" rel="self" template="{{ protocol }}://{{ site.domain }}{% url gstudio_opensearch %}"/>
+  <Image height="16" width="16" type="image/vnd.microsoft.icon">{{ STATIC_URL }}gstudio/img/favicon.ico</Image>
+  <Query role="example" searchTerms="{{ nodetype_tags.0 }}" />
+  <Developer>gnowgi</Developer>
+  <Contact>nagarjun@gnowledge.org</Contact>
+  <SyndicationRight>open</SyndicationRight>
+  <AdultContent>false</AdultContent>
+  <Language>{{ LANGUAGE_CODE }}</Language>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <InputEncoding>UTF-8</InputEncoding>
+  <moz:SearchForm>{{ protocol }}://{{ site.domain }}/</moz:SearchForm>
+</OpenSearchDescription>

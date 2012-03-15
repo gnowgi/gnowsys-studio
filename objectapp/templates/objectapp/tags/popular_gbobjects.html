@@ -1,0 +1,16 @@
+{% load i18n %}
+<ul>
+  {% for gbobject in gbobjects %}
+  <li>
+    <a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>
+    <br />
+    {% with gbobject.comments.count as comment_count %}
+    <a href="{{ gbobject.get_absolute_url }}#comments" title="{{ gbobject.title }}">{{ comment_count }} {% trans "comment" %}{{ comment_count|pluralize }}</a>
+    {% endwith %}
+  </li>
+  {% empty %}
+  <li>
+    {% trans "No gbobjects yet." %}
+  </li>
+  {% endfor %}
+</ul>

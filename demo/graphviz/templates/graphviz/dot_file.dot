@@ -1,0 +1,6 @@
+
+digraph G {
+	{% for edge in graph.edges %}
+	"{{ edge.start_node_label }}" -> "{{ edge.end_node_label }}" [label = "{{ edge.label }}"];
+	{% endfor %}
+}

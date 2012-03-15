@@ -1,0 +1,30 @@
+{% extends "gstudio/nodetype_list.html" %}
+{% load i18n gstudio_tags %}
+
+{% block meta-description %}{% trans "Latest nodetypes" %}{% endblock %}
+
+{% block link %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}gstudio/css/slider.css" />
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+  <script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/jquery.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/jquery.ui.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#slider").tabs({ fx:{ opacity: "toggle"}}).tabs("rotate", 5000, true);
+      $("#slider").hover(
+        function() { $("#slider").tabs("rotate", 0, true); },
+        function() { $("#slider").tabs("rotate", 5000, true); });
+    });
+  </script>
+{% endblock %}
+
+{% block title %}{% trans "Latest nodetypes" %}{% endblock %}
+
+{% block content %}
+{% get_featured_nodetypes 5 "gstudio/tags/slider_nodetypes.html" %}
+{{ block.super }}
+{% endblock %}

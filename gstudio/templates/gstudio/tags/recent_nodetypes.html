@@ -1,0 +1,20 @@
+
+{% load i18n mptt_tags %}
+
+{% for nodetype, structure in nodetypes|tree_info %}
+{% if structure.new_level %}
+<ul>
+  <li>{% else %}</li>
+  <li>{% endif %}
+    <a href="{{ nodetype.get_absolute_url }}" title="{{ nodetype.title }}">{{ nodetype.title }}</a> 
+    {% for level in structure.closed_levels %}
+  </li>
+</ul>{% endfor %}
+{% empty %}
+<ul>
+  <li>
+    {% trans "No subtypes yet." %}
+  </li>
+</ul>
+{% endfor %}
+

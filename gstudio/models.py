@@ -753,6 +753,97 @@ class Nodetype(Node):
         return relations
 
     @property
+    def get_relations1(self):
+        """
+        Returns all the relations of the nodetype
+        """
+        relations={}
+        reltype={}
+        left_relations=Relation.objects.filter(left_subject=self.id)
+        if left_relations:
+           for each in left_relations:
+           	relation=each.relationtype.title
+           	predicate=each.right_subject
+           	predicate_values=[]
+                if reltype:
+              	   fl=0
+              	   for key,value in reltype.items():
+                       if type(value) <> list:
+                          t=[]
+                          t.append(value)
+                          predicate_values=t
+                       else:
+                          predicate_values=value
+                       if each.relationtype.title==key:
+                          fl=1
+                          predicate_values.append(predicate)
+                          reltype[key]=predicate_values             
+                   if fl==0:
+                       predicate_values=predicate
+                       reltype[relation]=predicate_values
+                else:
+                    predicate_values.append(predicate)
+                    reltype[relation]=predicate_values
+                relations['lrelations']=reltype
+        
+        right_relations=Relation.objects.filter(right_subject=self.id)
+        reltype={}
+        if right_relations:
+           for each in right_relations:
+           	relation=each.relationtype.inverse
+           	predicate=each.left_subject
+                predicate_values=[]
+                if reltype:
+                   fl=0
+              	   for key,value in reltype.items():
+                       if type(value) <> list:
+                          t=[]
+                          t.append(value)
+                          prdicate_values=t
+                       else:
+                          predicate_values=value
+                       if each.relationtype.inverse==key:
+                          fl=1
+                          predicate_values.append(predicate)
+                          reltype[key]=predicate_values
+                          
+                   if fl==0:
+                       predicate_values=predicate
+                       reltype[relation]=predicate_values
+                          
+                else:
+                   predicate_values.append(predicate)
+                   reltype[relation]=predicate_values
+                relations['rrelations']=reltype
+        return relations
+
+    @property
+    def get_attributes(self):
+        attributes_dict =  {}
+        all_attributes=self.subject_of.all()
+        for attributes in all_attributes:
+                val=[]
+        	atr_key=attributes.attributetype.title
+                val.append(attributes.svalue)
+		
+                if attributes_dict:
+                     fl=0
+                     itms=attributes_dict
+                     
+                     for key,value in itms.items():
+                     	  if atr_key in key:
+                                 fl=1
+                                 if type(value) <> list:
+                                      t=[]
+                                      t.append(value)
+                                      val.extend(t)
+                                      
+                                 else:
+                                      val.extend(value)
+                attributes_dict[atr_key]=val
+        return attributes_dict
+
+    @property
     def get_rendered_nbh(self):
         """          
         Returns the neighbourhood of the nodetype
@@ -803,15 +894,40 @@ class Nodetype(Node):
         nbh['siblings']=siblings
         #get Relations
         relns={}
-        relnvalue={}
-        if self.get_relations:
-            NTrelns=self.get_relations
-            for value in NTrelns:
-                relnvalue[NTrelns[value].title]=NTrelns[value].ref.get_absolute_url()
-                relns[value]=relnvalue
-        nbh['relations']=relns
+        rellft={}
+        relrgt={}
+        if self.get_relations1:
+            NTrelns=self.get_relations1
+            for key,value in NTrelns.items():
+                if key=="rrelations":
+                    relrgt={}
+                    for rgtkey,rgtvalue in value.items():
+                        relnvalue={}
+                        if isinstance(rgtvalue,list):
+                            for items in rgtvalue:
+                                relnvalue[items]=items.get_absolute_url()
+                        else:
+                            relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
+                        
+                        relrgt[rgtkey]=relnvalue
+                    
+                else:
+                    rellft={}
+                    relns['left']=rellft
+                    for lftkey,lftvalue in value.items():
+                        relnvalue={}
+                        if isinstance(lftvalue,list):
+                             for items in lftvalue:
+                                 relnvalue[items]=items.get_absolute_url()
+                        else:
+                             relnvalue[lftvalue]=lftvalue.get_absolute_url()
+                        
+                        rellft[lftkey]=relnvalue
+                    
+        nbh['relations']=relrgt
+        nbh['relations'].update(rellft)
         #get Attributes
-        attributes = self.subject_of.all()
+        attributes =self.get_attributes
         nbh['attributes']=attributes
         #get ATs
         attributetypes={}

@@ -289,7 +289,7 @@ def gstudio_pagination(context, page, begin_pages=3, end_pages=3,
 
 
 @register.inclusion_tag('gstudio/tags/dummy.html', takes_context=True)
-def gstudio_breadcrumbs(context, separator='/', root_name='gstudio',
+def gstudio_breadcrumbs(context, separator='/', root_name='Nodetype',
                        template='gstudio/tags/breadcrumbs.html',):
     """Return a breadcrumb for the application"""
     path = context['request'].path

@@ -144,7 +144,7 @@ vis.append("svg:g").attr("class", "nodes");
 
 $(function() {
 $.ajax({
-url: '/gstudio/graphs/graph_json/{{ object.id }}',
+url: '/nodetypes/graphs/graph_json/{{ object.id }}',
 //crossDomain: true,
 dataType: 'json',
 success : function(json) {

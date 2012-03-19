@@ -33,8 +33,14 @@
 
 {% block content %}
 
-
 {% block nodetype-content %}
+<h2 class="nodetype-title">
+      <a href="{{ object.get_absolute_url }}" title="{{ object.title }}" rel="bookmark">
+        {{ object.title }}
+	 </a>
+	<a href="{{ object.ref.get_edit_url }}" target="_blank" >[edit]</a>     
+
+    </h2>
   {% with object.html_content|safe as object_content %}
 
 
@@ -117,7 +123,7 @@
                             {% if object.get_rendered_nbh.priornodes %}
                          
                            
-                                <b>Priornodes:<nbsp></b>
+                                <b>Prior nodes:<nbsp></b>
                                     {% for mkey,mvalue in object.get_rendered_nbh.priornodes.items %}
                                         <a href="{{mvalue}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
@@ -144,14 +150,15 @@
 	                   {% endif %}
                            
                            {% if object.get_rendered_nbh.attributes %}
-                         
                            
-                                
-				   <b>Attributes:<nbsp> </b>
-                                
-				    {% for items in object.get_rendered_nbh.attributes.items %}
-                                        {{items}};	      
-				    {% endfor %}       <br/>
+				    {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %}
+                                      {% if atvalue %}
+                                       <b>{{atkey}}:<nbsp> </b>
+                                        {% for atr in atvalue %}
+                                        	   {{atr}};   
+                                         {% endfor %} <br/>
+                                      {% endif %}
+				    {% endfor %}       
 	                   {% endif %}
                             {% if object.get_rendered_nbh.leftroles %}
                          
@@ -176,7 +183,7 @@
                            {% if object.get_rendered_nbh.ats %}
                                              
                                 
-				   <b>Attribute Types:<nbsp> </b>
+				   <b>Subjecttype of:<nbsp> </b>
                                 
 				    {% for atkey,atvalue in object.get_rendered_nbh.ats.items %}
                                         <a href="{{atvalue}}">{{atkey}}</a>;	      

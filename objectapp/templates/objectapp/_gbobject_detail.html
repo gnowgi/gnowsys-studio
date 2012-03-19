@@ -44,7 +44,7 @@
               {% if object.get_rendered_nbh.member_of %}
                            
                           
-                                <b> Member of Metatypes :<nbsp></b>
+                                <b> Member of :<nbsp></b>
 
                                     {% for mkey,mvalue in object.get_rendered_nbh.member_of.items %}
                                         <a href="{{mvalue}}">{{mkey}}</a>;
@@ -63,15 +63,16 @@
 {% endif %}
                            
                            {% if object.get_rendered_nbh.attributes %}
-                         
-                           
-                                
-<b>Attributes: <nbsp> </b>
-                                
-{% for items in object.get_rendered_nbh.attributes %}
-                                        {{items}};
-{% endfor %} <br/>
-{% endif %}
+			   {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %}
+                                 {% if atvalue %}
+			    <b>     {{atkey}}:<nbsp></b>
+                                    
+				    {% for items in atvalue %}
+					{{items}};<nbsp>
+                                    {% endfor %}
+                                 {% endif %}<br/>
+			{% endfor %}                         
+			{% endif %}
 
 </p>
 

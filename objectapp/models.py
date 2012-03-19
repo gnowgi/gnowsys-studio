@@ -252,12 +252,32 @@ class Gbobject(Node):
         
 
     def get_attributes(self):
-        attributes =  {}
-        for attribute in Attribute.objects.filter(subject=self.id):
-            for key,value in attribute.edge_node_dict.iteritems():
-                attributes[key]= value
+        attributes_dict =  {}
+        all_attributes=self.subject_of.all()
+        for attributes in all_attributes:
+                val=[]
+        	atr_key=attributes.attributetype.title
+                val.append(attributes.svalue)
+		
+                if attributes_dict:
+                     fl=0
+                     itms=attributes_dict
+                     
+                     for key,value in itms.items():
+                     	  if atr_key in key:
+                                 fl=1
+                                 if type(value) <> list:
+                                      t=[]
+                                      t.append(value)
+                                      val.extend(t)
+                                      
+                                 else:
+                                      
+                                      val.extend(value)
+                                      
+                attributes_dict[atr_key]=val
                 
-        return attributes
+        return attributes_dict
             
     
     
@@ -392,16 +412,21 @@ class Gbobject(Node):
            	predicate=each.right_subject
            	predicate_values=[]
                 if reltype:
+              	   fl=0
               	   for key,value in reltype.items():
-                       predicate_values=value
-                       if each.relationtype.title==key:
-                          predicate_values.append(predicate)
-                          reltype[key]=predicate_values
-                          break
+                       if type(value) <> list:
+                          t=[]
+                          t.append(value)
+                          predicate_values=t
                        else:
-                          predicate_values=predicate
-                          reltype[relation]=predicate_values
-                          break
+                          predicate_values=value
+                       if each.relationtype.title==key:
+                          fl=1
+                          predicate_values.append(predicate)
+                          reltype[key]=predicate_values             
+                   if fl==0:
+                       predicate_values=predicate
+                       reltype[relation]=predicate_values
                 else:
                     predicate_values.append(predicate)
                     reltype[relation]=predicate_values
@@ -415,16 +440,23 @@ class Gbobject(Node):
            	predicate=each.left_subject
                 predicate_values=[]
                 if reltype:
+                   fl=0
               	   for key,value in reltype.items():
-                       predicate_values=value
+                       if type(value) <> list:
+                          t=[]
+                          t.append(value)
+                          prdicate_values=t
+                       else:
+                          predicate_values=value
                        if each.relationtype.inverse==key:
+                          fl=1
                           predicate_values.append(predicate)
                           reltype[key]=predicate_values
-                          break
-                       else:
-                          predicate_values=predicate
-                          reltype[relation]=predicate_values
-                          break
+                          
+                   if fl==0:
+                       predicate_values=predicate
+                       reltype[relation]=predicate_values
+                          
                 else:
                    predicate_values.append(predicate)
                    reltype[relation]=predicate_values
@@ -446,6 +478,17 @@ class Gbobject(Node):
         for each in self.objecttypes.all():
             member_of_dict[each.title]= each.get_absolute_url()
         nbh['member_of']=member_of_dict
+
+        pnode_dict = {}
+        for each in self.prior_nodes.all():
+            pnode_dict[each.title]= each.get_absolute_url()
+        nbh['priornodes']=pnode_dict
+
+        pnode_dict = {}
+        for each in self.posterior_nodes.all():
+            pnode_dict[each.title]= each.get_absolute_url()
+        nbh['posteriornodes']=pnode_dict
+
         #get Relations
         relns={}
         rellft={}
@@ -481,11 +524,10 @@ class Gbobject(Node):
         nbh['relations']=relrgt
         nbh['relations'].update(rellft)
    
+
         #get Attributes
-        attributes ={}
-        for each in self.subject_of.all():
-             attributes[each.attributetype]=each.svalue 
-        nbh['attributes']=attributes
+        attributes =self.get_attributes()
+        nbh['attributes']=attributes     	
         return nbh
 
 

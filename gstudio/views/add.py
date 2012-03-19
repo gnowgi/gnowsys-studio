@@ -28,7 +28,7 @@ def addmetatype(request):
         formset = MetatypeForm(request.POST)
         if formset.is_valid():
             formset.save()
-            return HttpResponseRedirect("/gstudio/")
+            return HttpResponseRedirect("/nodetypes/")
  
  
         
@@ -48,7 +48,7 @@ def addobjecttype(request):
             formset = ObjecttypeForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
  
             
                     
@@ -65,7 +65,7 @@ def addrelationtype(request):
             formset = RelationtypeForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -82,7 +82,7 @@ def addattributetype(request):
             formset = AttributetypeForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -99,7 +99,7 @@ def addsystemtype(request):
             formset = SystemtypeForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -115,7 +115,7 @@ def addprocesstype(request):
             formset = ProcesstypeForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -131,7 +131,7 @@ def addattribute(request):
             formset = AttributeForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -147,7 +147,7 @@ def addrelation(request):
             formset = RelationForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -163,7 +163,7 @@ def addcomplement(request):
             formset = ComplementForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -179,7 +179,7 @@ def addunion(request):
             formset = UnionForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:
@@ -195,7 +195,7 @@ def addintersection(request):
             formset = IntersectionForm(request.POST)
             if formset.is_valid():
                 formset.save()
-                return HttpResponseRedirect("/gstudio/")
+                return HttpResponseRedirect("/nodetypes/")
             
                     
         else:

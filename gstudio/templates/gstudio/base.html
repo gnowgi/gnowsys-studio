@@ -1,4 +1,5 @@
 {% extends "gstudio/skeleton.html" %}
+{% load gstudio_tags i18n %}
 {% load objectapp_tags i18n %}
 
   {% block meta %}
@@ -11,11 +12,11 @@
     <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{% url objectapp_wlwmanifest %}" />
     <link rel="search" type="application/opensearchdescription+xml" title="Objectapp's Blog" href="{% url objectapp_opensearch %}" />
     <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of latest gbobjects" %}" href="{% url objectapp_gbobject_latest_feed %}" />
-    {% get_archives_gbobjects "objectapp/tags/archives_gbobjects_link.html" %}
+    <!-- {% get_archives_gbobjects "objectapp/tags/archives_gbobjects_link.html" %} -->
 {% endblock %}
 
 {% block breadcrumbs %}
-  {% objectapp_breadcrumbs %}
+  {% gstudio_breadcrumbs %}
 {% endblock %}
 
 {% block sidebar %}

@@ -34,10 +34,12 @@
     </p>
   </form>
 </div>
+<!--
 <div class="objecttypes">
   <h3>{% trans "Objecttypes" %}</h3>
   {% get_objecttypes %}
 </div>
+-->
 <div class="authors">
   <h3>{% trans "Authors" %}</h3>
   {% get_authors %}
@@ -88,7 +90,7 @@
     {% if perms.objectapp.add_gbobject %}
     <li>
       <a href="{% url admin:objectapp_gbobject_add %}" title="{% trans "Post an gbobject" %}">
-        {% trans "Post an gbobject" %}
+        {% trans "Post a gbobject" %}
       </a>
     </li>
     {% endif %}

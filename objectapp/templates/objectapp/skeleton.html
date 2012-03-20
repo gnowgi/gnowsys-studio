@@ -5,38 +5,54 @@
 <html xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
   <head>
 
-<style type="text/css">
-    .link {
-      stroke : #ccc;
-    }
+		<style type="text/css">
+			.link {
+				stroke: #ccc;
+			}
+			.nodetext {
+				#pointer-events: none;
+				font: 10px Serif;
+				font-style:italic;
+			}
+			.mainnode{
 
-    .nodetext {
-      pointer-events : none;
-      font           : 10px sans-serif;
-    }
-    
-    .node {
-	border-width : 1px;
-	border-color : gray;
-    }
-    body {
-      background-color:white;
-    }
+ 				font: 15px sans-serif;
+			           fill:"red";
+				border-width: 1px;
+				font-weight:bold;
+				border-color: gray;
 
-   #chart {
-    height: 90%;
-    margin: 0 auto;
-    width: 90%;
-   }
+			}
+			.relnode {
+ 				font: 10px sans-serif;
+				font-weight:bold;
+			           fill:#000;
+			}
+			
 
-  svg {
-      margin-left: 10%;
-      margin-right: 10%;
-      display: block;
- 	position:absolute;
-    }
-   
-  </style>
+			.node {
+				border-width: 1px;
+				border-color: gray;
+			        fill:"green";
+ 				font: 10px sans-serif;
+			}
+			body {
+				background-color: white;
+			}
+			#chart {
+				height: 90%;
+				margin: 0 auto;
+				width: 90%;
+				display: block;
+			}
+			svg {
+				margin-left: 10%;
+				margin-right: 10%;
+				display: block;
+				position: absolute;
+			}
+
+		</style>
     <!-- the header lines from grappelli -->
     {% block blockbots %}
         <meta name="robots" content="NONE,NOARCHIVE" />
@@ -156,17 +172,17 @@ $(function() {
     dataType: 'json',
     success : function(json) {
 
-	
+	//var node = NID.objects.get(slug='{{ slug }}');
       var force; 
       
-	
+	// this contains all the nodes as a dict with _id as the key
 
       var nodes_by_id = _.reduce(json.node_metadata, function(acc, n) {
         acc[n._id] = n;
         return acc;
       }, {});
-								       
-      var  member_of = _(json.member_of).chain().map(function(e) {
+
+     var member_of = _(json.member_of).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
         e.type = 'member_of';
@@ -232,17 +248,28 @@ $(function() {
       }).filter(function(e){
         return nodes_by_id[e.from] && nodes_by_id[e.to]
       }).value();
+    
 
-	var content = _(json.content).chain().map(function(e) {
+      
+       var type_of = _(json.type_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'type_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+
+	/*var content = _(json.content).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
         e.type = 'content';
         return e;
       }).filter(function(e){
         return nodes_by_id[e.from] && nodes_by_id[e.to]
-      }).value();
-
-       var contains_members = _(json.contains_members).chain().map(function(e) {
+      }).value();*/
+    
+       contains_members = _(json.contains_members).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
         e.type = 'contains_members';
@@ -251,20 +278,19 @@ $(function() {
         return nodes_by_id[e.from] && nodes_by_id[e.to]
       }).value();
 
-       var authors = _(json.authors).chain().map(function(e) {
+      var prior_nodes = _(json.prior_nodes).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
-        e.type = 'authors';
+        e.type = 'prior_node';
         return e;
       }).filter(function(e){
         return nodes_by_id[e.from] && nodes_by_id[e.to]
-      }).value();	
+      }).value();
 
-      
-       var type_of = _(json.type_of).chain().map(function(e) {
+      var  posterior_nodes = _(json.posterior_nodes).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
-        e.type = 'type_of';
+        e.type = 'posterior_node';
         return e;
       }).filter(function(e){
         return nodes_by_id[e.from] && nodes_by_id[e.to]
@@ -305,7 +331,7 @@ $(function() {
 	nodes_by_id[{{ object.id }}].y = h/2.0;
       
         all_edges = new Array();
-	all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of, type_of,plural,altnames,contains_members,authors,content); 
+	all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of,type_of,plural,altnames,contains_members, prior_nodes,posterior_nodes); 
 	/* all_edges.concat(follows_edges); 
          all_edges.concat(member_of_metatype); 
          all_edges.concat(contains_members);
@@ -323,7 +349,7 @@ $(function() {
               .charge(-2000)
               .friction(0.7)
               .gravity(0.7)
-              .linkDistance(50)
+              .linkDistance(15)
               .nodes([])
               .links([])
               .size([w, h])
@@ -370,37 +396,39 @@ $(function() {
                 .attr("y2", function(d) {
                   return d.target.y;
                 })
+                .attr("text", function(d) {
+                  return d.type;
+                })
+
 	      .append("a")
                .text(function(d) { return d.type; }); 
 	 
 	     
-          var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);            
-                        //.filter(function(d) { return !(d._id=="a4" && d._id=="a5")});
+          var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);  
 
-          var new_g = node.enter().append("svg:g")
-              .attr("class", "node")
-              .call(force.drag);
-                
-        
-	 
-	  
-	 
 	
+    
+          var new_g = node.enter().append("svg:a")
+              .attr("class", function(d) {  if (d._id=={{ object.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })
+	      .attr("xlink:href", function(d){return d.url;})
+	      .call(force.drag);
 	      
 			  
-		  new_g.append("svg:circle")
+  	  new_g.append("svg:circle")
 			.attr("cx", function(d) { return d.x - w/2.0 + 15; })
-			.attr("cy", function(d) { return d.y - h/2.0 + 15; })  
-			.attr("r", 7)
-			.style("fill", function color(d) { if (d._id=={{ object.id }}) return "red"; else if (d._id== "a1" || d._id== "a2" || d._id== "a3" ) return "steelblue" ; else return "yellow"});	
-				
-				
-          
+			.attr("cy", function(d) { return d.y - h/2.0 + 15; })
+			.attr("r", function(d) {  if (d._id=={{ object.id }}) return 8; else if (isNaN(d._id) || (d._id)<0) return 1; else return 7 })
+                       .style("fill", function color(d) { if (d._id=={{ object.id }}) return "red"; else if (isNaN(d._id) || (d._id)<0) return "white" ; else return "green"});
+
+			
 		new_g.append("svg:text")
+			.attr("class",function(d) {  if (d._id=={{ object.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })
                         .attr("dy", 20)
-	                .attr("dx", 25)
-	  
-                        /* .attr("text-anchor", "middle") */
+	                .attr("dx", 25) 
+                        .attr("text-anchor",function text(d) { if (isNaN(d._id) || (d._id)<0) return "middle" ; else return "left"}) 
+
+//                        .attr("style",function text(d) { if (isNaN(d._id)) return "font-size:9.00pt;fill:#333;" ; else return "font-size:9.00pt;fill:black;"}) 
+    
                         .text(function(d) {
                           return d.screen_name;
                         });  

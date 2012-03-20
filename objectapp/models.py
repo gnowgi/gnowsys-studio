@@ -362,39 +362,50 @@ class Gbobject(Node):
 
     
     def get_graph_json(self):
-
-        predicate_id={"plural":"a1","altnames":"a2","member_of":"a3"}
+        
+        
+        # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
 	g_json = {}
 	g_json["node_metadata"]= [] 
-	
+
 	
 	nbh = self.get_nbh
-	
+	predicate_id = {}
+        counter = 1
+        for key in nbh.keys():
+            val = "a" + str(counter)
+            predicate_id[key] = val
+            counter = counter + 1
+        #print predicate_id
+
+        attr_counter = -1
+
         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url()}
+        g_json["node_metadata"].append(this_node)      
+
 	for key in predicate_id.keys():
 		if nbh[key]:
 			try:
 				g_json[str(key)]=[]      
 				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-				g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1  })
+				g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
 				if not isinstance(nbh[key],basestring):
-					for item in nbh[key]:
-				
-						g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
-						g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+                                    for item in nbh[key]:
+                                        # user 
+                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
+                                        g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
 			
-				else:
-					value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
-		            		this_node[str(key)]=nbh[key]
-				
-					for item in value.keys():
-						g_json["node_metadata"].append({"_id":str(value[nbh[key]]),"screen_name":nbh[key]})
-						g_json[str(key)].append({"from":predicate_id[key] , "to":value[nbh[key]] ,"value":1  })
-				
-			
+                                else:
+				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
+		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
+				 	#for item in value.keys():
+                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":nbh[key]})
+                                    g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
+                                    attr_counter-=1
+							
 			except:
-		                    pass
-	g_json["node_metadata"].append(this_node)      
+                            pass
+        print g_json
         return json.dumps(g_json)   
 
 

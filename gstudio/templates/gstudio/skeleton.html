@@ -9,12 +9,31 @@
 				stroke: #ccc;
 			}
 			.nodetext {
-				pointer-events: none;
-				font: 10px sans-serif;
+				#pointer-events: none;
+				font: 10px Serif;
+				font-style:italic;
 			}
+			.mainnode{
+
+ 				font: 15px sans-serif;
+			           fill:"red";
+				border-width: 1px;
+				font-weight:bold;
+				border-color: gray;
+
+			}
+			.relnode {
+ 				font: 10px sans-serif;
+				font-weight:bold;
+			           fill:#000;
+			}
+			
+
 			.node {
 				border-width: 1px;
 				border-color: gray;
+			        fill:"green";
+ 				font: 10px sans-serif;
 			}
 			body {
 				background-color: white;
@@ -128,297 +147,334 @@
 
 				Javascript for Object type force graph
 				-->
-				<script type="text/javascript" >
+   <script type="text/javascript" >
 
-var w = 700,
-h = 300,
-fill = d3.scale.category20();
+    var w = 700,
+        h = 300,
+        fill = d3.scale.category20();
 
-var vis = d3.select("#chart")
-.append("svg:svg")
-.attr("width", w)
-.attr("height", h);
+    var vis = d3.select("#chart")
+        .append("svg:svg")
+        .attr("width", w)
+        .attr("height", h);
 
-vis.append("svg:g").attr("class", "edges");
-vis.append("svg:g").attr("class", "nodes");
+    vis.append("svg:g").attr("class", "edges");        
+    vis.append("svg:g").attr("class", "nodes");
 
 $(function() {
-$.ajax({
-url: '/nodetypes/graphs/graph_json/{{ object.id }}',
-//crossDomain: true,
-dataType: 'json',
-success : function(json) {
+  $.ajax({
+    url: '/nodetypes/graphs/graph_json/{{ object.id }}',
+    //crossDomain: true,
+    dataType: 'json',
+    success : function(json) {
 
-//var node = NID.objects.get(slug='{{ slug }}');
-var force;
+	//var node = NID.objects.get(slug='{{ slug }}');
+      var force; 
+      
+	// this contains all the nodes as a dict with _id as the key
 
-// this contains all the nodes as a dict with _id as the key
+      var nodes_by_id = _.reduce(json.node_metadata, function(acc, n) {
+        acc[n._id] = n;
+        return acc;
+      }, {});
+								       
+      var  member_of = _(json.member_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'member_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var nodes_by_id = _.reduce(json.node_metadata, function(acc, n) {
-acc[n._id] = n;
-return acc;
-}, {});
+      		
+       var contains_subtypes = _(json.contains_subtypes).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'contains_subtypes';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+       var contains_members = _(json.contains_members).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'contains_members';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
 
-var  member_of = _(json.member_of).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'member_of';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+      var  left_subjecttype_of  = _(json.left_subjecttype_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'left_subjecttype_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
 
-var contains_subtypes = _(json.contains_subtypes).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'contains_subtypes';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var subjecttype_of = _(json.subjecttype_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'subjecttype_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var contains_members = _(json.contains_members).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'contains_members';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var plural = _(json.plural).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'plural';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var  left_subjecttype_of  = _(json.left_subjecttype_of).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'left_subjecttype_of';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
 
-var subjecttype_of = _(json.subjecttype_of).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'subjecttype_of';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var altnames = _(json.altnames).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'altnames';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var plural = _(json.plural).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'plural';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+	var content = _(json.content).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'content';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var altnames = _(json.altnames).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'altnames';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var contains_members = _(json.contains_members).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'contains_members';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var content = _(json.content).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'content';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
 
-var contains_members = _(json.contains_members).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'contains_members';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+      
+       var type_of = _(json.type_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'type_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+      
+      var  right_subjecttype_of = _(json.right_subjecttype_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'right_subjecttype_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
 
-var authors = _(json.authors).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'authors';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var follows_edges = _(json.is_followed_by).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'follows_edges';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
 
-var type_of = _(json.type_of).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'type_of';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
 
-var  right_subjecttype_of = _(json.right_subjecttype_of).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'right_subjecttype_of';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var prior_nodes = _(json.prior_nodes).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'prior_node';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var follows_edges = _(json.is_followed_by).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'follows_edges';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
+       var posterior_nodes = _(json.posterior_nodes).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'posterior_node';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
 
-var mentions_edges = _(json.is_mentioned_by).chain().map(function(e) {
-e.source = nodes_by_id[e.from];
-e.target = nodes_by_id[e.to];
-e.type = 'mentions_edges';
-return e;
-}).filter(function(e){
-return nodes_by_id[e.from] && nodes_by_id[e.to]
-}).value();
 
-nodes_by_id[{{ object.id }}].x = w/2.0;
-nodes_by_id[{{ object.id }}].y = h/2.0;
+       var mentions_edges = _(json.is_mentioned_by).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'mentions_edges';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
 
-all_edges = new Array();
-all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of, type_of,plural,altnames,contains_members,authors,content);
-/* all_edges.concat(follows_edges);
-all_edges.concat(member_of_metatype);
-all_edges.concat(contains_members);
-all_edges.concat(contains_subtypes);
-all_edges.concat(mentions_edges);
+	nodes_by_id[{{ object.id }}].x = w/2.0;
+	nodes_by_id[{{ object.id }}].y = h/2.0;
+      
+        all_edges = new Array();
+	all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of, type_of,plural,altnames,contains_members,content, prior_nodes, posterior_nodes); 
+	/* all_edges.concat(follows_edges); 
+         all_edges.concat(member_of_metatype); 
+         all_edges.concat(contains_members);
+	 all_edges.concat(contains_subtypes); 
+         all_edges.concat(mentions_edges); 
+        
 
-document.getElementById('debugbox1').value= follows_edges;  //member_of_metatype
-document.getElementById('debugbox2').value= mentions_edges;
-//document.getElementById('debugbox2').value= member_of_metatype;
-document.getElementById('debugbox3').value= all_edges;
-*/
-var force = d3.layout.force()
-.linkStrength(0.5)
-.charge(-2000)
-.friction(0.7)
-.gravity(0.7)
-.linkDistance(10)
-.nodes([])
-.links([])
-.size([w, h])
-.start();
+	document.getElementById('debugbox1').value= follows_edges;  //member_of_metatype      	
+	document.getElementById('debugbox2').value= mentions_edges;
+        //document.getElementById('debugbox2').value= member_of_metatype;      	
+	document.getElementById('debugbox3').value= all_edges; 
+	*/
+      var force = d3.layout.force()
+              .linkStrength(0.5)
+              .charge(-2000)
+              .friction(0.7)
+              .gravity(0.7)
+              .linkDistance(13)
+              .nodes([])
+              .links([])
+              .size([w, h])
+              .start();
 
-function update(edges){
-// for each func
-_.each(nodes_by_id, function(n){n.added = false});
-// reduce the nodes list to have only those nodes for a given rel.
-nodes = _.reduce(edges, function(acc, e) {
-if(nodes_by_id[e.from] && !nodes_by_id[e.from].added){
-nodes_by_id[e.from].added = true;
-acc.push(nodes_by_id[e.from]);
-}
-if(nodes_by_id[e.to] && !nodes_by_id[e.to].added){
-nodes_by_id[e.to].added = true;
-acc.push(nodes_by_id[e.to]);
-}
-return acc;
-}, []);
+      function update(edges){
+        // for each func
+        _.each(nodes_by_id, function(n){n.added = false});
+        // reduce the nodes list to have only those nodes for a given rel.
+      nodes = _.reduce(edges, function(acc, e) {
+          if(nodes_by_id[e.from] && !nodes_by_id[e.from].added){
+            nodes_by_id[e.from].added = true;
+            acc.push(nodes_by_id[e.from]);
+          }
+          if(nodes_by_id[e.to] && !nodes_by_id[e.to].added){
+            nodes_by_id[e.to].added = true;
+            acc.push(nodes_by_id[e.to]);
+          }       
+          return acc;
+        }, []);
+        
+        force.nodes(nodes);
+        force.links(edges);
+        force.start();
 
-force.nodes(nodes);
-force.links(edges);
-force.start();
+        link = d3.select("#chart g.edges").selectAll("line.link")
+                .data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
+                
+                link.enter().append("svg:line")
+                .attr("class", "link")
+                .style("stroke-width", 2 /* function(d) {
+                  return Math.sqrt(d.value);
+                } */ )
+                .attr("x1", function(d) {
+                  return d.source.x;
+                })		
+                .attr("y1", function(d) {
+                  return d.source.y;
+                })
+                .attr("x2", function(d) {
+                  return d.target.x;
+                })
+                .attr("y2", function(d) {
+                  return d.target.y;
+                })
+                .attr("text", function(d) {
+                  return d.type;
+                })
 
-link = d3.select("#chart g.edges").selectAll("line.link")
-.data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
+	      .append("a")
+               .text(function(d) { return d.type; }); 	       
+	     
+          
+	  var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);  
+    
+          var new_g = node.enter().append("svg:a")
+              .attr("class", function(d) {  if (d._id=={{ object.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })     
+	      .attr("xlink:href",function(d){return d.url;})
+	      .call(force.drag);
 
-link.enter().append("svg:line")
-.attr("class", "link")
-.style("stroke-width", 2 /* function(d) {
-return Math.sqrt(d.value);
-} */ )
-.attr("x1", function(d) {
-return d.source.x;
-})
 
-.attr("y1", function(d) {
-return d.source.y;
-})
-.attr("x2", function(d) {
-return d.target.x;
-})
-.attr("y2", function(d) {
-return d.target.y;
-})
-.append("a")
-.text(function(d) { return d.type; });
 
-var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);
+				  
+  	  new_g.append("svg:circle")
+			.attr("cx", function(d) { return d.x - w/2.0 + 15; })
+			.attr("cy", function(d) { return d.y - h/2.0 + 15; })
+			.attr("r", function(d) {  if (d._id=={{ object.id }}) return 8; else if (isNaN(d._id) || (d._id)<0) return 1; else return 7 })
+                       .style("fill", function color(d) { if (d._id=={{ object.id }}) return "red"; else if (isNaN(d._id) || (d._id)<0) return "white" ; else return "green"});
 
-var new_g = node.enter().append("svg:g")
-.attr("class", "node")
-.call(force.drag);
+			
+		new_g.append("svg:text")
+			.attr("class",function(d) {  if (d._id=={{ object.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })
+                        .attr("dy", 20)
+	                .attr("dx", 25) 
+                        .attr("text-anchor",function text(d) { if (isNaN(d._id) || (d._id)<0) return "middle" ; else return "left"}) 
 
-new_g.append("svg:circle")
-.attr("cx", function(d) { return d.x - w/2.0 + 15; })
-.attr("cy", function(d) { return d.y - h/2.0 + 15; })
-.attr("r", 7)
-.style("fill", function color(d) { if (d._id=={{ object.id }}) return "red"; else if (d._id== "a1" || d._id== "a2" || d._id== "a3" ) return "steelblue" ; else return "yellow"});
+//                        .attr("style",function text(d) { if (isNaN(d._id)) return "font-size:9.00pt;fill:#333;" ; else return "font-size:9.00pt;fill:black;"}) 
+    
+                        .text(function(d) {
+                          return d.screen_name;
+                        });  
+			
+                node.exit().remove();
+        
+	
 
-new_g.append("svg:text")
-.attr("dy", 20)
-.attr("dx", 25)
+        force.on("tick", function() {
 
-/* .attr("text-anchor", "middle") */
-.text(function(d) {
-return d.screen_name;
-});
+          var x_center = $("#chart").width() / 2;
+          var y_center = $("#chart").height() / 2;
 
-node.exit().remove();
+          link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
 
-force.on("tick", function() {
+          node.attr("transform", function(d) { return "translate(" + (d.x-16) + "," + (d.y-16) + ")"; });
 
-var x_center = $("#chart").width() / 2;
-var y_center = $("#chart").height() / 2;
-
-link.attr("x1", function(d) { return d.source.x; })
-.attr("y1", function(d) { return d.source.y; })
-.attr("x2", function(d) { return d.target.x; })
-.attr("y2", function(d) { return d.target.y; });
-
-node.attr("transform", function(d) { return "translate(" + (d.x-16) + "," + (d.y-16) + ")"; });
-
-});
-}
-
-update(all_edges);
-vis.style("opacity", 1e-6)
-.transition()
-.duration(1000)
-.style("opacity", 1);
-
-/*   $('input#follows').change(function(){
-update(all_edges);
-});
-*/
-
-/*	$('input#mentions').change(function(){
-update(all_edges);
-}); */
-}
-});
-
+        });
+      }
+      
+	update(all_edges);
+      vis.style("opacity", 1e-6)
+              .transition()
+              .duration(1000)
+              .style("opacity", 1);
+      
+   /*   $('input#follows').change(function(){
+        update(all_edges);
+      });
+     */ 
+     
+ /*	$('input#mentions').change(function(){
+        update(all_edges);
+      }); */
+    }
+  });
+  
 //  $("#relation_type").buttonset();
-
+  
 //  $('input#mentions').change(function(){console.log(this)});
 //  $('input#follows').change(function(){console.log(this)});
 });
 
-				</script>
-			</div>
+
+</script>			
+	</div>
 		</div>
 		<div>
 			{% include "gstudio/_header.html" %}

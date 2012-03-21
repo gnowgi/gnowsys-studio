@@ -3,6 +3,8 @@
 
 {% block content %}
 <form method="post" action=".">
+{% if user.is_authenticated %}
+
 {% csrf_token %}  
 <h2>Form to add Relationtypes</h2>
 {% for field in formset %}
@@ -16,5 +18,11 @@
   <input type="Submit" value="{% trans 'ADD' %}" />
   <input type="hidden" name="next" value="{{ next }}" />
 </form>
+    {% else %}
+    <h2>Sorry either you are not logged in or dont have permission to view this content</h2>
+    <a href="{{get_absoulute_url}}/accounts/login">{% trans 'Login' %}</a><br>
+    <a href="{{get_absoulute_url}}/accounts/register">{% trans 'Register' %}</a><br>
+    {% endif %}
+
 
 {% endblock %}

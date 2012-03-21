@@ -9,11 +9,12 @@
       grappelli_admin_title }}{% else %}{% get_admin_title %}{% endif %}
     | <a href="/">Home</a>  
     | <a href="{{ get_absolute_url }}/objects">objects</a>
+
     {% if user.is_authenticated %}
-       {% if user.is_staff%}  
+              | <a href="{{  get_absolute_url }}/gstudio/userdashboard">My Dashboard</a>
+       {% if user.is_staff %}
         | <a href="{{  get_absolute_url }}/admin">Admin Dashboard</a>
-        {% else %}
-        | <a href="{{  get_absolute_url }}/gstudio/userdashboard">My Dashboard</a>
+
        {% endif %}
     {% endif %}
     

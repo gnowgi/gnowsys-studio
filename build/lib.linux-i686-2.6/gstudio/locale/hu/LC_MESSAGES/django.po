@@ -1,0 +1,1336 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Frank Kruchio <fkruchio@gmail.com>, 2011.
+# judit <judit.nz@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: django-gstudio\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-29 19:24+0530\n"
+"PO-Revision-Date: 2011-04-12 18:21+0000\n"
+"Last-Translator: Fantomas42 <fastomas42@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: feeds.py:103 plugins/cms_plugins.py:23
+#: templates/gstudio/nodetype_archive.html:4
+#: templates/gstudio/nodetype_archive.html:25
+#: templates/gstudio/nodetype_list.html:19 tests/feeds.py:124
+msgid "Latest nodetypes"
+msgstr "Legújabb bejegyzések"
+
+#: feeds.py:107 tests/feeds.py:127
+#, python-format
+msgid "The latest nodetypes for the site %s"
+msgstr "A legfrissebb bejegyzések az oldalon:%s"
+
+#: feeds.py:127 tests/feeds.py:137
+#, python-format
+msgid "Nodetypes for the metatype %s"
+msgstr "Bejegyzés a kategóriában:%s"
+
+#: feeds.py:131 tests/feeds.py:140
+#, python-format
+msgid "The latest nodetypes for the metatype %s"
+msgstr "A legfrissebb bejegyzések a kategóriában:%s"
+
+#: feeds.py:151 tests/feeds.py:149
+#, python-format
+msgid "Nodetypes for author %s"
+msgstr "Bejegyzés szerzője:%s"
+
+#: feeds.py:155 tests/feeds.py:151
+#, python-format
+msgid "The latest nodetypes by %s"
+msgstr "A legfrissebb bejegyzések:%s"
+
+#: feeds.py:176 tests/feeds.py:161
+#, python-format
+msgid "Nodetypes for the tag %s"
+msgstr "Bejegyzés ezzel a címkével:%s"
+
+#: feeds.py:180 tests/feeds.py:163
+#, python-format
+msgid "The latest nodetypes for the tag %s"
+msgstr "A legfrissebb bejegyzések ezzel a címkével:%s"
+
+#: feeds.py:203 tests/feeds.py:177
+#, python-format
+msgid "Results of the search for '%s'"
+msgstr ""
+
+#: feeds.py:207 tests/feeds.py:180
+#, python-format
+msgid "The nodetypes containing the pattern '%s'"
+msgstr ""
+
+#: feeds.py:252 tests/feeds.py:199
+#, python-format
+msgid "Discussions on %s"
+msgstr "Beszélgetések:%s"
+
+#: feeds.py:256 tests/feeds.py:202
+#, python-format
+msgid "The latest discussions for the nodetype %s"
+msgstr "A bejegyzés legutóbbi beszélgetései :%s"
+
+#: feeds.py:274 tests/feeds.py:212
+#, python-format
+msgid "Comments on %s"
+msgstr "Megjegyzések:%s"
+
+#: feeds.py:278 tests/feeds.py:215
+#, python-format
+msgid "The latest comments for the nodetype %s"
+msgstr "A bejegyzés legfrissebb hozzászólásai:%s"
+
+#: feeds.py:308 tests/feeds.py:231
+#, python-format
+msgid "Pingbacks on %s"
+msgstr "Pingbacks:%s"
+
+#: feeds.py:312 tests/feeds.py:234
+#, python-format
+msgid "The latest pingbacks for the nodetype %s"
+msgstr "Legújabb Pingbacks ebben a bejegyzésben :%s"
+
+#: feeds.py:330 tests/feeds.py:244
+#, python-format
+msgid "Trackbacks on %s"
+msgstr "Trackbacks:%s"
+
+#: feeds.py:334 tests/feeds.py:247
+#, python-format
+msgid "The latest trackbacks for the nodetype %s"
+msgstr "A legújabb trackbacks ebben a bejegyzésben:%s"
+
+#: models.py:90 models.py:294
+msgid "draft"
+msgstr "tervezet"
+
+#: models.py:91 models.py:295
+msgid "hidden"
+msgstr "rejtett"
+
+#: models.py:92 models.py:296
+msgid "published"
+msgstr "közzétett"
+
+#: models.py:120 admin/nodetype.py:80
+msgid "title"
+msgstr "cím"
+
+#: models.py:120
+msgid "give a name to the node"
+msgstr ""
+
+#: models.py:151
+msgid "alternate names"
+msgstr ""
+
+#: models.py:151
+msgid "alternate names if any"
+msgstr ""
+
+#: models.py:152 models.py:293
+msgid "plural name"
+msgstr ""
+
+#: models.py:152 models.py:293
+msgid "plural form of the node name if any"
+msgstr ""
+
+#: models.py:196 models.py:322
+msgid "used for publication"
+msgstr "közzétételhez használva"
+
+#: models.py:197
+msgid "description"
+msgstr "leírás"
+
+#: models.py:198 admin/forms.py:67
+msgid "parent metatype"
+msgstr "főkategória"
+
+#: models.py:283
+msgid "metatype"
+msgstr "kategória"
+
+#: models.py:284 admin/forms.py:101 plugins/models.py:25
+msgid "metatypes"
+msgstr "kategóriák"
+
+#: models.py:298
+msgid "content"
+msgstr "tartalom"
+
+#: models.py:300
+msgid "is a kind of"
+msgstr ""
+
+#: models.py:303
+msgid "its meaning depends"
+msgstr ""
+
+#: models.py:306
+msgid "required for the meaning of"
+msgstr ""
+
+#: models.py:309
+msgid "image"
+msgstr "kép"
+
+#: models.py:310
+msgid "used for illustration"
+msgstr "illusztrációhoz használva"
+
+#: models.py:312
+msgid "excerpt"
+msgstr "idézet"
+
+#: models.py:313
+msgid "optional element"
+msgstr "választható elem"
+
+#: models.py:315 plugins/models.py:32
+msgid "tags"
+msgstr "címkék"
+
+#: models.py:316
+#, fuzzy
+msgid "member of metatypes"
+msgstr "bejegyzések száma"
+
+#: models.py:319
+msgid "related nodetypes"
+msgstr "kapcsolatos bejegyzések"
+
+#: models.py:326 plugins/models.py:30
+msgid "authors"
+msgstr "szerzők"
+
+#: models.py:331
+msgid "featured"
+msgstr "Kiemelt"
+
+#: models.py:332 admin/nodetype.py:132
+msgid "comment enabled"
+msgstr "megjegyzés engedélyezve"
+
+#: models.py:333
+msgid "linkback enabled"
+msgstr "linkback engedélyezve"
+
+#: models.py:335
+msgid "creation date"
+msgstr "létrehozás dátuma"
+
+#: models.py:337
+msgid "last update"
+msgstr "utolsó frissítés"
+
+#: models.py:338
+msgid "start publication"
+msgstr "közzététel indítása"
+
+#: models.py:339
+msgid "date start publish"
+msgstr "közzététel dátuma"
+
+#: models.py:341
+msgid "end publication"
+msgstr "közzététel vége"
+
+#: models.py:342
+msgid "date end publish"
+msgstr "közzététel befejezésének dátuma"
+
+#: models.py:345
+msgid "sites publication"
+msgstr "oldalak közzététele"
+
+#: models.py:349
+msgid "login required"
+msgstr "bejelentkezés szükséges"
+
+#: models.py:350
+msgid "only authenticated users can view the nodetype"
+msgstr "a bejegyzést csak hitelesített felhasználók tekinthetik meg"
+
+#: models.py:352
+msgid "password"
+msgstr "jelszó"
+
+#: models.py:353
+msgid "protect the nodetype with a password"
+msgstr "cikk levédése jelszóval"
+
+#: models.py:356 plugins/models.py:37 plugins/models.py:63
+#: plugins/models.py:87
+msgid "template"
+msgstr "sablon"
+
+#: models.py:358
+msgid "Default template"
+msgstr "Alapértelmezett sablon"
+
+#: models.py:360
+msgid "template used to display the nodetype"
+msgstr "bejegyzéshez használt sablon"
+
+#: models.py:568
+#, fuzzy
+msgid "node type"
+msgstr "bejegyzés"
+
+#: models.py:569
+#, fuzzy
+msgid "node types"
+msgstr "bejegyzések"
+
+#: models.py:579
+msgid "inverse name"
+msgstr ""
+
+#: models.py:579
+msgid ""
+"when subjecttypes are interchanged, what should be the name of the relation "
+"type? This is mandatory field. If the relation is symmetric, same name will "
+"do."
+msgstr ""
+
+#: models.py:608
+#, fuzzy
+msgid "relation type"
+msgstr "létrehozás dátuma"
+
+#: models.py:609
+#, fuzzy
+msgid "relation types"
+msgstr "létrehozás dátuma"
+
+#: models.py:663
+msgid "attribute type"
+msgstr ""
+
+#: models.py:664
+#, fuzzy
+msgid "attribute types"
+msgstr "Legújabb bejegyzések"
+
+#: models.py:686
+#, fuzzy
+msgid "relation"
+msgstr "létrehozás dátuma"
+
+#: models.py:687
+#, fuzzy
+msgid "relations"
+msgstr "létrehozás dátuma"
+
+#: models.py:723
+msgid "attribute"
+msgstr ""
+
+#: models.py:724
+msgid "attributes"
+msgstr ""
+
+#: models.py:755
+msgid "attribute set involved in the process"
+msgstr ""
+
+#: models.py:758
+msgid "relation set involved in the process"
+msgstr ""
+
+#: models.py:766
+msgid "process type"
+msgstr ""
+
+#: models.py:767
+msgid "process types"
+msgstr ""
+
+#: models.py:797
+msgid "system type"
+msgstr ""
+
+#: models.py:798
+msgid "system types"
+msgstr ""
+
+#: moderator.py:58 moderator.py:81 moderator.py:106
+#, python-format
+msgid "[%(site)s] New comment posted on \"%(title)s\""
+msgstr "[ %(site)s ] Új hozzászólás érkezett \" %(title)s \""
+
+#: admin/forms.py:68
+msgid "No parent metatype"
+msgstr "Nem főkategória"
+
+#: admin/forms.py:82
+#, fuzzy
+msgid "A metatype cannot be a parent of itself."
+msgstr "A kategória nem lehet önmaga szülője."
+
+#: admin/forms.py:94
+#, fuzzy
+msgid "parent nodetype"
+msgstr "Következő bejegyzés"
+
+#: admin/forms.py:95
+#, fuzzy
+msgid "No parent nodetype"
+msgstr "Nem főkategória"
+
+#: admin/forms.py:99 plugins/menu.py:70 templates/gstudio/base.html:35
+#: templates/gstudio/metatype_list.html:6 templates/gstudio/sitemap.html:50
+#: templatetags/zbreadcrumbs.py:50
+msgid "Metatypes"
+msgstr "Kategóriák"
+
+#: admin/forms.py:116
+#, fuzzy
+msgid "An objectype cannot be parent of itself."
+msgstr "A kategória nem lehet önmaga szülője."
+
+#: admin/metatype.py:30
+msgid "tree path"
+msgstr "fa útvonal"
+
+#: admin/nodetype.py:31 plugins/admin.py:17
+#: templates/admin/gstudio/widgets/quickpost.html:17
+msgid "Content"
+msgstr "Tartalom"
+
+#: admin/nodetype.py:33
+msgid "Dependency"
+msgstr ""
+
+#: admin/nodetype.py:35 plugins/admin.py:20
+msgid "Options"
+msgstr "Opciók"
+
+#: admin/nodetype.py:41 plugins/admin.py:26
+msgid "Privacy"
+msgstr "Adatvédelem"
+
+#: admin/nodetype.py:43 plugins/admin.py:28
+msgid "Discussion"
+msgstr "Hozzászólás"
+
+#: admin/nodetype.py:45 plugins/admin.py:30
+msgid "Publication"
+msgstr "Közzététel"
+
+#: admin/nodetype.py:73
+#, python-format
+msgid "%(title)s (%(word_count)i words)"
+msgstr " %(title)s (%(word_count)i szavak)"
+
+#: admin/nodetype.py:77
+#, python-format
+msgid "%(title)s (%(comments)i comments)"
+msgstr " %(title)s (%(comments)i hozzászólások)"
+
+#: admin/nodetype.py:93
+msgid "author(s)"
+msgstr "szerző(k)"
+
+#: admin/nodetype.py:106
+msgid "metatype(s)"
+msgstr "kategória(ák)"
+
+#: admin/nodetype.py:118
+msgid "tag(s)"
+msgstr "tag(ek)"
+
+#: admin/nodetype.py:126
+msgid "site(s)"
+msgstr "helyszín(ek)"
+
+#: admin/nodetype.py:138
+msgid "is actual"
+msgstr "a tényleges"
+
+#: admin/nodetype.py:144
+msgid "is visible"
+msgstr "látható"
+
+#: admin/nodetype.py:149
+msgid "View"
+msgstr ""
+
+#: admin/nodetype.py:151
+msgid "View on site"
+msgstr "Nézd meg a helyszínen"
+
+#: admin/nodetype.py:157
+msgid "Unavailable"
+msgstr "Nem érhető el"
+
+#: admin/nodetype.py:161
+msgid "short url"
+msgstr "Rövid url"
+
+#: admin/nodetype.py:216
+msgid "The selected nodetypes now belong to you."
+msgstr ""
+
+#: admin/nodetype.py:217
+msgid "Set the nodetypes to the user"
+msgstr "Állítsa be a bejegyzéseket a felhasználónak"
+
+#: admin/nodetype.py:224
+msgid "The selected nodetypes are now marked as published."
+msgstr ""
+
+#: admin/nodetype.py:225
+msgid "Set nodetypes selected as published"
+msgstr "Állítsa be a kiválasztott bejegyzéseket közzétettnek"
+
+#: admin/nodetype.py:231
+msgid "The selected nodetypes are now marked as hidden."
+msgstr ""
+
+#: admin/nodetype.py:232
+msgid "Set nodetypes selected as hidden"
+msgstr "Állítsa be a kiválasztott bejegyzéseket rejtettnek"
+
+#: admin/nodetype.py:247
+msgid "The selected nodetypes have been tweeted."
+msgstr ""
+
+#: admin/nodetype.py:248
+msgid "Tweet nodetypes selected"
+msgstr "Tweet a kiválasztott bejegyzéseket"
+
+#: admin/nodetype.py:254
+msgid "Comments are now closed for selected nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:255
+msgid "Close the comments for selected nodetypes"
+msgstr "Zárja be a megjegyzéseket a kiválasztott bejegyzéseken"
+
+#: admin/nodetype.py:262
+msgid "Linkbacks are now closed for selected nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:264
+msgid "Close the linkbacks for selected nodetypes"
+msgstr "Zárja be a hivatkozásokat a kiválasztott bejegyzéseken"
+
+#: admin/nodetype.py:271
+msgid "The selected nodetypes are now set at the current date."
+msgstr ""
+
+#: admin/nodetype.py:273
+msgid "Put the selected nodetypes on top at the current date"
+msgstr "Tegye a kiválasztott bejegyzéseket az aktuális dátum tetejére"
+
+#: admin/nodetype.py:292
+#, python-format
+msgid "%(directory)s directory succesfully pinged %(success)d nodetypes."
+msgstr "%(directory)s könyvtár sikeresen elért %(success)d bejegyzést."
+
+#: admin/nodetype.py:296
+msgid "Ping Directories for selected nodetypes"
+msgstr "Ping Könyvtárak a kiválasztott bejegyzésekhez"
+
+#: plugins/cms_app.py:12
+msgid "Gstudio App Hook"
+msgstr "Gstudio Program Horog"
+
+#: plugins/cms_plugins.py:21 plugins/cms_plugins.py:92
+#: plugins/cms_plugins.py:114 plugins/models.py:61
+msgid "nodetypes"
+msgstr "bejegyzések"
+
+#: plugins/cms_plugins.py:33
+msgid "Sorting"
+msgstr "Besorolás"
+
+#: plugins/cms_plugins.py:43
+msgid "Advanced"
+msgstr "Részletes"
+
+#: plugins/cms_plugins.py:94
+msgid "Selected nodetypes"
+msgstr "Kiválasztott bejegyzések"
+
+#: plugins/cms_plugins.py:116 templates/gstudio/base.html:64
+#, fuzzy
+msgid "Random node types"
+msgstr "Véletlen bejegyzések"
+
+#: plugins/menu.py:19
+msgid "Gstudio Nodetype Menu"
+msgstr "Gstudio Belépés Menü"
+
+#: plugins/menu.py:65
+msgid "Gstudio Metatype Menu"
+msgstr "Gstudio Kategória Menü"
+
+#: plugins/menu.py:82
+msgid "Gstudio Author Menu"
+msgstr "Gstudio Szerző Menü"
+
+#: plugins/menu.py:87 templates/gstudio/author_list.html:6
+#: templates/gstudio/base.html:40 templatetags/zbreadcrumbs.py:46
+msgid "Authors"
+msgstr "Szerzők"
+
+#: plugins/menu.py:100
+msgid "Gstudio Tag Menu"
+msgstr "Gstudio Címke Menü"
+
+#: plugins/menu.py:105 templates/admin/gstudio/widgets/quickpost.html:25
+#: templates/gstudio/_nodetype_detail.html:53 templates/gstudio/base.html:48
+#: templates/gstudio/tag_list.html:6 templatetags/zbreadcrumbs.py:43
+msgid "Tags"
+msgstr "Címkék"
+
+#: plugins/models.py:16
+msgid "Nodetype list (default)"
+msgstr "Nevezési lista (alapértelmezett)"
+
+#: plugins/models.py:17
+msgid "Nodetype detailed"
+msgstr "Bejegyzés részletezve"
+
+#: plugins/models.py:28
+msgid "include submetatypes"
+msgstr "Alkategóriák"
+
+#: plugins/models.py:35 plugins/models.py:85
+msgid "number of nodetypes"
+msgstr "bejegyzések száma"
+
+#: plugins/models.py:39 plugins/models.py:65 plugins/models.py:89
+msgid "Template used to display the plugin"
+msgstr "Segédprogram megjelenítéséhez használt sablon"
+
+#: plugins/models.py:54 plugins/models.py:78 plugins/models.py:92
+#, python-format
+msgid "%s nodetypes"
+msgstr "%s bejegyzések"
+
+#: templates/404.html:5
+msgid "Error 404"
+msgstr "404-es hiba"
+
+#: templates/404.html:8 templates/404.html.py:11
+msgid "Page not found"
+msgstr "Az oldal nem található"
+
+#: templates/404.html:13
+msgid "Sorry, but the requested page could not be found."
+msgstr "Sajnáljuk, de a kért oldal nem található."
+
+#: templates/404.html:15 templates/500.html:15
+msgid "Useful links"
+msgstr "Hasznos linkek"
+
+#: templates/404.html:19 templates/404.html.py:20 templates/500.html:19
+#: templates/500.html.py:20
+msgid "Blog index"
+msgstr "Blog-index"
+
+#: templates/404.html:24 templates/404.html.py:25 templates/500.html:24
+#: templates/500.html.py:25 templates/gstudio/sitemap.html:4
+#: templates/gstudio/sitemap.html.py:7 templates/gstudio/skeleton.html:32
+#: templates/gstudio/skeleton.html.py:33
+msgid "Sitemap"
+msgstr "Oldaltérkép"
+
+#: templates/404.html:31 templates/500.html:31 templates/gstudio/base.html:52
+#, fuzzy
+msgid "Recent node types"
+msgstr "Legutóbbi bejegyzések"
+
+#: templates/404.html:36 templates/500.html:36 templates/gstudio/base.html:23
+msgid "Search"
+msgstr "Keresés"
+
+#: templates/404.html:40 templates/500.html:40 templates/gstudio/base.html:26
+msgid "Keywords..."
+msgstr "Kulcsszavak ..."
+
+#: templates/500.html:5
+msgid "Error 500"
+msgstr "500-as hiba"
+
+#: templates/500.html:8 templates/500.html.py:11
+msgid "Server error"
+msgstr "Szerver hiba"
+
+#: templates/500.html:13
+msgid ""
+"There's been an error. It's been reported to the site administrators via e-"
+"mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+"Hiba történt. A hibát a rendszeradminisztrátorok e-mailben jelezték, és "
+"hamarosan elháritják. Köszönjük a türelmét."
+
+#: templates/admin/gstudio/widgets/_content_stats.html:4
+msgid "Contents"
+msgstr "Tartalma"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:5
+#: templates/gstudio/_nodetype_detail.html:71
+msgid "Discussions"
+msgstr "Fórum"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:10
+#, python-format
+msgid "%(nodetypes)s nodetypes"
+msgstr " %(nodetypes)s bejegyzések"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:15
+#, python-format
+msgid "%(comments)s comments"
+msgstr "%(comments)s észrevételek"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:22
+#, python-format
+msgid "%(metatypes)s metatypes"
+msgstr " %(metatypes)s kategóriák"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:25
+#, python-format
+msgid "%(pingbacks)s pingbacks"
+msgstr " %(pingbacks)s pingbacks"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:30
+#, python-format
+msgid "%(tags)s tags"
+msgstr " %(tags)s címkék"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:33
+#, python-format
+msgid "%(trackbacks)s trackbacks"
+msgstr " %(trackbacks)s trackbacks"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:38
+#, python-format
+msgid "%(authors)s authors"
+msgstr " %(authors)s szerzők"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:43
+#, python-format
+msgid "%(rejects)s rejected"
+msgstr " %(rejects)s elutasítva"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:7
+#: templates/gstudio/nodetype_detail.html:211
+msgid "Edit the nodetype"
+msgstr "Módosítsa a bejegyzést"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:10
+#: templates/comments/gstudio_nodetype_preview.html:25
+#: templates/feeds/comment_title.html:2
+#: templates/feeds/discussion_title.html:2
+#: templates/feeds/pingback_title.html:2
+#: templates/feeds/trackback_title.html:2
+#: templates/gstudio/_nodetype_detail.html:22
+#: templates/gstudio/nodetype_detail.html:108
+#: templates/gstudio/nodetype_detail.html:142
+#: templates/gstudio/nodetype_detail.html:175
+#: templates/gstudio/tags/recent_comments.html:7
+msgid "on"
+msgstr "-án / -én"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:16
+#: templates/comments/gstudio/nodetype/form.html:19
+msgid "Preview"
+msgstr "Előnézet"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:23
+msgid "No draft nodetypes."
+msgstr "Nincsenek piszkozatok."
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:32
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:33
+msgid "View all draft nodetypes"
+msgstr "Az összes piszkozat megtekintése"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:11
+#: templates/gstudio/tags/recent_linkbacks.html:8
+msgid "in"
+msgstr "ban"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:14
+#: templates/gstudio/tags/recent_comments.html:9
+msgid "Comment on"
+msgstr "Hozzászólva"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:23
+msgid "Edit the comment"
+msgstr "Megjegyzés szerkesztése"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:24
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:19
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:31
+#: templates/gstudio/_nodetype_detail.html:79
+#: templates/gstudio/nodetype_detail.html:122
+#: templates/gstudio/tags/recent_comments.html:16
+msgid "No comments yet."
+msgstr "Nincs még hozzászólás."
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:40
+#: templates/admin/gstudio/widgets/_recent_comments.html:41
+msgid "Manage the comments"
+msgstr "Hozzászólás kezelése"
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:8
+msgid "made a linkback on"
+msgstr "LinkBack készült"
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:18
+msgid "Edit the linkback"
+msgstr "LinkBack szerkesztése"
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:26
+#: templates/gstudio/tags/recent_linkbacks.html:17
+msgid "No linkbacks yet."
+msgstr "Nincs még LinkBack"
+
+#: templates/admin/gstudio/widgets/content_stats.html:6
+#: templates/admin/gstudio/widgets/content_stats.html:7
+msgid "Today"
+msgstr "Ma"
+
+#: templates/admin/gstudio/widgets/draft_nodetypes.html:6
+#: templates/admin/gstudio/widgets/draft_nodetypes.html:7
+msgid "Draft nodetypes"
+msgstr "Bejegyzés tervezetek"
+
+#: templates/admin/gstudio/widgets/quickpost.html:5
+#: templates/admin/gstudio/widgets/quickpost.html:6
+msgid "Quick publishing"
+msgstr "Gyors közzététel"
+
+#: templates/admin/gstudio/widgets/quickpost.html:9
+msgid "Title"
+msgstr "Cím"
+
+#: templates/admin/gstudio/widgets/quickpost.html:33
+msgid "Save as draft"
+msgstr "Mentés piszkozatként"
+
+#: templates/admin/gstudio/widgets/quickpost.html:34
+msgid "Reset"
+msgstr "Visszaállítás"
+
+#: templates/admin/gstudio/widgets/quickpost.html:35
+msgid "Publish"
+msgstr "Közzététel"
+
+#: templates/admin/gstudio/widgets/recent_comments.html:6
+#: templates/admin/gstudio/widgets/recent_comments.html:7
+#: templates/gstudio/base.html:56
+msgid "Recent comments"
+msgstr "Friss hozzászólások"
+
+#: templates/admin/gstudio/widgets/recent_linkbacks.html:6
+#: templates/admin/gstudio/widgets/recent_linkbacks.html:7
+#: templates/gstudio/base.html:60
+msgid "Recent linkbacks"
+msgstr "Friss LinkBacks"
+
+#: templates/comments/gstudio_nodetype_preview.html:4
+msgid "Comment preview"
+msgstr "Hozzászólás előnézete"
+
+#: templates/comments/gstudio_nodetype_preview.html:9
+msgid "Please correct following error."
+msgid_plural "Please correct following errors."
+msgstr[0] "Kérjük, javítsa ki a következő hibát."
+msgstr[1] "Kérjük, javítsa ki a következő hibákat."
+
+#: templates/comments/gstudio_nodetype_preview.html:12
+msgid "Preview of the comment"
+msgstr "A megjegyzés előnézete"
+
+#: templates/comments/gstudio/nodetype/form.html:7
+msgid "Post your comment"
+msgstr "Küldd el a hozzászólást!"
+
+#: templates/comments/gstudio/nodetype/form.html:18
+msgid "Post"
+msgstr "Küldés"
+
+#: templates/comments/gstudio/nodetype/posted.html:4
+#: templates/comments/gstudio/nodetype/posted.html:7
+msgid "Thanks for your comment"
+msgstr "Köszönöm a megjegyzést"
+
+#: templates/comments/gstudio/nodetype/posted.html:9
+#: templates/comments/gstudio/nodetype/posted.html:10
+msgid "Return to nodetype list"
+msgstr "Vissza a bejegyzési listára"
+
+#: templates/gstudio/_nodetype_detail.html:15
+#: templates/gstudio/_nodetype_detail.html:24
+msgid "Contributed by"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:19
+#, python-format
+msgid "Show %(author)s nodetypes"
+msgstr "Mutasd %(author)s bejegyzéseit"
+
+#: templates/gstudio/_nodetype_detail.html:59
+msgid "No tags"
+msgstr "Nincs címke"
+
+#: templates/gstudio/_nodetype_detail.html:64
+msgid "Short url"
+msgstr "Rövid url"
+
+#: templates/gstudio/_nodetype_detail.html:75
+#, python-format
+msgid "%(comment_count)s comment"
+msgid_plural "%(comment_count)s comments"
+msgstr[0] "%(comment_count)s hozzászólása"
+msgstr[1] "%(comment_count)s hozzászólásai"
+
+#: templates/gstudio/_nodetype_detail.html:81
+msgid "Discuss the relations or raise any issues!"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:84
+#: templates/gstudio/nodetype_detail.html:118
+#: templates/gstudio/nodetype_detail.html:124
+msgid "Comments are closed."
+msgstr "Hozzászólások lezárva."
+
+#: templates/gstudio/_nodetype_detail.html:91
+#, python-format
+msgid "%(pingback_count)s pingback"
+msgid_plural "%(pingback_count)s pingbacks"
+msgstr[0] "%(pingback_count)s pingback"
+msgstr[1] "%(pingback_count)s pingbacks"
+
+#: templates/gstudio/_nodetype_detail.html:98
+#, python-format
+msgid "%(trackback_count)s trackback"
+msgid_plural "%(trackback_count)s trackbacks"
+msgstr[0] "%(trackback_count)s trackback"
+msgstr[1] "%(trackback_count)s trackbacks"
+
+#: templates/gstudio/author_list.html:4 templates/gstudio/author_list.html:9
+msgid "Author list"
+msgstr "Szerző lista"
+
+#: templates/gstudio/author_list.html:18
+#: templates/gstudio/metatype_list.html:14 templates/gstudio/sitemap.html:55
+#: templates/gstudio/tag_list.html:15 templates/gstudio/tags/authors.html:8
+#: templates/gstudio/tags/metatypes.html:6
+#: templates/gstudio/tags/tag_cloud.html:8
+#, python-format
+msgid "%(nodetype_count)s nodetype"
+msgid_plural "%(nodetype_count)s nodetypes"
+msgstr[0] "%(nodetype_count)s bejegyzés"
+msgstr[1] "%(nodetype_count)s bejegyzések"
+
+#: templates/gstudio/author_list.html:22
+#: templates/gstudio/tags/authors.html:12
+msgid "No authors yet."
+msgstr "Nincsenek még szerzők."
+
+#: templates/gstudio/base.html:13 templates/gstudio/skeleton.html:35
+msgid "RSS Feed of latest nodetypes"
+msgstr "RSS link a legutóbbi bejegyzésekhez"
+
+#: templates/gstudio/base.html:28 templates/gstudio/nodetype_search.html:39
+msgid ""
+"You can use - to exclude words or phrases, &quot;double quotes&quot; for "
+"exact phrases and the AND/OR boolean operators combined with parenthesis for "
+"complex searchs."
+msgstr ""
+"Használhatja a - jelet, hogy kizárjon szavakat vagy kifejezéseket, &quot;"
+"kettős idézőjelet&quot; pontos kifejezések kereséséhez, és az AND/OR logikai "
+"operátorokat zárójelekkel kombinálva az összetett kereséseknél."
+
+#: templates/gstudio/base.html:44
+msgid "Calendar"
+msgstr "Naptár"
+
+#: templates/gstudio/base.html:68
+#, fuzzy
+msgid "Popular node types"
+msgstr "Népszerű bejegyzések"
+
+#: templates/gstudio/base.html:72
+#: templates/gstudio/nodetype_archive_day.html:4
+#: templates/gstudio/nodetype_archive_day.html:6
+#: templates/gstudio/nodetype_archive_day.html:9
+#: templates/gstudio/nodetype_archive_month.html:4
+#: templates/gstudio/nodetype_archive_month.html:6
+#: templates/gstudio/nodetype_archive_month.html:9
+#: templates/gstudio/nodetype_archive_year.html:4
+#: templates/gstudio/nodetype_archive_year.html:6
+#: templates/gstudio/nodetype_archive_year.html:9
+#: templates/gstudio/tags/archives_nodetypes.html:5
+#: templates/gstudio/tags/archives_nodetypes_link.html:2
+#: templates/gstudio/tags/archives_nodetypes_tree.html:7
+#: templates/gstudio/tags/archives_nodetypes_tree.html:14
+#: templates/gstudio/tags/archives_nodetypes_tree.html:24
+msgid "Archives"
+msgstr "Arhívum"
+
+#: templates/gstudio/base.html:77
+msgid "Tools"
+msgstr "Eszközök"
+
+#: templates/gstudio/base.html:81 templates/gstudio/base.html.py:82
+msgid "Dashboard"
+msgstr "Műszerfal"
+
+#: templates/gstudio/base.html:88 templates/gstudio/base.html.py:89
+msgid "Post a nodetype"
+msgstr "Adj hozzá egy bejegyzést"
+
+#: templates/gstudio/base.html:96 templates/gstudio/base.html.py:97
+msgid "Log out"
+msgstr "Kijelentkezés"
+
+#: templates/gstudio/login.html:4 templates/gstudio/login.html.py:7
+msgid "Login required"
+msgstr "Bejelentkezés szükséges"
+
+#: templates/gstudio/login.html:12
+msgid "Your username and password didn't match. Please try again."
+msgstr "Felhasználóneve és jelszava nem egyezik. Kérjük, próbálja újra."
+
+#: templates/gstudio/login.html:16
+msgid "You need to be connected to view this nodetype."
+msgstr "A bejegyzés megtekintéséhez be kell jelentkeznie."
+
+#: templates/gstudio/login.html:33
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: templates/gstudio/metatype_list.html:4
+#: templates/gstudio/metatype_list.html:9
+msgid "Metatype list"
+msgstr "Kategória lista"
+
+#: templates/gstudio/metatype_list.html:20 templates/gstudio/sitemap.html:60
+#: templates/gstudio/tags/metatypes.html:11
+msgid "No metatypes yet."
+msgstr "Nincs még kategória."
+
+#: templates/gstudio/nodetype_archive_month.html:13
+msgid "Daily archives"
+msgstr ""
+
+#: templates/gstudio/nodetype_archive_year.html:13
+#: templates/gstudio/sitemap.html:67
+msgid "Monthly archives"
+msgstr "Havi arhívum"
+
+#: templates/gstudio/nodetype_detail.html:22
+msgid "RSS Feed of discussions on"
+msgstr "RSS Feed-megbeszélések a témáról"
+
+#: templates/gstudio/nodetype_detail.html:24
+msgid "RSS Feed of comments on"
+msgstr "RSS Feed észrevételek a témáról"
+
+#: templates/gstudio/nodetype_detail.html:26
+msgid "RSS Feed of pingbacks on"
+msgstr "RSS Feed pingbacks a témáról"
+
+#: templates/gstudio/nodetype_detail.html:28
+msgid "RSS Feed of trackbacks on"
+msgstr "RSS Feed trackback a témáról"
+
+#: templates/gstudio/nodetype_detail.html:46
+#, fuzzy
+msgid "Next node type"
+msgstr "Következő bejegyzés"
+
+#: templates/gstudio/nodetype_detail.html:60
+#, fuzzy
+msgid "Previous node type"
+msgstr "Előző bejegyzés"
+
+#: templates/gstudio/nodetype_detail.html:73
+#, fuzzy
+msgid "Related node types"
+msgstr "Kapcsolódó bejegyzések"
+
+#: templates/gstudio/nodetype_detail.html:84
+#, fuzzy
+msgid "Similar node types"
+msgstr "Hasonló bejegyzések"
+
+#: templates/gstudio/nodetype_detail.html:92
+msgid "Comments"
+msgstr "Hozzászólások"
+
+#: templates/gstudio/nodetype_detail.html:133
+msgid "Pingbacks"
+msgstr "Pingbacks"
+
+#: templates/gstudio/nodetype_detail.html:155
+msgid "Pingbacks are open."
+msgstr "Pingbacks nyitva."
+
+#: templates/gstudio/nodetype_detail.html:157
+msgid "Pingbacks are closed."
+msgstr "Pingbacks zárva."
+
+#: templates/gstudio/nodetype_detail.html:167
+msgid "Trackbacks"
+msgstr "Trackbacks"
+
+#: templates/gstudio/nodetype_detail.html:190
+msgid "Trackback URL"
+msgstr "Trackback URL"
+
+#: templates/gstudio/nodetype_detail.html:212
+#, fuzzy
+msgid "Edit the node type"
+msgstr "Módosítsa a bejegyzést"
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "Latest nodetypes for"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the metatype"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the tag"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the author"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+#: templates/gstudio/nodetype_search.html:6
+msgid "page"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:9
+#: templates/gstudio/nodetype_list.html:12
+#: templates/gstudio/nodetype_list.html:15
+#: templates/gstudio/skeleton.html:36
+msgid "RSS Feed"
+msgstr "RSS Feed"
+
+#: templates/gstudio/nodetype_list.html:19
+msgid "Metatype"
+msgstr "Kategória"
+
+#: templates/gstudio/nodetype_list.html:19
+#: templates/gstudio/nodetype_list.html:31
+msgid "Tag"
+msgstr "Címke"
+
+#: templates/gstudio/nodetype_list.html:19
+msgid "Author"
+msgstr "Szerző"
+
+#: templates/gstudio/nodetype_list.html:19
+#: templates/gstudio/nodetype_search.html:4
+msgid "Page"
+msgstr "Oldal"
+
+#: templates/gstudio/nodetype_list.html:35
+#, python-format
+msgid "Nodetypes by %(author)s"
+msgstr "Bejegyzés szerzője %(author)s "
+
+#: templates/gstudio/nodetype_list.html:43
+msgid "No nodes in the network yet. Login and construct a network!"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:54
+#: templates/gstudio/nodetype_list.html:55
+msgid "Edit the metatype"
+msgstr "Kategória szerkesztése"
+
+#: templates/gstudio/nodetype_list.html:61
+#: templates/gstudio/nodetype_list.html:62
+msgid "Edit the tag"
+msgstr "Címke szerkesztése"
+
+#: templates/gstudio/nodetype_list.html:68
+#: templates/gstudio/nodetype_list.html:69
+msgid "Edit the author"
+msgstr "Szerző kijavítása"
+
+#: templates/gstudio/nodetype_search.html:4
+#: templates/gstudio/nodetype_search.html:6
+#: templates/gstudio/nodetype_search.html:14
+msgid "Search results for"
+msgstr ""
+
+#: templates/gstudio/nodetype_search.html:10
+msgid "RSS Feed of search result of"
+msgstr "A találatok RSS Feed-je"
+
+#: templates/gstudio/nodetype_search.html:22
+#, python-format
+msgid "%(nodetype_count)s nodetype found"
+msgid_plural "%(nodetype_count)s nodetypes found"
+msgstr[0] "%(nodetype_count)s  bejegyzést találtam"
+msgstr[1] " %(nodetype_count)s  bejegyzést találtam"
+
+#: templates/gstudio/nodetype_search.html:31
+msgid "Nothing found."
+msgstr "Nincs találat."
+
+#: templates/gstudio/password.html:4 templates/gstudio/password.html.py:7
+msgid "Password required"
+msgstr "Jelszó szükséges"
+
+#: templates/gstudio/password.html:12
+msgid "The password provided is not valid. Please try again."
+msgstr "A megadott jelszó nem érvényes. Kérjük, próbálja újra."
+
+#: templates/gstudio/password.html:16
+msgid "You need to provide a password to view this nodetype."
+msgstr "Meg kell adnia egy jelszót, hogy megtekinthesse ezt a bejegyzést."
+
+#: templates/gstudio/password.html:23
+msgid "Password"
+msgstr "Jelszó"
+
+#: templates/gstudio/password.html:28
+msgid "Valid"
+msgstr "Érvényes"
+
+#: templates/gstudio/sitemap.html:10
+msgid "Nodetypes per metatypes"
+msgstr "Bejegyzések egyes kategóriákban"
+
+#: templates/gstudio/sitemap.html:18 templates/gstudio/sitemap.html.py:38
+#: templates/gstudio/tags/popular_nodetypes.html:8
+msgid "comment"
+msgstr "megjegyzés"
+
+#: templates/gstudio/sitemap.html:23 templates/gstudio/sitemap.html.py:43
+#: templates/gstudio/cms/nodetype_list.html:9
+#: templates/gstudio/tags/featured_nodetypes.html:9
+#: templates/gstudio/tags/popular_nodetypes.html:13
+#: templates/gstudio/tags/random_nodetypes.html:9
+msgid "No nodetypes yet."
+msgstr "Nincs még bejegyzés."
+
+#: templates/gstudio/sitemap.html:31
+msgid "All the nodetypes"
+msgstr "Az összes bejegyzés"
+
+#: templates/gstudio/tag_list.html:4 templates/gstudio/tag_list.html.py:9
+msgid "Tag list"
+msgstr "Címke lista"
+
+#: templates/gstudio/tag_list.html:19
+#, fuzzy
+msgid "No tags yet."
+msgstr "Nincs még kategória."
+
+#: templates/gstudio/cms/nodetype_detail.html:7
+#, fuzzy
+msgid "No node types yet."
+msgstr "Nincs még bejegyzés."
+
+#: templates/gstudio/tags/archives_nodetypes.html:12
+#: templates/gstudio/tags/archives_nodetypes_tree.html:38
+msgid "No archives yet."
+msgstr "Nincsenek még arhívumok."
+
+#: templates/gstudio/tags/nodetypes.html:6
+#, fuzzy, python-format
+msgid "%(gbobjects_count)s gbobject"
+msgid_plural "%(gbobjects_count)s gbobjects"
+msgstr[0] "%(nodetype_count)s bejegyzés"
+msgstr[1] "%(nodetype_count)s bejegyzések"
+
+#: templates/gstudio/tags/nodetypes.html:11
+#: templates/gstudio/tags/recent_nodetypes.html:16
+#, fuzzy
+msgid "No subtypes yet."
+msgstr "Nincs még bejegyzés."
+
+#: templates/gstudio/tags/pagination.html:4
+#, python-format
+msgid "Page %(current_page)s of %(total_page)s"
+msgstr "%(current_page)s . oldal a  %(total_page)s  -ból/-ből"
+
+#: templates/gstudio/tags/pagination.html:10
+#, fuzzy
+msgid "More recent node types"
+msgstr "Mégtöbb új bejegyzés"
+
+#: templates/gstudio/tags/pagination.html:20
+#: templates/gstudio/tags/pagination.html:33
+#: templates/gstudio/tags/pagination.html:47
+msgid "Nodetypes page"
+msgstr "Bejegyzések oldal"
+
+#: templates/gstudio/tags/pagination.html:56
+msgid "More old nodetypes"
+msgstr "Mégtöbb régi bejegyzés"
+
+#: templates/gstudio/tags/recent_linkbacks.html:10
+msgid "Linkback on"
+msgstr "Linkback létrehozása"
+
+#: templates/gstudio/tags/similar_nodetypes.html:9
+msgid "No similar nodetypes."
+msgstr "Nincsenek hasonló bejegyzések."
+
+#: tests/views.py:222 views/search.py:18
+msgid "The pattern is too short"
+msgstr "A megadott kifejezés túl rövid"
+
+#: tests/views.py:226 views/search.py:22
+msgid "No pattern to search found"
+msgstr "Nincs találat a megadott kifejezésre"
+
+#: xmlrpc/metaweblog.py:35
+msgid "Username is incorrect."
+msgstr "Felhasználónév helytelen."
+
+#: xmlrpc/metaweblog.py:37
+msgid "Password is invalid."
+msgstr "Jelszó érvénytelen."
+
+#: xmlrpc/metaweblog.py:39
+msgid "User account unavailable."
+msgstr "Ez a felhasználói név már foglalt."
+
+#: xmlrpc/metaweblog.py:42
+#, python-format
+msgid "User cannot %s."
+msgstr "A felhasználó nem %s."
+
+#: xmlrpc/pingback.py:96
+msgid "No title"
+msgstr "Nincs cím"
+
+#~ msgid "Written by"
+#~ msgstr "Írta:"
+
+#~ msgid "Be first to comment!"
+#~ msgstr "Legyen Ön az első hozzászóló!"

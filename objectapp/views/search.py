@@ -65,27 +65,27 @@
 from django.utils.translation import ugettext as _
 from django.views.generic.list_detail import object_list
 
-from objectapp.models import Gbobject
+from gstudio.models import Node
 from objectapp.settings import PAGINATION
+from gstudio.managers import *
 
-
-def gbobject_search(request):
+def nodes_search(request):
     """Search gbobjects matching with a pattern"""
     error = None
     pattern = None
-    gbobjects = Gbobject.published.none()
+    nodes = Node.published.none()
 
     if request.GET:
         pattern = request.GET.get('pattern', '')
         if len(pattern) < 3:
             error = _('The pattern is too short')
         else:
-            gbobjects = Gbobject.published.search(pattern)
+            nodes = Node.published.search(pattern)
     else:
         error = _('No pattern to search found')
 
-    return object_list(request, queryset=gbobjects,
+    return object_list(request, queryset=nodes,
                        paginate_by=PAGINATION,
-                       template_name='objectapp/gbobject_search.html',
+                       template_name='gstudio/nodes_search.html',
                        extra_context={'error': error,
                                       'pattern': pattern})

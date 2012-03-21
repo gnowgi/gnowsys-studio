@@ -1,0 +1,13 @@
+{% extends "gstudio/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Thanks for your comment" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Thanks for your comment" %}</h2>
+<p>
+  <a href="{% url gstudio_nodetype_archive_index %}" title="{% trans "Return to nodetype list" %}">
+    {% trans "Return to nodetype list" %}
+  </a>
+</p>
+{% endblock %}

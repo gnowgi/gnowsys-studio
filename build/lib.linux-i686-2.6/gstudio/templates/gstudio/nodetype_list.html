@@ -1,0 +1,143 @@
+{% extends "gstudio/base.html" %}
+{% load i18n gstudio_tags %}
+
+{% block meta-description %}{% trans "Latest nodetypes for" %} {% if metatype %}{% trans "the metatype" %} {{ metatype }}{% if metatype.description %}: {{ metatype.description|striptags|safe }}{% endif %}{% endif %}{% if tag %}{% trans "the tag" %} {{ tag }}{% endif %}{% if author %}{% trans "the author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} {% trans "page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
+
+{% block link %}
+  {{ block.super }}
+  {% if metatype %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed" %} {{ metatype.title }}" href="{% url gstudio_metatype_feed metatype.tree_path %}" />
+  {% endif %}
+  {% if tag %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed" %} {{ tag.name }}" href="{% url gstudio_tag_feed tag.name %}" />
+  {% endif %}
+  {% if author %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed" %} {{ author.username }}" href="{% url gstudio_author_feed author.username %}" />
+  {% endif %}
+{% endblock %}
+
+{% block title %}{% trans "Latest nodetypes" %} {% if metatype %}| {% trans "Metatype" %} {{ metatype }}{% endif %}{% if tag %}| {% trans "Tag" %} {{ tag }}{% endif %}{% if author %}| {% trans "Author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} | {% trans "Page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
+
+{% block content %}
+{% if metatype %}
+<h3>{{ metatype.title }}</h3>
+<h5>{{ metatype.composed_sentence }}</h5>
+
+             <b>Name: </b> {{ metatype.title }} <br/>
+
+	     {% if metatype.altnames %}
+	     <b>Alternate names: </b>
+	     {% endif %}
+	     {{ metatype.altnames }} <br/>		
+
+             {% if object.plural %}
+	     <b>Plural Name: </b> {{ metatype.plural }} <br/>
+	     {% endif %} 
+
+	     {% if object.parent %}
+	     <b>Type of: </b> 
+	     	     <a href="{{ metatype.parent.get_absolute_url }}"> {{ metatype.parent.title }}</a> <br/>
+	     {% endif %}
+
+  	     {% if metatype.get_children %}
+	     <b>SubTypes: </b>
+	          {% for items in metatype.get_children %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	          {% endfor %} 		   <br/>
+	     {% endif %}
+
+	     {% if metatype.get_siblings %}
+	     <b>Siblings: </b>
+	     {% for items in metatype.get_siblings %}
+	      <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>;
+	      {% endfor %}       <br/>
+	     {% endif %}  
+
+  	     {% if metatype.metatypes.all %}
+	     <b>Member of Metatypes: </b>
+	          {% for items in metatype.metatypes.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     {% endfor %} 	     <br/>
+	     {% endif %}
+
+	     {% if metatype.nodetypes.all %}
+	     <b>Contains member node types: </b>
+	          {% for items in metatype.nodetypes.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	          {% endfor %} 		   <br/>
+	     {% endif %}	     
+
+	     {% if metatype.subjecttypeLeft_gbnodetype.all %}
+	     <b>Left role of relation types: </b> 
+	          {% for items in metatype.subjecttypeLeft_gbnodetype.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     {% endfor %} 	     <br/>
+	     {% endif %}
+
+	     {% if metatype.subjecttypeRight_gbnodetype.all %}
+	     <b>Right role of relation types: </b> 
+	          {% for items in metatype.subjecttypeRight_gbnodetype.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     {% endfor %}   	     <br/>
+	     {% endif %}
+
+	     {% if metatype.subjecttype_GbnodeType.all %}
+	     <b>As domain of attribute types: </b> 
+	          {% for items in metatype.subjecttype_GbnodeType.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     {% endfor %} 	     <br/>
+	     {% endif %}
+
+
+
+
+{% if metatype.description %}
+<p>{{ metatype.description|striptags|safe }}</p>
+{% endif %}
+{% endif %}
+
+{% if tag %}
+<h1>{% trans "Tag" %} : {{ tag }}</h1>
+{% endif %}
+
+{% if author %}
+<h1>{% blocktrans with author.username as author %}Nodetypes by {{ author }}{% endblocktrans %}</h1>
+{% endif %}
+
+{% for object in object_list %}
+  {% with object.html_content|truncatewords_html:100|safe as object_content %}
+  {% include "gstudio/_nodetype_detail.html" %}
+  {% endwith %}
+{% empty %}
+  <p class="notice">{% trans "No nodes in the network yet. Login and construct a network!" %}</p>
+{% endfor %}
+
+{% if is_paginated %}
+  {% gstudio_pagination page_obj %}
+{% endif %}
+{% endblock %}
+
+{% block admin_tools %}
+  {% if metatype and perms.gstudio.change_metatype %}
+  <li>
+    <a href="{% url admin:gstudio_metatype_change metatype.pk %}" title="{% trans "Edit the metatype" %}">
+      {% trans "Edit the metatype" %}
+    </a>
+  </li>
+  {% endif %}
+  {% if tag and perms.tagging.change_tag %}
+  <li>
+    <a href="{% url admin:tagging_tag_change tag.pk %}" title="{% trans "Edit the tag" %}">
+      {% trans "Edit the tag" %}
+    </a>
+  </li>
+  {% endif %}
+  {% if author and perms.auth.change_user %}
+  <li>
+    <a href="{% url admin:auth_user_change author.pk %}" title="{% trans "Edit the author" %}">
+      {% trans "Edit the author" %}
+    </a>
+  </li>
+  {% endif %}
+{% endblock %}
+

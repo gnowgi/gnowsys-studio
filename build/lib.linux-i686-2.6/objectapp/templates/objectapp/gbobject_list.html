@@ -1,0 +1,73 @@
+{% extends "objectapp/base.html" %}
+{% load i18n objectapp_tags %}
+
+{% block meta-description %}{% trans "Latest gbobjects for" %} {% if Objecttype %}{% trans "the Objecttype" %} {{ Objecttype }}{% if Objecttype.description %}: {{ Objecttype.description|striptags|safe }}{% endif %}{% endif %}{% if tag %}{% trans "the tag" %} {{ tag }}{% endif %}{% if author %}{% trans "the author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} {% trans "page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
+
+{% block link %}
+  {{ block.super }}
+  {% if Objecttype %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed" %} {{ Objecttype.title }}" href="{% url objectapp_Objecttype_feed Objecttype.tree_path %}" />
+  {% endif %}
+  {% if tag %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed" %} {{ tag.name }}" href="{% url objectapp_tag_feed tag.name %}" />
+  {% endif %}
+  {% if author %}
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed" %} {{ author.username }}" href="{% url objectapp_author_feed author.username %}" />
+  {% endif %}
+{% endblock %}
+
+{% block title %}{% trans "Latest gbobjects" %} {% if Objecttype %}| {% trans "Objecttype" %} {{ Objecttype }}{% endif %}{% if tag %}| {% trans "Tag" %} {{ tag }}{% endif %}{% if author %}| {% trans "Author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} | {% trans "Page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
+
+{% block content %}
+{% if Objecttype %}
+<h1>{{ Objecttype.title }}</h1>
+{% if Objecttype.description %}
+<p>{{ Objecttype.description|striptags|safe }}</p>
+{% endif %}
+{% endif %}
+
+{% if tag %}
+<h1>{% trans "Tag" %} : {{ tag }}</h1>
+{% endif %}
+
+{% if author %}
+<h1>{% blocktrans with author.username as author %}Gbobjects by {{ author }}{% endblocktrans %}</h1>
+{% endif %}
+
+{% for object in object_list %}
+  {% with object.html_content|truncatewords_html:100|safe as object_content %}
+  {% include "objectapp/_gbobject_detail.html" %}
+  {% endwith %}
+{% empty %}
+  <p class="notice">{% trans "No gbobjects yet." %}</p>
+{% endfor %}
+
+{% if is_paginated %}
+  {% objectapp_pagination page_obj %}
+{% endif %}
+{% endblock %}
+
+{% block admin_tools %}
+  {% if Objecttype and perms.objectapp.change_Objecttype %}
+  <li>
+    <a href="{% url admin:objectapp_Objecttype_change Objecttype.pk %}" title="{% trans "Edit the Objecttype" %}">
+      {% trans "Edit the Objecttype" %}
+    </a>
+  </li>
+  {% endif %}
+  {% if tag and perms.tagging.change_tag %}
+  <li>
+    <a href="{% url admin:tagging_tag_change tag.pk %}" title="{% trans "Edit the tag" %}">
+      {% trans "Edit the tag" %}
+    </a>
+  </li>
+  {% endif %}
+  {% if author and perms.auth.change_user %}
+  <li>
+    <a href="{% url admin:auth_user_change author.pk %}" title="{% trans "Edit the author" %}">
+      {% trans "Edit the author" %}
+    </a>
+  </li>
+  {% endif %}
+{% endblock %}
+

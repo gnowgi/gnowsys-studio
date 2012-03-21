@@ -1,0 +1,27 @@
+{% if gbobjects %}
+<div id="slider">
+  <ul class="ui-tabs-nav">
+    {% for gbobject in gbobjects %}
+    <li class="ui-tabs-nav-item{% if forloop.first %} ui-tabs-selected{% endif %}"
+        id="nav-slider-{{ forloop.counter }}">
+      <a href="#gbobject-slider-{{ forloop.counter }}">
+        <img src="{% if gbobject.image %}{{ gbobject.image.url }}{% endif %}" alt="{{ gbobject.title }}" />
+        <span>{{ gbobject.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% for gbobject in gbobjects %}
+  <div id="gbobject-slider-{{ forloop.counter }}" class="ui-tabs-panel">
+    <img src="{% if gbobject.image %}{{ gbobject.image.url }}{% endif %}" alt="{{ gbobject.title }}" />
+    <div class="panel_info">
+      <h2>
+        <a href="{{ gbobject.get_absolute_url }}" rel="bookmark">{{ gbobject.title }}</a>
+      </h2>
+      {{ gbobject.excerpt|linebreaks|truncatewords_html:20 }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

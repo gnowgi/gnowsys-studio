@@ -1,0 +1,117 @@
+<p>
+             <b>Name: </b> {{ object.title }} <br/>
+
+               {% if object.get_rendered_nbh.plural %}
+                                <b> Plural Name :<nbsp></b>
+                                         {{object.get_rendered_nbh.plural}} <br/>
+                           {% endif %}
+                            {% if object.get_rendered_nbh.altnames %}
+                               <b> Alternate names :<nbsp></b>
+                                         {{object.get_rendered_nbh.altnames}} <br/>
+		           {% endif %}
+              
+              {% if object.get_rendered_nbh.member_of %}
+                           
+                          
+                                <b> Member of Metatypes :<nbsp></b>
+
+                                    {% for mkey,mvalue in object.get_rendered_nbh.member_of.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}  
+
+              {% if object.get_rendered_nbh.relations %}
+                         
+                         
+                                 {% for relkey,relvalue in object.get_rendered_nbh.relations.items %}
+                                          <b>{{relkey}}:<nbsp></b>
+					{% for relk, relv in relvalue.items %}
+					    <a href="{{relv}}">{{relk}}</a>;	      
+                                        {% endfor %}<br/>
+				 {% endfor %}      
+	                   {% endif %}
+                           
+                           {% if object.get_rendered_nbh.attributes %}
+                         
+                           
+                                
+				   <b>Attributes: <nbsp> </b>
+                                
+				    {% for items in object.get_rendered_nbh.attributes %}
+                                        {{items}};	      
+				    {% endfor %}       <br/>
+	                   {% endif %}
+
+</p>	     	 
+
+
+  
+
+  <div class="gbobject-body span-16 last">
+    {% if object.image %}
+    <div class="gbobject-image">
+      <p>
+        <a href="{{ object.get_absolute_url }}" rel="bookmark">
+	  <img src="{{ object.image.url }}" alt="{{ object.title }}" class="left" />
+        </a>
+      </p>
+    </div>
+    {% endif %}
+    <div class="gbobject-content">
+      {{ object_content }}
+    </div>
+  </div>
+
+  <div class="gbobject-footer">
+    <p class="gbobject-tags span-16 last">
+      <strong>{% trans "Tags" %}</strong> :
+      {% tags_for_object object as tag_list %}
+      {% for tag in tag_list %}
+      <a href="{% url objectapp_tag_detail tag %}"
+         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+      {% empty %}
+      <span>{% trans "No tags" %}</span>
+      {% endfor %}
+    </p>
+
+    <p class="gbobject-shorturl span-16 last">
+      <strong>{% trans "Short url" %}</strong> :
+      <a href="{{ object.short_url }}" title="{{ object.title }}" rel="shortlink">
+        {{ object.short_url }}
+      </a>
+    </p>
+
+    <p class="gbobject-comments span-16 last">
+      <strong>{% trans "Discussions" %}</strong> :
+      {% with object.comments.count as comment_count %}
+      {% if comment_count %}
+      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
+        {% blocktrans count comment_count as comment_count %}{{ comment_count }} comment{% plural %}{{ comment_count }} comments{% endblocktrans %}
+      </a>
+      {% else %}
+      {% if object.comments_are_open %}
+      {% trans "No comments yet." %}
+      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
+        {% trans "Be first to comment!" %}
+      </a>
+      {% else %}
+      {% trans "Comments are closed." %}
+      {% endif %}
+      {% endif %}
+      {% endwith %}
+      {% with object.pingbacks.count as pingback_count %}
+      {% if pingback_count %}
+       <a href="{{ object.get_absolute_url }}#pingbacks" title="{{ object.title }}">
+        {% blocktrans count pingback_count as pingback_count %}{{ pingback_count }} pingback{% plural %}{{ pingback_count }} pingbacks{% endblocktrans %}
+      </a>
+      {% endif %}
+      {% endwith %}
+      {% with object.trackbacks.count as trackback_count %}
+      {% if trackback_count %}
+       <a href="{{ object.get_absolute_url }}#trackbacks" title="{{ object.title }}">
+        {% blocktrans count trackback_count as trackback_count %}{{ trackback_count }} trackback{% plural %}{{ trackback_count }} trackbacks{% endblocktrans %}
+      </a>
+      {% endif %}
+      {% endwith %}
+    </p>
+  </div>

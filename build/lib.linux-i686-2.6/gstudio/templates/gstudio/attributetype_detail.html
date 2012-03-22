@@ -1,0 +1,281 @@
+{% extends "gstudio/base.html" %}
+{% load i18n comments gstudio_tags %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block meta-description %}{% if object.excerpt %}{{ object.excerpt|striptags }}{% else %}{{ object.content|striptags|truncatewords:100 }}{% endif %}{% endblock %}
+
+{% block meta-keywords %}{% if object.tags %}{{ object.tags }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+
+{% block link %}
+  {{ block.super }}
+  {% with object.previous_attributetype as previous_attributetype %}{% if previous_attributetype %}
+  <link rel="prev" title="{{ previous_attributetype.title }}" href="{{ previous_attributetype.get_absolute_url }}" />
+  {% endif %}{% endwith %}
+  {% with object.next_attributetype as next_attributetype %}{% if next_attributetype %}
+  <link rel="next" title="{{ next_attributetype.title }}" href="{{ next_attributetype.get_absolute_url }}" />
+  {% endif %}{% endwith %}
+  <link rel="shortlink" href="{{ object.short_url }}" />
+  <link rel="canonical" href="{{ object.get_absolute_url }}" />
+  {% with year=object.creation_date|date:"Y" month=object.creation_date|date:"m" day=object.creation_date|date:"d" %}
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of discussions on" %} '{{ object.title }}'"
+        href="{% url gstudio_attributetype_discussion_feed year month day object.slug %}" />
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of comments on" %} '{{ object.title }}'"
+        href="{% url gstudio_attributetype_comment_feed year month day object.slug %}" />
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of pingbacks on" %} '{{ object.title }}'"
+        href="{% url gstudio_attributetype_pingback_feed year month day object.slug %}" />
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of trackbacks on" %} '{{ object.title }}'"
+        href="{% url gstudio_attributetype_trackback_feed year month day object.slug %}" />
+  {% endwith %}
+{% endblock %}
+
+
+{% block content %}
+
+
+{% block attributetype-content %}
+  {% with object.html_content|safe as object_content %}
+
+
+             <b>Test successful : </b> {{ object.title }} <br/>
+
+	    {% for key,value in object.get_rendered_nbh.items %}
+                    
+                  {% if value %}
+                           {% if key == "altnames" %}
+                               <b> Alternate names :<nbsp></b>
+                                         {{value}} <br/>
+		           {% endif %}
+			   {% if key == "plural" %}
+                                <b> Plural Name :<nbsp></b>
+                                         {{value}} <br/>
+                           {% endif %}
+	                   {% if key == "type_of" %}
+                                <b> Type of :<nbsp></b>
+                                          {{value}} <br/>
+                           {% endif %}
+                           {% if key == "contains_subtypes" %}
+                                <b> SubTypes :<nbsp></b>
+                                          {{value}} <br/>
+                           {% endif %}
+                           {% if key == "siblings" %}
+                                {% if value %}
+				   <b>Siblings: <nbsp> </b>
+                                {% endif %}
+				    {% for sibkey,sibvalue in value.items %}
+                                        <a href="{{sibvalue}}">{{sibkey}}</a>;	      
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           {% if key == "member_of_metatypes" %}
+                                <b> Member of Metatypes :<nbsp></b>
+                                    {% for mkey,mvalue in value.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           {% if key == "contains_members" %}
+                                <b>Contains Member objects :<nbsp></b>
+                                    {% for mkey,mvalue in value.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+			   {% if key == "leftroles" %}
+                                <b>Left role of Relation types :<nbsp></b>
+                                    {% for lftkey, lftvalue in value.items %}
+                                        <a href="{{lftvalue}}">{{lftkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           {% if key == "rightroles" %}
+                                <b>Right role of Relation types :<nbsp></b>
+                                    {% for rghtkey, rghtvalue in value.items %}
+                                        <a href="{{rghtvalue}}">{{rghtkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           {% if key == "posteriornodes" %}
+                                <b>Posterior nodes :<nbsp></b>
+                                    {% for mkey,mvalue in value.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           {% if key == "priornodes" %}
+                                <b>Priornodes :<nbsp></b>
+                                    {% for mkey,mvalue in value.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           
+                           
+                           
+                    {% endif %}
+                {% endfor %}
+
+
+
+ {% endwith %}
+ {% endblock %}
+
+
+
+{% block attributetype-widgets %}
+<div class="attributetype-widgets span-16 last">  {% with object.next_attributetype as next_attributetype %}
+  {% if object.posteriornodes.all %}
+  <div class="attributetype-next">
+    <h5>{% trans "Posterior node" %}</h5>
+	          {% for items in object.posteriornodes.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     {% endfor %} 	     
+  </div>
+  {% endif %}
+  {% endwith %}
+  <!-- {% with object.previous_attributetype as previous_attributetype %} -->
+  {% if object.priornodes.all %}
+  <div class="attributetype-next">
+    <h5>{% trans "Prior node" %}</h5>
+	          {% for items in object.priornodes.all %}
+	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     {% endfor %} 	     
+  </div>
+  {% endif %}
+  {% endwith %}
+  {% if object.related_published %}
+  <div class="attributetype-related">
+    <h5>{% trans "Related node types" %}</h5>
+    <ul>
+      {% for attributetype in object.related_published %}
+      <li>
+	<a href="{{ attributetype.get_absolute_url }}" title="{{ attributetype.title }}" rel="bookmark">{{ attributetype.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block attributetype-comments %}
+<div id="comments" class="span-16 last">
+  <h5>{% trans "Comments" %}</h5>
+  {% with object.comments as comment_list %}
+  {% if comment_list.count %}
+  <ol id="comment-list" class="span-15 last">
+    {% for comment in comment_list %}
+    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in object.authors.all %} post-author{% endif %} span-15 last">
+      <div class="span-2">
+	<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
+      </div>
+      <div class="comment-body span-13 last">
+	<div class="comment-author span-13 last">
+	  {% if comment.url %}
+	  <a href="{{ comment.url }}" class="fn url">{{ comment.user_name }}</a>
+	  {% else %}
+	  {{ comment.user_name }}
+	  {% endif %}
+	  {% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+	</div>
+	<div class="span-13 last">
+	  {{ comment.comment|linebreaks }}
+	</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+    {% if not object.comments_are_open %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% else %}
+    {% if object.comments_are_open %}
+  <p>{% trans "No comments yet." %}</p>
+    {% else %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+
+{% block attributetype-pingbacks %}
+<div id="pingbacks" class="span-16 last">
+  <h5>{% trans "Pingbacks" %}</h5>
+  {% with object.pingbacks as pingback_list %}
+  {% if pingback_list.count %}
+  <ol id="pingback-list" class="span-15 last">
+    {% for pingback in pingback_list %}
+    <li id="pingback_{{ pingback.pk }}" class="pingback {% cycle box1,box2 %} span-15 last">
+      <div class="pingback-body span-15 last">
+	<div class="pingback-author span-15 last">
+	  <a href="{{ pingback.url }}">{{ pingback.user_name }}</a>
+	  {% trans "on" %} {{ pingback.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+	</div>
+	<div class="span-15 last">
+	  <cite>
+	    {{ pingback.comment }}
+	  </cite>
+	</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+    {% if object.pingback_enabled %}
+  <p>{% trans "Pingbacks are open." %}</p>
+    {% else %}
+  <p>{% trans "Pingbacks are closed." %}</p>
+    {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+
+{% block attributetype-trackbacks %}
+{% with object.trackbacks as trackback_list %}
+{% if trackback_list.count or object.pingback_enabled %}
+<div id="trackbacks" class="span-16 last">
+  <h5>{% trans "Trackbacks" %}</h5>
+  {% if trackback_list.count %}
+  <ol id="trackback-list" class="span-15 last">
+    {% for trackback in trackback_list %}
+    <li id="trackback_{{ trackback.pk }}" class="trackback {% cycle box1,box2 %} span-15 last">
+      <div class="trackback-body span-15 last">
+	<div class="trackback-author span-15 last">
+	  <a href="{{ trackback.url }}">{{ trackback.user_name }}</a>
+	  {% trans "on" %} {{ trackback.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+	</div>
+	<div class="span-15 last">
+	  <cite>
+	    {{ trackback.comment }}
+	  </cite>
+	</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+    {% if object.pingback_enabled %}
+  <p>
+    <a href="{% url gstudio_attributetype_trackback object.pk %}" rel="trackback">
+      {% trans "Trackback URL" %}</a>
+  </p>
+    {% endif %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+{% block attributetype-comments-form %}
+{% if object.comments_are_open %}
+<div class="commentForm span-16 last">
+  {% render_comment_form for object %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% endblock %}
+
+{% block admin_tools %}
+{% if perms.gstudio.change_attributetype %}
+<li>
+  <a href="{% url admin:gstudio_objecttype_change object.pk %}" title="{% trans "Edit the attributetype" %}">
+    {% trans "Edit the node type" %}
+  </a>
+</li>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<div>
+  <ul>
+    {% for tag in tags %}
+    <li>
+      <a href="{% url objectapp_tag_detail tag.name %}"
+         title="{% blocktrans count tag.count as gbobject_count %}{{ gbobject_count }} gbobject{% plural %}{{ gbobject_count }} gbobjects{% endblocktrans %}"
+         class="tag_{{ tag.font_size }}">{{ tag }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

@@ -1,0 +1,70 @@
+{% extends "objectapp/base.html" %}
+{% load i18n objectapp_tags mptt_tags %}
+
+{% block title %}{% trans "Sitemap" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Sitemap" %}</h2>
+
+<div class="gbobjectsbyobjecttypes">
+  <h3>{% trans "Gbobjects per objecttypes" %}</h3>
+  {% for Objecttype in objecttypes %}
+  <h4>{{ Objecttype }}</h4>
+  <ul>
+    {% for gbobject in Objecttype.gbobjects_published.all %}
+    <li>
+      <a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>
+      {% with gbobject.comments.count as comment_count %}
+      - {{ comment_count }} {% trans "comment" %}{{ comment_count|pluralize }}
+      {% endwith %}
+    </li>
+    {% empty %}
+    <li>
+      {% trans "No gbobjects yet." %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+</div>
+
+<div class="allgbobjects">
+  <h3>{% trans "All the gbobjects" %}</h3>
+  <ul>
+    {% for gbobject in gbobjects %}
+    <li>
+      <a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>
+      - {{ gbobject.creation_date|date:"SHORT_DATE_FORMAT" }}
+      {% with gbobject.comments.count as comment_count %}
+      - {{ comment_count }} {% trans "comment" %}{{ comment_count|pluralize }}
+      {% endwith %}
+    </li>
+    {% empty %}
+    <li>
+      {% trans "No gbobjects yet." %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="objecttypes">
+  <h3>{% trans "Objecttypes" %}</h3>
+  {% for Objecttype, structure in objecttypes|tree_info %}
+    {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+      <a href="{{ Objecttype.get_absolute_url }}" title="{{ Objecttype.title }}">{{ Objecttype.title }}</a>
+      -
+      {% blocktrans count Objecttype.gbobjects_published.count as gbobject_count %}{{ gbobject_count }} gbobject{% plural %}{{ gbobject_count }} gbobjects{% endblocktrans %}
+    {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+    {% empty %}
+  <ul>
+    <li>
+      {% trans "No objecttypes yet." %}
+    </li>
+  </ul>
+  {% endfor %}
+</div>
+
+<div class="montharchives">
+  <h3>{% trans "Monthly archives" %}</h3>
+  {% get_archives_gbobjects %}
+</div>
+{% endblock %}

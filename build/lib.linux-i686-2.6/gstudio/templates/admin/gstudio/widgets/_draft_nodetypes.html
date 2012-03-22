@@ -1,0 +1,37 @@
+{% load i18n gstudio_tags %}
+
+{% for nodetype in nodetypes %}
+<tr>
+  <th>
+    <a href="{% url admin:gstudio_nodetype_change nodetype.pk %}"
+       title="{% trans "Edit the nodetype" %}">
+      {{ nodetype.title }}
+    </a>
+    {% trans "on" %}
+    <abbr>{{ nodetype.creation_date|date:"DATE_FORMAT" }}</abbr>
+    {{ nodetype.html_content|truncatewords_html:20|safe }}
+  </th>
+  <td>
+    <a href="{{ nodetype.get_absolute_url }}" class="previewlink">
+      {% trans "Preview" %}
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <th colspan="2">
+    {% trans "No draft nodetypes." %}
+  </th>
+</tr>
+{% endfor %}
+
+{% if nodetypes %}
+<tr>
+  <th colspan="2">
+    <a href="{% url admin:gstudio_objecttype_changelist %}?status__exact=0"
+       title="{% trans "View all draft nodetypes" %}" class="managelink">
+      {% trans "View all draft nodetypes" %}
+    </a>
+  </th>
+</tr>
+{% endif %}

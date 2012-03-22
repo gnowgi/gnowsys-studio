@@ -1,0 +1,29 @@
+{% extends "gstudio/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form method="post" action=".">
+{% csrf_token %}  
+{% if user.is_authenticated %}
+<h2>Form to add Processes</h2>
+
+{% for field in formset %}
+
+     {{ field.label_tag }}:{{ field }}<br>
+     {{field.help_text}}<br>
+     {{ field.errors }}<br>
+
+
+{% endfor %}
+
+  <input type="Submit" value="{% trans 'ADD' %}" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</form>
+    {% else %}
+    <h2>Sorry either you are not logged in or dont have permission to view this content</h2>
+    <a href="{{get_absoulute_url}}/accounts/login">{% trans 'Login' %}</a><br>
+    <a href="{{get_absoulute_url}}/accounts/register">{% trans 'Register' %}</a><br>
+    {% endif %}
+
+
+{% endblock %}

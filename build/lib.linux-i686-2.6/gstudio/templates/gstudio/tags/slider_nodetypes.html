@@ -1,0 +1,27 @@
+{% if nodetypes %}
+<div id="slider">
+  <ul class="ui-tabs-nav">
+    {% for nodetype in nodetypes %}
+    <li class="ui-tabs-nav-item{% if forloop.first %} ui-tabs-selected{% endif %}"
+        id="nav-slider-{{ forloop.counter }}">
+      <a href="#nodetype-slider-{{ forloop.counter }}">
+        <img src="{% if nodetype.image %}{{ nodetype.image.url }}{% endif %}" alt="{{ nodetype.title }}" />
+        <span>{{ nodetype.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% for nodetype in nodetypes %}
+  <div id="nodetype-slider-{{ forloop.counter }}" class="ui-tabs-panel">
+    <img src="{% if nodetype.image %}{{ nodetype.image.url }}{% endif %}" alt="{{ nodetype.title }}" />
+    <div class="panel_info">
+      <h2>
+        <a href="{{ nodetype.get_absolute_url }}" rel="bookmark">{{ nodetype.title }}</a>
+      </h2>
+      {{ nodetype.excerpt|linebreaks|truncatewords_html:20 }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

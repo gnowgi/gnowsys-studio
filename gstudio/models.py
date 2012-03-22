@@ -95,6 +95,7 @@ from gstudio.settings import MARKDOWN_EXTENSIONS
 from gstudio.settings import AUTO_CLOSE_COMMENTS_AFTER
 from gstudio.managers import nodetypes_published
 from gstudio.managers import NodetypePublishedManager
+from gstudio.managers import NodePublishedManager
 from gstudio.managers import AuthorPublishedManager
 from gstudio.managers import DRAFT, HIDDEN, PUBLISHED
 from gstudio.moderator import NodetypeCommentModerator
@@ -212,15 +213,26 @@ class NID(models.Model):
         """
         return self.__dict__
 
+    @property
+    def get_app_name(self):
+        if self.ref.__class__.__name__=='Gbobject' or self.ref.__class__.__name__=='Process' or self.ref.__class__.__name__=='System' :
+            return 'type'
+
     @models.permalink
     def get_absolute_url(self):
         """Return nodetype's URL"""
-        
-        return ('gstudio_nodetype_detail', (), {
-            'year': self.creation_date.strftime('%Y'),
-            'month': self.creation_date.strftime('%m'),
-            'day': self.creation_date.strftime('%d'),
-            'slug': self.slug})
+        if self.get_app_name=='type':
+           return ('objectapp_gbobject_detail', (), {
+            	'year': self.creation_date.strftime('%Y'),
+            	'month': self.creation_date.strftime('%m'),
+            	'day': self.creation_date.strftime('%d'),
+            	'slug': self.slug})
+        else:
+           return ('gstudio_nodetype_detail', (), {
+           	'year': self.creation_date.strftime('%Y'),
+            	'month': self.creation_date.strftime('%m'),
+            	'day': self.creation_date.strftime('%d'),
+            	'slug': self.slug})
 
     @property
     def ref(self):
@@ -273,7 +285,17 @@ class Node(NID):
     altnames = TagField(_('alternate names'), help_text=_('alternate names if any'), blank=True, null=True)
     plural = models.CharField(_('plural name'), help_text=_('plural form of the node name if any'), max_length=255, blank=True, null=True)
     rating = RatingField(range=5, can_change_vote = True, help_text=_('your rating'), blank=True, null=True)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=PUBLISHED)
+    start_publication = models.DateTimeField(_('start publication'),
+                                             help_text=_('date start publish'),
+                                             default=datetime.now)
+    end_publication = models.DateTimeField(_('end publication'),
+                                           help_text=_('date end publish'),
+                                           default=datetime(2042, 3, 15))
 
+    sites = models.ManyToManyField(Site, verbose_name=_('sites publication'),
+                                   related_name='nodetypes')
+    published = NodePublishedManager()
     def __unicode__(self):
         return self.title
 
@@ -514,24 +536,9 @@ class Nodetype(Node):
                                      related_name='nodetypes',
                                      blank=True, null=False)
 
-    status = models.IntegerField(choices=STATUS_CHOICES, default=PUBLISHED)
-
     featured = models.BooleanField(_('featured'), default=False)
     comment_enabled = models.BooleanField(_('comment enabled'), default=True)
     pingback_enabled = models.BooleanField(_('linkback enabled'), default=True)
-
-    
-    
-    start_publication = models.DateTimeField(_('start publication'),
-                                             help_text=_('date start publish'),
-                                             default=datetime.now)
-    end_publication = models.DateTimeField(_('end publication'),
-                                           help_text=_('date end publish'),
-                                           default=datetime(2042, 3, 15))
-
-    sites = models.ManyToManyField(Site, verbose_name=_('sites publication'),
-                                   related_name='nodetypes')
-
     login_required = models.BooleanField(
         _('login required'), default=False,
         help_text=_('only authenticated users can view the nodetype'))
@@ -545,7 +552,7 @@ class Nodetype(Node):
         choices=[('gstudio/nodetype_detail.html', _('Default template'))] + \
         NODETYPE_TEMPLATES,
         help_text=_('template used to display the nodetype'))
-
+    rurl=models.URLField(_('rurl'),verify_exists=True,null=True, blank=True)
     objects = models.Manager()
     published = NodetypePublishedManager()
 

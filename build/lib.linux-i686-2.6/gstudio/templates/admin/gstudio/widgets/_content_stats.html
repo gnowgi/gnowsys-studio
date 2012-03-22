@@ -1,0 +1,146 @@
+{% load i18n %}
+
+<tr>
+  <th>{% trans "Contents" %}</th>
+  <th>{% trans "Discussions" %}</th>
+</tr>
+
+
+
+<tr>
+  <td>
+    <a href="{% url admin:gstudio_objecttype_changelist %}">
+      {% blocktrans %}{{ objecttypes }} objecttype{% endblocktrans %}
+    </a>
+  </td>
+  <td>
+    <a href="{% url admin:comments_comment_changelist %}?is_public__exact=1">
+      {% blocktrans %}{{ comments }} comments{% endblocktrans %}
+    </a>
+  </td>
+  <td>
+	<ul class="actions">
+  	<li class="add-link">
+	<a href="/admin/gstudio/objecttype/add/">Add</a>
+	</li>
+  </td>
+  <td>	
+	<ul class="actions">
+	<li class="change-link">
+	<a href="/admin/gstudio/objecttype/">Change</a>
+	</li>
+	</ul>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <a href="{% url admin:gstudio_objecttype_changelist %}">
+      {% blocktrans %}{{ nodetypes }} nodetypes{% endblocktrans %}
+    </a>
+  </td>
+  <td>
+    <a href="{% url admin:comments_comment_changelist %}?is_public__exact=1">
+      {% blocktrans %}{{ comments }} comments{% endblocktrans %}
+    </a>
+  </td>
+  <td>
+	<ul class="actions">
+  	<li class="add-link">
+	<a href="/admin/comments/comment/add/">Add</a>
+	</li>
+  </td>
+  <td>	
+	<ul class="actions">
+	<li class="change-link">
+	<a href="/admin/comments/comment/">Change</a>
+	</li>
+	</ul>
+  </td>
+</tr>
+<tr>
+  <td>
+    <a href="{% url admin:gstudio_metatype_changelist %}">
+      {% blocktrans %}{{ metatypes }} metatypes{% endblocktrans %}
+    </a>
+  </td>
+  <td>{% blocktrans %}{{ pingbacks }} pingbacks{% endblocktrans %}</td>
+  
+  <td>
+	<ul class="actions">
+  	<li class="add-link">
+	<a href="/admin/gstudio/metatype/add/">Add</a>
+	</li>
+  </td>
+  <td>	
+	<ul class="actions">
+	<li class="change-link">
+	<a href="/admin/gstudio/metatype/">Change</a>
+	</li>
+	</ul>
+  </td>
+
+
+</tr>
+
+<tr>
+  <td>
+    <a href="{% url admin:gstudio_attributetype_changelist %}">
+      {% blocktrans %}{{ attributetype }} attributetype{% endblocktrans %}
+    </a>
+  </td>
+    
+  <td><a href="{% url admin:comments_comment_changelist %}?is_public__exact=1">
+      {% blocktrans %}{{ comments }} comments{% endblocktrans %}
+    </a>
+  </td>
+  <td>
+	<ul class="actions">
+  	<li class="add-link">
+	<a href="/admin/gstudio/attributetype/add/">Add</a>
+	</li>
+  </td>
+  <td>	
+	<ul class="actions">
+	<li class="change-link">
+	<a href="/admin/gstudio/attributetype/">Change</a>
+	</li>
+	</ul>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <a href="{% url admin:tagging_tag_changelist %}">
+      {% blocktrans %}{{ tags }} tags{% endblocktrans %}
+    </a>
+  </td>
+  <td>{% blocktrans %}{{ trackbacks }} trackbacks{% endblocktrans %}</td>
+  
+  <td>
+	<ul class="actions">
+  	<li class="add-link">
+	<a href="/admin/tagging/tag/add/">Add</a>
+	</li>
+  </td>
+  <td>	
+	<ul class="actions">
+	<li class="change-link">
+	<a href="/admin/tagging/tag/">Change</a>
+	</li>
+	</ul>
+  </td>
+
+</tr>
+<tr>
+  <td>
+    <a href="{% url admin:auth_user_changelist %}">
+      {% blocktrans %}{{ authors }} authors{% endblocktrans %}
+    </a>
+  </td>
+  <td>
+    <a href="{% url admin:comments_comment_changelist %}?is_public__exact=0">
+      {% blocktrans %}{{ rejects }} rejected{% endblocktrans %}
+    </a>
+  </td>
+ </tr>

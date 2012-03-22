@@ -64,7 +64,7 @@ from pyparsing import operatorPrecedence
 
 from django.db.models import Q
 
-from gstudio.models import Nodetype
+from gstudio.models import Node
 from gstudio.settings import STOP_WORDS
 
 
@@ -96,9 +96,9 @@ def createQ(token):
         return Q()
 
     if not meta:
-        return Q(content__icontains=search) | \
-               Q(excerpt__icontains=search) | \
-               Q(title__icontains=search)
+        return Q(title__icontains=search)
+        ''' Q(content__icontains=search) | \
+               Q(excerpt__icontains=search) | \ '''
 
     if meta == 'metatype':
         if wildcards == 'BOTH':
@@ -178,4 +178,4 @@ def advanced_search(pattern):
     """Parse the grammar of a pattern
     and build a queryset with it"""
     query_parsed = QUERY.parseString(pattern)
-    return Nodetype.published.filter(query_parsed[0]).distinct()
+    return Node.published.filter(query_parsed[0]).distinct()

@@ -1,0 +1,25 @@
+{% extends "objectapp/base.html" %}
+{% load i18n mptt_tags %}
+
+{% block meta-description %}{% trans "Objecttype list" %}{% endblock %}
+
+{% block title %}{% trans "Objecttypes" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Objecttype list" %}</h2>
+<div>
+  {% for object, structure in object_list|tree_info %}
+    {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+      <a href="{{ object.get_absolute_url }}" title="{{ object }}">{{ object }}</a>
+      {% blocktrans count object.gbobjects_published.count as gbobject_count %}{{ gbobject_count }} gbobject{% plural %}{{ gbobject_count }} gbobjects{% endblocktrans %}
+      {% if object.description %}<br />{{ object.description|striptags|safe }}{% endif %}
+    {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+  {% empty %}
+  <ul>
+    <li>
+      {% trans "No objecttypes yet." %}
+    </li>
+  </ul>
+  {% endfor %}
+</div>
+{% endblock %}

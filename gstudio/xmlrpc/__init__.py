@@ -75,6 +75,10 @@ GSTUDIO_XMLRPC_METAWEBLOG = [
      'metaWeblog.newPost'),
     ('gstudio.xmlrpc.metaweblog.edit_post',
      'metaWeblog.editPost'),
+    ('gstudio.xmlrpc.metaweblog.add_nums',
+     'metaWeblog.add_nums'),
+    ('gstudio.xmlrpc.metaweblog.get_nbh',
+     'metaWeblog.get_nbh'),
     ('gstudio.xmlrpc.metaweblog.new_media_object',
      'metaWeblog.newMediaObject')]
 

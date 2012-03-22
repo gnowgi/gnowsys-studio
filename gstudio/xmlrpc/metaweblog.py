@@ -64,6 +64,8 @@ from django.template.defaultfilters import slugify
 
 from gstudio.models import Nodetype
 from gstudio.models import Metatype
+from gstudio.models import NID
+from objectapp.models import Gbobject
 from gstudio.settings import PROTOCOL
 from gstudio.settings import UPLOAD_TO
 from gstudio.managers import DRAFT, PUBLISHED
@@ -245,6 +247,36 @@ def new_metatype(blog_id, username, password, metatype_struct):
 
     return metatype.pk
 
+
+@xmlrpc_func(returns='struct', args=['string', 'string'])
+def add_nums(num1, num2):
+    """metaWeblog.add("num1","num2")
+    => sum"""
+    num1= int(num1)
+    num2= int(num2)
+    return dict({'sum':[num1 + num2]})
+
+@xmlrpc_func(returns='string', args=['string', 'string'])
+def get_nbh(name, of_type=""):
+    """metaWeblog.get_nbh("object_name", "type of: [OT, O, MT]")
+    => nbh"""
+    # this should be extended to identifying an object with other criteria instead of title as it can be ambiguous
+    try:        
+        # retrieve the first matching object, (this should be changed to id or an additional specifiers like of_type="OT")
+        n = NID.objects.filter(title=name)[0]
+        if not n:
+            return str({'error':'NOT FOUND'})
+
+        if n.ref._meta.module_name == 'objecttype' or 'gbobject' or 'metatype':
+            nbh =  n.ref.get_nbh
+            if nbh:
+                return str(nbh)
+            else:
+                return str({'error':'Error!'})
+        else:
+            return str({'error':'Not applicable as node is not OT, O or MT'})
+    except:
+        return str({'error':'Error!'})
 
 @xmlrpc_func(returns='string', args=['string', 'string', 'string',
                                      'struct', 'boolean'])

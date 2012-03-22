@@ -1,0 +1,49 @@
+{% extends "objectapp/gbobject_list.html" %}
+{% load i18n objectapp_tags %}
+
+{% block title %}{% trans "Search results for" %} {% if pattern %}'{{ pattern }}'{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} | {% trans "Page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
+
+{% block meta-description %}{% trans "Search results for" %} {% if pattern %}'{{ pattern }}'{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} {% trans "page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
+
+{% block link %}
+  {{ block.super }}
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of search result of" %} '{{ pattern }}'" href="{% url objectapp_gbobject_search_feed %}?pattern={{ pattern }}" />
+{% endblock %}
+
+{% block content %}
+<h1>{% trans "Search results for" %} {% if pattern %}'{{ pattern }}'{% endif %}</h1>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+{% if object_list %}
+<p class="success">
+  {% blocktrans count paginator.count as gbobject_count %}{{ gbobject_count }} gbobject found{% plural %}{{ gbobject_count }} gbobjects found{% endblocktrans %}
+</p>
+{% endif %}
+
+{% for object in object_list %}
+  {% with object.html_content|truncatewords_html:100|safe as object_content %}
+  {% include "objectapp/_gbobject_detail.html" %}
+  {% endwith %}
+{% empty %}
+<p class="notice">{% trans "Nothing found." %}</p>
+{% endfor %}
+
+<div class="search">
+  <form method="get" id="main_searchform" action="{% url objectapp_gbobject_search %}">
+    <p>
+      <input type="text" value="{{ pattern }}" name="pattern" id="main_searchbox" />
+      <input type="submit" id="button" value="OK" />
+      <a title="{% trans 'You can use - to exclude words or phrases, &quot;double quotes&quot; for exact phrases and the AND/OR boolean operators combined with parenthesis for complex searchs.' %}">
+        <img src="{{ STATIC_URL }}objectapp/img/help.png" alt="?" width="14" height="14" />
+      </a>
+    </p>
+  </form>
+</div>
+
+{% if is_paginated %}
+  {% objectapp_pagination page_obj %}
+{% endif %}
+{% endblock %}

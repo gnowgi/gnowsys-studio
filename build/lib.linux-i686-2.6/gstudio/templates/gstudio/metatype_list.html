@@ -1,0 +1,25 @@
+{% extends "gstudio/base.html" %}
+{% load i18n mptt_tags %}
+
+{% block meta-description %}{% trans "Metatype list" %}{% endblock %}
+
+{% block title %}{% trans "Metatypes" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Metatype list" %}</h2>
+<div>
+  {% for object, structure in object_list|tree_info %}
+    {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+      <a href="{{ object.get_absolute_url }}" title="{{ object }}">{{ object }}</a>
+      {% blocktrans count object.nodetypes_published.count as nodetype_count %}{{ nodetype_count }} nodetype{% plural %}{{ nodetype_count }} nodetypes{% endblocktrans %}
+      {% if object.description %}<br />{{ object.description|striptags|safe }}{% endif %}
+    {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+  {% empty %}
+  <ul>
+    <li>
+      {% trans "No metatypes yet." %}
+    </li>
+  </ul>
+  {% endfor %}
+</div>
+{% endblock %}

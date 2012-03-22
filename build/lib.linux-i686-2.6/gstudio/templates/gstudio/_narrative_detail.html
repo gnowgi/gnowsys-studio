@@ -1,0 +1,200 @@
+
+      </p><p>
+
+      
+                          {% if object.get_rendered_nbh.plural %}
+                                <b> Its plural form is:<nbsp></b>
+                                         {{object.get_rendered_nbh.plural}};<nbsp>
+                           {% endif %}
+                            {% if object.get_rendered_nbh.altnames %}
+                               <b> It is known by other names:<nbsp></b>
+                                         {{object.get_rendered_nbh.altnames}} ;<nbsp>
+		           {% endif %}
+			  
+			    {% if object.get_rendered_nbh.member_of_metatypes %}
+                           
+	                   {% if object.get_rendered_nbh.type_of %}
+                                <b> is a kind of:<nbsp></b>
+                                {% for typekey,typevalue in object.get_rendered_nbh.type_of.items %}
+                                       <a href="{{typevalue}}">{{typekey}}</a>;
+                                {% endfor %};<nbsp>
+                           {% endif %}
+                          
+                           <b> member of metatype/s:<nbsp></b>
+                                    {% for mkey,mvalue in object.get_rendered_nbh.member_of_metatypes.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %};<nbsp>
+                           {% endif %}
+                          
+                           {% if object.get_rendered_nbh.contains_subtypes %}
+                                <b> contains subtypes:<nbsp></b>
+                                {% for stkey,stvalue in object.get_rendered_nbh.contains_subtypes.items %}
+                                        <a href="{{stvalue}}">{{stkey}}</a>;
+                                {% endfor %};<nbsp>
+                           {% endif %}
+                          
+                          
+                           {% if object.get_rendered_nbh.contains_members %}
+                         
+                          
+                                <b>has members:<nbsp></b>
+                                    {% for mkey,mvalue in object.get_rendered_nbh.contains_members.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %};<nbsp>
+                           {% endif %}
+                         
+                           
+                            
+                             
+                            {% if object.get_rendered_nbh.relations %}
+                         
+                         
+                                 {% for relkey,relvalue in object.get_rendered_nbh.relations.items %}
+                                          <b>{{relkey}}:<nbsp></b>
+					{% for relk, relv in relvalue.items %}
+					    <a href="{{relv}}">{{relk}}</a>;	      
+                                        {% endfor %};<nbsp>
+				 {% endfor %}      
+	                   {% endif %}
+                           
+                           {% if object.get_rendered_nbh.attributes %}
+                         
+                           
+                                
+				   <b>It has some more properties: <nbsp> </b>
+                                
+				    {% for items in object.get_rendered_nbh.attributes.items %}
+                                        {{items}};	      
+				    {% endfor %}       ;<nbsp>
+	                   {% endif %}
+    
+
+                            {% if object.get_rendered_nbh.leftroles %}
+                         
+                           
+                                
+				   <b>it is used as a subject-type for the relation: <nbsp> </b>
+                                
+				    {% for lrkey,lrvalue in object.get_rendered_nbh.leftroles.items %}
+                                        <a href="{{lrvalue}}">{{lrkey}}</a>;	      
+				    {% endfor %}       ;<nbsp>
+	                   {% endif %}
+
+                           
+                           {% if object.get_rendered_nbh.rightroles %}
+                        
+			      <b>it is used as an object in the predicate position for the relation: <nbsp> </b>
+                                
+				    {% for rrkey,rrvalue in object.get_rendered_nbh.rightroles.items %}
+                                        <a href="{{rrvalue}}">{{rrkey}}</a>;	      
+				    {% endfor %}       ;<nbsp>
+	                   {% endif %}
+                           
+                         
+                           {% if object.get_rendered_nbh.ats %}
+                                             
+                                
+				   <b>it is subject-type for the property: <nbsp> </b>
+                                
+				    {% for atkey,atvalue in object.get_rendered_nbh.ats.items %}
+                                        <a href="{{atvalue}}">{{atkey}}</a>;	      
+				    {% endfor %}       ;<nbsp>
+	                   {% endif %}
+                           
+</p><p>
+                            {% if object.get_rendered_nbh.priornodes %}
+                         
+                           
+                                <b>It has prerequisites:<nbsp></b>
+                                    {% for mkey,mvalue in object.get_rendered_nbh.priornodes.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %};<nbsp>
+                           {% endif %}
+                           
+                           {% if object.get_rendered_nbh.posteriornodes %}
+                         
+                           
+                                <b>It is a prerequisite for:<nbsp></b>
+                                    {% for mkey,mvalue in object.get_rendered_nbh.posteriornodes.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %};<nbsp>
+                           {% endif %}
+ 
+
+
+
+    </p>
+  
+  <div class="nodetype-body span-16 last">
+    {% if object.image %}
+    <div class="nodetype-image">
+      <p>
+        <a href="{{ object.get_absolute_url }}" rel="bookmark">
+	  <img src="{{ object.image.url }}" alt="{{ object.title }}" class="left" />
+        </a>
+      </p>
+    </div>
+    {% endif %}
+    <div class="nodetype-content">
+      <br>
+      {{ object_content }}
+    </div>
+
+
+
+  </div>
+
+
+  <div class="nodetype-footer">
+    <p class="nodetype-tags span-16 last">
+      <strong>{% trans "Tags" %}</strong> :
+      {% tags_for_object object as tag_list %}
+      {% for tag in tag_list %}
+      <a href="{% url gstudio_tag_detail tag %}"
+         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+      {% empty %}
+      <span>{% trans "No tags" %}</span>
+      {% endfor %}
+    </p>
+
+    <p class="nodetype-shorturl span-16 last">
+      <strong>{% trans "Short url" %}</strong> :
+      <a href="{{ object.short_url }}" title="{{ object.title }}" rel="shortlink">
+        {{ object.short_url }}
+      </a>
+    </p>
+
+    <p class="nodetype-comments span-16 last">
+      <strong>{% trans "Discussions" %}</strong> :
+      {% with object.comments.count as comment_count %}
+      {% if comment_count %}
+      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
+        {% blocktrans count comment_count as comment_count %}{{ comment_count }} comment{% plural %}{{ comment_count }} comments{% endblocktrans %}
+      </a>
+      {% else %}
+      {% if object.comments_are_open %}
+      {% trans "No comments yet." %}
+      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
+        {% trans "Discuss the relations or raise any issues with the representation!" %}
+      </a>
+      {% else %}
+      {% trans "Comments are closed." %}
+      {% endif %}
+      {% endif %}
+      {% endwith %}
+      {% with object.pingbacks.count as pingback_count %}
+      {% if pingback_count %}
+      , <a href="{{ object.get_absolute_url }}#pingbacks" title="{{ object.title }}">
+        {% blocktrans count pingback_count as pingback_count %}{{ pingback_count }} pingback{% plural %}{{ pingback_count }} pingbacks{% endblocktrans %}
+      </a>
+      {% endif %}
+      {% endwith %}
+      {% with object.trackbacks.count as trackback_count %}
+      {% if trackback_count %}
+      , <a href="{{ object.get_absolute_url }}#trackbacks" title="{{ object.title }}">
+        {% blocktrans count trackback_count as trackback_count %}{{ trackback_count }} trackback{% plural %}{{ trackback_count }} trackbacks{% endblocktrans %}
+      </a>
+      {% endif %}
+      {% endwith %}
+    </p>
+  </div>

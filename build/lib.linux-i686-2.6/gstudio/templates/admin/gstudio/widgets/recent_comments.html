@@ -1,0 +1,12 @@
+{% extends "admin/gstudio/widgets/base.html" %}
+{% load i18n gstudio_tags %}
+
+{% block module_id %}comments{% endblock %}
+
+{% block summary %}{% trans "Recent comments" %}{% endblock %}
+{% block title %}{% trans "Recent comments" %}{% endblock %}
+
+{% block content %}
+  {% get_recent_comments 3 "admin/gstudio/widgets/_recent_comments.html" %}
+{% endblock %}
+

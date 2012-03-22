@@ -1,0 +1,12 @@
+{% load i18n %}
+<ul>
+  {% for nodetype in nodetypes %}
+  <li>
+    <a href="{{ nodetype.get_absolute_url }}" title="{{ nodetype.title }}" rel="bookmark">{{ nodetype.title }}</a>
+  </li>
+  {% empty %}
+  <li>
+    {% trans "No nodetypes yet." %}
+  </li>
+  {% endfor %}
+</ul>

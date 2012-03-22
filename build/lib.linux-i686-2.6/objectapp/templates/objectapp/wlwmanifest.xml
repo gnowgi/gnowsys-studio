@@ -1,0 +1,63 @@
+{% load i18n %}<?xml version="1.0" encoding="utf-8" ?>
+<manifest xmlns="http://schemas.microsoft.com/wlw/manifest/weblog">
+  <options>
+    <!-- http://msdn.microsoft.com/en-us/library/bb463260.aspx -->
+    <clientType>Metaweblog</clientType>
+    <supportsPostAsDraft>Yes</supportsPostAsDraft>
+    <supportsFileUpload>Yes</supportsFileUpload>
+    <supportsExtendedGbobjects>No</supportsExtendedGbobjects>
+    <supportsCustomDate>Yes</supportsCustomDate>
+    <supportsObjecttypes>Yes</supportsObjecttypes>
+    <supportsObjecttypesInline>Yes</supportsObjecttypesInline>
+    <supportsMultipleObjecttypes>Yes</supportsMultipleObjecttypes>
+    <supportsHierarchicalObjecttypes>Yes</supportsHierarchicalObjecttypes>
+    <supportsNewObjecttypes>Yes</supportsNewObjecttypes>
+    <supportsNewObjecttypesInline>Yes</supportsNewObjecttypesInline>
+    <supportsKeywords>Yes</supportsKeywords>
+    <supportsCommentPolicy>Yes</supportsCommentPolicy>
+    <supportsPingPolicy>Yes</supportsPingPolicy>
+    <supportsAuthor>Yes</supportsAuthor>
+    <supportsSlug>Yes</supportsSlug>
+    <supportsPassword>Yes</supportsPassword>
+    <supportsExcerpt>Yes</supportsExcerpt>
+    <supportsTrackbacks>No</supportsTrackbacks>
+    <supportsPages>No</supportsPages>
+    <supportsPageParent>No</supportsPageParent>
+    <supportsPageOrder>No</supportsPageOrder>
+    <supportsEmptyTitles>No</supportsEmptyTitles>
+    <requiresHtmlTitles>No</requiresHtmlTitles>
+    <requiresXHTML>No</requiresXHTML>
+    <supportsScripts>Yes</supportsScripts>
+    <supportsEmbeds>Yes</supportsEmbeds>
+    <characterSet>UTF-8</characterSet>
+    <maxObjecttypeNameLength>50</maxObjecttypeNameLength>
+  </options>
+
+  <weblog>
+    <serviceName>{{ site.name }} Blog</serviceName>
+    <imageUrl>{{ STATIC_URL }}objectapp/img/wlw/objectapp.png</imageUrl>
+    <watermarkImageUrl>{{ STATIC_URL }}objectapp/img/wlw/watermark.png</watermarkImageUrl>
+    <homepageLinkText>{% trans "View site" %}</homepageLinkText>
+    <adminLinkText>{% trans "Admin. site" %}</adminLinkText>
+    <adminUrl><![CDATA[
+        {blog-homepage-url}{% url admin:index %}
+    ]]></adminUrl>
+    <postEditingUrl><![CDATA[
+        {blog-homepage-url}{% url admin:objectapp_gbobject_changelist %}{post-id}/
+    ]]></postEditingUrl>
+  </weblog>
+
+  <buttons>
+    <button>
+      <id>0</id>
+      <text>{% trans "Manage comments" %}</text>
+      <imageUrl>{{ STATIC_URL }}objectapp/img/wlw/comments.png</imageUrl>
+      <clickUrl><![CDATA[
+        {blog-homepage-url}{% url admin:comments_comment_changelist %}
+      ]]></clickUrl>
+    </button>
+  </buttons>-->
+
+  <!-- Add views section -->
+</manifest>
+

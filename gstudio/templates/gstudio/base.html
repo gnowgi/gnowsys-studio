@@ -25,7 +25,7 @@
 
 <div class="search">
   <h3>{% trans "Search" %}</h3>
-  <form method="get" id="searchform" action="{% url objectapp_gbobject_search %}">
+  <form method="get" id="searchform" action="{% url nodes_search %}">
     <p>
       <input type="text" value="{% trans "Keywords..." %}" name="pattern" id="searchbox" onfocus="this.value=''" />
       <input type="submit" class="submitbutton" value="OK" />
@@ -35,10 +35,12 @@
     </p>
   </form>
 </div>
+<!--
 <div class="objecttypes">
   <h3>{% trans "Objecttypes" %}</h3>
   {% get_objecttypes %}
 </div>
+-->
 <div class="authors">
   <h3>{% trans "Authors" %}</h3>
   {% get_authors %}

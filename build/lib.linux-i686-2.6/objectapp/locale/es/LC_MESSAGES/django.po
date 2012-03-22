@@ -1,0 +1,1199 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# igalarzab <igalarzab@gmail.com>, 2011.
+# Julien Fache <fantomas42@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: django-blog-objectapp\n"
+"Report-Msgid-Bugs-To: https://github.com/Fantomas42/django-blog-objectapp/issues\n"
+"POT-Creation-Date: 2011-04-12 13:21-0500\n"
+"PO-Revision-Date: 2011-04-23 12:47+0000\n"
+"Last-Translator: igalarzab <igalarzab@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: feeds.py:102 plugins/cms_plugins.py:23
+#: templates/objectapp/gbobject_archive.html:4
+#: templates/objectapp/gbobject_archive.html:25 templates/objectapp/gbobject_list.html:19
+#: tests/feeds.py:115
+msgid "Latest gbobjects"
+msgstr "Últimas entradas"
+
+#: feeds.py:106 tests/feeds.py:117
+#, python-format
+msgid "The latest gbobjects for the site %s"
+msgstr "Las últimas entradas del sitio %s"
+
+#: feeds.py:126 tests/feeds.py:126
+#, python-format
+msgid "Gbobjects for the Objecttype %s"
+msgstr "Entradas de la categoría %s"
+
+#: feeds.py:130 tests/feeds.py:128
+#, python-format
+msgid "The latest gbobjects for the Objecttype %s"
+msgstr "Las últimas entradas de la categoría %s"
+
+#: feeds.py:150 tests/feeds.py:137
+#, python-format
+msgid "Gbobjects for author %s"
+msgstr "Entradas del autor %s"
+
+#: feeds.py:154 tests/feeds.py:139
+#, python-format
+msgid "The latest gbobjects by %s"
+msgstr "Las últimas entradas de %s"
+
+#: feeds.py:175 tests/feeds.py:149
+#, python-format
+msgid "Gbobjects for the tag %s"
+msgstr "Entradas del tag %s"
+
+#: feeds.py:179 tests/feeds.py:151
+#, python-format
+msgid "The latest gbobjects for the tag %s"
+msgstr "Las últimas entradas del tag %s"
+
+#: feeds.py:199 tests/feeds.py:160
+#, python-format
+msgid "Results of the search for '%s'"
+msgstr "Resultados de la búsqueda '%s'"
+
+#: feeds.py:203 tests/feeds.py:162
+#, python-format
+msgid "The gbobjects containing the pattern '%s'"
+msgstr "Entradas que contienen el patron '%s'"
+
+#: feeds.py:245 tests/feeds.py:178
+#, python-format
+msgid "Discussions on %s"
+msgstr "Debate en %s"
+
+#: feeds.py:249 tests/feeds.py:180
+#, python-format
+msgid "The latest discussions for the gbobject %s"
+msgstr "Los últimos debates de la entrada %s"
+
+#: feeds.py:267 tests/feeds.py:190
+#, python-format
+msgid "Comments on %s"
+msgstr "Comentarios en %s"
+
+#: feeds.py:271 tests/feeds.py:192
+#, python-format
+msgid "The latest comments for the gbobject %s"
+msgstr "Los últimos comentarios de la entrada %s"
+
+#: feeds.py:301 tests/feeds.py:206
+#, python-format
+msgid "Pingbacks on %s"
+msgstr "Pingbacks en %s"
+
+#: feeds.py:305 tests/feeds.py:208
+#, python-format
+msgid "The latest pingbacks for the gbobject %s"
+msgstr "Los últimos pingbacks de la entrada %s"
+
+#: feeds.py:323 tests/feeds.py:218
+#, python-format
+msgid "Trackbacks on %s"
+msgstr "Trackbacks en %s"
+
+#: feeds.py:327 tests/feeds.py:220
+#, python-format
+msgid "The latest trackbacks for the gbobject %s"
+msgstr "Los últimos trackbacks de la entrada %s"
+
+#: models.py:64 models.py:105 admin/gbobject.py:73
+msgid "title"
+msgstr "título"
+
+#: models.py:65 models.py:119
+msgid "used for publication"
+msgstr "usado para la publicación"
+
+#: models.py:67
+msgid "description"
+msgstr "descripción"
+
+#: models.py:70 admin/forms.py:18
+msgid "parent Objecttype"
+msgstr "categoría padre"
+
+#: models.py:95
+msgid "Objecttype"
+msgstr "categoría"
+
+#: models.py:96 models.py:114 admin/forms.py:47 plugins/models.py:24
+msgid "objecttypes"
+msgstr "categorías"
+
+#: models.py:101
+msgid "draft"
+msgstr "borrador"
+
+#: models.py:102
+msgid "hidden"
+msgstr "oculto"
+
+#: models.py:103
+msgid "published"
+msgstr "publicado"
+
+#: models.py:107
+msgid "image"
+msgstr "imagen"
+
+#: models.py:108
+msgid "used for illustration"
+msgstr "utilizado como ilustración"
+
+#: models.py:109
+msgid "content"
+msgstr "contenido"
+
+#: models.py:110
+msgid "excerpt"
+msgstr "extracto"
+
+#: models.py:111
+msgid "optional element"
+msgstr "elemento opcional"
+
+#: models.py:113 plugins/models.py:30
+msgid "tags"
+msgstr "tags"
+
+#: models.py:116
+msgid "related gbobjects"
+msgstr "entradas relacionadas"
+
+#: models.py:123 plugins/models.py:28
+msgid "authors"
+msgstr "autores"
+
+#: models.py:126
+msgid "featured"
+msgstr "destacada"
+
+#: models.py:127 admin/gbobject.py:124
+msgid "comment enabled"
+msgstr "comentarios habilitados"
+
+#: models.py:128
+msgid "linkback enabled"
+msgstr "linkbacks habilitados"
+
+#: models.py:130
+msgid "creation date"
+msgstr "fecha de creación"
+
+#: models.py:131
+msgid "last update"
+msgstr "última actualización"
+
+#: models.py:132
+msgid "start publication"
+msgstr "comienzo de la publicación"
+
+#: models.py:133
+msgid "date start publish"
+msgstr "fecha de comienzo de la publicación"
+
+#: models.py:135
+msgid "end publication"
+msgstr "fin de la publicación"
+
+#: models.py:136
+msgid "date end publish"
+msgstr "Fecha de cierre de la publicación"
+
+#: models.py:139
+msgid "sites publication"
+msgstr "publicaciones del sitio"
+
+#: models.py:141
+msgid "login required"
+msgstr "identificación requerida"
+
+#: models.py:142
+msgid "only authenticated users can view the gbobject"
+msgstr "sólo los usuarios identificados pueden ver la entrada"
+
+#: models.py:143
+msgid "password"
+msgstr "contraseña"
+
+#: models.py:144
+msgid "protect the gbobject with a password"
+msgstr "protege la entrada con una contraseña"
+
+#: models.py:146 plugins/models.py:34 plugins/models.py:58
+#: plugins/models.py:80
+msgid "template"
+msgstr "plantilla"
+
+#: models.py:149
+msgid "Default template"
+msgstr "Plantilla predeterminada"
+
+#: models.py:151
+msgid "template used to display the gbobject"
+msgstr "plantilla usada para la entrada"
+
+#: models.py:285
+msgid "gbobject"
+msgstr "entrada"
+
+#: models.py:286 plugins/cms_plugins.py:21 plugins/cms_plugins.py:92
+#: plugins/cms_plugins.py:114 plugins/models.py:57
+#: templates/objectapp/base.html:40
+msgid "gbobjects"
+msgstr "entradas"
+
+#: moderator.py:45 moderator.py:72
+#, python-format
+msgid "[%(site)s] New comment posted on \"%(title)s\""
+msgstr "[%(site)s] Nuevo comentario en \"%(title)s\""
+
+#: admin/Objecttype.py:30
+msgid "tree path"
+msgstr "árbol de categorías"
+
+#: admin/gbobject.py:27 plugins/admin.py:17
+#: templates/admin/objectapp/widgets/quickpost.html:17
+msgid "Content"
+msgstr "Contenido"
+
+#: admin/gbobject.py:29 plugins/admin.py:19
+msgid "Options"
+msgstr "Opciones"
+
+#: admin/gbobject.py:34 plugins/admin.py:24
+msgid "Privacy"
+msgstr "Privacidad"
+
+#: admin/gbobject.py:36 plugins/admin.py:26
+msgid "Discussion"
+msgstr "Debates"
+
+#: admin/gbobject.py:38 plugins/admin.py:28
+msgid "Publication"
+msgstr "Publicación"
+
+#: admin/gbobject.py:66
+#, python-format
+msgid "%(title)s (%(word_count)i words)"
+msgstr "%(title)s (%(word_count)i palabras)"
+
+#: admin/gbobject.py:70
+#, python-format
+msgid "%(title)s (%(comments)i comments)"
+msgstr "%(title)s (%(comments)i comentarios)"
+
+#: admin/gbobject.py:86
+msgid "author(s)"
+msgstr "autor(es)"
+
+#: admin/gbobject.py:99
+msgid "Objecttype(s)"
+msgstr "categoría(s)"
+
+#: admin/gbobject.py:111
+msgid "tag(s)"
+msgstr "tag(s)"
+
+#: admin/gbobject.py:118
+msgid "site(s)"
+msgstr "sitio(s)"
+
+#: admin/gbobject.py:130
+msgid "is actual"
+msgstr "es actual?"
+
+#: admin/gbobject.py:136
+msgid "is visible"
+msgstr "es visible?"
+
+#: admin/gbobject.py:141
+msgid "View"
+msgstr "Ver"
+
+#: admin/gbobject.py:143
+msgid "View on site"
+msgstr "Ver en el sitio"
+
+#: admin/gbobject.py:149 templates/objectapp/_gbobject_detail.html:64
+msgid "Unavailable"
+msgstr "No disponible"
+
+#: admin/gbobject.py:153
+msgid "short url"
+msgstr "url corta"
+
+#: admin/gbobject.py:207
+msgid "The selected gbobjects now belong to you."
+msgstr "Las entradas seleccionadas ahora son tuyas."
+
+#: admin/gbobject.py:208
+msgid "Set the gbobjects to the user"
+msgstr "Asignar las entradas al usuario"
+
+#: admin/gbobject.py:214
+msgid "The selected gbobjects are now marked as published."
+msgstr "Las entradas seleccionadas han sido marcadas como publicadas."
+
+#: admin/gbobject.py:215
+msgid "Set gbobjects selected as published"
+msgstr "Publicar las entradas seleccionadas"
+
+#: admin/gbobject.py:220
+msgid "The selected gbobjects are now marked as hidden."
+msgstr "Las entradas seleccionadas han sido marcadas como ocultas."
+
+#: admin/gbobject.py:221
+msgid "Set gbobjects selected as hidden"
+msgstr "Ocultar las entradas seleccionadas"
+
+#: admin/gbobject.py:234
+msgid "The selected gbobjects have been tweeted."
+msgstr "Las entradas marcadas han sido twitteadas."
+
+#: admin/gbobject.py:235
+msgid "Tweet gbobjects selected"
+msgstr "Twittear las entradas seleccionadas"
+
+#: admin/gbobject.py:240
+msgid "Comments are now closed for selected gbobjects."
+msgstr "Los comentarios en las entradas marcadas han sido cerrados."
+
+#: admin/gbobject.py:241
+msgid "Close the comments for selected gbobjects"
+msgstr "Cerrar los comentarios de las entradas seleccionadas"
+
+#: admin/gbobject.py:247
+msgid "Linkbacks are now closed for selected gbobjects."
+msgstr "Los linkbacks en las entradas marcadas han sido cerrados."
+
+#: admin/gbobject.py:248
+msgid "Close the linkbacks for selected gbobjects"
+msgstr "Cerrar los linkbacks de las entradas seleccionadas"
+
+#: admin/gbobject.py:254
+msgid "The selected gbobjects are now set at the current date."
+msgstr ""
+"Las fechas de las entradas seleccionadas han sido puestas al momento actual."
+
+#: admin/gbobject.py:255
+msgid "Put the selected gbobjects on top at the current date"
+msgstr "Poner las fechas de las entradas seleccionadas al momento actual"
+
+#: admin/gbobject.py:272
+#, python-format
+msgid "%(directory)s directory succesfully pinged %(success)d gbobjects."
+msgstr ""
+"El directorio %(directory)s ha realizado un ping correctamente a %(success)d"
+" entradas."
+
+#: admin/gbobject.py:275
+msgid "Ping Directories for selected gbobjects"
+msgstr "Ping directorios para las entradas seleccionadas"
+
+#: admin/forms.py:20
+msgid "No parent Objecttype"
+msgstr "No hay categoría padre"
+
+#: admin/forms.py:35
+msgid "A Objecttype cannot be parent of itself."
+msgstr "Una categoría no puede ser padre de si misma."
+
+#: admin/forms.py:46 plugins/menu.py:70 templates/objectapp/base.html:22
+#: templates/objectapp/Objecttype_list.html:6 templates/objectapp/sitemap.html:50
+#: templatetags/zbreadcrumbs.py:49
+msgid "Objecttypes"
+msgstr "Categorías"
+
+#: plugins/cms_app.py:12
+msgid "Objectapp App Hook"
+msgstr "Aplicación Objectapp"
+
+#: plugins/cms_plugins.py:33
+msgid "Sorting"
+msgstr "Ordenaci´n"
+
+#: plugins/cms_plugins.py:43
+msgid "Advanced"
+msgstr "Avanzado"
+
+#: plugins/cms_plugins.py:94
+msgid "Selected gbobjects"
+msgstr "Entradas seleccionadas"
+
+#: plugins/cms_plugins.py:116 templates/objectapp/base.html:59
+msgid "Random gbobjects"
+msgstr "Entradas al azar"
+
+#: plugins/menu.py:19
+msgid "Objectapp Gbobject Menu"
+msgstr "Menú de entradas Objectapp "
+
+#: plugins/menu.py:65
+msgid "Objectapp Objecttype Menu"
+msgstr "Menú Categoría Objectapp"
+
+#: plugins/menu.py:82
+msgid "Objectapp Author Menu"
+msgstr "Menú Autor Objectapp"
+
+#: plugins/menu.py:87 templates/objectapp/author_list.html:6
+#: templates/objectapp/base.html:26 templatetags/zbreadcrumbs.py:46
+msgid "Authors"
+msgstr "Autores"
+
+#: plugins/menu.py:100
+msgid "Objectapp Tag Menu"
+msgstr "Menú Tag Objectapp"
+
+#: plugins/menu.py:105 templates/admin/objectapp/widgets/quickpost.html:25
+#: templates/objectapp/_gbobject_detail.html:47 templates/objectapp/base.html:34
+#: templates/objectapp/tag_list.html:6 templatetags/zbreadcrumbs.py:43
+msgid "Tags"
+msgstr "Tags"
+
+#: plugins/models.py:16
+msgid "Gbobject list (default)"
+msgstr "Lista de entradas (por defecto)"
+
+#: plugins/models.py:17
+msgid "Gbobject detailed"
+msgstr "Detalle de la entrada"
+
+#: plugins/models.py:27
+msgid "include subobjecttypes"
+msgstr "incluir subcategorías"
+
+#: plugins/models.py:33 plugins/models.py:79
+msgid "number of gbobjects"
+msgstr "Número de entradas"
+
+#: plugins/models.py:36 plugins/models.py:60 plugins/models.py:82
+msgid "Template used to display the plugin"
+msgstr "Plantilla utilizada para mostrar el plugin "
+
+#: plugins/models.py:51 plugins/models.py:73 plugins/models.py:85
+#, python-format
+msgid "%s gbobjects"
+msgstr "%s entradas"
+
+#: templates/404.html:5
+msgid "Error 404"
+msgstr "Error 404"
+
+#: templates/404.html:8 templates/404.html.py:11
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+#: templates/404.html:13
+msgid "Sorry, but the requested page could not be found."
+msgstr "La página solicitada no pudo ser encontrada."
+
+#: templates/404.html:15 templates/500.html:20
+msgid "Useful links"
+msgstr "Enlaces útiles"
+
+#: templates/404.html:19 templates/404.html.py:20 templates/500.html:24
+#: templates/500.html.py:25
+msgid "Blog index"
+msgstr "Inicio del blog"
+
+#: templates/404.html:24 templates/404.html.py:25 templates/500.html:29
+#: templates/500.html.py:30 templates/objectapp/sitemap.html:4
+#: templates/objectapp/sitemap.html.py:7 templates/objectapp/skeleton.html:36
+#: templates/objectapp/skeleton.html.py:37
+msgid "Sitemap"
+msgstr "Sitemap"
+
+#: templates/404.html:31 templates/500.html:36 templates/objectapp/base.html:47
+msgid "Recent gbobjects"
+msgstr "Entradas recientes"
+
+#: templates/404.html:36 templates/500.html:41 templates/objectapp/base.html:10
+msgid "Search"
+msgstr "Buscar"
+
+#: templates/404.html:40 templates/500.html:45 templates/objectapp/base.html:13
+msgid "Keywords..."
+msgstr "Palabras clave..."
+
+#: templates/500.html:10
+msgid "Error 500"
+msgstr "Error 500"
+
+#: templates/500.html:13 templates/500.html.py:16
+msgid "Server error"
+msgstr "Error del Servidor"
+
+#: templates/500.html:18
+msgid ""
+"There's been an error. It's been reported to the site administrators via "
+"e-mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+"Ha ocurrido un error. Ha sido reportado al administrador de la web por "
+"email. Intentaremos solucionarlo con la mayor brevedad posible. Gracias por "
+"tu paciencia."
+
+#: templates/admin/objectapp/widgets/_content_stats.html:4
+msgid "Contents"
+msgstr "Contenido"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:5
+#: templates/objectapp/_gbobject_detail.html:69
+msgid "Discussions"
+msgstr "Debates"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:10
+#, python-format
+msgid "%(gbobjects)s gbobjects"
+msgstr "%(gbobjects)s entradas"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:15
+#, python-format
+msgid "%(comments)s comments"
+msgstr "%(comments)s comentarios"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:22
+#, python-format
+msgid "%(objecttypes)s objecttypes"
+msgstr "%(objecttypes)s categorías"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:25
+#, python-format
+msgid "%(pingbacks)s pingbacks"
+msgstr "%(pingbacks)s pingbacks"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:30
+#, python-format
+msgid "%(tags)s tags"
+msgstr "%(tags)s tags"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:33
+#, python-format
+msgid "%(trackbacks)s trackbacks"
+msgstr "%(trackbacks)s trackbacks"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:38
+#, python-format
+msgid "%(authors)s authors"
+msgstr "%(authors)s autores"
+
+#: templates/admin/objectapp/widgets/_content_stats.html:43
+#, python-format
+msgid "%(rejects)s rejected"
+msgstr "%(rejects)s rechazadas"
+
+#: templates/admin/objectapp/widgets/_draft_gbobjects.html:7
+#: templates/objectapp/gbobject_detail.html:186
+#: templates/objectapp/gbobject_detail.html:187
+msgid "Edit the gbobject"
+msgstr "Editar la entrada"
+
+#: templates/admin/objectapp/widgets/_draft_gbobjects.html:10
+#: templates/comments/objectapp_gbobject_preview.html:25
+#: templates/feeds/comment_title.html:2
+#: templates/feeds/discussion_title.html:2
+#: templates/feeds/pingback_title.html:2
+#: templates/feeds/trackback_title.html:2
+#: templates/objectapp/_gbobject_detail.html:18
+#: templates/objectapp/gbobject_detail.html:91
+#: templates/objectapp/gbobject_detail.html:126
+#: templates/objectapp/gbobject_detail.html:157
+msgid "on"
+msgstr "en"
+
+#: templates/admin/objectapp/widgets/_draft_gbobjects.html:16
+#: templates/comments/objectapp/gbobject/form.html:19
+msgid "Preview"
+msgstr "Previsualizar"
+
+#: templates/admin/objectapp/widgets/_draft_gbobjects.html:23
+msgid "No draft gbobjects."
+msgstr "No hay borradores."
+
+#: templates/admin/objectapp/widgets/_draft_gbobjects.html:32
+#: templates/admin/objectapp/widgets/_draft_gbobjects.html:33
+msgid "View all draft gbobjects"
+msgstr "Ver todos los borradores"
+
+#: templates/admin/objectapp/widgets/_recent_comments.html:11
+#: templates/objectapp/_gbobject_detail.html:24
+#: templates/objectapp/tags/recent_comments.html:7
+#: templates/objectapp/tags/recent_linkbacks.html:8
+msgid "in"
+msgstr "en"
+
+#: templates/admin/objectapp/widgets/_recent_comments.html:14
+#: templates/objectapp/tags/recent_comments.html:9
+msgid "Comment on"
+msgstr "Comentarios en"
+
+#: templates/admin/objectapp/widgets/_recent_comments.html:23
+msgid "Edit the comment"
+msgstr "Editar el comentario"
+
+#: templates/admin/objectapp/widgets/_recent_comments.html:24
+#: templates/admin/objectapp/widgets/_recent_linkbacks.html:19
+msgid "Edit"
+msgstr "Editar"
+
+#: templates/admin/objectapp/widgets/_recent_comments.html:31
+#: templates/objectapp/_gbobject_detail.html:77
+#: templates/objectapp/gbobject_detail.html:107
+#: templates/objectapp/tags/recent_comments.html:16
+msgid "No comments yet."
+msgstr "No hay comentarios."
+
+#: templates/admin/objectapp/widgets/_recent_comments.html:40
+#: templates/admin/objectapp/widgets/_recent_comments.html:41
+msgid "Manage the comments"
+msgstr "Administra los comentarios"
+
+#: templates/admin/objectapp/widgets/_recent_linkbacks.html:8
+msgid "made a linkback on"
+msgstr "Crea un linkback en"
+
+#: templates/admin/objectapp/widgets/_recent_linkbacks.html:18
+msgid "Edit the linkback"
+msgstr "Edita el linkback"
+
+#: templates/admin/objectapp/widgets/_recent_linkbacks.html:26
+#: templates/objectapp/tags/recent_linkbacks.html:17
+msgid "No linkbacks yet."
+msgstr "No hay linkbacks."
+
+#: templates/admin/objectapp/widgets/content_stats.html:6
+#: templates/admin/objectapp/widgets/content_stats.html:7
+msgid "Today"
+msgstr "Hoy"
+
+#: templates/admin/objectapp/widgets/draft_gbobjects.html:6
+#: templates/admin/objectapp/widgets/draft_gbobjects.html:7
+msgid "Draft gbobjects"
+msgstr "Borradores"
+
+#: templates/admin/objectapp/widgets/quickpost.html:5
+#: templates/admin/objectapp/widgets/quickpost.html:6
+msgid "Quick publishing"
+msgstr "Publicación rápida"
+
+#: templates/admin/objectapp/widgets/quickpost.html:9
+msgid "Title"
+msgstr "Título"
+
+#: templates/admin/objectapp/widgets/quickpost.html:33
+msgid "Save as draft"
+msgstr "Guardado como borrador"
+
+#: templates/admin/objectapp/widgets/quickpost.html:34
+msgid "Reset"
+msgstr "Resetear"
+
+#: templates/admin/objectapp/widgets/quickpost.html:35
+msgid "Publish"
+msgstr "Publicar"
+
+#: templates/admin/objectapp/widgets/recent_comments.html:6
+#: templates/admin/objectapp/widgets/recent_comments.html:7
+#: templates/objectapp/base.html:51
+msgid "Recent comments"
+msgstr "Comentarios recientes"
+
+#: templates/admin/objectapp/widgets/recent_linkbacks.html:6
+#: templates/admin/objectapp/widgets/recent_linkbacks.html:7
+#: templates/objectapp/base.html:55
+msgid "Recent linkbacks"
+msgstr "Linkbacks recientes"
+
+#: templates/comments/comment_notification_email.txt:1
+#: templates/comments/comment_reply_email.txt:1
+#: templates/objectapp/gbobject_list.html:19
+msgid "Author"
+msgstr "Autor"
+
+#: templates/comments/comment_notification_email.txt:2
+msgid "Email"
+msgstr "Email"
+
+#: templates/comments/comment_notification_email.txt:3
+msgid "IP"
+msgstr "IP"
+
+#: templates/comments/comment_notification_email.txt:5
+#: templates/comments/comment_reply_email.txt:3
+msgid "Comment"
+msgstr "Comentario"
+
+#: templates/comments/comment_notification_email.txt:8
+#: templates/comments/comment_reply_email.txt:6
+msgid "View this comment"
+msgstr "Ver este comentario"
+
+#: templates/comments/comment_notification_email.txt:10
+msgid "Flag this comment"
+msgstr "Marcar este comentario"
+
+#: templates/comments/comment_notification_email.txt:12
+msgid "Delete this comment"
+msgstr "Borrar este comentario"
+
+#: templates/comments/comment_notification_email.txt:14
+msgid "Approve this comment"
+msgstr "Aprobar este comentario"
+
+#: templates/comments/objectapp_gbobject_preview.html:4
+msgid "Comment preview"
+msgstr "Previsualizar el comentario"
+
+#: templates/comments/objectapp_gbobject_preview.html:9
+msgid "Please correct following error."
+msgid_plural "Please correct following errors."
+msgstr[0] "Por favor corrije el siguiente error."
+msgstr[1] "Por favor corrige los siguientes errores."
+
+#: templates/comments/objectapp_gbobject_preview.html:12
+msgid "Preview of the comment"
+msgstr "Previsualización del comentario"
+
+#: templates/comments/objectapp/gbobject/form.html:7
+msgid "Post your comment"
+msgstr "Escribe un comentario"
+
+#: templates/comments/objectapp/gbobject/form.html:18
+msgid "Post"
+msgstr "Post"
+
+#: templates/comments/objectapp/gbobject/posted.html:4
+#: templates/comments/objectapp/gbobject/posted.html:7
+msgid "Thanks for your comment"
+msgstr "Gracias por el comentario"
+
+#: templates/comments/objectapp/gbobject/posted.html:9
+#: templates/comments/objectapp/gbobject/posted.html:10
+msgid "Return to gbobject list"
+msgstr "Volver a la lista de entradas"
+
+#: templates/objectapp/_gbobject_detail.html:11
+msgid "Written by"
+msgstr "Escrito por"
+
+#: templates/objectapp/_gbobject_detail.html:15
+#, python-format
+msgid "Show %(author)s gbobjects"
+msgstr "Mostrar las entradas de %(author)s"
+
+#: templates/objectapp/_gbobject_detail.html:20
+msgid "Written on"
+msgstr "Escrito en"
+
+#: templates/objectapp/_gbobject_detail.html:53
+msgid "No tags"
+msgstr "Sin tags"
+
+#: templates/objectapp/_gbobject_detail.html:58
+msgid "Short url"
+msgstr "Url corta"
+
+#: templates/objectapp/_gbobject_detail.html:73
+#, python-format
+msgid "%(comment_count)s comment"
+msgid_plural "%(comment_count)s comments"
+msgstr[0] "%(comment_count)s comentario"
+msgstr[1] "%(comment_count)s commentarios"
+
+#: templates/objectapp/_gbobject_detail.html:79
+msgid "Be first to comment!"
+msgstr "¡Se el primero en escribir un comentario!"
+
+#: templates/objectapp/_gbobject_detail.html:82
+#: templates/objectapp/gbobject_detail.html:103
+#: templates/objectapp/gbobject_detail.html:109
+msgid "Comments are closed."
+msgstr "Los comentarios están deshabilitados."
+
+#: templates/objectapp/_gbobject_detail.html:89
+#, python-format
+msgid "%(pingback_count)s pingback"
+msgid_plural "%(pingback_count)s pingbacks"
+msgstr[0] "%(pingback_count)s pingback"
+msgstr[1] "%(pingback_count)s pingbacks"
+
+#: templates/objectapp/_gbobject_detail.html:96
+#, python-format
+msgid "%(trackback_count)s trackback"
+msgid_plural "%(trackback_count)s trackbacks"
+msgstr[0] "%(trackback_count)s trackback"
+msgstr[1] "%(trackback_count)s trackbacks"
+
+#: templates/objectapp/author_list.html:4 templates/objectapp/author_list.html:9
+msgid "Author list"
+msgstr "Lista de autores"
+
+#: templates/objectapp/author_list.html:18 templates/objectapp/Objecttype_list.html:14
+#: templates/objectapp/sitemap.html:55 templates/objectapp/tag_list.html:16
+#: templates/objectapp/tags/authors.html:8
+#: templates/objectapp/tags/objecttypes.html:6
+#, python-format
+msgid "%(gbobject_count)s gbobject"
+msgid_plural "%(gbobject_count)s gbobjects"
+msgstr[0] "%(gbobject_count)s entrada"
+msgstr[1] "%(gbobject_count)s entradas"
+
+#: templates/objectapp/base.html:15
+msgid ""
+"You can use - to exclude words or phrases, &quot;double quotes&quot; for "
+"exact phrases and the AND/OR boolean operators combined with parenthesis for"
+" complex searchs."
+msgstr ""
+"Puedes usar - para excluir palabras o frases, &quot;comillas dobles&quot; "
+"para buscar frases exactas, y las operaciones booleanas AND/OR combinada con"
+" paréntesis para realizar búsquedas complejas."
+
+#: templates/objectapp/base.html:30
+msgid "Calendar"
+msgstr "Calendario"
+
+#: templates/objectapp/base.html:63
+msgid "Popular gbobjects"
+msgstr "Entradas populares"
+
+#: templates/objectapp/base.html:67 templates/objectapp/gbobject_archive_day.html:4
+#: templates/objectapp/gbobject_archive_day.html:6
+#: templates/objectapp/gbobject_archive_day.html:9
+#: templates/objectapp/gbobject_archive_month.html:4
+#: templates/objectapp/gbobject_archive_month.html:6
+#: templates/objectapp/gbobject_archive_month.html:9
+#: templates/objectapp/gbobject_archive_year.html:4
+#: templates/objectapp/gbobject_archive_year.html:6
+#: templates/objectapp/gbobject_archive_year.html:9
+#: templates/objectapp/tags/archives_gbobjects.html:5
+#: templates/objectapp/tags/archives_gbobjects_link.html:2
+#: templates/objectapp/tags/archives_gbobjects_tree.html:7
+#: templates/objectapp/tags/archives_gbobjects_tree.html:14
+#: templates/objectapp/tags/archives_gbobjects_tree.html:24
+msgid "Archives"
+msgstr "Archivos"
+
+#: templates/objectapp/base.html:72
+msgid "Tools"
+msgstr "Herramientas"
+
+#: templates/objectapp/base.html:76 templates/objectapp/base.html.py:77
+msgid "Dashboard"
+msgstr "Panel de control"
+
+#: templates/objectapp/base.html:83 templates/objectapp/base.html.py:84
+msgid "Post an gbobject"
+msgstr "Escribe una entrada"
+
+#: templates/objectapp/base.html:91 templates/objectapp/base.html.py:92
+msgid "Log out"
+msgstr "Desconectar"
+
+#: templates/objectapp/Objecttype_list.html:4 templates/objectapp/Objecttype_list.html:9
+msgid "Objecttype list"
+msgstr "Lista de categorías"
+
+#: templates/objectapp/gbobject_archive_month.html:13
+msgid "Daily archives"
+msgstr "Archivos diarios"
+
+#: templates/objectapp/gbobject_archive_year.html:13
+#: templates/objectapp/sitemap.html:67
+msgid "Monthly archives"
+msgstr "Archivos Mensuales"
+
+#: templates/objectapp/gbobject_detail.html:10
+msgid "RSS Feed of discussions on"
+msgstr "Feed RSS de los debates en"
+
+#: templates/objectapp/gbobject_detail.html:11
+msgid "RSS Feed of comments on"
+msgstr "Feed RSS de comentarios en"
+
+#: templates/objectapp/gbobject_detail.html:12
+msgid "RSS Feed of pingbacks on"
+msgstr "Feed RSS de pingbacks en"
+
+#: templates/objectapp/gbobject_detail.html:13
+msgid "RSS Feed of trackbacks on"
+msgstr "Feed RSS de trackbacks en"
+
+#: templates/objectapp/gbobject_detail.html:29
+msgid "Next gbobject"
+msgstr "Siguiente entrada"
+
+#: templates/objectapp/gbobject_detail.html:43
+msgid "Previous gbobject"
+msgstr "Entrada anterior"
+
+#: templates/objectapp/gbobject_detail.html:56
+msgid "Related gbobjects"
+msgstr "Entradas relacionadas"
+
+#: templates/objectapp/gbobject_detail.html:67
+msgid "Similar gbobjects"
+msgstr "Entradas similares"
+
+#: templates/objectapp/gbobject_detail.html:75
+msgid "Comments"
+msgstr "Comentarios"
+
+#: templates/objectapp/gbobject_detail.html:117
+msgid "Pingbacks"
+msgstr "Pingbacks"
+
+#: templates/objectapp/gbobject_detail.html:139
+msgid "Pingbacks are open."
+msgstr "Los pingbacks están abiertos."
+
+#: templates/objectapp/gbobject_detail.html:141
+msgid "Pingbacks are closed."
+msgstr "Los pingbacks están cerrados."
+
+#: templates/objectapp/gbobject_detail.html:148
+msgid "Trackbacks"
+msgstr "Trackbacks"
+
+#: templates/objectapp/gbobject_detail.html:170
+msgid "Trackback URL"
+msgstr "URL del trackback"
+
+#: templates/objectapp/gbobject_list.html:4
+msgid "Latest gbobjects for"
+msgstr "Últimas entradas de"
+
+#: templates/objectapp/gbobject_list.html:4
+msgid "the Objecttype"
+msgstr "la categoría"
+
+#: templates/objectapp/gbobject_list.html:4
+msgid "the tag"
+msgstr "el tag"
+
+#: templates/objectapp/gbobject_list.html:4
+msgid "the author"
+msgstr "el autor"
+
+#: templates/objectapp/gbobject_list.html:4 templates/objectapp/gbobject_search.html:6
+msgid "page"
+msgstr "página"
+
+#: templates/objectapp/gbobject_list.html:9 templates/objectapp/gbobject_list.html:12
+#: templates/objectapp/gbobject_list.html:15 templates/objectapp/skeleton.html:40
+msgid "RSS Feed"
+msgstr "Feed RSS"
+
+#: templates/objectapp/gbobject_list.html:19
+msgid "Objecttype"
+msgstr "Categoría"
+
+#: templates/objectapp/gbobject_list.html:19 templates/objectapp/gbobject_list.html:30
+msgid "Tag"
+msgstr "Tag"
+
+#: templates/objectapp/gbobject_list.html:19 templates/objectapp/gbobject_search.html:4
+msgid "Page"
+msgstr "Página"
+
+#: templates/objectapp/gbobject_list.html:34
+#, python-format
+msgid "Gbobjects by %(author)s"
+msgstr "Entradas de %(author)s"
+
+#: templates/objectapp/gbobject_list.html:45 templates/objectapp/sitemap.html:23
+#: templates/objectapp/sitemap.html.py:43
+#: templates/objectapp/cms/gbobject_detail.html:12
+#: templates/objectapp/cms/gbobject_list.html:9
+#: templates/objectapp/tags/featured_gbobjects.html:9
+#: templates/objectapp/tags/popular_gbobjects.html:13
+#: templates/objectapp/tags/random_gbobjects.html:9
+#: templates/objectapp/tags/recent_gbobjects.html:9
+msgid "No gbobjects yet."
+msgstr "No hay entradas."
+
+#: templates/objectapp/gbobject_list.html:51 templates/objectapp/gbobject_search.html:40
+#, python-format
+msgid "Page %(current_page)s of %(total_page)s"
+msgstr "Página %(current_page)s de %(total_page)s"
+
+#: templates/objectapp/gbobject_list.html:56 templates/objectapp/gbobject_search.html:45
+msgid "More recent gbobjects"
+msgstr "Entradas más recientes"
+
+#: templates/objectapp/gbobject_list.html:65 templates/objectapp/gbobject_search.html:54
+msgid "Gbobjects page"
+msgstr "Página de entradas"
+
+#: templates/objectapp/gbobject_list.html:72 templates/objectapp/gbobject_search.html:61
+msgid "More old gbobjects"
+msgstr "Entradas más antiguas"
+
+#: templates/objectapp/gbobject_list.html:82 templates/objectapp/gbobject_list.html:83
+msgid "Edit the Objecttype"
+msgstr "Editar la categoría"
+
+#: templates/objectapp/gbobject_list.html:89 templates/objectapp/gbobject_list.html:90
+msgid "Edit the tag"
+msgstr "Editar el tag"
+
+#: templates/objectapp/gbobject_list.html:96 templates/objectapp/gbobject_list.html:97
+msgid "Edit the author"
+msgstr "Editar el autor"
+
+#: templates/objectapp/gbobject_search.html:4 templates/objectapp/gbobject_search.html:6
+#: templates/objectapp/gbobject_search.html:14
+msgid "Search results for"
+msgstr "Resultados de la búsqueda para"
+
+#: templates/objectapp/gbobject_search.html:10
+msgid "RSS Feed of search result of"
+msgstr "Feed RSS de la búsqueda de"
+
+#: templates/objectapp/gbobject_search.html:22
+#, python-format
+msgid "%(gbobject_count)s gbobject found"
+msgid_plural "%(gbobject_count)s gbobjects found"
+msgstr[0] "%(gbobject_count)s entrada encontrada"
+msgstr[1] "%(gbobject_count)s entradas encontradas"
+
+#: templates/objectapp/gbobject_search.html:34
+msgid "Nothing found."
+msgstr "No hubo resultados."
+
+#: templates/objectapp/login.html:4 templates/objectapp/login.html.py:7
+msgid "Login required"
+msgstr "Identificación requerida"
+
+#: templates/objectapp/login.html:12
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+"Tu nombre de usuario y contraseña no son correctos. Vuelve a intentarlo."
+
+#: templates/objectapp/login.html:16
+msgid "You need to be connected to view this gbobject."
+msgstr "Necesitas estar identificado para ver esta entrada."
+
+#: templates/objectapp/login.html:33
+msgid "Login"
+msgstr "Login"
+
+#: templates/objectapp/password.html:4 templates/objectapp/password.html.py:7
+msgid "Password required"
+msgstr "Contraseña requerida"
+
+#: templates/objectapp/password.html:12
+msgid "The password provided is not valid. Please try again."
+msgstr "La contraseña proporcionada no es válida. Vuelve a intentarlo."
+
+#: templates/objectapp/password.html:16
+msgid "You need to provide a password to view this gbobject."
+msgstr "Necesitas una contraseña para ver esta entrada."
+
+#: templates/objectapp/password.html:23
+msgid "Password"
+msgstr "Contraseña"
+
+#: templates/objectapp/password.html:28
+msgid "Valid"
+msgstr "Válido"
+
+#: templates/objectapp/sitemap.html:10
+msgid "Gbobjects per objecttypes"
+msgstr "Entradas de la categoría"
+
+#: templates/objectapp/sitemap.html:18 templates/objectapp/sitemap.html.py:38
+#: templates/objectapp/tags/popular_gbobjects.html:8
+msgid "comment"
+msgstr "comentario"
+
+#: templates/objectapp/sitemap.html:31
+msgid "All the gbobjects"
+msgstr "Todas las entradas"
+
+#: templates/objectapp/sitemap.html:60 templates/objectapp/tags/objecttypes.html:11
+msgid "No objecttypes yet."
+msgstr "No hay categorías."
+
+#: templates/objectapp/skeleton.html:27 templates/objectapp/skeleton.html.py:39
+msgid "RSS Feed of latest gbobjects"
+msgstr "Feed RSS de las últimas entradas"
+
+#: templates/objectapp/tag_list.html:4 templates/objectapp/tag_list.html.py:9
+msgid "Tag list"
+msgstr "Lista de tags"
+
+#: templates/objectapp/wlwmanifest.xml:40
+msgid "View site"
+msgstr "Ver la web"
+
+#: templates/objectapp/wlwmanifest.xml:41
+msgid "Admin. site"
+msgstr "Panel de administración"
+
+#: templates/objectapp/wlwmanifest.xml:53
+msgid "Manage comments"
+msgstr "Administrar comentarios"
+
+#: templates/objectapp/tags/archives_gbobjects.html:12
+#: templates/objectapp/tags/archives_gbobjects_tree.html:38
+msgid "No archives yet."
+msgstr "No hay archivos."
+
+#: templates/objectapp/tags/authors.html:12
+msgid "No authors yet."
+msgstr "No hay autores."
+
+#: templates/objectapp/tags/recent_linkbacks.html:10
+msgid "Linkback on"
+msgstr "Linkbacks en"
+
+#: templates/objectapp/tags/similar_gbobjects.html:9
+msgid "No similar gbobjects."
+msgstr "No hay entradas similares"
+
+#: tests/views.py:165 views/search.py:18
+msgid "The pattern is too short"
+msgstr "La cadena es muy corta"
+
+#: tests/views.py:168 views/search.py:22
+msgid "No pattern to search found"
+msgstr "No se encuentra cadena"
+
+#: xmlrpc/metaweblog.py:35
+msgid "Username is incorrect."
+msgstr "El nombre de usuario es incorrecto."
+
+#: xmlrpc/metaweblog.py:37
+msgid "Password is invalid."
+msgstr "La contraseña es incorrecta."
+
+#: xmlrpc/metaweblog.py:39
+msgid "User account unavailable."
+msgstr "El nombre de usuario no está disponible."
+
+#: xmlrpc/metaweblog.py:42
+#, python-format
+msgid "User cannot %s."
+msgstr "El usuario no puede ser %s."
+
+#: xmlrpc/pingback.py:93
+msgid "No title"
+msgstr "No hay título"
+
+

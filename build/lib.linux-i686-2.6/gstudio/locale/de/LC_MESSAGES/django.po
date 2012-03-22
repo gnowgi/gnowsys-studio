@@ -1,0 +1,1341 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Jannis Leidel <jannis@leidel.info>, 2011.
+# Julien Fache <fastomas42@gmail.com>, 2011.
+# madcad <mail@mad-cad.net>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: django-gstudio\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-29 19:24+0530\n"
+"PO-Revision-Date: 2011-04-12 18:21+0000\n"
+"Last-Translator: Fantomas42 <fastomas42@gmail.com>\n"
+"Language-Team: German (http://www.transifex.net/projects/p/django-gstudio/"
+"team/de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: feeds.py:103 plugins/cms_plugins.py:23
+#: templates/gstudio/nodetype_archive.html:4
+#: templates/gstudio/nodetype_archive.html:25
+#: templates/gstudio/nodetype_list.html:19 tests/feeds.py:124
+msgid "Latest nodetypes"
+msgstr "Neuste Einträge"
+
+#: feeds.py:107 tests/feeds.py:127
+#, python-format
+msgid "The latest nodetypes for the site %s"
+msgstr "Die neusten Einträge der Seite %s"
+
+#: feeds.py:127 tests/feeds.py:137
+#, python-format
+msgid "Nodetypes for the metatype %s"
+msgstr "Einträge der Kategorie %s"
+
+#: feeds.py:131 tests/feeds.py:140
+#, python-format
+msgid "The latest nodetypes for the metatype %s"
+msgstr "Die neusten Einträge in Kategorie %s"
+
+#: feeds.py:151 tests/feeds.py:149
+#, python-format
+msgid "Nodetypes for author %s"
+msgstr "Einträge für Autor %s"
+
+#: feeds.py:155 tests/feeds.py:151
+#, python-format
+msgid "The latest nodetypes by %s"
+msgstr "Die neuesten Einträge von %s"
+
+#: feeds.py:176 tests/feeds.py:161
+#, python-format
+msgid "Nodetypes for the tag %s"
+msgstr "Einträge für den Tag %s"
+
+#: feeds.py:180 tests/feeds.py:163
+#, python-format
+msgid "The latest nodetypes for the tag %s"
+msgstr "Die neuen Einträge für den Tag %s"
+
+#: feeds.py:203 tests/feeds.py:177
+#, python-format
+msgid "Results of the search for '%s'"
+msgstr ""
+
+#: feeds.py:207 tests/feeds.py:180
+#, python-format
+msgid "The nodetypes containing the pattern '%s'"
+msgstr ""
+
+#: feeds.py:252 tests/feeds.py:199
+#, python-format
+msgid "Discussions on %s"
+msgstr "Kommentare auf %s"
+
+#: feeds.py:256 tests/feeds.py:202
+#, python-format
+msgid "The latest discussions for the nodetype %s"
+msgstr "Die neusten Kommentare für die Einträge %s"
+
+#: feeds.py:274 tests/feeds.py:212
+#, python-format
+msgid "Comments on %s"
+msgstr "Kommentar für %s"
+
+#: feeds.py:278 tests/feeds.py:215
+#, python-format
+msgid "The latest comments for the nodetype %s"
+msgstr "Die neusten Kommentare für die Einträge %s"
+
+#: feeds.py:308 tests/feeds.py:231
+#, python-format
+msgid "Pingbacks on %s"
+msgstr "Pingbacks für %s"
+
+#: feeds.py:312 tests/feeds.py:234
+#, python-format
+msgid "The latest pingbacks for the nodetype %s"
+msgstr "Die neusten Pingbacks für Eintrag %s"
+
+#: feeds.py:330 tests/feeds.py:244
+#, python-format
+msgid "Trackbacks on %s"
+msgstr "Trackbacks für %s"
+
+#: feeds.py:334 tests/feeds.py:247
+#, python-format
+msgid "The latest trackbacks for the nodetype %s"
+msgstr "Die neusten Trackbacks für Eintrag %s"
+
+#: models.py:90 models.py:294
+msgid "draft"
+msgstr "Entwurf"
+
+#: models.py:91 models.py:295
+msgid "hidden"
+msgstr "Versteckt"
+
+#: models.py:92 models.py:296
+msgid "published"
+msgstr "Veröffentlicht"
+
+#: models.py:120 admin/nodetype.py:80
+msgid "title"
+msgstr "Titel"
+
+#: models.py:120
+msgid "give a name to the node"
+msgstr ""
+
+#: models.py:151
+msgid "alternate names"
+msgstr ""
+
+#: models.py:151
+msgid "alternate names if any"
+msgstr ""
+
+#: models.py:152 models.py:293
+msgid "plural name"
+msgstr ""
+
+#: models.py:152 models.py:293
+msgid "plural form of the node name if any"
+msgstr ""
+
+#: models.py:196 models.py:322
+msgid "used for publication"
+msgstr "Für die Veröffentlichung benutzt"
+
+#: models.py:197
+msgid "description"
+msgstr "Beschreibung"
+
+#: models.py:198 admin/forms.py:67
+msgid "parent metatype"
+msgstr "Übergeordnete Kategorie"
+
+#: models.py:283
+msgid "metatype"
+msgstr "Kategorie"
+
+#: models.py:284 admin/forms.py:101 plugins/models.py:25
+msgid "metatypes"
+msgstr "Kategorien"
+
+#: models.py:298
+msgid "content"
+msgstr "Inhalt"
+
+#: models.py:300
+msgid "is a kind of"
+msgstr ""
+
+#: models.py:303
+msgid "its meaning depends"
+msgstr ""
+
+#: models.py:306
+msgid "required for the meaning of"
+msgstr ""
+
+#: models.py:309
+msgid "image"
+msgstr "Bild"
+
+#: models.py:310
+msgid "used for illustration"
+msgstr "Als Abbildung benutzt"
+
+#: models.py:312
+msgid "excerpt"
+msgstr "Auszug"
+
+#: models.py:313
+msgid "optional element"
+msgstr "Optionales Element"
+
+#: models.py:315 plugins/models.py:32
+msgid "tags"
+msgstr "Tags"
+
+#: models.py:316
+#, fuzzy
+msgid "member of metatypes"
+msgstr "Anzahl der Einträge"
+
+#: models.py:319
+msgid "related nodetypes"
+msgstr "Verwandte Einträge"
+
+#: models.py:326 plugins/models.py:30
+msgid "authors"
+msgstr "Autoren"
+
+#: models.py:331
+msgid "featured"
+msgstr "empfohlenen"
+
+#: models.py:332 admin/nodetype.py:132
+msgid "comment enabled"
+msgstr "Kommentare aktiviert"
+
+#: models.py:333
+msgid "linkback enabled"
+msgstr "Linkback aktiviert"
+
+#: models.py:335
+msgid "creation date"
+msgstr "Erstellungsdatum"
+
+#: models.py:337
+msgid "last update"
+msgstr "Letzte Änderung"
+
+#: models.py:338
+msgid "start publication"
+msgstr "Veröffentlichungsbeginn"
+
+#: models.py:339
+msgid "date start publish"
+msgstr "Datum der ersten Veröffentlichung"
+
+#: models.py:341
+msgid "end publication"
+msgstr "Veröffentlichungsende"
+
+#: models.py:342
+msgid "date end publish"
+msgstr "Datum des Veröffentlichungsende"
+
+#: models.py:345
+msgid "sites publication"
+msgstr "Veröffentlich auf Seiten"
+
+#: models.py:349
+msgid "login required"
+msgstr "Anmeldung erfolderlich"
+
+#: models.py:350
+msgid "only authenticated users can view the nodetype"
+msgstr "Nur authentifizierte Benutzer können den Eintrag lesen "
+
+#: models.py:352
+msgid "password"
+msgstr "Passwort"
+
+#: models.py:353
+msgid "protect the nodetype with a password"
+msgstr "Eintrag mit Passwort schützen"
+
+#: models.py:356 plugins/models.py:37 plugins/models.py:63
+#: plugins/models.py:87
+msgid "template"
+msgstr "Template"
+
+#: models.py:358
+msgid "Default template"
+msgstr "Standard-Template"
+
+#: models.py:360
+msgid "template used to display the nodetype"
+msgstr "Template, mit dem dieser Eintrag dargestellt wird"
+
+#: models.py:568
+#, fuzzy
+msgid "node type"
+msgstr "Eintrag"
+
+#: models.py:569
+#, fuzzy
+msgid "node types"
+msgstr "Einträge"
+
+#: models.py:579
+msgid "inverse name"
+msgstr ""
+
+#: models.py:579
+msgid ""
+"when subjecttypes are interchanged, what should be the name of the relation "
+"type? This is mandatory field. If the relation is symmetric, same name will "
+"do."
+msgstr ""
+
+#: models.py:608
+#, fuzzy
+msgid "relation type"
+msgstr "Erstellungsdatum"
+
+#: models.py:609
+#, fuzzy
+msgid "relation types"
+msgstr "Erstellungsdatum"
+
+#: models.py:663
+msgid "attribute type"
+msgstr ""
+
+#: models.py:664
+#, fuzzy
+msgid "attribute types"
+msgstr "Neuste Einträge"
+
+#: models.py:686
+#, fuzzy
+msgid "relation"
+msgstr "Erstellungsdatum"
+
+#: models.py:687
+#, fuzzy
+msgid "relations"
+msgstr "Erstellungsdatum"
+
+#: models.py:723
+msgid "attribute"
+msgstr ""
+
+#: models.py:724
+msgid "attributes"
+msgstr ""
+
+#: models.py:755
+msgid "attribute set involved in the process"
+msgstr ""
+
+#: models.py:758
+msgid "relation set involved in the process"
+msgstr ""
+
+#: models.py:766
+msgid "process type"
+msgstr ""
+
+#: models.py:767
+msgid "process types"
+msgstr ""
+
+#: models.py:797
+msgid "system type"
+msgstr ""
+
+#: models.py:798
+msgid "system types"
+msgstr ""
+
+#: moderator.py:58 moderator.py:81 moderator.py:106
+#, python-format
+msgid "[%(site)s] New comment posted on \"%(title)s\""
+msgstr "[%(site)s] Neuer Kommentar zu \"%(title)s\""
+
+#: admin/forms.py:68
+msgid "No parent metatype"
+msgstr "Keine Hauptkategorie"
+
+#: admin/forms.py:82
+#, fuzzy
+msgid "A metatype cannot be a parent of itself."
+msgstr "Eine Kategorie kann auf selbst sein referenzieren."
+
+#: admin/forms.py:94
+#, fuzzy
+msgid "parent nodetype"
+msgstr "Nächster Eintrag"
+
+#: admin/forms.py:95
+#, fuzzy
+msgid "No parent nodetype"
+msgstr "Keine Hauptkategorie"
+
+#: admin/forms.py:99 plugins/menu.py:70 templates/gstudio/base.html:35
+#: templates/gstudio/metatype_list.html:6 templates/gstudio/sitemap.html:50
+#: templatetags/zbreadcrumbs.py:50
+msgid "Metatypes"
+msgstr "Kategorien"
+
+#: admin/forms.py:116
+#, fuzzy
+msgid "An objectype cannot be parent of itself."
+msgstr "Eine Kategorie kann auf selbst sein referenzieren."
+
+#: admin/metatype.py:30
+msgid "tree path"
+msgstr "Pfad"
+
+#: admin/nodetype.py:31 plugins/admin.py:17
+#: templates/admin/gstudio/widgets/quickpost.html:17
+msgid "Content"
+msgstr "Inhalt"
+
+#: admin/nodetype.py:33
+msgid "Dependency"
+msgstr ""
+
+#: admin/nodetype.py:35 plugins/admin.py:20
+msgid "Options"
+msgstr "Optionen"
+
+#: admin/nodetype.py:41 plugins/admin.py:26
+msgid "Privacy"
+msgstr "Privatsphäre"
+
+#: admin/nodetype.py:43 plugins/admin.py:28
+msgid "Discussion"
+msgstr "Diskussion"
+
+#: admin/nodetype.py:45 plugins/admin.py:30
+msgid "Publication"
+msgstr "Veröffentlichung"
+
+#: admin/nodetype.py:73
+#, python-format
+msgid "%(title)s (%(word_count)i words)"
+msgstr "%(title)s  (%(word_count)i Wörter)"
+
+#: admin/nodetype.py:77
+#, python-format
+msgid "%(title)s (%(comments)i comments)"
+msgstr "%(title)s  (%(comments)i Kommentare)"
+
+#: admin/nodetype.py:93
+msgid "author(s)"
+msgstr "Autor(en)"
+
+#: admin/nodetype.py:106
+msgid "metatype(s)"
+msgstr "Kategorie(n)"
+
+#: admin/nodetype.py:118
+msgid "tag(s)"
+msgstr "Tag(s)"
+
+#: admin/nodetype.py:126
+msgid "site(s)"
+msgstr "Seite(n)"
+
+#: admin/nodetype.py:138
+msgid "is actual"
+msgstr "Ist aktuell"
+
+#: admin/nodetype.py:144
+msgid "is visible"
+msgstr "Ist sichtbar"
+
+#: admin/nodetype.py:149
+msgid "View"
+msgstr ""
+
+#: admin/nodetype.py:151
+msgid "View on site"
+msgstr "Im Browser öffnen"
+
+#: admin/nodetype.py:157
+msgid "Unavailable"
+msgstr "Nicht verfügbar"
+
+#: admin/nodetype.py:161
+msgid "short url"
+msgstr "Kurze URL"
+
+#: admin/nodetype.py:216
+msgid "The selected nodetypes now belong to you."
+msgstr ""
+
+#: admin/nodetype.py:217
+msgid "Set the nodetypes to the user"
+msgstr "Ausgewählte Einträge dem aktuellem Benutzer zuordnen"
+
+#: admin/nodetype.py:224
+msgid "The selected nodetypes are now marked as published."
+msgstr ""
+
+#: admin/nodetype.py:225
+msgid "Set nodetypes selected as published"
+msgstr "Ausgewählte Einträge als öffentlich markieren"
+
+#: admin/nodetype.py:231
+msgid "The selected nodetypes are now marked as hidden."
+msgstr ""
+
+#: admin/nodetype.py:232
+msgid "Set nodetypes selected as hidden"
+msgstr "Ausgewählte Einträge als unsichtbar markieren"
+
+#: admin/nodetype.py:247
+msgid "The selected nodetypes have been tweeted."
+msgstr ""
+
+#: admin/nodetype.py:248
+msgid "Tweet nodetypes selected"
+msgstr "Ausgewählte Einträge twittern"
+
+#: admin/nodetype.py:254
+msgid "Comments are now closed for selected nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:255
+msgid "Close the comments for selected nodetypes"
+msgstr "Kommentare für ausgewählte Einträge deaktivieren"
+
+#: admin/nodetype.py:262
+msgid "Linkbacks are now closed for selected nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:264
+msgid "Close the linkbacks for selected nodetypes"
+msgstr "Schließen der Linkbacks für die ausgewählte Einträge"
+
+#: admin/nodetype.py:271
+msgid "The selected nodetypes are now set at the current date."
+msgstr ""
+
+#: admin/nodetype.py:273
+msgid "Put the selected nodetypes on top at the current date"
+msgstr "Setzen Sie die ausgewählten Einträge auf das aktuelle Datum"
+
+#: admin/nodetype.py:292
+#, python-format
+msgid "%(directory)s directory succesfully pinged %(success)d nodetypes."
+msgstr "%(directory)s  Verzeichnis erfolgreich angepingt %(success)d Einträge."
+
+#: admin/nodetype.py:296
+msgid "Ping Directories for selected nodetypes"
+msgstr "Verzeichnisdienste mit ausgewählten Einträgen anpingen"
+
+#: plugins/cms_app.py:12
+msgid "Gstudio App Hook"
+msgstr "Gstudio App Hook"
+
+#: plugins/cms_plugins.py:21 plugins/cms_plugins.py:92
+#: plugins/cms_plugins.py:114 plugins/models.py:61
+msgid "nodetypes"
+msgstr "Einträge"
+
+#: plugins/cms_plugins.py:33
+msgid "Sorting"
+msgstr "Sortierung"
+
+#: plugins/cms_plugins.py:43
+msgid "Advanced"
+msgstr "Fortgeschritten"
+
+#: plugins/cms_plugins.py:94
+msgid "Selected nodetypes"
+msgstr "Ausgewählte Einträge"
+
+#: plugins/cms_plugins.py:116 templates/gstudio/base.html:64
+#, fuzzy
+msgid "Random node types"
+msgstr "Zufällige Einträge"
+
+#: plugins/menu.py:19
+msgid "Gstudio Nodetype Menu"
+msgstr "Gstudio Eintragsmenü"
+
+#: plugins/menu.py:65
+msgid "Gstudio Metatype Menu"
+msgstr "Gstudio Kategorie Menü"
+
+#: plugins/menu.py:82
+msgid "Gstudio Author Menu"
+msgstr "Gstudio Autor Menü"
+
+#: plugins/menu.py:87 templates/gstudio/author_list.html:6
+#: templates/gstudio/base.html:40 templatetags/zbreadcrumbs.py:46
+msgid "Authors"
+msgstr "Autoren"
+
+#: plugins/menu.py:100
+msgid "Gstudio Tag Menu"
+msgstr "Gstudio Tag Menu"
+
+#: plugins/menu.py:105 templates/admin/gstudio/widgets/quickpost.html:25
+#: templates/gstudio/_nodetype_detail.html:53 templates/gstudio/base.html:48
+#: templates/gstudio/tag_list.html:6 templatetags/zbreadcrumbs.py:43
+msgid "Tags"
+msgstr "Tags"
+
+#: plugins/models.py:16
+msgid "Nodetype list (default)"
+msgstr "Liste der Einträge (Standard)"
+
+#: plugins/models.py:17
+msgid "Nodetype detailed"
+msgstr "Eintragsdetail"
+
+#: plugins/models.py:28
+msgid "include submetatypes"
+msgstr "Unterkategorien mit einbeziehen"
+
+#: plugins/models.py:35 plugins/models.py:85
+msgid "number of nodetypes"
+msgstr "Anzahl der Einträge"
+
+#: plugins/models.py:39 plugins/models.py:65 plugins/models.py:89
+msgid "Template used to display the plugin"
+msgstr "Template zur Anzeige des Plugins"
+
+#: plugins/models.py:54 plugins/models.py:78 plugins/models.py:92
+#, python-format
+msgid "%s nodetypes"
+msgstr "%s Einträge"
+
+#: templates/404.html:5
+msgid "Error 404"
+msgstr "Fehler 404"
+
+#: templates/404.html:8 templates/404.html.py:11
+msgid "Page not found"
+msgstr "Seite nicht gefunden"
+
+#: templates/404.html:13
+msgid "Sorry, but the requested page could not be found."
+msgstr ""
+"Entschuldigung, aber die angeforderte Seite konnte nicht gefunden werden."
+
+#: templates/404.html:15 templates/500.html:15
+msgid "Useful links"
+msgstr "Nützliche Links"
+
+#: templates/404.html:19 templates/404.html.py:20 templates/500.html:19
+#: templates/500.html.py:20
+msgid "Blog index"
+msgstr "Blog Index"
+
+#: templates/404.html:24 templates/404.html.py:25 templates/500.html:24
+#: templates/500.html.py:25 templates/gstudio/sitemap.html:4
+#: templates/gstudio/sitemap.html.py:7 templates/gstudio/skeleton.html:32
+#: templates/gstudio/skeleton.html.py:33
+msgid "Sitemap"
+msgstr "Sitemap"
+
+#: templates/404.html:31 templates/500.html:31 templates/gstudio/base.html:52
+#, fuzzy
+msgid "Recent node types"
+msgstr "Neuste Einträge"
+
+#: templates/404.html:36 templates/500.html:36 templates/gstudio/base.html:23
+msgid "Search"
+msgstr "Suche"
+
+#: templates/404.html:40 templates/500.html:40 templates/gstudio/base.html:26
+msgid "Keywords..."
+msgstr "Schlüsselwörter..."
+
+#: templates/500.html:5
+msgid "Error 500"
+msgstr "Fehler 500"
+
+#: templates/500.html:8 templates/500.html.py:11
+msgid "Server error"
+msgstr "Server-Fehler"
+
+#: templates/500.html:13
+msgid ""
+"There's been an error. It's been reported to the site administrators via e-"
+"mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+"Es ist ein Fehler aufgetreten. Der Server-Admin wurde umgehend benachrichtig "
+"und wird sich in Kürze um den Fehler kümmern. Wir danken für Ihr Verständnis."
+
+#: templates/admin/gstudio/widgets/_content_stats.html:4
+msgid "Contents"
+msgstr "Inhalt"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:5
+#: templates/gstudio/_nodetype_detail.html:71
+msgid "Discussions"
+msgstr "Diskussionen"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:10
+#, python-format
+msgid "%(nodetypes)s nodetypes"
+msgstr " %(nodetypes)s Einträge"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:15
+#, python-format
+msgid "%(comments)s comments"
+msgstr "%(comments)s Kommentare"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:22
+#, python-format
+msgid "%(metatypes)s metatypes"
+msgstr " %(metatypes)s Kategorien"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:25
+#, python-format
+msgid "%(pingbacks)s pingbacks"
+msgstr " %(pingbacks)s Pingbacks"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:30
+#, python-format
+msgid "%(tags)s tags"
+msgstr " %(tags)s Tags"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:33
+#, python-format
+msgid "%(trackbacks)s trackbacks"
+msgstr " %(trackbacks)s Trackbacks"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:38
+#, python-format
+msgid "%(authors)s authors"
+msgstr " %(authors)s Autoren"
+
+#: templates/admin/gstudio/widgets/_content_stats.html:43
+#, python-format
+msgid "%(rejects)s rejected"
+msgstr " %(rejects)s abgelehnt"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:7
+#: templates/gstudio/nodetype_detail.html:211
+msgid "Edit the nodetype"
+msgstr "Eintrag bearbeiten"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:10
+#: templates/comments/gstudio_nodetype_preview.html:25
+#: templates/feeds/comment_title.html:2
+#: templates/feeds/discussion_title.html:2
+#: templates/feeds/pingback_title.html:2
+#: templates/feeds/trackback_title.html:2
+#: templates/gstudio/_nodetype_detail.html:22
+#: templates/gstudio/nodetype_detail.html:108
+#: templates/gstudio/nodetype_detail.html:142
+#: templates/gstudio/nodetype_detail.html:175
+#: templates/gstudio/tags/recent_comments.html:7
+msgid "on"
+msgstr "am"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:16
+#: templates/comments/gstudio/nodetype/form.html:19
+msgid "Preview"
+msgstr "Vorschau"
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:23
+msgid "No draft nodetypes."
+msgstr "Kein Entwurfs Einträge."
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:32
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:33
+msgid "View all draft nodetypes"
+msgstr "Alle Eintragsentwürfe anziegen"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:11
+#: templates/gstudio/tags/recent_linkbacks.html:8
+msgid "in"
+msgstr "in"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:14
+#: templates/gstudio/tags/recent_comments.html:9
+msgid "Comment on"
+msgstr "Ihre Meinung zu"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:23
+msgid "Edit the comment"
+msgstr "Kommentar bearbeiten"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:24
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:19
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:31
+#: templates/gstudio/_nodetype_detail.html:79
+#: templates/gstudio/nodetype_detail.html:122
+#: templates/gstudio/tags/recent_comments.html:16
+msgid "No comments yet."
+msgstr "Keine Kommentare vorhanden."
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:40
+#: templates/admin/gstudio/widgets/_recent_comments.html:41
+msgid "Manage the comments"
+msgstr "Verwalten Sie die Kommentare"
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:8
+msgid "made a linkback on"
+msgstr "mache eine LinkBack auf"
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:18
+msgid "Edit the linkback"
+msgstr "Bearbeiten Sie den LinkBack"
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:26
+#: templates/gstudio/tags/recent_linkbacks.html:17
+msgid "No linkbacks yet."
+msgstr "Keine Linkbacks."
+
+#: templates/admin/gstudio/widgets/content_stats.html:6
+#: templates/admin/gstudio/widgets/content_stats.html:7
+msgid "Today"
+msgstr "Heute"
+
+#: templates/admin/gstudio/widgets/draft_nodetypes.html:6
+#: templates/admin/gstudio/widgets/draft_nodetypes.html:7
+msgid "Draft nodetypes"
+msgstr "Eintragsentwürfe"
+
+#: templates/admin/gstudio/widgets/quickpost.html:5
+#: templates/admin/gstudio/widgets/quickpost.html:6
+msgid "Quick publishing"
+msgstr "Schnelles Veröffentlichen"
+
+#: templates/admin/gstudio/widgets/quickpost.html:9
+msgid "Title"
+msgstr "Titel"
+
+#: templates/admin/gstudio/widgets/quickpost.html:33
+msgid "Save as draft"
+msgstr "Als Entwurf speichern"
+
+#: templates/admin/gstudio/widgets/quickpost.html:34
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: templates/admin/gstudio/widgets/quickpost.html:35
+msgid "Publish"
+msgstr "Veröffentlichen"
+
+#: templates/admin/gstudio/widgets/recent_comments.html:6
+#: templates/admin/gstudio/widgets/recent_comments.html:7
+#: templates/gstudio/base.html:56
+msgid "Recent comments"
+msgstr "Neueste Kommentare"
+
+#: templates/admin/gstudio/widgets/recent_linkbacks.html:6
+#: templates/admin/gstudio/widgets/recent_linkbacks.html:7
+#: templates/gstudio/base.html:60
+msgid "Recent linkbacks"
+msgstr "Aktuelle Linkbacks"
+
+#: templates/comments/gstudio_nodetype_preview.html:4
+msgid "Comment preview"
+msgstr "Kommentarvorschau"
+
+#: templates/comments/gstudio_nodetype_preview.html:9
+msgid "Please correct following error."
+msgid_plural "Please correct following errors."
+msgstr[0] "Bitte korrigieren Sie folgenden Fehler."
+msgstr[1] "Bitte korrigieren Sie folgende Fehler."
+
+#: templates/comments/gstudio_nodetype_preview.html:12
+msgid "Preview of the comment"
+msgstr "Kommentarvorschau einblenden"
+
+#: templates/comments/gstudio/nodetype/form.html:7
+msgid "Post your comment"
+msgstr "Kommentar schreiben"
+
+#: templates/comments/gstudio/nodetype/form.html:18
+msgid "Post"
+msgstr "Abschicken"
+
+#: templates/comments/gstudio/nodetype/posted.html:4
+#: templates/comments/gstudio/nodetype/posted.html:7
+msgid "Thanks for your comment"
+msgstr "Danke für Ihren Kommentar"
+
+#: templates/comments/gstudio/nodetype/posted.html:9
+#: templates/comments/gstudio/nodetype/posted.html:10
+msgid "Return to nodetype list"
+msgstr "Zur Liste der Einträge zurückkehren"
+
+#: templates/gstudio/_nodetype_detail.html:15
+#: templates/gstudio/_nodetype_detail.html:24
+msgid "Contributed by"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:19
+#, python-format
+msgid "Show %(author)s nodetypes"
+msgstr "Zeige Einträge von %(author)s"
+
+#: templates/gstudio/_nodetype_detail.html:59
+msgid "No tags"
+msgstr "Keine Tags"
+
+#: templates/gstudio/_nodetype_detail.html:64
+msgid "Short url"
+msgstr "Kurze URL"
+
+#: templates/gstudio/_nodetype_detail.html:75
+#, python-format
+msgid "%(comment_count)s comment"
+msgid_plural "%(comment_count)s comments"
+msgstr[0] " %(comment_count)s Kommentar"
+msgstr[1] " %(comment_count)s Kommentare"
+
+#: templates/gstudio/_nodetype_detail.html:81
+msgid "Discuss the relations or raise any issues!"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:84
+#: templates/gstudio/nodetype_detail.html:118
+#: templates/gstudio/nodetype_detail.html:124
+msgid "Comments are closed."
+msgstr "Kommentare deaktiviert."
+
+#: templates/gstudio/_nodetype_detail.html:91
+#, python-format
+msgid "%(pingback_count)s pingback"
+msgid_plural "%(pingback_count)s pingbacks"
+msgstr[0] " %(pingback_count)s  Pingback"
+msgstr[1] " %(pingback_count)s  Pingbacks"
+
+#: templates/gstudio/_nodetype_detail.html:98
+#, python-format
+msgid "%(trackback_count)s trackback"
+msgid_plural "%(trackback_count)s trackbacks"
+msgstr[0] " %(trackback_count)s  Trackback"
+msgstr[1] " %(trackback_count)s  Trackbacks"
+
+#: templates/gstudio/author_list.html:4 templates/gstudio/author_list.html:9
+msgid "Author list"
+msgstr "Autorenliste"
+
+#: templates/gstudio/author_list.html:18
+#: templates/gstudio/metatype_list.html:14 templates/gstudio/sitemap.html:55
+#: templates/gstudio/tag_list.html:15 templates/gstudio/tags/authors.html:8
+#: templates/gstudio/tags/metatypes.html:6
+#: templates/gstudio/tags/tag_cloud.html:8
+#, python-format
+msgid "%(nodetype_count)s nodetype"
+msgid_plural "%(nodetype_count)s nodetypes"
+msgstr[0] " %(nodetype_count)s  Eintrag"
+msgstr[1] " %(nodetype_count)s  Einträge"
+
+#: templates/gstudio/author_list.html:22
+#: templates/gstudio/tags/authors.html:12
+msgid "No authors yet."
+msgstr "Keine Autoren vorhanden."
+
+#: templates/gstudio/base.html:13 templates/gstudio/skeleton.html:35
+msgid "RSS Feed of latest nodetypes"
+msgstr "RSS-Feed der neuesten Einträge"
+
+#: templates/gstudio/base.html:28 templates/gstudio/nodetype_search.html:39
+msgid ""
+"You can use - to exclude words or phrases, &quot;double quotes&quot; for "
+"exact phrases and the AND/OR boolean operators combined with parenthesis for "
+"complex searchs."
+msgstr ""
+"Sie können, um Worte oder Sätze, \"Anführungszeichen\" für genaue Sätze und/"
+"oder die UND / ODER boolschen Operatoren mit Klammern für komplexe Suche "
+"kombiniert verwenden."
+
+#: templates/gstudio/base.html:44
+msgid "Calendar"
+msgstr "Kalender"
+
+#: templates/gstudio/base.html:68
+#, fuzzy
+msgid "Popular node types"
+msgstr "Beliebte Einträge"
+
+#: templates/gstudio/base.html:72
+#: templates/gstudio/nodetype_archive_day.html:4
+#: templates/gstudio/nodetype_archive_day.html:6
+#: templates/gstudio/nodetype_archive_day.html:9
+#: templates/gstudio/nodetype_archive_month.html:4
+#: templates/gstudio/nodetype_archive_month.html:6
+#: templates/gstudio/nodetype_archive_month.html:9
+#: templates/gstudio/nodetype_archive_year.html:4
+#: templates/gstudio/nodetype_archive_year.html:6
+#: templates/gstudio/nodetype_archive_year.html:9
+#: templates/gstudio/tags/archives_nodetypes.html:5
+#: templates/gstudio/tags/archives_nodetypes_link.html:2
+#: templates/gstudio/tags/archives_nodetypes_tree.html:7
+#: templates/gstudio/tags/archives_nodetypes_tree.html:14
+#: templates/gstudio/tags/archives_nodetypes_tree.html:24
+msgid "Archives"
+msgstr "Archiv"
+
+#: templates/gstudio/base.html:77
+msgid "Tools"
+msgstr "Werkzeuge"
+
+#: templates/gstudio/base.html:81 templates/gstudio/base.html.py:82
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: templates/gstudio/base.html:88 templates/gstudio/base.html.py:89
+msgid "Post a nodetype"
+msgstr "Schreibe einen Eintrag"
+
+#: templates/gstudio/base.html:96 templates/gstudio/base.html.py:97
+msgid "Log out"
+msgstr "Abmelden"
+
+#: templates/gstudio/login.html:4 templates/gstudio/login.html.py:7
+msgid "Login required"
+msgstr "Anmeldung erforderlich"
+
+#: templates/gstudio/login.html:12
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+"Ihr Benutzername und Passwort stimmen nicht überein. Bitte versuchen Sie es "
+"erneut."
+
+#: templates/gstudio/login.html:16
+msgid "You need to be connected to view this nodetype."
+msgstr "Sie müssen eingeloggt sein um diesen Eintrag zu sehen."
+
+#: templates/gstudio/login.html:33
+msgid "Login"
+msgstr "Login"
+
+#: templates/gstudio/metatype_list.html:4
+#: templates/gstudio/metatype_list.html:9
+msgid "Metatype list"
+msgstr "Kategorieliste"
+
+#: templates/gstudio/metatype_list.html:20 templates/gstudio/sitemap.html:60
+#: templates/gstudio/tags/metatypes.html:11
+msgid "No metatypes yet."
+msgstr "Keine Kategorien vorhanden."
+
+#: templates/gstudio/nodetype_archive_month.html:13
+msgid "Daily archives"
+msgstr "Tagesarchiv"
+
+#: templates/gstudio/nodetype_archive_year.html:13
+#: templates/gstudio/sitemap.html:67
+msgid "Monthly archives"
+msgstr "Monatliche Archive"
+
+#: templates/gstudio/nodetype_detail.html:22
+msgid "RSS Feed of discussions on"
+msgstr "RSS-Feed der Diskussionen auf"
+
+#: templates/gstudio/nodetype_detail.html:24
+msgid "RSS Feed of comments on"
+msgstr "RSS-Feed mit Kommentaren zu"
+
+#: templates/gstudio/nodetype_detail.html:26
+msgid "RSS Feed of pingbacks on"
+msgstr "RSS-Feed auf den Pingbacks"
+
+#: templates/gstudio/nodetype_detail.html:28
+msgid "RSS Feed of trackbacks on"
+msgstr "RSS-Feed auf Trackbacks ist an."
+
+#: templates/gstudio/nodetype_detail.html:46
+#, fuzzy
+msgid "Next node type"
+msgstr "Nächster Eintrag"
+
+#: templates/gstudio/nodetype_detail.html:60
+#, fuzzy
+msgid "Previous node type"
+msgstr "Vorheriger Eintrag"
+
+#: templates/gstudio/nodetype_detail.html:73
+#, fuzzy
+msgid "Related node types"
+msgstr "Verwandte Einträge"
+
+#: templates/gstudio/nodetype_detail.html:84
+#, fuzzy
+msgid "Similar node types"
+msgstr "Ähnliche Einträge"
+
+#: templates/gstudio/nodetype_detail.html:92
+msgid "Comments"
+msgstr "Kommentare"
+
+#: templates/gstudio/nodetype_detail.html:133
+msgid "Pingbacks"
+msgstr "Pingbacks"
+
+#: templates/gstudio/nodetype_detail.html:155
+msgid "Pingbacks are open."
+msgstr "Pingbacks sind aktiviert."
+
+#: templates/gstudio/nodetype_detail.html:157
+msgid "Pingbacks are closed."
+msgstr "Pingbacks sind deaktiviert."
+
+#: templates/gstudio/nodetype_detail.html:167
+msgid "Trackbacks"
+msgstr "Trackbacks"
+
+#: templates/gstudio/nodetype_detail.html:190
+msgid "Trackback URL"
+msgstr "Trackback-URL"
+
+#: templates/gstudio/nodetype_detail.html:212
+#, fuzzy
+msgid "Edit the node type"
+msgstr "Eintrag bearbeiten"
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "Latest nodetypes for"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the metatype"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the tag"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the author"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+#: templates/gstudio/nodetype_search.html:6
+msgid "page"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:9
+#: templates/gstudio/nodetype_list.html:12
+#: templates/gstudio/nodetype_list.html:15
+#: templates/gstudio/skeleton.html:36
+msgid "RSS Feed"
+msgstr "RSS-Feed"
+
+#: templates/gstudio/nodetype_list.html:19
+msgid "Metatype"
+msgstr "Kategorie"
+
+#: templates/gstudio/nodetype_list.html:19
+#: templates/gstudio/nodetype_list.html:31
+msgid "Tag"
+msgstr "Tag"
+
+#: templates/gstudio/nodetype_list.html:19
+msgid "Author"
+msgstr "Autor"
+
+#: templates/gstudio/nodetype_list.html:19
+#: templates/gstudio/nodetype_search.html:4
+msgid "Page"
+msgstr "Seite"
+
+#: templates/gstudio/nodetype_list.html:35
+#, python-format
+msgid "Nodetypes by %(author)s"
+msgstr "Einträge von %(author)s"
+
+#: templates/gstudio/nodetype_list.html:43
+msgid "No nodes in the network yet. Login and construct a network!"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:54
+#: templates/gstudio/nodetype_list.html:55
+msgid "Edit the metatype"
+msgstr "Kategorie bearbeiten"
+
+#: templates/gstudio/nodetype_list.html:61
+#: templates/gstudio/nodetype_list.html:62
+msgid "Edit the tag"
+msgstr "Tag bearbeiten"
+
+#: templates/gstudio/nodetype_list.html:68
+#: templates/gstudio/nodetype_list.html:69
+msgid "Edit the author"
+msgstr "Autor bearbeiten"
+
+#: templates/gstudio/nodetype_search.html:4
+#: templates/gstudio/nodetype_search.html:6
+#: templates/gstudio/nodetype_search.html:14
+msgid "Search results for"
+msgstr ""
+
+#: templates/gstudio/nodetype_search.html:10
+msgid "RSS Feed of search result of"
+msgstr "RSS-Feed mit Suchergebnissen zu"
+
+#: templates/gstudio/nodetype_search.html:22
+#, python-format
+msgid "%(nodetype_count)s nodetype found"
+msgid_plural "%(nodetype_count)s nodetypes found"
+msgstr[0] "%(nodetype_count)s Eintrag gefunden"
+msgstr[1] "%(nodetype_count)s Einträge gefunden"
+
+#: templates/gstudio/nodetype_search.html:31
+msgid "Nothing found."
+msgstr "Nichts gefunden."
+
+#: templates/gstudio/password.html:4 templates/gstudio/password.html.py:7
+msgid "Password required"
+msgstr "Passwort erforderlich"
+
+#: templates/gstudio/password.html:12
+msgid "The password provided is not valid. Please try again."
+msgstr "Das Kennwort ist ungültig. Bitte versuchen Sie es erneut."
+
+#: templates/gstudio/password.html:16
+msgid "You need to provide a password to view this nodetype."
+msgstr "Sie benötigen ein Passwort um diesen Eintrag lesen zu können."
+
+#: templates/gstudio/password.html:23
+msgid "Password"
+msgstr "Passwort"
+
+#: templates/gstudio/password.html:28
+msgid "Valid"
+msgstr "Gültig"
+
+#: templates/gstudio/sitemap.html:10
+msgid "Nodetypes per metatypes"
+msgstr "Einträge pro Kategorien"
+
+#: templates/gstudio/sitemap.html:18 templates/gstudio/sitemap.html.py:38
+#: templates/gstudio/tags/popular_nodetypes.html:8
+msgid "comment"
+msgstr "Kommentar"
+
+#: templates/gstudio/sitemap.html:23 templates/gstudio/sitemap.html.py:43
+#: templates/gstudio/cms/nodetype_list.html:9
+#: templates/gstudio/tags/featured_nodetypes.html:9
+#: templates/gstudio/tags/popular_nodetypes.html:13
+#: templates/gstudio/tags/random_nodetypes.html:9
+msgid "No nodetypes yet."
+msgstr "Keine Einträge vorhanden."
+
+#: templates/gstudio/sitemap.html:31
+msgid "All the nodetypes"
+msgstr "Alle Einträge"
+
+#: templates/gstudio/tag_list.html:4 templates/gstudio/tag_list.html.py:9
+msgid "Tag list"
+msgstr "Tag-Liste"
+
+#: templates/gstudio/tag_list.html:19
+#, fuzzy
+msgid "No tags yet."
+msgstr "Keine Kategorien vorhanden."
+
+#: templates/gstudio/cms/nodetype_detail.html:7
+#, fuzzy
+msgid "No node types yet."
+msgstr "Keine Einträge vorhanden."
+
+#: templates/gstudio/tags/archives_nodetypes.html:12
+#: templates/gstudio/tags/archives_nodetypes_tree.html:38
+msgid "No archives yet."
+msgstr "Kein Archiv vorhanden."
+
+#: templates/gstudio/tags/nodetypes.html:6
+#, fuzzy, python-format
+msgid "%(gbobjects_count)s gbobject"
+msgid_plural "%(gbobjects_count)s gbobjects"
+msgstr[0] " %(nodetype_count)s  Eintrag"
+msgstr[1] " %(nodetype_count)s  Einträge"
+
+#: templates/gstudio/tags/nodetypes.html:11
+#: templates/gstudio/tags/recent_nodetypes.html:16
+#, fuzzy
+msgid "No subtypes yet."
+msgstr "Keine Einträge vorhanden."
+
+#: templates/gstudio/tags/pagination.html:4
+#, python-format
+msgid "Page %(current_page)s of %(total_page)s"
+msgstr "Seite %(current_page)s von %(total_page)s "
+
+#: templates/gstudio/tags/pagination.html:10
+#, fuzzy
+msgid "More recent node types"
+msgstr "Mehr neuste Einträge"
+
+#: templates/gstudio/tags/pagination.html:20
+#: templates/gstudio/tags/pagination.html:33
+#: templates/gstudio/tags/pagination.html:47
+msgid "Nodetypes page"
+msgstr "Einträge der Seite"
+
+#: templates/gstudio/tags/pagination.html:56
+msgid "More old nodetypes"
+msgstr "Mehr alte Einträge"
+
+#: templates/gstudio/tags/recent_linkbacks.html:10
+msgid "Linkback on"
+msgstr "Linkback auf"
+
+#: templates/gstudio/tags/similar_nodetypes.html:9
+msgid "No similar nodetypes."
+msgstr "Keine ähnlichen Einträge."
+
+#: tests/views.py:222 views/search.py:18
+msgid "The pattern is too short"
+msgstr "Der Suchbegriff ist zu kurz"
+
+#: tests/views.py:226 views/search.py:22
+msgid "No pattern to search found"
+msgstr "Kein Suchbegriff gegeben"
+
+#: xmlrpc/metaweblog.py:35
+msgid "Username is incorrect."
+msgstr "Benutzername ist falsch."
+
+#: xmlrpc/metaweblog.py:37
+msgid "Password is invalid."
+msgstr "Kennwort ist ungültig."
+
+#: xmlrpc/metaweblog.py:39
+msgid "User account unavailable."
+msgstr "Benutzerkonto nicht verfügbar."
+
+#: xmlrpc/metaweblog.py:42
+#, python-format
+msgid "User cannot %s."
+msgstr "Benutzer kann nicht %s."
+
+#: xmlrpc/pingback.py:96
+msgid "No title"
+msgstr "Kein Titel"
+
+#~ msgid "Written by"
+#~ msgstr "Geschrieben von"
+
+#~ msgid "Be first to comment!"
+#~ msgstr "Schreiben den ersten Kommentar!"

@@ -1,0 +1,16 @@
+{% load i18n mptt_tags %}
+
+{% for metatype, structure in metatypes|tree_info %}
+  {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+    <a href="{{ metatype.get_absolute_url }}" title="{{ metatype.title }}">{{ metatype.title }}</a> 
+    {% blocktrans count metatype.nodetypes_published.count as nodetype_count %}{{ nodetype_count }} nodetype{% plural %}{{ nodetype_count }} nodetypes{% endblocktrans %}
+  {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+  {% empty %}
+<ul>
+  <li>
+    {% trans "No metatypes yet." %}
+  </li>
+</ul>
+{% endfor %}
+
+

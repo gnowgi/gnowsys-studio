@@ -1,0 +1,45 @@
+{% load i18n objectapp_tags %}
+
+{% for comment in comments %}
+<tr>
+  <th>
+    <img src="{% get_gravatar comment.email 40 "G" %}"
+         class="gravatar photo" alt="{{ comment.user_name }}" />
+  </th>
+  <td>
+    {% with comment.content_object as gbobject %}
+    <strong>{{ comment.user_name }}</strong> {% trans "in" %}
+    <strong>
+      <a href="{{ gbobject.get_absolute_url }}#comment_{{ comment.pk }}"
+         title="{% trans "Comment on" %} {{ gbobject.title }}">
+        {{ gbobject.title }}
+      </a>
+    </strong>
+    {% endwith %}
+    {{ comment.comment|truncatewords:20|linebreaks }}
+  </td>
+  <td>
+    <a href="{% url admin:comments_comment_change comment.pk %}"
+       title="{% trans "Edit the comment" %}" class="changelink">
+      {% trans "Edit" %}
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <th colspan="3">
+    {% trans "No comments yet." %}
+  </th>
+</tr>
+{% endfor %}
+
+{% if comments %}
+<tr>
+  <th colspan="3">
+    <a href="{% url admin:comments_comment_changelist %}"
+       title="{% trans "Manage the comments" %}" class="managelink">
+      {% trans "Manage the comments" %}
+    </a>
+  </th>
+</tr>
+{% endif %}

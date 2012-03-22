@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Objecttype Force-Directed Graph</title>
+
+  <link rel="stylesheet" href="/static/gstudio/css/jquery-ui.css" type="text/css" media="all">
+
+  <style type="text/css">
+    .link {
+      stroke : #ccc;
+    }
+
+    .nodetext {
+      pointer-events : none;
+      font           : 10px sans-serif;
+    }
+    
+    .node {
+	border-width : 1px;
+	border-color : gray;
+    }
+    body {
+      background-color:white;
+    }
+
+   #chart {
+    height: 90%;
+    margin: 0 auto;
+    width: 90%;
+   }
+
+  svg {
+      margin-left: 10%;
+      margin-right: 10%;
+      display: block;
+ 	position:absolute;
+    }
+   
+
+  </style>
+  
+  
+</head>
+
+
+<body marginwidth="0" marginheight="0">
+<div class="body" >
+  <div class="content">
+ 
+ <!--
+    <div id="relation_type" class="ui-buttonset">
+            <span>Relation type:</span>
+            <input checked="checked" value="follows" type="radio" id="follows" name="radio" class="ui-helper-hidden-accessible"><label for="follows" class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left" aria-pressed="false" role="button" aria-disabled="false"><span class="ui-button-text">Followers</span></label>
+            <input value="mentions" type="radio" id="mentions" name="radio" class="ui-helper-hidden-accessible"><label for="mentions" aria-pressed="true" class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right ui-state-active" role="button" aria-disabled="false"><span class="ui-button-text">Mentions</span></label>
+             <input value="hashtags" type="radio" id="hashtags" name="radio"/><label for="hashtags">Shared interests</label> 
+          </div>
+     -->     
+    <div id="chart"><svg width="960" height="700" style="opacity: 1; ">
+   </div>
+
+
+    <script type="text/javascript" src="/static/gstudio/js/jquery.min.js" ></script>
+    <script type="text/javascript" src="/static/gstudio/js/jquery-ui.js" ></script>    
+
+    <script type="text/javascript" src="/static/gstudio/js/underscore.js" ></script>
+
+    <script type="text/javascript" src="/static/gstudio/js/d3.js"></script>
+    <script type="text/javascript" src="/static/gstudio/js/d3.layout.js"></script>
+    <script type="text/javascript" src="/static/gstudio/js/d3.geom.js"></script>
+<!--    <script type="text/javascript" src="/static/gstudio/js/force.js"></script>
+
+Javascript for Object type force graph
+-->
+   <script type="text/javascript" >
+
+    var w = 960,
+        h = 700,
+        fill = d3.scale.category20();
+
+    var vis = d3.select("#chart")
+        .append("svg:svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    vis.append("svg:g").attr("class", "edges");        
+    vis.append("svg:g").attr("class", "nodes");
+
+$(function() {
+  $.ajax({
+    url: '/gstudio/graphs/graph_json/{{ node_id }}' ,
+    //crossDomain: true,
+    dataType: 'json',
+    success : function(json) {
+
+      var force; 
+      
+	// this contains all the nodes as a dict with _id as the key
+
+      var nodes_by_id = _.reduce(json.node_metadata, function(acc, n) {
+        acc[n._id] = n;
+        return acc;
+      }, {});
+								       
+      var  member_of_metatype = _(json.member_of_metatype).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'member_of_metatype';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      		
+       var contains_subtypes = _(json.contains_subtypes).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'contains_subtypes';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+       var contains_members = _(json.contains_members).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'contains_members';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+
+      var  left_subjecttype_of  = _(json.left_subjecttype_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'left_subjecttype_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+
+       var subjecttype_of = _(json.subjecttype_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'subjecttype_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+       var type_of = _(json.type_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'type_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+      
+      var  right_subjecttype_of = _(json.right_subjecttype_of).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'right_subjecttype_of';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+
+       var follows_edges = _(json.is_followed_by).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'follows_edges';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+
+       var mentions_edges = _(json.is_mentioned_by).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'mentions_edges';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();
+      
+
+	nodes_by_id[{{ node_id }}].x = w/2.0;
+	nodes_by_id[{{ node_id }}].y = h/2.0;
+      
+        all_edges = new Array();
+	all_edges = all_edges.concat(follows_edges, member_of_metatype, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of, type_of); 
+	/* all_edges.concat(follows_edges); 
+         all_edges.concat(member_of_metatype); 
+         all_edges.concat(contains_members);
+	 all_edges.concat(contains_subtypes); 
+         all_edges.concat(mentions_edges); 
+        
+
+	document.getElementById('debugbox1').value= follows_edges;  //member_of_metatype      	
+	document.getElementById('debugbox2').value= mentions_edges;
+        //document.getElementById('debugbox2').value= member_of_metatype;      	
+	document.getElementById('debugbox3').value= all_edges; 
+	*/
+      var force = d3.layout.force()
+              .linkStrength(0.5)
+              .charge(-2000)
+              .friction(0.7)
+              .gravity(0.7)
+              .linkDistance(50)
+              .nodes([])
+              .links([])
+              .size([w, h])
+              .start();
+
+      function update(edges){
+        // for each func
+        _.each(nodes_by_id, function(n){n.added = false});
+        // reduce the nodes list to have only those nodes for a given rel.
+      nodes = _.reduce(edges, function(acc, e) {
+          if(nodes_by_id[e.from] && !nodes_by_id[e.from].added){
+            nodes_by_id[e.from].added = true;
+            acc.push(nodes_by_id[e.from]);
+          }
+          if(nodes_by_id[e.to] && !nodes_by_id[e.to].added){
+            nodes_by_id[e.to].added = true;
+            acc.push(nodes_by_id[e.to]);
+          }       
+          return acc;
+        }, []);
+        
+        force.nodes(nodes);
+        force.links(edges);
+        force.start();
+
+        link = d3.select("#chart g.edges").selectAll("line.link")
+                .data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
+                
+                link.enter().append("svg:line")
+                .attr("class", "link")
+                .style("stroke-width", 2 /* function(d) {
+                  return Math.sqrt(d.value);
+                } */ )
+                .attr("x1", function(d) {
+                  return d.source.x;
+                })
+                .attr("y1", function(d) {
+                  return d.source.y;
+                })
+                .attr("x2", function(d) {
+                  return d.target.x;
+                })
+                .attr("y2", function(d) {
+                  return d.target.y;
+                })
+	      .append("a")
+               .text(function(d) { return d.type; }); 
+	 
+	     
+          var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);              
+                
+          var new_g = node.enter().append("svg:g")
+              .attr("class", "node")
+              .call(force.drag);
+                
+              /*  new_g.append("svg:image").attr('xlink:href',
+                        function(d) {
+                          return d.profile_image_url;
+                        }).attr('height', 32).attr('width', 32);
+              */  
+        
+	  new_g.append("svg:circle")
+	      .attr("cx", function(d) { return d.x - w/2.0 + 15; })
+	      .attr("cy", function(d) { return d.y - h/2.0 + 15; })  
+	      .attr("r", 7)
+ 	      .style("fill", "steelblue");
+	   /*
+	        new_g.append("svg:circle")
+                        .attr("fill", "steelblue")
+                        .attr("text-anchor", "middle")
+                        .text(function(d) {
+                          return d.screen_name;
+                        });        
+           */
+                new_g.append("svg:text")
+                        .attr("dy", 20)
+	                .attr("dx", 25)
+	  
+                        /* .attr("text-anchor", "middle") */
+                        .text(function(d) {
+                          return d.screen_name;
+                        });        
+                
+                node.exit().remove();
+        
+
+        force.on("tick", function() {
+
+          var x_center = $("#chart").width() / 2;
+          var y_center = $("#chart").height() / 2;
+
+          link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+          node.attr("transform", function(d) { return "translate(" + (d.x-16) + "," + (d.y-16) + ")"; });
+
+        });
+      }
+      
+	update(all_edges);
+      vis.style("opacity", 1e-6)
+              .transition()
+              .duration(1000)
+              .style("opacity", 1);
+      
+   /*   $('input#follows').change(function(){
+        update(all_edges);
+      });
+     */ 
+     
+ /*	$('input#mentions').change(function(){
+        update(all_edges);
+      }); */
+    }
+  });
+  
+//  $("#relation_type").buttonset();
+  
+//  $('input#mentions').change(function(){console.log(this)});
+//  $('input#follows').change(function(){console.log(this)});
+});
+
+
+</script>
+
+  </div>
+
+</div>
+
+</body>
+</html> 

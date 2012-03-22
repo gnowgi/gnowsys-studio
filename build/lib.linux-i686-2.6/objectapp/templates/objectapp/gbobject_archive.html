@@ -1,0 +1,30 @@
+{% extends "objectapp/gbobject_list.html" %}
+{% load i18n objectapp_tags %}
+
+{% block meta-description %}{% trans "Latest gbobjects" %}{% endblock %}
+
+{% block link %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}objectapp/css/slider.css" />
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+  <script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/jquery.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/jquery.ui.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#slider").tabs({ fx:{ opacity: "toggle"}}).tabs("rotate", 5000, true);
+      $("#slider").hover(
+        function() { $("#slider").tabs("rotate", 0, true); },
+        function() { $("#slider").tabs("rotate", 5000, true); });
+    });
+  </script>
+{% endblock %}
+
+{% block title %}{% trans "Latest gbobjects" %}{% endblock %}
+
+{% block content %}
+{% get_featured_gbobjects 5 "objectapp/tags/slider_gbobjects.html" %}
+{{ block.super }}
+{% endblock %}

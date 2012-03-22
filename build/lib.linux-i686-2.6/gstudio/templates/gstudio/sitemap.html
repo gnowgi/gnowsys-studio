@@ -1,0 +1,70 @@
+{% extends "gstudio/base.html" %}
+{% load i18n gstudio_tags mptt_tags %}
+
+{% block title %}{% trans "Sitemap" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Sitemap" %}</h2>
+
+<div class="nodetypesbymetatypes">
+  <h3>{% trans "Nodetypes per metatypes" %}</h3>
+  {% for metatype in metatypes %}
+  <h4>{{ metatype }}</h4>
+  <ul>
+    {% for nodetype in metatype.nodetypes_published.all %}
+    <li>
+      <a href="{{ nodetype.get_absolute_url }}" title="{{ nodetype.title }}" rel="bookmark">{{ nodetype.title }}</a>
+      {% with nodetype.comments.count as comment_count %}
+      - {{ comment_count }} {% trans "comment" %}{{ comment_count|pluralize }}
+      {% endwith %}
+    </li>
+    {% empty %}
+    <li>
+      {% trans "No nodetypes yet." %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+</div>
+
+<div class="allnodetypes">
+  <h3>{% trans "All the nodetypes" %}</h3>
+  <ul>
+    {% for nodetype in nodetypes %}
+    <li>
+      <a href="{{ nodetype.get_absolute_url }}" title="{{ nodetype.title }}" rel="bookmark">{{ nodetype.title }}</a>
+      - {{ nodetype.creation_date|date:"SHORT_DATE_FORMAT" }}
+      {% with nodetype.comments.count as comment_count %}
+      - {{ comment_count }} {% trans "comment" %}{{ comment_count|pluralize }}
+      {% endwith %}
+    </li>
+    {% empty %}
+    <li>
+      {% trans "No nodetypes yet." %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="metatypes">
+  <h3>{% trans "Metatypes" %}</h3>
+  {% for metatype, structure in metatypes|tree_info %}
+    {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+      <a href="{{ metatype.get_absolute_url }}" title="{{ metatype.title }}">{{ metatype.title }}</a>
+      -
+      {% blocktrans count metatype.nodetypes_published.count as nodetype_count %}{{ nodetype_count }} nodetype{% plural %}{{ nodetype_count }} nodetypes{% endblocktrans %}
+    {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+    {% empty %}
+  <ul>
+    <li>
+      {% trans "No metatypes yet." %}
+    </li>
+  </ul>
+  {% endfor %}
+</div>
+
+<div class="montharchives">
+  <h3>{% trans "Monthly archives" %}</h3>
+  {% get_archives_nodetypes %}
+</div>
+{% endblock %}

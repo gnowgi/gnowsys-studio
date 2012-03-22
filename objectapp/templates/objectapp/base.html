@@ -24,7 +24,7 @@
 
 <div class="search">
   <h3>{% trans "Search" %}</h3>
-  <form method="get" id="searchform" action="{% url objectapp_gbobject_search %}">
+  <form method="get" id="searchform" action="{% url nodes_search %}">
     <p>
       <input type="text" value="{% trans "Keywords..." %}" name="pattern" id="searchbox" onfocus="this.value=''" />
       <input type="submit" class="submitbutton" value="OK" />

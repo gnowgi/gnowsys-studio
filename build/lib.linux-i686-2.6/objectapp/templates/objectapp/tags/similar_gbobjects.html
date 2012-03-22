@@ -1,0 +1,12 @@
+{% load i18n %}
+<ul>
+  {% for gbobject in gbobjects %}
+  <li>
+    <a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>
+  </li>
+  {% empty %}
+  <li>
+    {% trans "No similar objects." %}
+  </li>
+  {% endfor %}
+</ul>

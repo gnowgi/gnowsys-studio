@@ -1,0 +1,242 @@
+{% extends "objectapp/base.html" %}
+{% load i18n comments objectapp_tags %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block meta-description %}{% if object.excerpt %}{{ object.excerpt|striptags }}{% else %}{{ object.content|striptags|truncatewords:100 }}{% endif %}{% endblock %}
+
+{% block meta-keywords %}{% if object.tags %}{{ object.tags }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block link %}
+  {{ block.super }}
+  {% with object.previous_gbobject as previous_gbobject %}{% if previous_gbobject %}
+  <link rel="prev" title="{{ previous_gbobject.title }}" href="{{ previous_gbobject.get_absolute_url }}" />
+  {% endif %}{% endwith %}
+  {% with object.next_gbobject as next_gbobject %}{% if next_gbobject %}
+  <link rel="next" title="{{ next_gbobject.title }}" href="{{ next_gbobject.get_absolute_url }}" />
+  {% endif %}{% endwith %}
+  <link rel="shortlink" href="{{ object.short_url }}" />
+  <link rel="canonical" href="{{ object.get_absolute_url }}" />
+  {% with year=object.creation_date|date:"Y" month=object.creation_date|date:"m" day=object.creation_date|date:"d" %}
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of discussions on" %} '{{ object.title }}'"
+        href="{% url objectapp_gbobject_discussion_feed year month day object.slug %}" />
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of comments on" %} '{{ object.title }}'"
+        href="{% url objectapp_gbobject_comment_feed year month day object.slug %}" />
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of pingbacks on" %} '{{ object.title }}'"
+        href="{% url objectapp_gbobject_pingback_feed year month day object.slug %}" />
+  <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of trackbacks on" %} '{{ object.title }}'"
+        href="{% url objectapp_gbobject_trackback_feed year month day object.slug %}" />
+  {% endwith %}
+{% endblock %}
+
+
+
+
+{% block content %}
+{% block gbobject-content %}
+
+  {% with object.html_content|safe as object_content %}
+  {% include "objectapp/_gbobject_detail.html" %}
+  {% endwith %}
+{% endblock %}
+
+
+
+{% block gbobject-widgets %}
+<div class="gbobject-widgets span-16 last">
+  {% with object.next_gbobject as next_gbobject %}
+  {% if next_gbobject %}
+
+  <div class="gbobject-next">
+    <h3>{% trans "Next object" %}</h3>
+    <ul>
+      <li>
+<a href="{{ next_gbobject.get_absolute_url }}" title="{{ next_gbobject.title }}" rel="next">
+{{ next_gbobject.title }}
+
+</a>
+      </li>
+    </ul>
+  </div>
+  {% endif %}
+  {% endwith %}
+
+
+
+  {% with object.previous_gbobject as previous_gbobject %}
+  {% if previous_gbobject %}
+  <div class="gbobject-previous">
+    <h3>{% trans "Previous object" %}</h3>
+    <ul>
+      <li>
+<a href="{{ previous_gbobject.get_absolute_url }}" title="{{ previous_gbobject.title }}" rel="prev">
+{{ previous_gbobject.title }}
+</a>
+      </li>
+    </ul>
+  </div>
+  {% endif %}
+  {% endwith %}
+  {% if object.related_published %}
+  <div class="gbobject-related">
+    <h3>{% trans "Related objects" %}</h3>
+    <ul>
+      {% for gbobject in object.related_published %}
+      <li>
+<a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  <div class="gbobject-similar">
+    <h3>{% trans "Similar objects" %}</h3>
+    {% get_similar_gbobjects 5 %}
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+{% block gbobject-comments %}
+<div id="comments" class="span-16 last">
+  <h3>{% trans "Comments" %}</h3>
+  {% with object.comments as comment_list %}
+  {% if comment_list.count %}
+  <ol id="comment-list" class="span-15 last">
+    {% for comment in comment_list %}
+    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in object.authors.all %} post-author{% endif %} span-15 last">
+      <div class="span-2">
+<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
+      </div>
+      <div class="comment-body span-13 last">
+<div class="comment-author span-13 last">
+{% if comment.url %}
+<a href="{{ comment.url }}" class="fn url">{{ comment.user_name }}</a>
+{% else %}
+{{ comment.user_name }}
+{% endif %}
+{% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+</div>
+<div class="span-13 last">
+{{ comment.comment|linebreaks }}
+</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+    {% if not object.comments_are_open %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% else %}
+    {% if object.comments_are_open %}
+  <p>{% trans "No comments yet." %}</p>
+    {% else %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+
+
+
+
+{% block gbobject-pingbacks %}
+<div id="pingbacks" class="span-16 last">
+  <h3>{% trans "Pingbacks" %}</h3>
+  {% with object.pingbacks as pingback_list %}
+  {% if pingback_list.count %}
+  <ol id="pingback-list" class="span-15 last">
+    {% for pingback in pingback_list %}
+    <li id="pingback_{{ pingback.pk }}" class="pingback {% cycle box1,box2 %} span-15 last">
+      <div class="pingback-body span-15 last">
+<div class="pingback-author span-15 last">
+<a href="{{ pingback.url }}">{{ pingback.user_name }}</a>
+{% trans "on" %} {{ pingback.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+</div>
+<div class="span-15 last">
+<cite>
+{{ pingback.comment }}
+</cite>
+</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+    {% if object.pingback_enabled %}
+  <p>{% trans "Pingbacks are open." %}</p>
+    {% else %}
+  <p>{% trans "Pingbacks are closed." %}</p>
+    {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+
+
+{% block gbobject-trackbacks %}
+{% with object.trackbacks as trackback_list %}
+{% if trackback_list.count or object.pingback_enabled %}
+<div id="trackbacks" class="span-16 last">
+  <h3>{% trans "Trackbacks" %}</h3>
+  {% if trackback_list.count %}
+  <ol id="trackback-list" class="span-15 last">
+    {% for trackback in trackback_list %}
+    <li id="trackback_{{ trackback.pk }}" class="trackback {% cycle box1,box2 %} span-15 last">
+      <div class="trackback-body span-15 last">
+<div class="trackback-author span-15 last">
+<a href="{{ trackback.url }}">{{ trackback.user_name }}</a>
+{% trans "on" %} {{ trackback.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+</div>
+<div class="span-15 last">
+<cite>
+{{ trackback.comment }}
+</cite>
+</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+    {% if object.pingback_enabled %}
+  <p>
+    <a href="{% url objectapp_gbobject_trackback object.pk %}" rel="trackback">
+      {% trans "Trackback URL" %}</a>
+  </p>
+    {% endif %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+
+
+{% block gbobject-comments-form %}
+{% if object.comments_are_open %}
+<div class="commentForm span-16 last">
+  {% render_comment_form for object %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% endblock %}
+
+
+{% block admin_tools %}
+{% if perms.objectapp.change_gbobject %}
+<li>
+  <a href="{% url admin:objectapp_gbobject_change object.pk %}" title="{% trans "Edit the object" %}">
+    {% trans "Edit the object" %}
+  </a>
+</li>
+{% endif %}
+{% endblock %}
+
+
+
+
+

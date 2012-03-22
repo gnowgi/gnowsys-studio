@@ -151,6 +151,7 @@ class Gbobject(Node):
                       (PUBLISHED, _('published')))
 
     content = models.TextField(_('content'), null=True, blank=True)
+    content_org = models.TextField(_('content'), null=True, blank=True)
     image = models.ImageField(_('image'), upload_to=UPLOAD_TO,
                               blank=True, help_text=_('used for illustration'))
 
@@ -175,23 +176,13 @@ class Gbobject(Node):
     authors = models.ManyToManyField(User, verbose_name=_('authors'),
                                      related_name='gbobjects',
                                      blank=True, null=False)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=PUBLISHED)
+    
 
     featured = models.BooleanField(_('featured'), default=False)
     comment_enabled = models.BooleanField(_('comment enabled'), default=True)
     pingback_enabled = models.BooleanField(_('linkback enabled'), default=True)
 
         
-    start_publication = models.DateTimeField(_('start publication'),
-                                             help_text=_('date start publish'),
-                                             default=datetime.now)
-    end_publication = models.DateTimeField(_('end publication'),
-                                           help_text=_('date end publish'),
-                                           default=datetime(2042, 3, 15))
-
-    sites = models.ManyToManyField(Site, verbose_name=_('sites publication'),
-                                   related_name='gbobjects')
-
     login_required = models.BooleanField(
         _('login required'), default=False,
         help_text=_('only authenticated users can view the gbobject'))
@@ -205,7 +196,7 @@ class Gbobject(Node):
         choices=[('objectapp/gbobject_detail.html', _('Default template'))] + \
         GBOBJECT_TEMPLATES,
         help_text=_('template used to display the gbobject'))
-
+    rurl=models.URLField(_('rurl'),verify_exists=True,null=True, blank=True)
     objects = models.Manager()
     published = GbobjectPublishedManager()
 

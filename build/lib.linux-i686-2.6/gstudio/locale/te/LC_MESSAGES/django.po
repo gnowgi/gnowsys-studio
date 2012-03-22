@@ -1,0 +1,1300 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-29 19:25+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: feeds.py:103 plugins/cms_plugins.py:23
+#: templates/gstudio/nodetype_archive.html:4
+#: templates/gstudio/nodetype_archive.html:25
+#: templates/gstudio/nodetype_list.html:19 tests/feeds.py:124
+msgid "Latest nodetypes"
+msgstr ""
+
+#: feeds.py:107 tests/feeds.py:127
+#, python-format
+msgid "The latest nodetypes for the site %s"
+msgstr ""
+
+#: feeds.py:127 tests/feeds.py:137
+#, python-format
+msgid "Nodetypes for the metatype %s"
+msgstr ""
+
+#: feeds.py:131 tests/feeds.py:140
+#, python-format
+msgid "The latest nodetypes for the metatype %s"
+msgstr ""
+
+#: feeds.py:151 tests/feeds.py:149
+#, python-format
+msgid "Nodetypes for author %s"
+msgstr ""
+
+#: feeds.py:155 tests/feeds.py:151
+#, python-format
+msgid "The latest nodetypes by %s"
+msgstr ""
+
+#: feeds.py:176 tests/feeds.py:161
+#, python-format
+msgid "Nodetypes for the tag %s"
+msgstr ""
+
+#: feeds.py:180 tests/feeds.py:163
+#, python-format
+msgid "The latest nodetypes for the tag %s"
+msgstr ""
+
+#: feeds.py:203 tests/feeds.py:177
+#, python-format
+msgid "Results of the search for '%s'"
+msgstr ""
+
+#: feeds.py:207 tests/feeds.py:180
+#, python-format
+msgid "The nodetypes containing the pattern '%s'"
+msgstr ""
+
+#: feeds.py:252 tests/feeds.py:199
+#, python-format
+msgid "Discussions on %s"
+msgstr ""
+
+#: feeds.py:256 tests/feeds.py:202
+#, python-format
+msgid "The latest discussions for the nodetype %s"
+msgstr ""
+
+#: feeds.py:274 tests/feeds.py:212
+#, python-format
+msgid "Comments on %s"
+msgstr ""
+
+#: feeds.py:278 tests/feeds.py:215
+#, python-format
+msgid "The latest comments for the nodetype %s"
+msgstr ""
+
+#: feeds.py:308 tests/feeds.py:231
+#, python-format
+msgid "Pingbacks on %s"
+msgstr ""
+
+#: feeds.py:312 tests/feeds.py:234
+#, python-format
+msgid "The latest pingbacks for the nodetype %s"
+msgstr ""
+
+#: feeds.py:330 tests/feeds.py:244
+#, python-format
+msgid "Trackbacks on %s"
+msgstr ""
+
+#: feeds.py:334 tests/feeds.py:247
+#, python-format
+msgid "The latest trackbacks for the nodetype %s"
+msgstr ""
+
+#: models.py:90 models.py:294
+msgid "draft"
+msgstr ""
+
+#: models.py:91 models.py:295
+msgid "hidden"
+msgstr ""
+
+#: models.py:92 models.py:296
+msgid "published"
+msgstr ""
+
+#: models.py:120 admin/nodetype.py:80
+msgid "title"
+msgstr ""
+
+#: models.py:120
+msgid "give a name to the node"
+msgstr ""
+
+#: models.py:151
+msgid "alternate names"
+msgstr ""
+
+#: models.py:151
+msgid "alternate names if any"
+msgstr ""
+
+#: models.py:152 models.py:293
+msgid "plural name"
+msgstr ""
+
+#: models.py:152 models.py:293
+msgid "plural form of the node name if any"
+msgstr ""
+
+#: models.py:196 models.py:322
+msgid "used for publication"
+msgstr ""
+
+#: models.py:197
+msgid "description"
+msgstr ""
+
+#: models.py:198 admin/forms.py:67
+msgid "parent metatype"
+msgstr ""
+
+#: models.py:283
+msgid "metatype"
+msgstr ""
+
+#: models.py:284 admin/forms.py:101 plugins/models.py:25
+msgid "metatypes"
+msgstr ""
+
+#: models.py:298
+msgid "content"
+msgstr ""
+
+#: models.py:300
+msgid "is a kind of"
+msgstr ""
+
+#: models.py:303
+msgid "its meaning depends"
+msgstr ""
+
+#: models.py:306
+msgid "required for the meaning of"
+msgstr ""
+
+#: models.py:309
+msgid "image"
+msgstr ""
+
+#: models.py:310
+msgid "used for illustration"
+msgstr ""
+
+#: models.py:312
+msgid "excerpt"
+msgstr ""
+
+#: models.py:313
+msgid "optional element"
+msgstr ""
+
+#: models.py:315 plugins/models.py:32
+msgid "tags"
+msgstr ""
+
+#: models.py:316
+msgid "member of metatypes"
+msgstr ""
+
+#: models.py:319
+msgid "related nodetypes"
+msgstr ""
+
+#: models.py:326 plugins/models.py:30
+msgid "authors"
+msgstr ""
+
+#: models.py:331
+msgid "featured"
+msgstr ""
+
+#: models.py:332 admin/nodetype.py:132
+msgid "comment enabled"
+msgstr ""
+
+#: models.py:333
+msgid "linkback enabled"
+msgstr ""
+
+#: models.py:335
+msgid "creation date"
+msgstr ""
+
+#: models.py:337
+msgid "last update"
+msgstr ""
+
+#: models.py:338
+msgid "start publication"
+msgstr ""
+
+#: models.py:339
+msgid "date start publish"
+msgstr ""
+
+#: models.py:341
+msgid "end publication"
+msgstr ""
+
+#: models.py:342
+msgid "date end publish"
+msgstr ""
+
+#: models.py:345
+msgid "sites publication"
+msgstr ""
+
+#: models.py:349
+msgid "login required"
+msgstr ""
+
+#: models.py:350
+msgid "only authenticated users can view the nodetype"
+msgstr ""
+
+#: models.py:352
+msgid "password"
+msgstr ""
+
+#: models.py:353
+msgid "protect the nodetype with a password"
+msgstr ""
+
+#: models.py:356 plugins/models.py:37 plugins/models.py:63
+#: plugins/models.py:87
+msgid "template"
+msgstr ""
+
+#: models.py:358
+msgid "Default template"
+msgstr ""
+
+#: models.py:360
+msgid "template used to display the nodetype"
+msgstr ""
+
+#: models.py:568
+msgid "node type"
+msgstr ""
+
+#: models.py:569
+msgid "node types"
+msgstr ""
+
+#: models.py:579
+msgid "inverse name"
+msgstr ""
+
+#: models.py:579
+msgid ""
+"when subjecttypes are interchanged, what should be the name of the relation "
+"type? This is mandatory field. If the relation is symmetric, same name will "
+"do."
+msgstr ""
+
+#: models.py:608
+msgid "relation type"
+msgstr ""
+
+#: models.py:609
+msgid "relation types"
+msgstr ""
+
+#: models.py:663
+msgid "attribute type"
+msgstr ""
+
+#: models.py:664
+msgid "attribute types"
+msgstr ""
+
+#: models.py:686
+msgid "relation"
+msgstr ""
+
+#: models.py:687
+msgid "relations"
+msgstr ""
+
+#: models.py:723
+msgid "attribute"
+msgstr ""
+
+#: models.py:724
+msgid "attributes"
+msgstr ""
+
+#: models.py:755
+msgid "attribute set involved in the process"
+msgstr ""
+
+#: models.py:758
+msgid "relation set involved in the process"
+msgstr ""
+
+#: models.py:766
+msgid "process type"
+msgstr ""
+
+#: models.py:767
+msgid "process types"
+msgstr ""
+
+#: models.py:797
+msgid "system type"
+msgstr ""
+
+#: models.py:798
+msgid "system types"
+msgstr ""
+
+#: moderator.py:58 moderator.py:81 moderator.py:106
+#, python-format
+msgid "[%(site)s] New comment posted on \"%(title)s\""
+msgstr ""
+
+#: admin/forms.py:68
+msgid "No parent metatype"
+msgstr ""
+
+#: admin/forms.py:82
+msgid "A metatype cannot be a parent of itself."
+msgstr ""
+
+#: admin/forms.py:94
+msgid "parent nodetype"
+msgstr ""
+
+#: admin/forms.py:95
+msgid "No parent nodetype"
+msgstr ""
+
+#: admin/forms.py:99 plugins/menu.py:70 templates/gstudio/base.html:35
+#: templates/gstudio/metatype_list.html:6 templates/gstudio/sitemap.html:50
+#: templatetags/zbreadcrumbs.py:50
+msgid "Metatypes"
+msgstr ""
+
+#: admin/forms.py:116
+msgid "An objectype cannot be parent of itself."
+msgstr ""
+
+#: admin/metatype.py:30
+msgid "tree path"
+msgstr ""
+
+#: admin/nodetype.py:31 plugins/admin.py:17
+#: templates/admin/gstudio/widgets/quickpost.html:17
+msgid "Content"
+msgstr ""
+
+#: admin/nodetype.py:33
+msgid "Dependency"
+msgstr ""
+
+#: admin/nodetype.py:35 plugins/admin.py:20
+msgid "Options"
+msgstr ""
+
+#: admin/nodetype.py:41 plugins/admin.py:26
+msgid "Privacy"
+msgstr ""
+
+#: admin/nodetype.py:43 plugins/admin.py:28
+msgid "Discussion"
+msgstr ""
+
+#: admin/nodetype.py:45 plugins/admin.py:30
+msgid "Publication"
+msgstr ""
+
+#: admin/nodetype.py:73
+#, python-format
+msgid "%(title)s (%(word_count)i words)"
+msgstr ""
+
+#: admin/nodetype.py:77
+#, python-format
+msgid "%(title)s (%(comments)i comments)"
+msgstr ""
+
+#: admin/nodetype.py:93
+msgid "author(s)"
+msgstr ""
+
+#: admin/nodetype.py:106
+msgid "metatype(s)"
+msgstr ""
+
+#: admin/nodetype.py:118
+msgid "tag(s)"
+msgstr ""
+
+#: admin/nodetype.py:126
+msgid "site(s)"
+msgstr ""
+
+#: admin/nodetype.py:138
+msgid "is actual"
+msgstr ""
+
+#: admin/nodetype.py:144
+msgid "is visible"
+msgstr ""
+
+#: admin/nodetype.py:149
+msgid "View"
+msgstr ""
+
+#: admin/nodetype.py:151
+msgid "View on site"
+msgstr ""
+
+#: admin/nodetype.py:157
+msgid "Unavailable"
+msgstr ""
+
+#: admin/nodetype.py:161
+msgid "short url"
+msgstr ""
+
+#: admin/nodetype.py:216
+msgid "The selected nodetypes now belong to you."
+msgstr ""
+
+#: admin/nodetype.py:217
+msgid "Set the nodetypes to the user"
+msgstr ""
+
+#: admin/nodetype.py:224
+msgid "The selected nodetypes are now marked as published."
+msgstr ""
+
+#: admin/nodetype.py:225
+msgid "Set nodetypes selected as published"
+msgstr ""
+
+#: admin/nodetype.py:231
+msgid "The selected nodetypes are now marked as hidden."
+msgstr ""
+
+#: admin/nodetype.py:232
+msgid "Set nodetypes selected as hidden"
+msgstr ""
+
+#: admin/nodetype.py:247
+msgid "The selected nodetypes have been tweeted."
+msgstr ""
+
+#: admin/nodetype.py:248
+msgid "Tweet nodetypes selected"
+msgstr ""
+
+#: admin/nodetype.py:254
+msgid "Comments are now closed for selected nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:255
+msgid "Close the comments for selected nodetypes"
+msgstr ""
+
+#: admin/nodetype.py:262
+msgid "Linkbacks are now closed for selected nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:264
+msgid "Close the linkbacks for selected nodetypes"
+msgstr ""
+
+#: admin/nodetype.py:271
+msgid "The selected nodetypes are now set at the current date."
+msgstr ""
+
+#: admin/nodetype.py:273
+msgid "Put the selected nodetypes on top at the current date"
+msgstr ""
+
+#: admin/nodetype.py:292
+#, python-format
+msgid "%(directory)s directory succesfully pinged %(success)d nodetypes."
+msgstr ""
+
+#: admin/nodetype.py:296
+msgid "Ping Directories for selected nodetypes"
+msgstr ""
+
+#: plugins/cms_app.py:12
+msgid "Gstudio App Hook"
+msgstr ""
+
+#: plugins/cms_plugins.py:21 plugins/cms_plugins.py:92
+#: plugins/cms_plugins.py:114 plugins/models.py:61
+msgid "nodetypes"
+msgstr ""
+
+#: plugins/cms_plugins.py:33
+msgid "Sorting"
+msgstr ""
+
+#: plugins/cms_plugins.py:43
+msgid "Advanced"
+msgstr ""
+
+#: plugins/cms_plugins.py:94
+msgid "Selected nodetypes"
+msgstr ""
+
+#: plugins/cms_plugins.py:116 templates/gstudio/base.html:64
+msgid "Random node types"
+msgstr ""
+
+#: plugins/menu.py:19
+msgid "Gstudio Nodetype Menu"
+msgstr ""
+
+#: plugins/menu.py:65
+msgid "Gstudio Metatype Menu"
+msgstr ""
+
+#: plugins/menu.py:82
+msgid "Gstudio Author Menu"
+msgstr ""
+
+#: plugins/menu.py:87 templates/gstudio/author_list.html:6
+#: templates/gstudio/base.html:40 templatetags/zbreadcrumbs.py:46
+msgid "Authors"
+msgstr ""
+
+#: plugins/menu.py:100
+msgid "Gstudio Tag Menu"
+msgstr ""
+
+#: plugins/menu.py:105 templates/admin/gstudio/widgets/quickpost.html:25
+#: templates/gstudio/_nodetype_detail.html:53 templates/gstudio/base.html:48
+#: templates/gstudio/tag_list.html:6 templatetags/zbreadcrumbs.py:43
+msgid "Tags"
+msgstr ""
+
+#: plugins/models.py:16
+msgid "Nodetype list (default)"
+msgstr ""
+
+#: plugins/models.py:17
+msgid "Nodetype detailed"
+msgstr ""
+
+#: plugins/models.py:28
+msgid "include submetatypes"
+msgstr ""
+
+#: plugins/models.py:35 plugins/models.py:85
+msgid "number of nodetypes"
+msgstr ""
+
+#: plugins/models.py:39 plugins/models.py:65 plugins/models.py:89
+msgid "Template used to display the plugin"
+msgstr ""
+
+#: plugins/models.py:54 plugins/models.py:78 plugins/models.py:92
+#, python-format
+msgid "%s nodetypes"
+msgstr ""
+
+#: templates/404.html:5
+msgid "Error 404"
+msgstr ""
+
+#: templates/404.html:8 templates/404.html.py:11
+msgid "Page not found"
+msgstr ""
+
+#: templates/404.html:13
+msgid "Sorry, but the requested page could not be found."
+msgstr ""
+
+#: templates/404.html:15 templates/500.html:15
+msgid "Useful links"
+msgstr ""
+
+#: templates/404.html:19 templates/404.html.py:20 templates/500.html:19
+#: templates/500.html.py:20
+msgid "Blog index"
+msgstr ""
+
+#: templates/404.html:24 templates/404.html.py:25 templates/500.html:24
+#: templates/500.html.py:25 templates/gstudio/sitemap.html:4
+#: templates/gstudio/sitemap.html.py:7 templates/gstudio/skeleton.html:32
+#: templates/gstudio/skeleton.html.py:33
+msgid "Sitemap"
+msgstr ""
+
+#: templates/404.html:31 templates/500.html:31 templates/gstudio/base.html:52
+msgid "Recent node types"
+msgstr ""
+
+#: templates/404.html:36 templates/500.html:36 templates/gstudio/base.html:23
+msgid "Search"
+msgstr ""
+
+#: templates/404.html:40 templates/500.html:40 templates/gstudio/base.html:26
+msgid "Keywords..."
+msgstr ""
+
+#: templates/500.html:5
+msgid "Error 500"
+msgstr ""
+
+#: templates/500.html:8 templates/500.html.py:11
+msgid "Server error"
+msgstr ""
+
+#: templates/500.html:13
+msgid ""
+"There's been an error. It's been reported to the site administrators via e-"
+"mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:4
+msgid "Contents"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:5
+#: templates/gstudio/_nodetype_detail.html:71
+msgid "Discussions"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:10
+#, python-format
+msgid "%(nodetypes)s nodetypes"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:15
+#, python-format
+msgid "%(comments)s comments"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:22
+#, python-format
+msgid "%(metatypes)s metatypes"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:25
+#, python-format
+msgid "%(pingbacks)s pingbacks"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:30
+#, python-format
+msgid "%(tags)s tags"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:33
+#, python-format
+msgid "%(trackbacks)s trackbacks"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:38
+#, python-format
+msgid "%(authors)s authors"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_content_stats.html:43
+#, python-format
+msgid "%(rejects)s rejected"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:7
+#: templates/gstudio/nodetype_detail.html:211
+msgid "Edit the nodetype"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:10
+#: templates/comments/gstudio_nodetype_preview.html:25
+#: templates/feeds/comment_title.html:2
+#: templates/feeds/discussion_title.html:2
+#: templates/feeds/pingback_title.html:2
+#: templates/feeds/trackback_title.html:2
+#: templates/gstudio/_nodetype_detail.html:22
+#: templates/gstudio/nodetype_detail.html:108
+#: templates/gstudio/nodetype_detail.html:142
+#: templates/gstudio/nodetype_detail.html:175
+#: templates/gstudio/tags/recent_comments.html:7
+msgid "on"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:16
+#: templates/comments/gstudio/nodetype/form.html:19
+msgid "Preview"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:23
+msgid "No draft nodetypes."
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:32
+#: templates/admin/gstudio/widgets/_draft_nodetypes.html:33
+msgid "View all draft nodetypes"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:11
+#: templates/gstudio/tags/recent_linkbacks.html:8
+msgid "in"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:14
+#: templates/gstudio/tags/recent_comments.html:9
+msgid "Comment on"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:23
+msgid "Edit the comment"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:24
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:19
+msgid "Edit"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:31
+#: templates/gstudio/_nodetype_detail.html:79
+#: templates/gstudio/nodetype_detail.html:122
+#: templates/gstudio/tags/recent_comments.html:16
+msgid "No comments yet."
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_comments.html:40
+#: templates/admin/gstudio/widgets/_recent_comments.html:41
+msgid "Manage the comments"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:8
+msgid "made a linkback on"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:18
+msgid "Edit the linkback"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/_recent_linkbacks.html:26
+#: templates/gstudio/tags/recent_linkbacks.html:17
+msgid "No linkbacks yet."
+msgstr ""
+
+#: templates/admin/gstudio/widgets/content_stats.html:6
+#: templates/admin/gstudio/widgets/content_stats.html:7
+msgid "Today"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/draft_nodetypes.html:6
+#: templates/admin/gstudio/widgets/draft_nodetypes.html:7
+msgid "Draft nodetypes"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/quickpost.html:5
+#: templates/admin/gstudio/widgets/quickpost.html:6
+msgid "Quick publishing"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/quickpost.html:9
+msgid "Title"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/quickpost.html:33
+msgid "Save as draft"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/quickpost.html:34
+msgid "Reset"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/quickpost.html:35
+msgid "Publish"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/recent_comments.html:6
+#: templates/admin/gstudio/widgets/recent_comments.html:7
+#: templates/gstudio/base.html:56
+msgid "Recent comments"
+msgstr ""
+
+#: templates/admin/gstudio/widgets/recent_linkbacks.html:6
+#: templates/admin/gstudio/widgets/recent_linkbacks.html:7
+#: templates/gstudio/base.html:60
+msgid "Recent linkbacks"
+msgstr ""
+
+#: templates/comments/gstudio_nodetype_preview.html:4
+msgid "Comment preview"
+msgstr ""
+
+#: templates/comments/gstudio_nodetype_preview.html:9
+msgid "Please correct following error."
+msgid_plural "Please correct following errors."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/comments/gstudio_nodetype_preview.html:12
+msgid "Preview of the comment"
+msgstr ""
+
+#: templates/comments/gstudio/nodetype/form.html:7
+msgid "Post your comment"
+msgstr ""
+
+#: templates/comments/gstudio/nodetype/form.html:18
+msgid "Post"
+msgstr ""
+
+#: templates/comments/gstudio/nodetype/posted.html:4
+#: templates/comments/gstudio/nodetype/posted.html:7
+msgid "Thanks for your comment"
+msgstr ""
+
+#: templates/comments/gstudio/nodetype/posted.html:9
+#: templates/comments/gstudio/nodetype/posted.html:10
+msgid "Return to nodetype list"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:15
+#: templates/gstudio/_nodetype_detail.html:24
+msgid "Contributed by"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:19
+#, python-format
+msgid "Show %(author)s nodetypes"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:59
+msgid "No tags"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:64
+msgid "Short url"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:75
+#, python-format
+msgid "%(comment_count)s comment"
+msgid_plural "%(comment_count)s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/gstudio/_nodetype_detail.html:81
+msgid "Discuss the relations or raise any issues!"
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:84
+#: templates/gstudio/nodetype_detail.html:118
+#: templates/gstudio/nodetype_detail.html:124
+msgid "Comments are closed."
+msgstr ""
+
+#: templates/gstudio/_nodetype_detail.html:91
+#, python-format
+msgid "%(pingback_count)s pingback"
+msgid_plural "%(pingback_count)s pingbacks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/gstudio/_nodetype_detail.html:98
+#, python-format
+msgid "%(trackback_count)s trackback"
+msgid_plural "%(trackback_count)s trackbacks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/gstudio/author_list.html:4 templates/gstudio/author_list.html:9
+msgid "Author list"
+msgstr ""
+
+#: templates/gstudio/author_list.html:18
+#: templates/gstudio/metatype_list.html:14 templates/gstudio/sitemap.html:55
+#: templates/gstudio/tag_list.html:15 templates/gstudio/tags/authors.html:8
+#: templates/gstudio/tags/metatypes.html:6
+#: templates/gstudio/tags/tag_cloud.html:8
+#, python-format
+msgid "%(nodetype_count)s nodetype"
+msgid_plural "%(nodetype_count)s nodetypes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/gstudio/author_list.html:22
+#: templates/gstudio/tags/authors.html:12
+msgid "No authors yet."
+msgstr ""
+
+#: templates/gstudio/base.html:13 templates/gstudio/skeleton.html:35
+msgid "RSS Feed of latest nodetypes"
+msgstr ""
+
+#: templates/gstudio/base.html:28 templates/gstudio/nodetype_search.html:39
+msgid ""
+"You can use - to exclude words or phrases, &quot;double quotes&quot; for "
+"exact phrases and the AND/OR boolean operators combined with parenthesis for "
+"complex searchs."
+msgstr ""
+
+#: templates/gstudio/base.html:44
+msgid "Calendar"
+msgstr ""
+
+#: templates/gstudio/base.html:68
+msgid "Popular node types"
+msgstr ""
+
+#: templates/gstudio/base.html:72
+#: templates/gstudio/nodetype_archive_day.html:4
+#: templates/gstudio/nodetype_archive_day.html:6
+#: templates/gstudio/nodetype_archive_day.html:9
+#: templates/gstudio/nodetype_archive_month.html:4
+#: templates/gstudio/nodetype_archive_month.html:6
+#: templates/gstudio/nodetype_archive_month.html:9
+#: templates/gstudio/nodetype_archive_year.html:4
+#: templates/gstudio/nodetype_archive_year.html:6
+#: templates/gstudio/nodetype_archive_year.html:9
+#: templates/gstudio/tags/archives_nodetypes.html:5
+#: templates/gstudio/tags/archives_nodetypes_link.html:2
+#: templates/gstudio/tags/archives_nodetypes_tree.html:7
+#: templates/gstudio/tags/archives_nodetypes_tree.html:14
+#: templates/gstudio/tags/archives_nodetypes_tree.html:24
+msgid "Archives"
+msgstr ""
+
+#: templates/gstudio/base.html:77
+msgid "Tools"
+msgstr ""
+
+#: templates/gstudio/base.html:81 templates/gstudio/base.html.py:82
+msgid "Dashboard"
+msgstr ""
+
+#: templates/gstudio/base.html:88 templates/gstudio/base.html.py:89
+msgid "Post a nodetype"
+msgstr ""
+
+#: templates/gstudio/base.html:96 templates/gstudio/base.html.py:97
+msgid "Log out"
+msgstr ""
+
+#: templates/gstudio/login.html:4 templates/gstudio/login.html.py:7
+msgid "Login required"
+msgstr ""
+
+#: templates/gstudio/login.html:12
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: templates/gstudio/login.html:16
+msgid "You need to be connected to view this nodetype."
+msgstr ""
+
+#: templates/gstudio/login.html:33
+msgid "Login"
+msgstr ""
+
+#: templates/gstudio/metatype_list.html:4
+#: templates/gstudio/metatype_list.html:9
+msgid "Metatype list"
+msgstr ""
+
+#: templates/gstudio/metatype_list.html:20 templates/gstudio/sitemap.html:60
+#: templates/gstudio/tags/metatypes.html:11
+msgid "No metatypes yet."
+msgstr ""
+
+#: templates/gstudio/nodetype_archive_month.html:13
+msgid "Daily archives"
+msgstr ""
+
+#: templates/gstudio/nodetype_archive_year.html:13
+#: templates/gstudio/sitemap.html:67
+msgid "Monthly archives"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:22
+msgid "RSS Feed of discussions on"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:24
+msgid "RSS Feed of comments on"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:26
+msgid "RSS Feed of pingbacks on"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:28
+msgid "RSS Feed of trackbacks on"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:46
+msgid "Next node type"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:60
+msgid "Previous node type"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:73
+msgid "Related node types"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:84
+msgid "Similar node types"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:92
+msgid "Comments"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:133
+msgid "Pingbacks"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:155
+msgid "Pingbacks are open."
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:157
+msgid "Pingbacks are closed."
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:167
+msgid "Trackbacks"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:190
+msgid "Trackback URL"
+msgstr ""
+
+#: templates/gstudio/nodetype_detail.html:212
+msgid "Edit the node type"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "Latest nodetypes for"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the metatype"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the tag"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+msgid "the author"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:4
+#: templates/gstudio/nodetype_search.html:6
+msgid "page"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:9
+#: templates/gstudio/nodetype_list.html:12
+#: templates/gstudio/nodetype_list.html:15
+#: templates/gstudio/skeleton.html:36
+msgid "RSS Feed"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:19
+msgid "Metatype"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:19
+#: templates/gstudio/nodetype_list.html:31
+msgid "Tag"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:19
+msgid "Author"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:19
+#: templates/gstudio/nodetype_search.html:4
+msgid "Page"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:35
+#, python-format
+msgid "Nodetypes by %(author)s"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:43
+msgid "No nodes in the network yet. Login and construct a network!"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:54
+#: templates/gstudio/nodetype_list.html:55
+msgid "Edit the metatype"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:61
+#: templates/gstudio/nodetype_list.html:62
+msgid "Edit the tag"
+msgstr ""
+
+#: templates/gstudio/nodetype_list.html:68
+#: templates/gstudio/nodetype_list.html:69
+msgid "Edit the author"
+msgstr ""
+
+#: templates/gstudio/nodetype_search.html:4
+#: templates/gstudio/nodetype_search.html:6
+#: templates/gstudio/nodetype_search.html:14
+msgid "Search results for"
+msgstr ""
+
+#: templates/gstudio/nodetype_search.html:10
+msgid "RSS Feed of search result of"
+msgstr ""
+
+#: templates/gstudio/nodetype_search.html:22
+#, python-format
+msgid "%(nodetype_count)s nodetype found"
+msgid_plural "%(nodetype_count)s nodetypes found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/gstudio/nodetype_search.html:31
+msgid "Nothing found."
+msgstr ""
+
+#: templates/gstudio/password.html:4 templates/gstudio/password.html.py:7
+msgid "Password required"
+msgstr ""
+
+#: templates/gstudio/password.html:12
+msgid "The password provided is not valid. Please try again."
+msgstr ""
+
+#: templates/gstudio/password.html:16
+msgid "You need to provide a password to view this nodetype."
+msgstr ""
+
+#: templates/gstudio/password.html:23
+msgid "Password"
+msgstr ""
+
+#: templates/gstudio/password.html:28
+msgid "Valid"
+msgstr ""
+
+#: templates/gstudio/sitemap.html:10
+msgid "Nodetypes per metatypes"
+msgstr ""
+
+#: templates/gstudio/sitemap.html:18 templates/gstudio/sitemap.html.py:38
+#: templates/gstudio/tags/popular_nodetypes.html:8
+msgid "comment"
+msgstr ""
+
+#: templates/gstudio/sitemap.html:23 templates/gstudio/sitemap.html.py:43
+#: templates/gstudio/cms/nodetype_list.html:9
+#: templates/gstudio/tags/featured_nodetypes.html:9
+#: templates/gstudio/tags/popular_nodetypes.html:13
+#: templates/gstudio/tags/random_nodetypes.html:9
+msgid "No nodetypes yet."
+msgstr ""
+
+#: templates/gstudio/sitemap.html:31
+msgid "All the nodetypes"
+msgstr ""
+
+#: templates/gstudio/tag_list.html:4 templates/gstudio/tag_list.html.py:9
+msgid "Tag list"
+msgstr ""
+
+#: templates/gstudio/tag_list.html:19
+msgid "No tags yet."
+msgstr ""
+
+#: templates/gstudio/cms/nodetype_detail.html:7
+msgid "No node types yet."
+msgstr ""
+
+#: templates/gstudio/tags/archives_nodetypes.html:12
+#: templates/gstudio/tags/archives_nodetypes_tree.html:38
+msgid "No archives yet."
+msgstr ""
+
+#: templates/gstudio/tags/nodetypes.html:6
+#, python-format
+msgid "%(gbobjects_count)s gbobject"
+msgid_plural "%(gbobjects_count)s gbobjects"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/gstudio/tags/nodetypes.html:11
+#: templates/gstudio/tags/recent_nodetypes.html:16
+msgid "No subtypes yet."
+msgstr ""
+
+#: templates/gstudio/tags/pagination.html:4
+#, python-format
+msgid "Page %(current_page)s of %(total_page)s"
+msgstr ""
+
+#: templates/gstudio/tags/pagination.html:10
+msgid "More recent node types"
+msgstr ""
+
+#: templates/gstudio/tags/pagination.html:20
+#: templates/gstudio/tags/pagination.html:33
+#: templates/gstudio/tags/pagination.html:47
+msgid "Nodetypes page"
+msgstr ""
+
+#: templates/gstudio/tags/pagination.html:56
+msgid "More old nodetypes"
+msgstr ""
+
+#: templates/gstudio/tags/recent_linkbacks.html:10
+msgid "Linkback on"
+msgstr ""
+
+#: templates/gstudio/tags/similar_nodetypes.html:9
+msgid "No similar nodetypes."
+msgstr ""
+
+#: tests/views.py:222 views/search.py:18
+msgid "The pattern is too short"
+msgstr ""
+
+#: tests/views.py:226 views/search.py:22
+msgid "No pattern to search found"
+msgstr ""
+
+#: xmlrpc/metaweblog.py:35
+msgid "Username is incorrect."
+msgstr ""
+
+#: xmlrpc/metaweblog.py:37
+msgid "Password is invalid."
+msgstr ""
+
+#: xmlrpc/metaweblog.py:39
+msgid "User account unavailable."
+msgstr ""
+
+#: xmlrpc/metaweblog.py:42
+#, python-format
+msgid "User cannot %s."
+msgstr ""
+
+#: xmlrpc/pingback.py:96
+msgid "No title"
+msgstr ""

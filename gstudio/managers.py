@@ -79,6 +79,54 @@ class AuthorPublishedManager(models.Manager):
             nodetypes__sites=Site.objects.get_current()
             ).distinct()
 
+def nodes_published(queryset):
+
+    """Return only the nodetypes published"""
+    now = datetime.now()
+    return queryset.filter(status=PUBLISHED,
+                           start_publication__lte=now,
+                           end_publication__gt=now,
+                           sites=Site.objects.get_current())
+
+class NodePublishedManager(models.Manager):
+    """Manager to retrieve published nodes"""
+
+    def get_query_set(self):
+        """Return published nodes"""
+        return nodes_published(
+            super(NodePublishedManager, self).get_query_set())
+
+    def on_site(self):
+        """Return nodes published on current site"""
+        return super(NodePublishedManager, self).get_query_set(
+            ).filter(sites=Site.objects.get_current())
+
+    def search(self, pattern):
+        """Top level search method on nodes"""
+        try:
+            return self.advanced_search(pattern)
+        except:
+            return self.basic_search(pattern)
+
+    def advanced_search(self, pattern):
+        """Advanced search on nodes"""
+        from gstudio.search import advanced_search
+        return advanced_search(pattern)
+
+    def basic_search(self, pattern):
+        """Basic search on nodes"""
+        lookup = None
+        for pattern in pattern.split():
+            query_part = models.Q(title__icontains=pattern)
+            ''' models.Q(content__icontains=pattern) | \
+                         models.Q(excerpt__icontains=pattern) | \ '''
+            if lookup is None:
+                lookup = query_part
+            else:
+                lookup |= query_part
+
+        return self.get_query_set().filter(lookup)
+
 
 def nodetypes_published(queryset):
 

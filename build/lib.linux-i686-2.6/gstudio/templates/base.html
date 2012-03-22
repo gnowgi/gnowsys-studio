@@ -1,0 +1,105 @@
+{% extends "gstudio/skeleton.html" %}
+{% load gstudio_tags i18n %}
+
+{% block meta %}
+    <meta name="generator" content="Gstudio {{ GSTUDIO_VERSION }}" />
+{% endblock %}
+
+{% block link %}
+    <link rel="index" href="{% url gstudio_nodetype_archive_index %}" />
+    <link rel="EditURI" type="application/rsd+xml" href="{% url gstudio_rsd %}" />
+    <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{% url gstudio_wlwmanifest %}" />
+    <link rel="search" type="application/opensearchdescription+xml" title="Gnowledge Studio" href="{% url gstudio_opensearch %}" />
+    <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of latest nodetypes" %}" href="{% url gstudio_nodetype_latest_feed %}" />
+    {% get_archives_nodetypes "gstudio/tags/archives_nodetypes_link.html" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+  {% gstudio_breadcrumbs %}
+{% endblock %}
+
+{% block sidebar %}
+ <img src="{{ STATIC_URL }}objectapp/img/rss.png" alt="?" width="20" height="" />
+ <a href="{% url objectapp_gbobject_latest_feed %}" class="feeds"><h4>Rssfeed</h4></a>
+
+<div class="search">
+  <h3>{% trans "Search" %}</h3>
+  <form method="get" id="searchform" action="{% url objectapp_gbobject_search %}">
+    <p>
+      <input type="text" value="{% trans "Keywords..." %}" name="pattern" id="searchbox" onfocus="this.value=''" />
+      <input type="submit" class="submitbutton" value="OK" />
+      <a title="{% trans 'You can use - to exclude words or phrases, &quot;double quotes&quot; for exact phrases and the AND/OR boolean operators combined with parenthesis for complex searchs.' %}">
+        <img src="{{ STATIC_URL }}objectapp/img/help.png" alt="?" width="14" height="14" />
+      </a>
+    </p>
+  </form>
+</div>
+<div class="objecttypes">
+  <h3>{% trans "Objecttypes" %}</h3>
+  {% get_objecttypes %}
+</div>
+<div class="authors">
+  <h3>{% trans "Authors" %}</h3>
+  {% get_authors %}
+</div>
+<div class="calendar">
+  <h3>{% trans "Calendar" %}</h3>
+  {% get_calendar_gbobjects %}
+</div>
+<div class="tags">
+  <h3>{% trans "Tags" %}</h3>
+  {% get_tag_cloud %}
+</div>
+<div class="recents">
+  <h3>{% trans "Recent gbobjects" %}</h3>
+  {% get_recent_gbobjects 5 %}
+</div>
+<div class="comments">
+  <h3>{% trans "Recent comments" %}</h3>
+  {% get_recent_comments 5 %}
+</div>
+<div class="linkbacks">
+  <h3>{% trans "Recent linkbacks" %}</h3>
+  {% get_recent_linkbacks 5 %}
+</div>
+<div class="randoms">
+  <h3>{% trans "Random gbobjects" %}</h3>
+  {% get_random_gbobjects 5 %}
+</div>
+<div class="populars">
+  <h3>{% trans "Popular gbobjects" %}</h3>
+  {% get_popular_gbobjects 5 %}
+</div>
+<div class="archives">
+  <h3>{% trans "Archives" %}</h3>
+  {% get_archives_gbobjects_tree %}
+</div>
+{% if user.is_authenticated %}
+<div class="tools">
+  <h3>{% trans "Tools" %}</h3>
+  <ul>
+    {% if perms.objectapp %}
+    <li>
+      <a href="{% url admin:app_list "objectapp" %}" title="{% trans "Dashboard" %}">
+        {% trans "Dashboard" %}
+      </a>
+    </li>
+    {% endif %}
+    {% if perms.objectapp.add_gbobject %}
+    <li>
+      <a href="{% url admin:objectapp_gbobject_add %}" title="{% trans "Post an gbobject" %}">
+        {% trans "Post an gbobject" %}
+      </a>
+    </li>
+    {% endif %}
+    {% block admin_tools %}
+    {% endblock %}
+    <li>
+      <a href="{% url admin:logout %}" title="{% trans "Log out" %}">
+        {% trans "Log out" %}
+      </a>
+    </li>
+  </ul>
+</div>
+{% endif %}
+{% endblock %}

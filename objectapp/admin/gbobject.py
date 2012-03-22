@@ -66,6 +66,7 @@ class GbobjectAdmin(reversion.VersionAdmin):
 
                  (_('Options'), {'fields': ('featured', 'excerpt', 'template',
                                              'authors',
+                                             'rurl',
                                             'creation_date',
                                             'start_publication',
                                             'end_publication'),

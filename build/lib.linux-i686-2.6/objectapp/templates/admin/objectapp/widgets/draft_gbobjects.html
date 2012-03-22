@@ -1,0 +1,12 @@
+{% extends "admin/objectapp/widgets/base.html" %}
+{% load i18n objectapp_admin_tags %}
+
+{% block module_id %}drafts{% endblock %}
+
+{% block summary %}{% trans "Draft gbobjects" %}{% endblock %}
+{% block title %}{% trans "Draft gbobjects" %}{% endblock %}
+
+{% block content %}
+  {% get_draft_gbobjects %}
+{% endblock %}
+

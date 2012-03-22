@@ -33,6 +33,7 @@ class ObjecttypeAdmin(reversion.VersionAdmin):
                                  'classes': ('collapse', 'collapse-closed')}),
                  (_('Options'), {'fields': ('featured', 'excerpt', 'template',
                                             'authors',
+                                            'rurl',
                                             'creation_date',
                                             'start_publication',
                                             'end_publication'),

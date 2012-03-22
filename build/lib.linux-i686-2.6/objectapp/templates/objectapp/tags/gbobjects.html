@@ -1,0 +1,16 @@
+{% load i18n mptt_tags %}
+
+{% for objecttype, structure in objecttypes|tree_info %}
+  {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+    <a href="{{ objecttype.get_absolute_url }}" title="{{ objecttype.title }}">{{ objecttype.title }}</a> 
+    {% blocktrans count objecttypes.gbobjects_published.count as gbobjects_count %}{{ gbobjects_count }} gbobject{% plural %}{{ gbobjects_count }} gbobjects{% endblocktrans %}
+
+  {% empty %}
+<ul>
+  <li>
+    {% trans "No subtypes yet." %}
+  </li>
+</ul>
+{% endfor %}
+
+

@@ -1,0 +1,46 @@
+{% extends "objectapp/skeleton.html" %}
+{% load i18n objectapp_tags %}
+
+{% block breadcrumbs %}
+  {% trans "Error 404" %}
+{% endblock %}
+
+{% block title %}{% trans "Page not found" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Page not found" %}</h2>
+
+<p>{% trans "Sorry, but the requested page could not be found." %}</p>
+
+<h3>{% trans "Useful links" %}</h3>
+<div class="links">
+  <ul>
+    <li>
+      <a href="{% url objectapp_gbobject_archive_index %}" title="{% trans "Blog index" %}">
+        {% trans "Blog index" %}
+      </a>
+    </li>
+    <li>
+      <a href="{% url objectapp_sitemap %}" title="{% trans "Sitemap" %}">
+        {% trans "Sitemap" %}
+      </a>
+    </li>
+  </ul>
+</div>
+
+<h3>{% trans "Recent gbobjects" %}</h3>
+<div class="recents">
+  {% get_recent_gbobjects 5 %}
+</div>
+
+<h3>{% trans "Search" %}</h3>
+<div class="search">
+  <form method="get" id="searchform" action="{% url objectapp_gbobject_search %}">
+    <p>
+      <input type="text" value="{% trans "Keywords..." %}" name="pattern" id="searchbox" onfocus="this.value=''"/>
+      <input type="submit" class="submitbutton" value="OK" />
+    </p>
+  </form>
+</div>
+
+{% endblock %}

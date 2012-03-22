@@ -1,0 +1,1 @@
+"""Management module of Objectapp"""

@@ -1,1 +1,0 @@
-"""Management module of Gstudio"""

@@ -1,1 +1,0 @@
-"""Templatetags for Objectapp"""

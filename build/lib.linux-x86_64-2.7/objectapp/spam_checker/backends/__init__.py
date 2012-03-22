@@ -1,1 +1,0 @@
-"""Shortlink backends for Objectapp"""

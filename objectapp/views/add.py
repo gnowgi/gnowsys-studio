@@ -68,7 +68,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from datetime import datetime
 from objectapp.forms import *
-from gstudio.forms import *
+from reversion.models import *
 
 @reversion.create_revision()
 def addgbobject(request):

@@ -47,7 +47,7 @@ $ = django.jQuery
 
 	   $("#id_attributetype").change(function() {
 		   test = $("#id_attributetype").val()
-		   url = "/gstudio/ajax/?id=" + test
+		   url = "/nodetypes/ajax/?id=" + test
 		   $.get(url,
 			 function(data){			     
 

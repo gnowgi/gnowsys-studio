@@ -90,6 +90,7 @@ def addgbobject(request):
     return render_to_response(template, variables)
 
 
+
 @reversion.create_revision()
 def addprocess(request):
     if request.method == 'POST':

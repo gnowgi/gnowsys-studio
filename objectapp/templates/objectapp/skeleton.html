@@ -167,7 +167,7 @@ Javascript for Object type force graph
 
 $(function() {
   $.ajax({
-    url: '/nodetypes/graphs/graph_json/{{ object.id }}',
+    url: '/gstudio/graphs/graph_json/{{ object.id }}',
     //crossDomain: true,
     dataType: 'json',
     success : function(json) {
@@ -182,7 +182,22 @@ $(function() {
         return acc;
       }, {});
 
-     var member_of = _(json.member_of).chain().map(function(e) {
+
+
+all_edges=new Array();  
+
+
+
+  all_edges =_(json.relations).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content"
+      }).value();
+
+    /* var member_of = _(json.member_of).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
         e.type = 'member_of';
@@ -249,6 +264,14 @@ $(function() {
         return nodes_by_id[e.from] && nodes_by_id[e.to]
       }).value();
     
+       var authors = _(json.authors).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+        e.type = 'authors';
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]
+      }).value();	
 
       
        var type_of = _(json.type_of).chain().map(function(e) {
@@ -267,7 +290,7 @@ $(function() {
         return e;
       }).filter(function(e){
         return nodes_by_id[e.from] && nodes_by_id[e.to]
-      }).value();*/
+      }).value();
     
        contains_members = _(json.contains_members).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
@@ -325,12 +348,12 @@ $(function() {
       }).filter(function(e){
         return nodes_by_id[e.from] && nodes_by_id[e.to]
       }).value();
-      
+      */
 
 	nodes_by_id[{{ object.id }}].x = w/2.0;
 	nodes_by_id[{{ object.id }}].y = h/2.0;
       
-        all_edges = new Array();
+       /* all_edges = new Array();
 	all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of,type_of,plural,altnames,contains_members, prior_nodes,posterior_nodes); 
 	/* all_edges.concat(follows_edges); 
          all_edges.concat(member_of_metatype); 

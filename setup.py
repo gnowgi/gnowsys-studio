@@ -104,4 +104,7 @@ setup(name='django-gstudio',
                         'django-grappelli>=2.3.4',
                         'django-ratings>=0.3.6',
                         'rdflib>=3.0.0',
+                        'django-registration>=0.8',
+
+
                         ])

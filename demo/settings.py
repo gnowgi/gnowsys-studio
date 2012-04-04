@@ -171,7 +171,10 @@ INSTALLED_APPS = (
     'registration',
     'graphviz',
     'demo',
-    'south',
+    # Uncomment the south entry to activate south for database migrations
+    # Please do install south before uncommenting
+    # command: sudo pip install south 
+    # 'south',
     )
 
 

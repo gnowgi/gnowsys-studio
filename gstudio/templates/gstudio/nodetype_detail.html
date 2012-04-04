@@ -107,18 +107,7 @@
       			</span>{% if not forloop.last %}, {% endif %}
       				{% endfor %} <br/>
                          
-                            {% if object.get_rendered_nbh.siblings %}
-                           
-                                
-				   <b>Siblings:<nbsp> </b>
-                                
-				    {% for sibkey,sibvalue in object.get_rendered_nbh.siblings.items %}
-                                             {{sibkey}};
-                                      <!--
-                                        <a href="{{sibvalue}}">{{sibkey}}</a>;	      
-                                       -->
-				    {% endfor %}       <br/>
-	                   {% endif %}
+                            
                             
                             {% if object.get_rendered_nbh.priornodes %}
                          
@@ -190,14 +179,18 @@
 				    {% endfor %}       <br/>
 	                   {% endif %}
                            
-			  
-                           
+			  {% if object.content %}
+                            <b>Content:<nbsp></b>{{object_content}}
+                          {% endif %}
+                          
                                     
 
  {% endwith %}
  {% endblock %}
 
-
+ <div class="nodetype-content">
+       
+    </div>
 
 {% block nodetype-widgets %}
 <div class="nodetype-widgets span-16 last">  {% with object.next_nodetype as next_nodetype %}

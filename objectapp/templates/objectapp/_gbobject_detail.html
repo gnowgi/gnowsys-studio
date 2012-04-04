@@ -4,7 +4,7 @@
     <h2 class="gbobject-title">
       <a href="{{ object.get_absolute_url }}" title="{{ object.title }}" rel="bookmark">
         {{ object.title }}
-      </a>
+      </a><a href="{{ object.ref.get_edit_url }}" target="_blank" >[edit]</a>  
     </h2>
     <p class="gbobject-info">
       {% if object.authors.count %}

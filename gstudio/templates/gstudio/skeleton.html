@@ -124,8 +124,7 @@
 		{% block script %}{% endblock %} <title>Gnowledge Studio - {% block title %}{% endblock %}</title>
 	</head>
 	<body id="gstudio">
-		<div class="body" >
-			<div class="content">
+		
 				<!--
 				<div id="relation_type" class="ui-buttonset">
 				<span>Relation type:</span>
@@ -134,8 +133,26 @@
 				<input value="hashtags" type="radio" id="hashtags" name="radio"/><label for="hashtags">Shared interests</label>
 				</div>
 				-->
+				
+
+
+	
+		
+		
+			{% include "gstudio/_header.html" %}
+			<div id="breadcrumbs" class="span-24 last">
+				/ {% block breadcrumbs %}{% endblock %}
+			</div>
+			<div id="body" class="span-24 last">
+				<div id="content" class="hfeed span-16 border">
+					{% block content %} <h3>The content block need to be overrided!</h3>
+					{% endblock %}
+				</div>
+
+
+				<div id="graphcss">
 				<div id="chart">
-					<svg width="960" height="700" style="opacity: 1; ">
+					
 				</div>
 				<script type="text/javascript" src="/static/gstudio/js/jquery.min.js" ></script>
 				<script type="text/javascript" src="/static/gstudio/js/jquery-ui.js" ></script>
@@ -147,11 +164,28 @@
 
 				Javascript for Object type force graph
 				-->
+				
 <script type="text/javascript" >
-
-    var w = 700,
-        h = 300,
-        fill = d3.scale.category20();
+			//alert(s)
+	//if ( parseInt(s) > 0 ){
+    			var a = 25 * s;
+	
+			if ( a > 700 )
+				{
+	   				 var w = 700;
+				}
+			else
+				{ 
+				          var w = a;
+				} 
+    			
+   			var h = 24 * s,
+		//	}
+//	else{
+  //  			var w = 700,
+     //   		    h = 300,
+	//     }  
+	fill = d3.scale.category20();
 
     var vis = d3.select("#chart")
         .append("svg:svg")
@@ -496,34 +530,26 @@ $(function fgraph(gid) {
 </script>
 
 
-	</div>
-		</div>
-		<div>
-			{% include "gstudio/_header.html" %}
-			<div id="breadcrumbs" class="span-24 last">
-				/ {% block breadcrumbs %}{% endblock %}
-			</div>
-			<div id="body" class="span-24 last">
-				<div id="content" class="hfeed span-16 border">
-					{% block content %} <h3>The content block need to be overrided!</h3>
-					{% endblock %}
 				</div>
 				<div id="sidebar">
 				  {% block sidebar %}
 				  {% endblock %}
 				</div>
 				
+				
 				<div id="footer" class="span-24 last">
-					<p>
+					<p> 
+
 						<a rel="license"
-						href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative
-						Commons License" style="border-width:0"	src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a> All material is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> unless mentioned otherwise.
+						href="http://creativecommons.org/licenses/by-sa/3.0/" title="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative
+						Commons License" style="border-width:0"	src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a> All material is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" title = "http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> unless mentioned otherwise.
 						<br/>
-						Powered	by <a href="http://www.djangoproject.com">Django</a>
-						and <a href="http://github.com/gnowgi/django-gstudio">Gstudio
+						Powered	by <a href="http://www.djangoproject.com" title="https://www.djangoproject.com/">Django</a>
+						and <a href="https://github.com/gnowgi/gnowsys-studio" title="https://github.com/gnowgi/gnowsys-studio">Gstudio
 						{{ GSTUDIO_VERSION }}</a>.
 					</p>
 				</div>
-			
+		
+		
 	</body>
 </html>

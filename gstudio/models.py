@@ -878,38 +878,47 @@ class Nodetype(Node):
         """
         nbh = {}
         nbh['title'] = self.title
+	nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
-        nbh['plural'] = self.plural        
+	nbh['count_altnames'] = len(nbh['altnames'])
+        nbh['plural'] = self.plural 
+	nbh['count_plural'] = len(nbh['plural'])    
         #get all MTs 
         member_of_dict = {}
         for each in self.metatypes.all():
             member_of_dict[each.title]= each.get_absolute_url()
         nbh['member_of_metatypes']=member_of_dict
+	nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])  
         typeof={}
-        parent=self.parent
+        parent=self.parent_id
         if parent:
             typeof[parent] = parent.get_absolute_url()
         nbh['type_of']=typeof
+	nbh['count_type_of'] = len(nbh['type_of'])    
         #get all subtypes 
         subtypes={}
         for each in Nodetype.objects.filter(parent=self.id):
             subtypes[each.title] =each.get_absolute_url()
-        nbh['contains_subtypes']=subtypes   
+        nbh['contains_subtypes']=subtypes  
+	nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])  
         # get all the objects inheriting this OT 
         contains_members_dict = {}
         for each in self.member_objects.all():
            contains_members_dict[each.title]= each.get_absolute_url()
         nbh['contains_members'] = contains_members_dict
+	nbh['count_contains_members'] = len(nbh['contains_members'])
         #get prior nodes
         priornodes_dict = {}
         for each in self.prior_nodes.all():
              priornodes_dict[each.title]= each.get_absolute_url()
         nbh['priornodes'] = priornodes_dict
+	nbh['count_priornodes'] = len(nbh['priornodes'])
         #get posterior nodes
         posteriornodes_dict = {}
         for each in self.posterior_nodes.all():
              posteriornodes_dict[each.title]= each.get_absolute_url()
         nbh['posteriornodes'] = posteriornodes_dict
+	nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
         #get authors
         author_dict = {}
         for each in self.authors.all():
@@ -920,6 +929,7 @@ class Nodetype(Node):
         for each in self.get_siblings():
             siblings[each.title]=each.get_absolute_url()
         nbh['siblings']=siblings
+	nbh['count_siblings'] = len(nbh['siblings'])
         #get Relations
         relns={}
         rellft={}
@@ -953,10 +963,13 @@ class Nodetype(Node):
                         rellft[lftkey]=relnvalue
                     
         nbh['relations']=relrgt
+	
         nbh['relations'].update(rellft)
+	nbh['count_relations'] = len(nbh['relations'])
         #get Attributes
         attributes =self.get_attributes
         nbh['attributes']=attributes
+	nbh['count_attributes'] = len(nbh['attributes'])
         #get ATs
         attributetypes={}
         for each in self.subjecttype_of.all():
@@ -967,10 +980,13 @@ class Nodetype(Node):
         for each in self.left_subjecttype_of.all():
             leftroles[each.title]=each.get_absolute_url()
         nbh['leftroles']=leftroles
+	nbh['count_leftroles'] = len(nbh['leftroles'])
         rightroles = {} 
         for each in self.right_subjecttype_of.all():
             rightroles[each.title]=each.get_absolute_url()
         nbh['rightroles']=rightroles
+	nbh['count_rightroles'] = len(nbh['rightroles'])
+	
         return nbh
        
  

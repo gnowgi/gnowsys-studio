@@ -38,7 +38,7 @@
       <a href="{{ object.get_absolute_url }}" title="{{ object.title }}" rel="bookmark">
         {{ object.title }}
 	 </a>
-	<a href="{{ object.ref.get_edit_url }}" target="_blank" >[edit]</a>     
+	<a href="{{ object.ref.get_edit_url }}" target="_blank"  title = "edit">[edit]</a>     
 
     </h2>
   {% with object.html_content|safe as object_content %}
@@ -57,7 +57,7 @@
 	                   {% if object.get_rendered_nbh.type_of %}
                                 <b> Type of:<nbsp></b>
                                 {% for typekey,typevalue in object.get_rendered_nbh.type_of.items %}
-                                       <a href="{{typevalue}}">{{typekey}}</a>;
+                                       <a href="{{typevalue}}" title = "{{typekey}}">{{typekey}}</a>;
                                 {% endfor %}<br/>
                            {% endif %}
 
@@ -67,7 +67,7 @@
                           
                                 <b> Member of Metatypes:<nbsp></b>
                                     {% for mkey,mvalue in object.get_rendered_nbh.member_of_metatypes.items %}
-                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
                           
@@ -76,7 +76,7 @@
                            {% if object.get_rendered_nbh.contains_subtypes %}
                                 <b> Contains SubTypes:<nbsp></b>
                                 {% for stkey,stvalue in object.get_rendered_nbh.contains_subtypes.items %}
-                                        <a href="{{stvalue}}">{{stkey}}</a>;
+                                        <a href="{{stvalue}}" title = "{{stkey}}">{{stkey}}</a>;
                                 {% endfor %}<br/>
                            {% endif %}
                           
@@ -86,7 +86,7 @@
                           
                                 <b>Contains Members:<nbsp></b>
                                     {% for mkey,mvalue in object.get_rendered_nbh.contains_members.items %}
-                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
                          
@@ -114,7 +114,7 @@
                            
                                 <b>Prior nodes:<nbsp></b>
                                     {% for mkey,mvalue in object.get_rendered_nbh.priornodes.items %}
-                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
                            
@@ -123,7 +123,7 @@
                            
                                 <b>Posterior nodes:<nbsp></b>
                                     {% for mkey,mvalue in object.get_rendered_nbh.posteriornodes.items %}
-                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
                              
@@ -133,7 +133,7 @@
                                  {% for relkey,relvalue in object.get_rendered_nbh.relations.items %}
                                           <b>{{relkey}}:<nbsp></b>
 					{% for relk, relv in relvalue.items %}
-					    <a href="{{relv}}">{{relk}}</a>;	      
+					    <a href="{{relv}}" title = "{{relk}}">{{relk}}</a>;	      
                                         {% endfor %}<br/>
 				 {% endfor %}      
 	                   {% endif %}
@@ -155,7 +155,7 @@
 				   <b>Left roles:<nbsp> </b>
                                 
 				    {% for lrkey,lrvalue in object.get_rendered_nbh.leftroles.items %}
-                                        <a href="{{lrvalue}}">{{lrkey}}</a>;	      
+                                        <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
                            
@@ -164,7 +164,7 @@
 			      <b>Right roles:<nbsp> </b>
                                 
 				    {% for rrkey,rrvalue in object.get_rendered_nbh.rightroles.items %}
-                                        <a href="{{rrvalue}}">{{rrkey}}</a>;	      
+                                        <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
                            
@@ -175,13 +175,75 @@
 				   <b>Subjecttype of:<nbsp> </b>
                                 
 				    {% for atkey,atvalue in object.get_rendered_nbh.ats.items %}
-                                        <a href="{{atvalue}}">{{atkey}}</a>;	      
+                                        <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
                            
 			  {% if object.content %}
                             <b>Content:<nbsp></b>{{object_content}}
                           {% endif %}
+				
+			  <script type="text/javascript" >
+			  var s = 0
+		 	   var i
+			  {% if object.get_rendered_nbh.count_plural %}
+			       var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + i)
+			  {% endif %}
+			  {% if object.get_rendered_nbh.count_altnames %}
+				i = parseInt({{ object.get_rendered_nbh.count_altnames }})
+				s = parseInt(s + i)
+			  {% endif %}
+			  {% if object.get_rendered_nbh.count_type_of %}
+				i = parseInt({{ object.get_rendered_nbh.count_type_of }})
+				s = s + i
+			  {% endif %}
+			  {% if object.get_rendered_nbh.count_member_of_metatypes %}
+				i = parseInt({{ object.get_rendered_nbh.count_member_of_metatypes }})
+				s = parseInt(s + i)
+			  {% endif %}
+			  {% if object.get_rendered_nbh.count_member_of_metatypes %}
+				i = parseInt({{ object.get_rendered_nbh.count_member_of_metatypes }})
+				s = parseInt(s + i)
+			  {% endif %}
+			  {% if object.get_rendered_nbh.count_contains_members %}
+				var b = parseInt({{ object.get_rendered_nbh.count_contains_members  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+			/* {% if object.get_rendered_nbh.count_siblings %}
+				 i = parseInt({{ object.get_rendered_nbh.count_siblings  }})
+				 s = parseInt(s + i)
+     		          {% endif %}*/
+			  {% if object.get_rendered_nbh.count_priornodes %}
+				 i = parseInt({{ object.get_rendered_nbh.count_priornodes  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+			  {% if object.get_rendered_nbh.count_posteriornodes  %}
+				 i = parseInt({{ object.get_rendered_nbh.count_posteriornodes  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+			  {% if object.get_rendered_nbh.count_relations %}
+				 i = parseInt({{ object.get_rendered_nbh.count_relations  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+			  {% if object.get_rendered_nbh.count_attributes %}
+				 i = parseInt({{ object.get_rendered_nbh.count_attributes  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+			  {% if object.get_rendered_nbh.count_leftroles %}
+				 i = parseInt({{ object.get_rendered_nbh.count_leftroles  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+			   {% if object.get_rendered_nbh.count_rightroles %}
+				 i = parseInt({{ object.get_rendered_nbh.count_rightroles  }})
+				 s = parseInt(s + i)
+     		          {% endif %}
+				if ( s > 0)
+				{
+				s = parseInt(s)
+			  	//alert(s)
+				}
+                        </script>
                           
                                     
 
@@ -198,7 +260,7 @@
   <div class="nodetype-next">
     <h5>{% trans "Posterior node" %}</h5>
 	          {% for items in object.posteriornodes.all %}
-	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     <a href="{{ items.get_absolute_url }}" title = "{{ items.title }}"> {{ items.title }}</a>; 
 	     {% endfor %} 	     
   </div>
   {% endif %}
@@ -208,7 +270,7 @@
   <div class="nodetype-next">
     <h5>{% trans "Prior node" %}</h5>
 	          {% for items in object.priornodes.all %}
-	     <a href="{{ items.get_absolute_url }}"> {{ items.title }}</a>; 
+	     <a href="{{ items.get_absolute_url }}" title = "{{ items.title }}"> {{ items.title }}</a>; 
 	     {% endfor %} 	     
   </div>
   {% endif %}
@@ -242,7 +304,7 @@
       <div class="comment-body span-13 last">
 	<div class="comment-author span-13 last">
 	  {% if comment.url %}
-	  <a href="{{ comment.url }}" class="fn url">{{ comment.user_name }}</a>
+	  <a href="{{ comment.url }}" class="fn url" title = "{{ comment.user_name }}">{{ comment.user_name }}</a>
 	  {% else %}
 	  {{ comment.user_name }}
 	  {% endif %}
@@ -279,7 +341,7 @@
     <li id="pingback_{{ pingback.pk }}" class="pingback {% cycle box1,box2 %} span-15 last">
       <div class="pingback-body span-15 last">
 	<div class="pingback-author span-15 last">
-	  <a href="{{ pingback.url }}">{{ pingback.user_name }}</a>
+	  <a href="{{ pingback.url }}" title = "{{ pingback.user_name }}">{{ pingback.user_name }}</a>
 	  {% trans "on" %} {{ pingback.submit_date|date:"SHORT_DATETIME_FORMAT" }}
 	</div>
 	<div class="span-15 last">
@@ -312,7 +374,7 @@
     <li id="trackback_{{ trackback.pk }}" class="trackback {% cycle box1,box2 %} span-15 last">
       <div class="trackback-body span-15 last">
 	<div class="trackback-author span-15 last">
-	  <a href="{{ trackback.url }}">{{ trackback.user_name }}</a>
+	  <a href="{{ trackback.url }}" title = "{{ trackback.user_name }}">{{ trackback.user_name }}</a>
 	  {% trans "on" %} {{ trackback.submit_date|date:"SHORT_DATETIME_FORMAT" }}
 	</div>
 	<div class="span-15 last">
@@ -327,7 +389,7 @@
   {% endif %}
     {% if object.pingback_enabled %}
   <p>
-    <a href="{% url gstudio_nodetype_trackback object.pk %}" rel="trackback">
+    <a href="{% url gstudio_nodetype_trackback object.pk %}" rel="trackback" title = "Trackback URL">
       {% trans "Trackback URL" %}</a>
   </p>
     {% endif %}

@@ -71,6 +71,8 @@ from gstudio.settings import UPLOAD_TO
 from gstudio.managers import DRAFT, PUBLISHED
 from django_xmlrpc.decorators import xmlrpc_func
 
+
+
 # http://docs.nucleuscms.org/blog/12#errorcodes
 LOGIN_ERROR = 801
 PERMISSION_DENIED = 803
@@ -374,3 +376,81 @@ def new_media_object(blog_id, username, password, media):
     path = default_storage.save(os.path.join(UPLOAD_TO, media['name']),
                                 ContentFile(media['bits'].data))
     return {'url': default_storage.url(path)}
+
+
+@xmlrpc_func(returns='string', args=['int'])
+def getNodetype(ssid):
+      g = NID.objects.get(id=ssid)
+      return (g.ref._meta.module_name)
+
+
+@xmlrpc_func(returns='int', args=['string'])
+def nodeExists(name):	
+      try:
+      	p = NID.objects.get(title = name)
+      	return 1
+      except NID.DoesNotExist:
+	return 0
+    
+    
+@xmlrpc_func(returns=['struct'], args=['string'])
+def getinfoFromSSID(ssid_list): 	
+    return [{"a":"b","c":None},{"a":"0","c":"1"},{"a":"b","c":"2"}]
+
+"""
+    lst = []
+     for ssid in ssid_list:
+     	try:
+      		p = NID.objects.get(id=ssid)
+		nbh = p.ref.get_nbh
+      		lst.append(nbh)
+        except NID.DoesNotExist:
+		print "ssid: ", ssid, " does not exist!"
+
+     if ()
+     return lst
+"""
+
+
+@xmlrpc_func(returns='int', args=['struct'])
+def getNeighbourhood(ssid_list, get_what): 	
+     lst = []
+     for ssid in ssid_list:
+      	try:
+      	 p = NID.objects.get(id=ssid)
+	 if get_what=='rendered_nbh':
+   	   nbh = p.ref.get_rendered_nbh
+	 elif get_what=='nbh':
+   	   nbh = p.ref.get_nbh
+      	 lst.append(nbh)
+        except NID.DoesNotExist:
+	 print "ssid: ", ssid, " does not exist!"
+
+     return lst
+
+
+
+@xmlrpc_func(returns='int', args=['struct'])
+def getDataType(ssid_list): 	
+     lst = []
+     for ssid in ssid_list:
+      	try:
+      	 p = NID.objects.get(id=ssid)
+	 if get_what=='rendered_nbh':
+   	   nbh = p.ref.get_rendered_nbh
+	 elif get_what=='nbh':
+   	   nbh = p.ref.get_nbh
+      	 lst.append(nbh)
+        except NID.DoesNotExist:
+	 print "ssid: ", ssid, " does not exist!"
+
+     return lst
+
+
+
+
+
+
+
+
+

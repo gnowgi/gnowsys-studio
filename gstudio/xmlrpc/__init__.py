@@ -80,6 +80,12 @@ GSTUDIO_XMLRPC_METAWEBLOG = [
     ('gstudio.xmlrpc.metaweblog.get_nbh',
      'metaWeblog.get_nbh'),
     ('gstudio.xmlrpc.metaweblog.new_media_object',
-     'metaWeblog.newMediaObject')]
+     'metaWeblog.newMediaObject'),
+    ('gstudio.xmlrpc.metaweblog.getNodetype',
+     'metaWeblog.getNodetype'),
+    ('gstudio.xmlrpc.metaweblog.nodeExists',
+     'metaWeblog.nodeExists'),
+    ('gstudio.xmlrpc.metaweblog.getinfoFromSSID',
+     'metaWeblog.getinfoFromSSID')]
 
 GSTUDIO_XMLRPC_METHODS = GSTUDIO_XMLRPC_PINGBACK + GSTUDIO_XMLRPC_METAWEBLOG

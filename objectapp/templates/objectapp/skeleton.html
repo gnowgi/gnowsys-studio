@@ -124,8 +124,7 @@
     <title>Gnowledge Studio - {% block title %}{% endblock %}</title>
   </head>
   <body id="gstudio">
-<div class="body" >
-  <div class="content">
+
  
  <!--
     <div id="relation_type" class="ui-buttonset">
@@ -135,11 +134,33 @@
              <input value="hashtags" type="radio" id="hashtags" name="radio"/><label for="hashtags">Shared interests</label> 
           </div>
      -->     
-    <div id="chart"><svg width="960" height="700" style="opacity: 1; ">
+
+
+
+    
+
+
+
+   
+
+      {% include "gstudio/_header.html" %}
+
+
+	<div id="breadcrumbs" class="span-24 last">
+	  / {% block breadcrumbs %}{% endblock %}
+	</div>
+     
+      <div id="body" class="span-24 last">
+	<div id="content" class="hfeed span-16 border">
+	  {% block content %}
+	  <h3>The content block need to be overrided!</h3>
+	  {% endblock %}
+	</div>
+	<div id="graphcss">
+
+	<div id="chart">
    </div>
-
-
-    <script type="text/javascript" src="/static/gstudio/js/jquery.min.js" ></script>
+	<script type="text/javascript" src="/static/gstudio/js/jquery.min.js" ></script>
     <script type="text/javascript" src="/static/gstudio/js/jquery-ui.js" ></script>    
 
     <script type="text/javascript" src="/static/gstudio/js/underscore.js" ></script>
@@ -153,8 +174,21 @@ Javascript for Object type force graph
 -->
    <script type="text/javascript" >
 
-    var w = 700,
-        h = 300,
+      var a = 85 * s;
+	
+	if ( a > 700 )
+	{
+	    var w = 700;
+	}
+	else
+	{ 
+		var w = a;
+	} 
+	
+    var h = 85 * s,
+
+     /* var w = 700,
+	 h = 400,*/
         fill = d3.scale.category20();
 
     var vis = d3.select("#chart")
@@ -501,27 +535,6 @@ all_edges=new Array();
 
 
 </script>
-
-  </div>
-
-</div>
-
-    <div>
-
-      {% include "gstudio/_header.html" %}
-
-
-	<div id="breadcrumbs" class="span-24 last">
-	  / {% block breadcrumbs %}{% endblock %}
-	</div>
-      </div>
-      <div id="body" class="span-24 last">
-	<div id="content" class="hfeed span-16 border">
-	  {% block content %}
-	  <h3>The content block need to be overrided!</h3>
-	  {% endblock %}
-	</div>
-	<div id="graph" class="span-16 last">
          {% block graph %} {% endblock %}
 	</div>
 	<div id="sidebar" class="span-8 last">
@@ -530,7 +543,7 @@ all_edges=new Array();
 	</div>
       </div>
       <div id="footer" class="span-24 last">
-	<p>Powered by <a href="http://www.djangoproject.com">Django</a> and <a href="http://github.com/gnowgi/django-gstudio">Gstudio {{ GSTUDIO_VERSION }}</a>.</p>
+	<p>Powered by <a href="http://www.djangoproject.com" title="http://www.djangoproject.com">Django</a> and <a href="http://github.com/gnowgi/django-gstudio" title="http://github.com/gnowgi/django-gstudio">Gstudio {{ GSTUDIO_VERSION }}</a>.</p>
       </div>
     </div>
   </body>

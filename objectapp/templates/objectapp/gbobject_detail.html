@@ -37,6 +37,43 @@
 
   {% with object.html_content|safe as object_content %}
   {% include "objectapp/_gbobject_detail.html" %}
+
+
+  <script type="text/javascript" >
+			  var s = 0
+		 	  var i
+			 
+			  {% if object.get_rendered_nbh.plural %}
+			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + 1)
+			  {% endif %}
+	  		   {% if object.get_rendered_nbh.title %}
+			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + 1)
+			  {% endif %}
+			   {% if object.get_rendered_nbh.altnames %}
+			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + 1)
+			  {% endif %}
+			   {% if object.get_rendered_nbh.member_of %}
+			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + 1)
+			  {% endif %}
+			   {% if object.get_rendered_nbh.relations %}
+			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + 1)
+			  {% endif %}
+			{% if object.get_rendered_nbh.attributes %}
+			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
+				s = parseInt(s + 1)
+			  {% endif %}
+			 if ( s > 0)
+				{
+				s = parseInt(s)
+			  	//alert(s)
+				}
+</script>	
+
   {% endwith %}
 {% endblock %}
 

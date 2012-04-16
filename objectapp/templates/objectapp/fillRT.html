@@ -1,0 +1,25 @@
+
+
+{% extends "objectapp/base.html" %}
+{% load i18n %}
+{% block content %}
+
+<form method="." action="POST">
+{% csrf_token %}
+
+<select id = "id_select_mem">
+  <option>-select-</option>
+{% if memdict %}
+{% for key, val in memdict.iteritems %}
+<option value="{{ key }}">{{ val }}</option>
+{% endfor %} 
+{% else %}
+<option>Nothing</option>
+{% endif %}
+</select>
+
+<input type="button" id="id_submit_rt" value="Go"/>
+
+</form>
+{% endblock %}
+

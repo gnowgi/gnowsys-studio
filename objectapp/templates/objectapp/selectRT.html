@@ -1,0 +1,39 @@
+
+{% extends "objectapp/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form method="." action="POST">
+{% csrf_token %}
+<b>Details of {{ gb }}</b>
+
+<!-- -------------------------------------------- -->
+
+<select id ="id_select_rt">
+<option>-select-</option>
+{% if final %}
+{% for key, val in final.iteritems %}
+    <option value="{{ key }}">{{ val }}</option>
+{% endfor %}
+{% else %}
+    <option> No Relation </option>
+    <input type="button" id="id_back" value="Back"/>
+{% endif %}
+</select>
+
+<!-- -------------------------------------------- -->
+
+<input  id="id_left" type="hidden" value="{{ gbid }}">
+<input  id="id_right" type="hidden" value=" ">
+<input  id="id_reltype" type="hidden" value=" ">
+<input  id="id_back_url" type="hidden" value="{{ absolute_url_node }}">
+
+<!-- -------------------------------------------- -->
+
+<div id = "id_div1">
+</div>
+
+<!-- -------------------------------------------- -->
+
+</form>
+{% endblock %}

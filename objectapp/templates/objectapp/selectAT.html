@@ -1,0 +1,25 @@
+
+{% extends "objectapp/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<form method="POST" action=".">
+{% csrf_token %}
+Objects :
+<select id="id_select">
+<option value="select">-select-</option>
+{% if rdict %}
+{% for id, val in rdict.items %}
+   <option value="{{ id }}">{{ val }}</option>
+{% endfor %}
+{% else %}
+   <option value="nothing">-Nothing-</option>
+{% endif %}
+</select>
+
+<div id = "id_div">
+</div>
+</form>
+
+{% endblock %}

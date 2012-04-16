@@ -1,0 +1,28 @@
+{% extends "objectapp/base.html" %}
+{% load i18n %}
+{% block content %}
+<form action="." method="POST">
+
+{% csrf_token %}
+
+<b>Details of {{ name }} </b>
+<table id= "id_table" class = "class_table">
+  <tr>
+    <th> Attribute Type </th>
+    <th> Value </th>
+   </tr>  
+  {% for field in form  %}  
+  <tr>
+    <td>{{ field.label_tag }}</td>
+    <td>{{ field }} {{ field.errors }}</td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td><input type="submit" id="id_submit" value="Go"/></td>
+    <td><input type="button" id="id_back" value="Back"/></td>
+  </tr>
+</table>
+<input type="hidden" id="id_back_url" value="{{ absolute_url_node }}"/>
+<input type="hidden" id="id_hidden" value=" "/>
+</form>
+{% endblock %}

@@ -1,6 +1,6 @@
 body { line-height: 1.5; font-family: Arial, Helvetica, sans-serif; color: #333333; font-size: 75%; height:1500px;width:1500px}
 
-h1, h2, h3, h4, h5, h6 { font-weight: normal; color: #176691; border-radius:15px; }
+h1, h2, h3, h4, h5, h6 { font-weight: normal; color: #000000; border-radius:15px; }
 h1 img, h2 img, h3 img, h4 img, h5 img, h6 img { margin: 0; }
 
 h1 { font-size: 3em; line-height: 1; margin-bottom: 0.50em; }
@@ -432,7 +432,11 @@ a:hover { text-decoration: underline; }
 #header .top-navigation .sitemap { background: transparent url(../img/sitemap.png) no-repeat scroll left center; }
 #header .top-navigation .feeds { background: transparent url(../img/rss.png) no-repeat scroll left center; }
 
+
 #breadcrumbs { background-color:#0888CC; font-size: 1.2em; color:white; }
+
+
+
 #b1 {position:relative; center:5%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 #b2 {position:relative; center:6%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 
@@ -484,9 +488,9 @@ a:hover { text-decoration: underline; }
 }
 #sidebar{position:absolute; margin-left:600px; margin-right:150px; margin-top:10px; width:300px;}
 #sidebar div:first-child h3 { margin-top:0px; }
-#sidebar h3 { background-color: #C4EBF4; padding: 0.5em; }
+#sidebar h3 { background-color: #FFE9E8; padding: 0.5em; }
 #sidebar p { padding-left: 1em; }
-#sidebar ul, #sidebar ol { padding-left: 2.5em; list-style-image: url(../img/bullet.png); }
+#sidebar ul, #sidebar ol { padding-left: 2.5em; list-style-image: url(../img/bulletnew1.png); }
 #sidebar li ul, #sidebar li ol { margin: 0 0.0em 0 0; }
 #sidebar input { width: auto; }
 #button {background-color:#43AEE7; color: white;}
@@ -507,8 +511,8 @@ a:hover { text-decoration: underline; }
 
 th.month{padding:0cm 2.5cm;}
 table.month { margin-bottom: 0; }
-table.month th.month { text-transform: uppercase; color: #006699; background: none; }
-table.month th { text-transform: capitalize; color: #917E7E; background-color: #C4EBF4; border-radius:15px;}
+table.month th.month { text-transform: uppercase; color: #555555; background: none; }
+table.month th { text-transform: capitalize; color: #555555; background-color: #FFE9E8; border-radius:15px;}
 table.month td { text-align: center; font-weight: bold; }
 table.month td.objecttype { background-color: #C4EBF4; }
 

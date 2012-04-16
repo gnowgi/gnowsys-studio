@@ -161,7 +161,7 @@ body {
 ------------------------------------------------------------------------------------------------------ */
 
 #header {
-    color: #0872B4;
+    color: ##555555;
     background: white;
     background: -moz-linear-gradient(top, white, white);
     background: -webkit-gradient(linear, left top, left bottom, from(white), to(white));
@@ -2140,7 +2140,7 @@ form#bookmark-form button.bookmarked:hover {
 ------------------------------------------------------------------------------------------------------ */
 
 div#breadcrumbs {
-    color: #0872B4;
+    color: #000000;
     
     border-bottom: 1px solid #0872B4;
     background: white;

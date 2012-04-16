@@ -250,9 +250,14 @@
  {% endwith %}
  {% endblock %}
 
- <div class="nodetype-content">
+{% if object.reftype  == 'Objecttype'%}
+<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ object.title }}">Add Attribute</a>
+<br/>
+<a href="{{ get_absolute_url }}/objects/dynamicRelation/displayRT/{{ object.title }}">Add Relation</a>
+{% endif  %}
+<div class="nodetype-content">
        
-    </div>
+</div>
 
 {% block nodetype-widgets %}
 <div class="nodetype-widgets span-16 last">  {% with object.next_nodetype as next_nodetype %}

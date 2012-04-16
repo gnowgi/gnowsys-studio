@@ -252,6 +252,23 @@ class NID(models.Model):
             return None
         
         return vrs.object
+    
+    @property
+    def reftype(self):
+        """ 
+        Returns the type the id belongs to.
+        """
+        try:
+            """ 
+            ALGO: simple wrapper for the __class__.__name__ so that it can be used in templates  
+            """
+            obj = self.ref
+            return obj.__class__.__name__
+        
+        except:
+            return None
+        
+
 
     @property
     def get_edit_url(self):

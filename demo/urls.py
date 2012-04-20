@@ -75,6 +75,10 @@ from gstudio.sitemaps import MetatypeSitemap
 from gstudio.sitemaps import AuthorSitemap
 from objectapp.sitemaps import GbobjectSitemap
 
+# import gstudio.regbackend
+from gstudio.forms import *
+from registration.views import register
+
 
 
 admin.autodiscover()
@@ -95,7 +99,10 @@ urlpatterns = patterns(
     url(r'^objects/admin/', include(admin.site.urls)),
     url(r'^nodetypes/admin/', include(admin.site.urls)),
     url(r'^grappelli/', include('grappelli.urls')),
+    url(r'^accounts/register/$', register, {'backend': 'gstudio.regbackend.MyBackend','form_class': UserRegistrationForm}, name='registration_register'),
+
     url(r'^accounts/', include('registration.urls')),
+
     url(r'^$', 'django.views.generic.simple.redirect_to',
             { 'template': 'index.html' }, 'index'),
     )

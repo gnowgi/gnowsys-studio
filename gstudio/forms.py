@@ -17,7 +17,13 @@
 
 from gstudio.models import *
 from django.forms import ModelForm
+from django.forms import *
 from django.contrib.admin import widgets  
+from registration.forms import *
+
+class UserRegistrationForm(RegistrationForm):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
 
 class MetatypeForm(ModelForm):
 

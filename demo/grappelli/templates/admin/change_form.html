@@ -8,12 +8,128 @@
     {{ block.super }}
 {% endblock %}
 
+
 <!-- JAVASCRIPTS -->
 {% block javascripts %}
     {{ block.super }}
     {% url admin:jsi18n as jsi18nurl %}
     <script type="text/javascript" src="{{ jsi18nurl|default:'../../../jsi18n/' }}"></script>
     <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_inline.js" type="text/javascript"></script>
+{% if change %}
+  <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/URI.js"></script>
+   <script type="text/javascript" charset="utf-8">
+       (function($){
+        $(document).ready(function() {
+                  $("#id_relationtype").change(function() {
+                 
+                 p = $("#id_relationtype").val()
+                 test="?id=" + p;
+                 
+                 var url = new URI("ajaxleft/?id=" )+ test;
+                 var smpl_uri = new URI("/admin/gstudio/relation/ajaxleft/?id=11");
+                 
+  		 var blah      = new URI(test);
+  		 var url = blah.resolve(smpl_uri);
+                 
+                 $.get(url,
+                 function(data){
+                        
+                	$("#id_left_subject").empty()
+
+                 	 for (var key in data) {
+                            
+
+               	    $('#id_left_subject').append(
+                                                  $('<option></option>').val(key).html(data[key])
+                                               );
+                                     } 
+                });
+
+               url = "ajaxright/?id=" + test
+              var some_uri = new URI("/admin/gstudio/relation/ajaxright/?id=11");
+            
+                
+  		var blah      = new URI(test);
+  		var url = blah.resolve(some_uri);
+                 
+                 $.get(url,
+                 function(data){
+                        
+                	$("#id_right_subject").empty()
+
+                 	 for (var key in data) {
+                            
+
+               	    $('#id_right_subject').append(
+                                                  $('<option></option>').val(key).html(data[key])
+                                               );
+                                     } 
+                });
+
+         
+        });
+           });
+           })(django.jQuery);
+         
+     </script>
+{% else %}
+  <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/URI.js"></script>
+   <script type="text/javascript" charset="utf-8">
+       (function($){
+        $(document).ready(function() {
+                  $("#id_relationtype").change(function() {
+                 
+                 p = $("#id_relationtype").val()
+                 test="?id=" + p;
+                 var url = new URI("ajaxleft/?id=" )+ test;
+                  var some_uri = new URI("/admin/gstudio/relation/add/ajaxleft/?id=11");
+                 
+  		var blah      = new URI(test);
+  		var url = blah.resolve(some_uri);
+                 
+                 $.get(url,
+                 function(data){
+                        
+                	$("#id_left_subject").empty()
+
+                 	 for (var key in data) {
+                            
+
+               	    $('#id_left_subject').append(
+                                                  $('<option></option>').val(key).html(data[key])
+                                               );
+                                     } 
+                });
+
+               url = "ajaxright/?id=" + test
+              var some_uri = new URI("/admin/gstudio/relation/add/ajaxright/?id=11");
+            
+                
+  		var blah      = new URI(test);
+  		var url = blah.resolve(some_uri);
+                 
+                 $.get(url,
+                 function(data){
+                        
+                	$("#id_right_subject").empty()
+
+                 	 for (var key in data) {
+                            
+
+               	    $('#id_right_subject').append(
+                                                  $('<option></option>').val(key).html(data[key])
+                                               );
+                                     } 
+                });
+
+         
+        });
+           });
+           })(django.jQuery);
+         
+     </script>
+{% endif %}
+
     <script type="text/javascript" charset="utf-8">
         (function($) {
             $(document).ready(function() {
@@ -102,6 +218,7 @@
                     {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="focus" target="_blank">{% trans "View on site" %}</a></li>{% endif%}
                 {% endblock %}
             </ul>
+
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -113,7 +230,7 @@
             <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %} 
                 <div>
                     <!-- Popup Hidden Field -->
-                    {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+                    {% if is_popup %}tretret<input type="hidden" name="_popup" value="1" />{% endif %}
                     
                     <!-- Submit-Row -->
                     {% if save_on_top %}{% submit_row %}{% endif %}

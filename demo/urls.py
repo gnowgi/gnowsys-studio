@@ -95,6 +95,7 @@ urlpatterns = patterns(
     url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/gstudio/', include('gstudio.urls.ajaxurls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^objects/admin/', include(admin.site.urls)),
     url(r'^nodetypes/admin/', include(admin.site.urls)),

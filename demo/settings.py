@@ -178,6 +178,8 @@ INSTALLED_APPS = (
     )
 
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 
 from gstudio.xmlrpc import GSTUDIO_XMLRPC_METHODS

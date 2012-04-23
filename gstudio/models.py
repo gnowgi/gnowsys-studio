@@ -1950,5 +1950,10 @@ post_save.connect(ping_directories_handler, sender=Nodetype,
 post_save.connect(ping_external_urls_handler, sender=Nodetype,
                   dispatch_uid='gstudio.nodetype.post_save.ping_external_urls')
 
+class Peer(User):
+    """Subclass for non-human users"""
+    def __unicode__(self):
+        return self.ip
 
-
+    ip = models.IPAddressField("Peer's IP address")
+    pkey = models.CharField(("Peer's public-key"), max_length=255)

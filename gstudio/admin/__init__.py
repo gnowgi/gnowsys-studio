@@ -36,6 +36,8 @@ from gstudio.models import AttributeFilePathField
 from gstudio.models import AttributeImageField
 from gstudio.models import AttributeURLField
 from gstudio.models import AttributeIPAddressField
+from gstudio.models import Peer
+
 
 #Admin imports
 
@@ -79,6 +81,7 @@ from gstudio.admin.attribute_ipaddressfield import AttributeIPAddressFieldAdmin
 
 
 
+
 admin.site.register(Objecttype, ObjecttypeAdmin)
 admin.site.register(Metatype, MetatypeAdmin)
 admin.site.register(Relationtype, RelationtypeAdmin)
@@ -95,6 +98,8 @@ admin.site.register(Union, UnionAdmin)
 admin.site.register(Complement, ComplementAdmin)
 admin.site.register(Intersection, IntersectionAdmin)
 admin.site.register(Expression, ExpressionAdmin)
+admin.site.register(Peer)
+
 
 admin.site.register(AttributeCharField, AttributeCharFieldAdmin)
 admin.site.register(AttributeTextField, AttributeTextFieldAdmin)

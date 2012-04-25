@@ -124,6 +124,7 @@ class CustomIndexDashboard(Dashboard):
                             'gstudio.models.Complement',
                             'gstudio.models.Intersection',
                             'gstudio.models.Expression',
+                            'gstudio.models.Peer',
                             ),
 
                         ),

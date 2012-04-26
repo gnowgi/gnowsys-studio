@@ -154,7 +154,7 @@ class RelationtypeAdminForm(forms.ModelForm):
         super(RelationtypeAdminForm, self).__init__(*args, **kwargs)
         prior = ManyToManyRel(Nodetype, 'id')
         post = ManyToManyRel(Nodetype, 'id')
-
+        
        
 
         self.fields['priornodes'].widget = RelatedFieldWidgetWrapper(
@@ -206,18 +206,6 @@ class RelationAdminForm(forms.ModelForm):
         AppNode = vrs.object._meta.module_name
         AppNodeList = AppNode.objects.all()
         return AppNodeList
-
-
-
-
-        
-        
-
-        
-
-    
-
-
 
         
 
@@ -289,7 +277,7 @@ class AttributetypeAdminForm(forms.ModelForm):
         super(AttributetypeAdminForm, self).__init__(*args, **kwargs)
         prior = ManyToManyRel(Nodetype, 'id')
         post = ManyToManyRel(Nodetype, 'id')
-       
+        self.fields['sites'].initial = [Site.objects.get_current()]
 
         self.fields['priornodes'].widget = RelatedFieldWidgetWrapper(
             self.fields['priornodes'].widget, prior, self.admin_site)

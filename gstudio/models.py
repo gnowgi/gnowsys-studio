@@ -1319,10 +1319,10 @@ class Relationtype(Nodetype):
     '''
     inverse = models.CharField(_('inverse name'), help_text=_('when subjecttypes are interchanged, what should be the name of the relation type? This is mandatory field. If the relation is symmetric, same name will do.'), max_length=255,db_index=True ) 
     left_subjecttype = models.ForeignKey(NID,related_name="left_subjecttype_of", verbose_name='left role')  
-    left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Node types for left role')
+    left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for left role')
     left_cardinality = models.IntegerField(null=True, blank=True, verbose_name='cardinality for the left role')
     right_subjecttype = models.ForeignKey(NID,related_name="right_subjecttype_of", verbose_name='right role')  
-    right_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Node types for right role')
+    right_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for right role')
     right_cardinality = models.IntegerField(null=True, blank=True, verbose_name='cardinality for the right role')
     is_symmetrical = models.NullBooleanField(verbose_name='Is symmetrical?')
     is_reflexive = models.NullBooleanField(verbose_name='Is reflexive?')

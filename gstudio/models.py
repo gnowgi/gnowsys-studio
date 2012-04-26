@@ -106,6 +106,7 @@ import json
 import reversion
 from reversion.models import Version
 from django.core import serializers
+from reversion.models import *
 
 NODETYPE_CHOICES = (
     ('ND', 'Nodes'),
@@ -319,6 +320,11 @@ class Node(NID):
     class Meta:
         abstract=False
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class Edge(NID):
 
 
@@ -327,6 +333,11 @@ class Edge(NID):
 
     class Meta:
         abstract=False
+    @reversion.create_revision()
+    # Save for edge
+    def save(self, *args, **kwargs):
+        super(Edge, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
  
 class Metatype(Node):
@@ -507,6 +518,12 @@ class Metatype(Node):
         ordering = ['title']
         verbose_name = _('metatype')
         verbose_name_plural = _('metatypes')
+
+    # Save for metatype
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -1131,6 +1148,12 @@ class Nodetype(Node):
         verbose_name_plural = _('node types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+    
+    # Save for nodetype
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Nodetype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Objecttype(Nodetype):
@@ -1310,6 +1333,12 @@ class Objecttype(Nodetype):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    # Save for Objecttype
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 
 
 
@@ -1350,6 +1379,12 @@ class Relationtype(Nodetype):
         verbose_name_plural = _('relation types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # Save for Relationtype
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(RelationType, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Attributetype(Nodetype):
@@ -1393,6 +1428,12 @@ class Attributetype(Nodetype):
         verbose_name_plural = _('attribute types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # Save for Attributetype
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
     
@@ -1484,6 +1525,13 @@ class Relation(Edge):
         function that composes the right_subject and relation name, as in "x as a friend", "y as a sibling"
         '''
         return '%s as a %s' % (self.right_subject, self.relationtype) 
+    
+    
+    # Save for Relation
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Relation, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Attribute(Edge):
@@ -1560,6 +1608,12 @@ class Attribute(Edge):
         for each in Objecttype.objects.all():
             if attr.subjecttype.id == each.id:
                 return each.get_members
+
+    # Save for Attribute
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Attribute, self).save(*args, **kwargs) # Call the "real" save() method.
+
                     
             
         
@@ -1570,12 +1624,23 @@ class AttributeCharField(Attribute):
     def __unicode__(self):
         return self.title
 
+    
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeCharField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeTextField(Attribute):
     
     value  = models.TextField(verbose_name='text') 
 
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeTextField, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 class AttributeIntegerField(Attribute):
      value = models.IntegerField(max_length=100, verbose_name='Integer') 
@@ -1583,12 +1648,22 @@ class AttributeIntegerField(Attribute):
      def __unicode__(self):
          return self.title
 
+     @reversion.create_revision()
+     def save(self, *args, **kwargs):
+        super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+
 class AttributeCommaSeparatedIntegerField(Attribute):
     
     value  = models.CommaSeparatedIntegerField(max_length=100, verbose_name='integers separated by comma') 
 
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeCommaSeparatedIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeBigIntegerField(Attribute):
     
@@ -1604,12 +1679,19 @@ class AttributePositiveIntegerField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributePositiveIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeDecimalField(Attribute):
     
     value  = models.DecimalField(max_digits=3, decimal_places=2, verbose_name='decimal') 
 
     def __unicode__(self):
         return self.title
+    def save(self, *args, **kwargs):
+        super(AttributeDecimalField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeFloatField(Attribute):
     
@@ -1618,12 +1700,20 @@ class AttributeFloatField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeFloatField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeBooleanField(Attribute):
     
     value  = models.BooleanField(verbose_name='boolean') 
 
     def __unicode__(self):
         return self.title
+    def save(self, *args, **kwargs):
+        super(AttributeBooleanField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 class AttributeNullBooleanField(Attribute):
     
@@ -1632,6 +1722,11 @@ class AttributeNullBooleanField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeNullBooleanField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeDateField(Attribute):
     
     value  = models.DateField(max_length=100, verbose_name='date') 
@@ -1639,12 +1734,22 @@ class AttributeDateField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeDateField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeDateTimeField(Attribute):
     
     value  = models.DateTimeField(max_length=100, verbose_name='date time') 
     
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeDateTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 class AttributeTimeField(Attribute):
     
@@ -1653,12 +1758,22 @@ class AttributeTimeField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeEmailField(Attribute):
     
     value  = models.CharField(max_length=100,verbose_name='value') 
 
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeEmailField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 class AttributeFileField(Attribute):
     
@@ -1667,12 +1782,22 @@ class AttributeFileField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeFileField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeFilePathField(Attribute):
     
     value  = models.FilePathField(verbose_name='path of file') 
 
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeFilePathField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 class AttributeImageField(Attribute):
     
@@ -1681,6 +1806,11 @@ class AttributeImageField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeImageField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeURLField(Attribute):
 
     value  = models.URLField(max_length=100, verbose_name='url') 
@@ -1688,12 +1818,22 @@ class AttributeURLField(Attribute):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeURLField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeIPAddressField(Attribute):
 
     value  = models.IPAddressField(max_length=100, verbose_name='ip address') 
 
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeIPAddressField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Processtype(Nodetype):    
@@ -1718,6 +1858,10 @@ class Processtype(Nodetype):
         verbose_name_plural = _('process types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Processtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -1749,6 +1893,11 @@ class Systemtype(Nodetype):
         verbose_name_plural = _('system types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 
 class AttributeSpecification(Node):
@@ -1782,6 +1931,12 @@ class AttributeSpecification(Node):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(AttributeSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+
 
 class RelationSpecification(Node):
     """
@@ -1805,10 +1960,16 @@ class RelationSpecification(Node):
         return self.composed_subject
 
 
+
     class Meta:
         verbose_name = _('relation specification')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(RelationSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class NodeSpecification(Node):
@@ -1841,6 +2002,12 @@ class NodeSpecification(Node):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(NodeSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+
 
 class Expression(Node):
     """
@@ -1868,6 +2035,11 @@ class Expression(Node):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Expression, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 
 
 class Union(Node):
@@ -1878,6 +2050,11 @@ class Union(Node):
         
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Union, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -1890,6 +2067,11 @@ class Complement(Node):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Complement, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class Intersection(Node):
     """
     Intersection of classes
@@ -1898,6 +2080,11 @@ class Intersection(Node):
         
     def __unicode__(self):
         return self.title
+
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Intersection, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 
 reversion.register(NID)

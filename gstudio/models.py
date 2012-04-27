@@ -1383,7 +1383,7 @@ class Relationtype(Nodetype):
     # Save for Relationtype
     @reversion.create_revision()
     def save(self, *args, **kwargs):
-        super(RelationType, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Relationtype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
 

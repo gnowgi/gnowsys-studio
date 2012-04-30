@@ -308,12 +308,10 @@ def selectionlist_UP(obj):
             membs=eachchild.objecttypes.all()
 def selectionlist_OB(obj):
     global rlist
-    
-    obs=Gbobject.objects.filter(title=obj)
+    obs=Objecttype.objects.get(title=obj)
     #Get all members of OB
-    if obs:
-        obs=Gbobject.objects.get(title=obj)
-        rlist=additemdict(rlist,obs)
+    for each in  obs.member_objects.all(): 
+        rlist=additemdict(rlist,each)
     return rlist
     
                 

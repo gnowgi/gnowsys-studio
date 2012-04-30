@@ -191,7 +191,6 @@ class Author(User):
     class Meta:
         """Author's Meta"""
         proxy = True
-
 class NID(models.Model):
     """the set of all nodes.  provides node ID (NID) to all nodes in
     the network, including edges.  Edges are also first class citizens
@@ -205,7 +204,41 @@ class NID(models.Model):
     slug = models.SlugField(help_text=_('used for publication'),
                             unique_for_date='creation_date',
                             max_length=255)
+    @property
+    def get_revisioncount(self):
+        """
+        Returns Number of Version
+        """
+	i=0
+        ver=Version.objects.get_for_object(self)
+	for each in ver:
+		i=i+1
+        return i
 
+    @property
+    def get_version_list(self):
+        """
+        Returns  Version list
+        """
+        ver=Version.objects.get_for_object(self)
+	return ver
+
+    @property
+    def get_ssid(self):
+	"""
+	return snapshot ids (revision id).
+        returns a list.
+	"""
+	slist=[]
+	vlist=self.get_version_list	
+	for each in vlist:
+		slist.append(each.id)
+	return slist
+
+    def version_info(self,ssid):
+	version_object=Version.objects.get(id=ssid)
+	return version_object.field_dict
+	
 
     def get_serialized_dict(self):
         """
@@ -213,26 +246,15 @@ class NID(models.Model):
         """
         return self.__dict__
 
-    @property
-    def get_app_name(self):
-        if self.ref.__class__.__name__=='Gbobject' or self.ref.__class__.__name__=='Process' or self.ref.__class__.__name__=='System' :
-            return 'type'
-
     @models.permalink
     def get_absolute_url(self):
         """Return nodetype's URL"""
-        if self.get_app_name=='type':
-           return ('objectapp_gbobject_detail', (), {
-            	'year': self.creation_date.strftime('%Y'),
-            	'month': self.creation_date.strftime('%m'),
-            	'day': self.creation_date.strftime('%d'),
-            	'slug': self.slug})
-        else:
-           return ('gstudio_nodetype_detail', (), {
-           	'year': self.creation_date.strftime('%Y'),
-            	'month': self.creation_date.strftime('%m'),
-            	'day': self.creation_date.strftime('%d'),
-            	'slug': self.slug})
+        
+        return ('gstudio_nodetype_detail', (), {
+            'year': self.creation_date.strftime('%Y'),
+            'month': self.creation_date.strftime('%m'),
+            'day': self.creation_date.strftime('%d'),
+            'slug': self.slug})
 
     @property
     def ref(self):
@@ -252,23 +274,6 @@ class NID(models.Model):
             return None
         
         return vrs.object
-    
-    @property
-    def reftype(self):
-        """ 
-        Returns the type the id belongs to.
-        """
-        try:
-            """ 
-            ALGO: simple wrapper for the __class__.__name__ so that it can be used in templates  
-            """
-            obj = self.ref
-            return obj.__class__.__name__
-        
-        except:
-            return None
-        
-
 
     @property
     def get_edit_url(self):
@@ -285,13 +290,65 @@ class NID(models.Model):
         version = Version.objects.get(id=self.id)
         return version.serialized_data
 
+
+
+    def get_Version_graph_json(self,ssid):
+        
+        
+        # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
+        # slist=self.get_ssid
+         ver_dict=self.version_info(ssid)
+        
+	 g_json = {}
+	 g_json["node_metadata"]= [] 
+	 predicate_id = {}
+         counter = 1
+         for key in ver_dict.keys():
+             val = "a" + str(counter)
+             predicate_id[key] = val
+             counter = counter + 1
+         #print predicate_id
+
+         attr_counter = -1
+
+         this_node = {"_id":str(ver_dict['id']),"title":ver_dict['title'],"screen_name":ver_dict['title'], "url":self.get_absolute_url()}
+         g_json["node_metadata"].append(this_node)      
+
+ 	 for key in predicate_id.keys():
+		if ver_dict[key]:
+			try:
+				g_json[str(key)]=[]      
+				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+				g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
+				if not isinstance(ver_dict[key],basestring):
+                                    for item in ver_dict[key]:
+                                        # user 
+                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
+                                        g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+			
+                                else:
+				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
+		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
+				 	#for item in value.keys():
+                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":ver_dict[key]})
+                                    g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
+                                    attr_counter-=1
+							
+			except:
+                            pass
+        # print g_json
+
+        
+          
+         return json.dumps(g_json)   
+
+
     def __unicode__(self):
         return self.title
 
 
     class Meta:
         """NID's Meta"""
-
 
 
 class Node(NID):
@@ -1114,6 +1171,9 @@ class Nodetype(Node):
             'month': self.creation_date.strftime('%m'),
             'day': self.creation_date.strftime('%d'),
             'slug': self.slug})
+    def get_version_url(self):
+         """Return nodetype's URL"""
+         return "/nodetypes/display/viewhistory/"
 
     def get_serialized_data(self):
         """

@@ -49,24 +49,16 @@
       <!-- 	   } -->
            
       <!--  </script> -->
-       <h3>{% trans "Versions" %}</h3>
-        <table border="1" cellspacing="0">
-        {% for sid in object.get_ssid reversed %}
-	    <tr>
-	    <td width="5%" >
-	    <input type="radio" name="group1" value="{{ sid }}"><a href="{{ object.get_version_url }}{{ sid }}">{{ object.id }}{{ sid }}</a></input>
-            </td>
-	    <td width="5%">
-	    <input type="radio" name="group2" value="{{ sid }}">{{ sid }}</input>
-            </td>
-	    </tr>
-	    <br>
-        {% endfor %}
-	</table>
-        <br>
-        <input type="submit" value="Compare" />
-</div>
-<br>
+<!--        <h3>{% trans "Versions" %}</h3> -->
+<!--         {% for sid in object.get_ssid reversed %} -->
+<!-- 	    <input type="radio" name="group1" value="{{ sid }}"><a href="{{ object.get_version_url }}{{ sid }}">{{ sid }}</a></input>&nbsp;&nbsp; -->
+<!--             <input type="radio" name="group2" value="{{ sid }}">{{ sid }}</input> -->
+<!--             <br> -->
+<!--         {% endfor %} -->
+<!--         <br> -->
+<!--         <input type="submit" value="Compare" /> -->
+<!-- </div> -->
+<!-- <br> -->
 
 <div class="authors">
   <h3>{% trans "Authors" %}</h3>

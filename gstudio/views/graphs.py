@@ -96,6 +96,25 @@ def graph_json(request, node_id):
 def force_graph(request, node_id):
     return render_to_response('gstudio/graph1.html',{'node_id': node_id })
 
+
+def version_graph_json(request,ssid):
+	
+    if(ssid=='189087228'):
+        jsonFile = open( os.path.join(os.path.dirname(__file__), '../static/gstudio/js/egonet.json'), "r")
+        #testjson = json.loads(jsonFile)
+
+        return HttpResponse(str(jsonFile.read()), "application/json")
+
+    try:
+        node = Version.objects.get(id=ssid)
+	
+        node = node.object.ref        
+    except:
+        return HttpResponse("Node not found.", "text/html")
+
+    return HttpResponse(node.get_Version_graph_json(ssid), "application/json")
+
+
  
 #node = get_node(str(object_id))
 #ot = Objecttype.objects.get(title='place')

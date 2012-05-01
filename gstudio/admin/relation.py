@@ -8,7 +8,7 @@ import reversion
 from django.template.defaultfilters import slugify
 
 class RelationAdmin(reversion.VersionAdmin):
-    fieldsets=((_('Relation'),{'fields': ('relationtype','relationtype_scope','left_subject' ,'left_subject_scope','right_subject','right_subject_scope','last_update','creation_date')}),
+    fieldsets=((_('Relation'),{'fields': ('relationtype','relationtype_scope','left_subject' ,'left_subject_scope','right_subject','right_subject_scope')}),
 
 )
     

@@ -168,6 +168,10 @@ STATUS_CHOICES = ((DRAFT, _('draft')),
                   (HIDDEN, _('hidden')),
                   (PUBLISHED, _('published')))
 
+
+counter = 1
+attr_counter = -1
+
 class Author(User):
     """Proxy Model around User"""
     
@@ -691,6 +695,9 @@ class Nodetype(Node):
                      
         return attrs
 
+
+    
+
     def get_graph_json(self):
         
         
@@ -698,20 +705,21 @@ class Nodetype(Node):
 	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
-
 	
+	global counter 
+	global attr_counter 
 	nbh = self.get_nbh
 	predicate_id = {}
-        counter = 1
+        
         for key in nbh.keys():
-            val = "a" + str(counter)
+            val = str(counter)+"a"
             predicate_id[key] = val
             counter = counter + 1
         #print predicate_id
 
-        attr_counter = -1
+        
 
-        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url()}
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
         g_json["node_metadata"].append(this_node)      
 
 	for key in predicate_id.keys():
@@ -728,7 +736,7 @@ class Nodetype(Node):
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
                                         #create nodes
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url()})
+                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
 
 					# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
 					#create links
@@ -738,14 +746,15 @@ class Nodetype(Node):
 				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
 		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
 				 	#for item in value.keys():
-                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":nbh[key]})
+                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
 				    #g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":attr_counter })
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a") })
                                     attr_counter-=1
 							
 			except:
                             pass
         #print g_json
+	
         return json.dumps(g_json)   
 
     @property
@@ -1141,7 +1150,7 @@ class Objecttype(Nodetype):
     def __unicode__(self):
         return self.title
 
-    #def get_graph_json(self):
+    
 	
 	
 
@@ -1243,7 +1252,7 @@ class Objecttype(Nodetype):
 
         nbh['posterior_nodes'] = self.posterior_nodes.all() 
 
-	nbh['authors'] = self.authors.all()
+	#nbh['authors'] = self.authors.all()
 
 	return nbh
     

@@ -76,22 +76,37 @@ def additemdict(sdict,itemtoadd):
         sdict[itemtoadd.id]=itemtoadd.title
     return sdict                 
 def selectionlist_OT(obj):
+    # Basically the filter must filter out the OT, their members, the children and members of the children
+
     global rlist
     # Return all OTs and members of subtypes of OT
     obs=Objecttype.objects.filter(title=obj)
     #	Get all members of subtypes of each OT
     if obs: 
+        # Add the items first
+        for each in obs:
+            rlist=additemdict(rlist,each)
         obs=Objecttype.objects.get(title=obj)
+        # Add the objects first
+        # for each in obs:
+        #     rlist = additemdict(rlist,each)
         memobs=obs.get_members
         if memobs:
             for each in memobs:
                rlist=additemdict(rlist,each)
         childrenots=obs.get_children()
+        # Add children first
+        for each in childrenots:
+            rlist=additemdict(rlist,each)
+        # Add memebers of each child
         if childrenots:
             for eachchild in childrenots: 
                 membs=eachchild.ref.get_members
                 for each in membs:
                     rlist=additemdict(rlist,each)
+
+
+        
     return rlist 
             
 def selectionlist_MT(obj):
@@ -308,12 +323,10 @@ def selectionlist_UP(obj):
             membs=eachchild.objecttypes.all()
 def selectionlist_OB(obj):
     global rlist
-    
-    obs=Gbobject.objects.filter(title=obj)
+    obs=Objecttype.objects.get(title=obj)
     #Get all members of OB
-    if obs:
-        obs=Gbobject.objects.get(title=obj)
-        rlist=additemdict(rlist,obs)
+    for each in  obs.member_objects.all(): 
+        rlist=additemdict(rlist,each)
     return rlist
     
                 

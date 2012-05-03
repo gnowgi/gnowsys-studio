@@ -92,17 +92,29 @@ class CustomIndexDashboard(Dashboard):
             collapsible=False,
             children = [
                 modules.AppList(
-                        #Gstudio models here ( other than attribute datatype)
-                        _('Gstudio'),
+                        _('Gstudio (Basic)'),
                         column=1,
                         collapsible=False,
                         models=(
-                            'gstudio.models.Objecttype',
+                                'gstudio.models.Objecttype',
+                                'gstudio.models.Attributetype',
+                                'gstudio.models.Relationtype',
+                                'objectapp.models.Gbobject',
+                            ),
+                        ),
+
+                modules.AppList(
+
+
+                        #Gstudio models here ( other than attribute datatype and collapsible ones)
+                        _('Gstudio (Advanced)'),
+                        column=1,
+                        collapsible=True,
+                        models=(
+
                             'gstudio.models.Metatype',
                             'gstudio.models.Relation',
-                            'gstudio.models.Relationtype',
                             'gstudio.models.Attribute',
-                            'gstudio.models.Attributetype',
                             'gstudio.models.Systemtype',
                             'gstudio.models.Processtype',
                             'gstudio.models.AttributeSpecification',
@@ -112,19 +124,24 @@ class CustomIndexDashboard(Dashboard):
                             'gstudio.models.Complement',
                             'gstudio.models.Intersection',
                             'gstudio.models.Expression',
+                            'gstudio.models.Peer',
                             ),
 
                         ),
                 #Object App models here
-
                 modules.AppList(
-                        _('Object App'),
+                        _('Object App (Advanced)'),
                         column=1,
-                        collapsible=False,
+                        collapsible=True,
                         models=(
-                            'objectapp.models.*',
+                            'objectapp.models.Process',
+                            'objectapp.models.System',
                             ),
                         ),
+
+
+
+
 
 
 

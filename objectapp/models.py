@@ -113,6 +113,7 @@ from objectapp.moderator import GbobjectCommentModerator
 from objectapp.url_shortener import get_url_shortener
 from objectapp.signals import ping_directories_handler
 from objectapp.signals import ping_external_urls_handler
+from reversion.models import *
 
 
 
@@ -654,6 +655,11 @@ class Gbobject(Node):
             'day': self.creation_date.strftime('%d'),
             'slug': self.slug})
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
+
+
     class Meta:
         """Gbobject's Meta"""
         ordering = ['-creation_date']
@@ -693,6 +699,10 @@ class Process(Gbobject):
     def __unicode__(self):
         return self.title
 
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+
     class Meta:
         verbose_name = _('process')
         verbose_name_plural = _('processes')
@@ -729,6 +739,9 @@ class System(Gbobject):
     system_set = models.ManyToManyField('self', related_name="in_system_set_of", 
                                        verbose_name='nested systems',
                                        blank=True, null=False)
+    @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        super(System, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
     def __unicode__(self):

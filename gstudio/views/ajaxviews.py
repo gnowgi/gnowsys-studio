@@ -27,10 +27,19 @@ def AjaxAttribute(request):
     subjecttype = attr.subjecttype
     returndict = {}
 
-    for each in Objecttype.objects.all():
-        if attr.subjecttype.id == each.id:
-            for member in each.get_members:
+    for ots in Objecttype.objects.all():
+        if attr.subjecttype.id ==ots.id:
+            for member in ots.get_members:
                 returndict[member.id] = member.title
+            childrenots = ots.get_children()
+        
+            if childrenots:
+                for eachchild in childrenots:
+                    returndict[eachchild.id] = eachchild.title    
+                    membs=eachchild.ref.get_members
+                    for each in membs:
+                        returndict[each.id] = each.title
+
     jsonobject = json.dumps(returndict)
     return HttpResponse(jsonobject, "application/json")
 

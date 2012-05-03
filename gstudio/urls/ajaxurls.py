@@ -20,7 +20,7 @@ from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('gstudio.views.ajaxviews',
-                       url(r'^$', 'AjaxAttribute',name='ajax_views'),
+                       url(r'^ajaxattribute/$', 'AjaxAttribute',name='ajax_views'),
                        url(r'^relation/add/ajaxleft/$', 'AjaxRelationleft',name='ajax_relnleft_views'),
 		       url(r'^relation/add/ajaxright/$', 'AjaxRelationright',name='ajax_relnright_views'),
 		       url(r'^relation/ajaxleft/$', 'AjaxRelationleft',name='ajax_relnleft_views'),

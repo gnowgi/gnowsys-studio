@@ -114,6 +114,10 @@ from objectapp.url_shortener import get_url_shortener
 from objectapp.signals import ping_directories_handler
 from objectapp.signals import ping_external_urls_handler
 
+
+
+counter = 1
+attr_counter = -1
 '''
 class Author(User):
     """Proxy Model around User"""
@@ -360,19 +364,20 @@ class Gbobject(Node):
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
 
-	
+	global counter 
+	global attr_counter
 	nbh = self.get_nbh
 	predicate_id = {}
-        counter = 1
+        
         for key in nbh.keys():
-            val = "a" + str(counter)
+            val = str(counter) + "b"
             predicate_id[key] = val
             counter = counter + 1
         #print predicate_id
 
-        attr_counter = -1
+       
 
-        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url()}
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
         g_json["node_metadata"].append(this_node)      
 
 	for key in predicate_id.keys():
@@ -386,7 +391,7 @@ class Gbobject(Node):
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
                                         # create nodes
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url()})
+                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
 
 					# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
 					#create links
@@ -396,9 +401,9 @@ class Gbobject(Node):
 				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
 		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
 				 	#for item in value.keys():
-                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":nbh[key]})
+                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":nbh[key]})
 				    #g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":attr_counter })
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"b") })
                                     attr_counter-=1
 							
 			except:

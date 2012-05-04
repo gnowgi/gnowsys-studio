@@ -10,7 +10,7 @@
 			}
 			.nodetext {
 				#pointer-events: none;
-				font: 10px Serif;
+				font: 12px Serif;
 				font-style:italic;
 			}
 			.mainnode{
@@ -195,7 +195,7 @@ function init(a,b)
 
         return e;
       }).filter(function(e){
-        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title"
+        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content"
       }).value();
 
 
@@ -279,6 +279,9 @@ var a = 25 * s;
         force.links(edges);
         force.start();
 
+
+
+
         link = d3.select("#chart g.edges").selectAll("line.link")
                 .data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
                 
@@ -304,8 +307,7 @@ var a = 25 * s;
                 })
 
 	      .append("a")
-               .text(function(d) { return d.type; }); 	  
-
+               .text(function(d) { return d.type; });
 
      
 	     
@@ -316,30 +318,40 @@ var a = 25 * s;
 
  
           var new_g = node.enter().append("svg:a")
-              .attr("class", function(d) { var e=(d._id).charAt(0); if (d._id==key) return "mainnode"; else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode"  ; else return "node"; })  
-		  	      
-	      //.attr("xlink:href",function(d){return d.url;})
+              .attr("class", function(d) { var e=(d._id).charAt(0); if (d._id==key) return "mainnode"; else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode"  ; else return "node"; })   	      
+	    
 	      .call(force.drag);
 
 
 
-
+$(window).bind('keydown',function(event){
+	if(17==event.keyCode){
          new_g.on("click",function(d){ 
-                         if(d._id>0)
+                         if(d._id>0 && d.expanded=="false")
 			{ 
 			d3.select("#amazingViz").remove();  
 			d.expanded="true";
      			$.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
     			new_metadata=json2.node_metadata;
-  			new_relations=json2.relations;
+  			new_relations=json2.relations;			
 			metadata=_.union(new_metadata,metadata);
 			relations=_.union(new_relations,relations);			
 			init(metadata,relations);
 			load(d._id)
 			})
-			
 			}
-                         });
+			
+                    });
+
+}
+});
+
+
+
+	new_g.on("click", function(d) {
+
+		new_g.attr("xlink:href",function(d){return d.url;});
+		});	
 
 
   	  /*new_g.append("svg:ellipse")
@@ -356,8 +368,9 @@ var a = 25 * s;
 			
 		var text1 = new_g.append("svg:text")
 			.attr("class",function(d) {var e=(d._id).charAt(0);  if (d._id==key) return "mainnode";else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode";  else return "node"; })
-                        .attr("dy", 20)
-	                .attr("dx", 25) 
+                        .attr("y", 20)
+	                .attr("x", 25) 
+			.attr("dy", ".35em")
                         .attr("text-anchor","middle") 
 			
                        // .attr("style",function text(d) { if ((d._id)>0) return "font-size:9.00pt;fill:blue;" ; else return "font-size:9.00pt;fill:black;"}) 
@@ -370,9 +383,9 @@ var a = 25 * s;
 
 
 		new_g.filter(function(d) { return (d._id).charAt(0)=="-"; }).append("svg:rect")
-                                                      .attr("x",bbox.x-5)
+                                                      .attr("x",bbox.x-22)
 						      .attr("y", bbox.y)	
-						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length + bbox.width)})
+						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length+bbox.width+40)})
 							.attr("height", bbox.height)
 						      .call(force.drag)
 				    		      .style("fill-opacity", ".1")
@@ -388,9 +401,9 @@ var a = 25 * s;
 				    .attr("cx", bbox.x+25)
 				    .attr("cy", bbox.y+13)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 45)})
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 40)})
 				    .attr("ry",13)
-				    .style("fill-opacity", ".5")
+				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
 				    .style("fill", function color(d) {var e=(d._id).charAt(0); if (d.expanded=="true") return "red";  else return "none"});

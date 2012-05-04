@@ -11,7 +11,7 @@
 			}
 			.nodetext {
 				#pointer-events: none;
-				font: 10px Serif;
+				font: 12px Serif;
 				font-style:italic;
 			}
 			.mainnode{
@@ -24,7 +24,7 @@
 
 			}
 			.relnode {
- 				font: 10px sans-serif;
+ 				font: 12px sans-serif;
 				font-weight:bold;
 			           fill:#000;
 			}
@@ -206,7 +206,7 @@ function init(a,b)
 
         return e;
       }).filter(function(e){
-        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title"
+        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content"
       }).value();
 
 
@@ -327,16 +327,17 @@ var a = 800 * s;
 
  
           var new_g = node.enter().append("svg:a")
-              .attr("class", function(d) { var e=(d._id).charAt(0); if (d._id==key) return "mainnode"; else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode"  ; else return "node"; })  
-		  	      
-	      //.attr("xlink:href",function(d){return d.url;})
+              .attr("class", function(d) { var e=(d._id).charAt(0); if (d._id==key) return "mainnode"; else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode"  ; else return "node"; })  	  	      
+	     
 	      .call(force.drag);
 
 
 
 
+$(window).bind('keydown',function(event){
+	if(17==event.keyCode){
          new_g.on("click",function(d){ 
-                         if(d._id>0)
+                         if(d._id>0 && d.expanded=="false")
 			{ 
 			d3.select("#amazingViz").remove();  
 			d.expanded="true";
@@ -351,6 +352,13 @@ var a = 800 * s;
 			
 			}
                          });
+}
+});
+
+	new_g.on("click", function(d) {
+
+		new_g.attr("xlink:href",function(d){return d.url;});
+		});	
 
 
   	  /*new_g.append("svg:ellipse")
@@ -381,14 +389,15 @@ var a = 800 * s;
 
 
 		new_g.filter(function(d) { return (d._id).charAt(0)=="-"; }).append("svg:rect")
-                                                      .attr("x",bbox.x-5)
+                                                      .attr("x",bbox.x-22)
 						      .attr("y", bbox.y)	
-						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length + bbox.width)})
+						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length +bbox.width+40)})
 							.attr("height", bbox.height)
 						      .call(force.drag)
 				    		      .style("fill-opacity", ".1")
 				                      .style("stroke", "#000")
 				 		      .style("stroke-width","1px"  );
+				    		      
 				    		      
 							
 
@@ -399,9 +408,9 @@ var a = 800 * s;
 				    .attr("cx", bbox.x+25)
 				    .attr("cy", bbox.y+13)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 45)})
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 40)})
 				    .attr("ry",13)
-				    .style("fill-opacity", ".5")
+				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
 				    .style("fill", function color(d) {var e=(d._id).charAt(0); if (d.expanded=="true") return "red";  else return "none"});

@@ -1,2 +1,11 @@
 build/
 demo/demo.db
+
+### tilde, pyc and hash files
+
+*.pyc
+*~
+\#*\#
+
+
+

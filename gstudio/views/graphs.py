@@ -73,29 +73,35 @@ from gstudio.gnowql import *
 #import d3 
 import json
 import os
-from gstudio.models import *
 from gstudio.views.decorators import protect_nodetype
 from gstudio.views.decorators import update_queryset
 
-def graph_json(request, node_id): 
 
+
+	
+def graph_json(request, node_id): 
+    
     if(node_id=='189087228'):
         jsonFile = open( os.path.join(os.path.dirname(__file__), '../static/gstudio/js/egonet.json'), "r")
-        #testjson = json.loads(jsonFile)
+        testjson = json.loads(jsonFile)
 
         return HttpResponse(str(jsonFile.read()), "application/json")
 
     try:
-        node = Objecttype.objects.get(id=node_id)
-        node = node.ref        
+        node = NID.objects.get(id=node_id)
+        node = node.ref 
     except:
-        return HttpResponse("Node not found.", "text/html")
+	
+        return HttpResponse("node not found", "text/html")
 
     return HttpResponse(node.get_graph_json(), "application/json")
-    
+   
+
+
+
+
 def force_graph(request, node_id):
     return render_to_response('gstudio/graph1.html',{'node_id': node_id })
-
 
 def version_graph_json(request,ssid):
 	
@@ -114,8 +120,6 @@ def version_graph_json(request,ssid):
 
     return HttpResponse(node.get_Version_graph_json(ssid), "application/json")
 
-
- 
 #node = get_node(str(object_id))
 #ot = Objecttype.objects.get(title='place')
 #G = ot.get_radial_graph_json()

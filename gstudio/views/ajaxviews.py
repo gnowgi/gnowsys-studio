@@ -27,10 +27,19 @@ def AjaxAttribute(request):
     subjecttype = attr.subjecttype
     returndict = {}
 
-    for each in Objecttype.objects.all():
-        if attr.subjecttype.id == each.id:
-            for member in each.get_members:
+    for ots in Objecttype.objects.all():
+        if attr.subjecttype.id ==ots.id:
+            for member in ots.get_members:
                 returndict[member.id] = member.title
+            childrenots = ots.get_children()
+        
+            if childrenots:
+                for eachchild in childrenots:
+                    returndict[eachchild.id] = eachchild.title    
+                    membs=eachchild.ref.get_members
+                    for each in membs:
+                        returndict[each.id] = each.title
+
     jsonobject = json.dumps(returndict)
     return HttpResponse(jsonobject, "application/json")
 
@@ -76,22 +85,37 @@ def additemdict(sdict,itemtoadd):
         sdict[itemtoadd.id]=itemtoadd.title
     return sdict                 
 def selectionlist_OT(obj):
+    # Basically the filter must filter out the OT, their members, the children and members of the children
+
     global rlist
     # Return all OTs and members of subtypes of OT
     obs=Objecttype.objects.filter(title=obj)
     #	Get all members of subtypes of each OT
     if obs: 
+        # Add the items first
+        for each in obs:
+            rlist=additemdict(rlist,each)
         obs=Objecttype.objects.get(title=obj)
+        # Add the objects first
+        # for each in obs:
+        #     rlist = additemdict(rlist,each)
         memobs=obs.get_members
         if memobs:
             for each in memobs:
                rlist=additemdict(rlist,each)
         childrenots=obs.get_children()
+        # Add children first
+        for each in childrenots:
+            rlist=additemdict(rlist,each)
+        # Add memebers of each child
         if childrenots:
             for eachchild in childrenots: 
                 membs=eachchild.ref.get_members
                 for each in membs:
                     rlist=additemdict(rlist,each)
+
+
+        
     return rlist 
             
 def selectionlist_MT(obj):

@@ -172,8 +172,10 @@ class ObjecttypeAdmin(reversion.VersionAdmin):
         if not form.cleaned_data.get('authors'):
             form.cleaned_data['authors'].append(request.user)
 
-        nodetype.last_update = datetime.now()
         nodetype.save()
+       # nodetype.nbhood = nodetype.get_nbh
+      #  nodetype.last_update = datetime.now()
+      #  nodetype.save()
 
     def queryset(self, request):
         """Make special filtering by user permissions"""

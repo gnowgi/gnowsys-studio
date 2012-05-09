@@ -73,7 +73,7 @@ from gstudio.gnowql import *
 #import d3 
 import json
 import os
- 
+from gstudio.models import *
 from gstudio.views.decorators import protect_nodetype
 from gstudio.views.decorators import update_queryset
 
@@ -86,7 +86,7 @@ def graph_json(request, node_id):
         return HttpResponse(str(jsonFile.read()), "application/json")
 
     try:
-        node = NID.objects.get(id=node_id)
+        node = Objecttype.objects.get(id=node_id)
         node = node.ref        
     except:
         return HttpResponse("Node not found.", "text/html")
@@ -108,7 +108,7 @@ def version_graph_json(request,ssid):
     try:
         node = Version.objects.get(id=ssid)
 	
-        node = node.object.ref        
+        node = node.object      
     except:
         return HttpResponse("Node not found.", "text/html")
 

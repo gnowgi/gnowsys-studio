@@ -523,9 +523,9 @@ $(function() {
 	  {% block sidebar %}
 	  
 	  <div class="History">
-	    <!-- <script type="text/javascript"> -->
+	    <script type="text/javascript">
            <!-- function go_to_loc(sid) -->
-	   <!-- {     -->
+	   <!-- { -->
 	        
 	   <!--      window.location.href =  "{{ nt.get_version_url }}"+sid -->
 	        
@@ -533,10 +533,10 @@ $(function() {
 	      
 	   <!-- } -->
            
-	    <!-- </script> -->
+	   <!--  </script> -->
 	    <h3>{% trans "Versions" %}</h3>
 	   
-	    <form action="" method="POST" >
+	    <form action="/nodetypes/display/showhistory/" >
 	    <table cellspacing="0" border="2">
 	    {% for sid in nt.get_ssid reversed %}
 	    <tr>
@@ -544,10 +544,10 @@ $(function() {
 	    <input type="radio" name="group1" value="{{ sid }}"><a href="{{ nt.get_version_url }}{{ sid }}">{{ nt.id }}.{{ sid }}</a></input>
 	    </td>
 	    <td>
-            <input type="radio" name="group2" value="{{ sid }}">{{ sid }}</input>
+            <input type="radio" name="group2" value="{{ sid }}">{{ nt.id }}.{{ sid }}</input>
             </td>
             {% endfor %}
-
+	    
 	    </table>
             <input type="submit" value="Compare" />
 	    </form>

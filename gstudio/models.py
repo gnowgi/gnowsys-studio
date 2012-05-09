@@ -107,6 +107,7 @@ import reversion
 from reversion.models import Version
 from django.core import serializers
 from reversion.models import *
+from reversion.helpers import *
 
 NODETYPE_CHOICES = (
     ('ND', 'Nodes'),
@@ -192,6 +193,7 @@ class Author(User):
     class Meta:
         """Author's Meta"""
         proxy = True
+
 class NID(models.Model):
     """the set of all nodes.  provides node ID (NID) to all nodes in
     the network, including edges.  Edges are also first class citizens
@@ -205,6 +207,19 @@ class NID(models.Model):
     slug = models.SlugField(help_text=_('used for publication'),
                             unique_for_date='creation_date',
                             max_length=255)
+    
+    
+    def convert(self,data):
+    	if isinstance(data, unicode):
+        	return str(data)
+    	elif isinstance(data, collections.Mapping):
+        	return dict(map(convert, data.iteritems()))
+    	elif isinstance(data, collections.Iterable):
+        	return type(data)(map(convert, data))
+    	else:
+        	return data
+
+
     @property
     def get_revisioncount(self):
         """
@@ -239,6 +254,22 @@ class NID(models.Model):
     def version_info(self,ssid):
 	version_object=Version.objects.get(id=ssid)
 	return version_object.field_dict
+
+
+    def get_version_nbh(self,ssid):
+   	"""
+	Returns Version nbh
+	"""
+	ver_dict=self.version_info(ssid)
+	ver_nbh_list=[]
+	ver_nbh_dict={}
+	for item in self.get_nbh.keys():
+    		if item in ver_dict.keys():
+			ver_nbh_list.append(item)
+	for each in ver_nbh_list:
+		ver_nbh_dict[each]=ver_dict[each]
+	return ver_nbh_dict
+    
 	
 
     def get_serialized_dict(self):
@@ -370,6 +401,10 @@ class Node(NID):
 
     sites = models.ManyToManyField(Site, verbose_name=_('sites publication'),
                                    related_name='nodetypes')
+    nbhood = models.TextField(help_text="The serialized nbh of this version of the Node.")
+
+    
+
     published = NodePublishedManager()
     def __unicode__(self):
         return self.title
@@ -379,6 +414,7 @@ class Node(NID):
 
     @reversion.create_revision()
     def save(self, *args, **kwargs):
+      #	self.nbhood=self.get_nbh
         super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
@@ -579,6 +615,7 @@ class Metatype(Node):
     # Save for metatype
     @reversion.create_revision()
     def save(self, *args, **kwargs):
+#	self.nbhood=self.get_nbh
         super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
@@ -678,8 +715,8 @@ class Nodetype(Node):
         reltypes['possible_rightroles'] = right_subset
         
         return reltypes
-
-
+    
+    
     @property
     def get_possible_attributetypes(self):
         """
@@ -1396,6 +1433,7 @@ class Objecttype(Nodetype):
     # Save for Objecttype
     @reversion.create_revision()
     def save(self, *args, **kwargs):
+	# self.nbhood=self.get_nbh
         super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 

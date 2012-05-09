@@ -192,10 +192,10 @@ function init(a,b)
   all_edges =_(b).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
-
+	//`e.type = nodes_by_id[e.type]
         return e;
       }).filter(function(e){
-        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content"
+        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content" 
       }).value();
 
 
@@ -253,7 +253,7 @@ var a = 25 * s;
               .charge(-5000)
               .friction(0.7)
               .gravity(0.7)
-              .linkDistance(75)
+              .linkDistance(50)
               .nodes([])
               .links([])
               .size([w, h])
@@ -304,12 +304,13 @@ var a = 25 * s;
                 })
                 .attr("text", function(d) {
                   return d.type;
-                })
+                });
 
-	      .append("a")
-               .text(function(d) { return d.type; });
+		
 
-     
+
+
+
 	     
           
 	  var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);  
@@ -383,7 +384,8 @@ $(window).bind('keydown',function(event){
 
 
 		new_g.filter(function(d) { return (d._id).charAt(0)=="-"; }).append("svg:rect")
-                                                      .attr("x",bbox.x-22)
+                                                      .attr("x",bbox.x-22
+ )
 						      .attr("y", bbox.y)	
 						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length+bbox.width+40)})
 							.attr("height", bbox.height)
@@ -407,6 +409,7 @@ $(window).bind('keydown',function(event){
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
 				    .style("fill", function color(d) {var e=(d._id).charAt(0); if (d.expanded=="true") return "red";  else return "none"});
+
 
 
 

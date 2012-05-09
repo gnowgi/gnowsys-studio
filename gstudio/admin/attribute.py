@@ -14,6 +14,7 @@ class AttributeAdmin(reversion.VersionAdmin):
 )
     
     
+
     class Media:
         js = ("gstudio/js/gstudio.js",)
     

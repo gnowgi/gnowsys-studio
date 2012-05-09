@@ -364,6 +364,7 @@ class Gbobject(Node):
 	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
+	g_json["relset"]=[]
 
 	global counter 
 	global attr_counter
@@ -380,6 +381,7 @@ class Gbobject(Node):
 
         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
         g_json["node_metadata"].append(this_node)      
+	g_json["relset"].append(self.id)
 
 	for key in predicate_id.keys():
 		if nbh[key]:
@@ -395,7 +397,7 @@ class Gbobject(Node):
                                         # create nodes
 
 					        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
-
+						g_json["relset"].append(item.id) 
 						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
 						#create links
 		                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })

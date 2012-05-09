@@ -290,12 +290,12 @@ var a = 800 * s;
         force.links(edges);
         force.start();
 
-        link = d3.select("#chart g.edges").selectAll("line.link")
+        link = d3.select("#chart g.edges").selectAll("line.link").select(this.arrowhead)
                 .data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
                 
                 link.enter().append("svg:line")
                 .attr("class", "link")
-                .style("stroke-width", 2 /* function(d) {
+                .style("stroke-width", 2/* function(d) {
                   return Math.sqrt(d.value);
                 } */ )
                 .attr("x1", function(d) {
@@ -313,9 +313,8 @@ var a = 800 * s;
                 .attr("text", function(d) {
                   return d.type;
                 })
-
-	      .append("a")
-               .text(function(d) { return d.type; }); 	  
+	      
+              .attr("marker-end", "url(#arrowhead)"); 	  
 
 
      
@@ -330,6 +329,23 @@ var a = 800 * s;
               .attr("class", function(d) { var e=(d._id).charAt(0); if (d._id==key) return "mainnode"; else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode"  ; else return "node"; })  	  	      
 	     
 	      .call(force.drag);
+
+
+			new_g.append("svg:marker")
+                                .attr("id", "arrowhead")
+                                .attr("viewBox","0 0 10 10")
+                                .attr("refX","20")
+                                .attr("refY","5")
+                                .attr("markerUnits","strokeWidth")
+                                .attr("markerWidth","9")
+                                .attr("markerHeight","5")
+                                .attr("orient","auto")
+                                .append("svg:path")
+                                .attr("d","M 0 0 L 10 5 L 0 10 z")
+                                .attr("fill", "#6D6666"); 
+
+
+
 
 
 
@@ -408,8 +424,8 @@ $(window).bind('keydown',function(event){
 				    .attr("cx", bbox.x+25)
 				    .attr("cy", bbox.y+13)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 40)})
-				    .attr("ry",13)
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 55)})
+				    .attr("ry",14)
 				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")

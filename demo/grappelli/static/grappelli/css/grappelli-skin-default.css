@@ -7,7 +7,7 @@
 
 
 /*  Paragraphs
------------------------------------------------------------------------------------------------------- */
+----------------------------------------------------------------------------------------------------- */
 
 .module p.help, 
 p.help {
@@ -166,6 +166,7 @@ body {
     background: -moz-linear-gradient(top, white, white);
     background: -webkit-gradient(linear, left top, left bottom, from(white), to(white));
     background: -o-linear-gradient(top, white, white);
+	background: #2B3959;
 }
 #header a:hover, #header a:active {
     color: red;
@@ -1907,7 +1908,7 @@ a:hover, a:active, a.selected {
 }
 
 #header a:link, #header a:visited {
-    color: #0872B4;
+    color: white;
 }
 #header a:hover, #header a:active {
     color: red;
@@ -2016,11 +2017,11 @@ hr {
 /*  User Tools ................................................... */
 
 #user-tools {
-    border-left: 1px solid #303030;
+    border-left: 0px solid #303030;
 }
 #user-tools>li {
-    border-left: 1px solid #404040;
-    border-right: 1px solid #303030;
+    border-left: 0px solid #404040;
+    border-right: 0px solid #303030;
 }
 li.user-options-container.open a.user-options-handler {
     color: #eee !important;
@@ -2946,7 +2947,7 @@ ul.pagination li.separator span {
 
 
 /*  Tooltips
------------------------------------------------------------------------------------------------------- */
+----------------------------------------------------------------------------------------------------- */
 
 .module.search .tooltip .tooltip-content {
     border: 1px solid #ccc;

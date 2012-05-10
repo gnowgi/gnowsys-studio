@@ -1,4 +1,4 @@
-body { line-height: 1.5; font-family: Arial, Helvetica, sans-serif; color: #333333; font-size: 75%; height:1500px;width:1500px}
+body { line-height: 1.5; font-family: Arial, Helvetica, sans-serif; color: #333333; font-size: 75%; height:1500px; width: 90%; }
 
 h1, h2, h3, h4, h5, h6 { font-weight: normal; color: #176691; border-radius:15px; }
 h1 img, h2 img, h3 img, h4 img, h5 img, h6 img { margin: 0; }
@@ -130,7 +130,7 @@ caption { background: #eeeeee; }
 
 .span-15 { width: 590px; }
 
-.span-16 { width: 150px; }
+.span-16 { width: 500px; }
 
 .span-17 { width: 670px; }
 
@@ -406,7 +406,7 @@ textarea { margin: 0.5em 0; padding: 5px; }
 
 select { margin: 0.5em 0; }
 
-fieldset { border: 1px solid #cccccc; }
+fieldset { border: 1px solid #cccccc; width:150px;}
 
 input.text, input.title, input[type=email], input[type=text], input[type=password], textarea { background-color: #fff; border: 1px solid #bbbbbb; }
 input.text:focus, input.title:focus, input[type=email]:focus, input[type=text]:focus, input[type=password]:focus, textarea:focus { border: 1px solid #666666; }
@@ -424,7 +424,7 @@ ul, ol { margin: 0 1.5em 1.5em 0; padding-left: 3.333em; }
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-#header { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; }
+#header { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; background: #2b3959; color: white;}
 #header h1 { font-size: 2em; font-weight: bold; margin-bottom: 0; }
 #header .top-navigation { float: right; }
 #header .top-navigation img { border: 0; }
@@ -436,7 +436,7 @@ a:hover { text-decoration: underline; }
 #b1 {position:relative; center:5%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 #b2 {position:relative; center:6%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 
-#body { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; }
+#body { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; width: 100%; }
 
 #content h1, #content h2, #content h3 { margin-top: 10px; }
 
@@ -446,13 +446,12 @@ a:hover { text-decoration: underline; }
     float: left;
     clear: both;
     margin-bottom: 10px;
-    margin-left: 0;
-    margin-right: 60px;
+    margin-left: 0%;
+    margin-right: 0%;
     margin-top: 10px;
-    padding-right: 30px;
+    padding-right: 0px;
     width:250px;
 }
-
 #graph {
     position: absolute;
     float: left;
@@ -475,14 +474,14 @@ a:hover { text-decoration: underline; }
     font-weight: bold;
 }
 #graphcss {
-	margin-left: 180px;
-    margin-right: 200px;
-    margin-top: -150px;
+	margin-left: 231px;
+    margin-right: 0%;
+    margin-top: 1px;
     position: absolute;
-    width: 300px;
+    width: 54%;
     height: 900px
 }
-#sidebar{position:absolute; margin-left:1000px; margin-right:150px; margin-top:10px; width:300px;}
+#sidebar{position:relative; margin-left:85%; margin-right:0%; margin-top:10px; width:24%;}
 #sidebar div:first-child h3 { margin-top:0px; }
 #sidebar h3 { background-color: #C4EBF4; padding: 0.5em; }
 #sidebar p { padding-left: 1em; }
@@ -504,7 +503,7 @@ a:hover { text-decoration: underline; }
 #sidebar .tags div ul .tag_4 { font-size: 2em; color: #0070a8; }
 #sidebar .tags div ul .tag_5 { font-size: 2.25em; color: #0099e5; }
 #sidebar .tags div ul .tag_6 { font-size: 3em; color: #00adff; }
-
+#footer{position: static; top: 4px; left: -1px; margin-top: 18px;} 
 th.month{padding:0cm 2.5cm;}
 table.month { margin-bottom: 0; }
 table.month th.month { text-transform: uppercase; color: #006699; background: none; }

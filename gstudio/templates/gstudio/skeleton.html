@@ -46,8 +46,8 @@
 				display: block;
 			}
 			svg {
-				margin-left: 50%;
-				margin-right: 50%;
+				margin-left: 0%;
+				margin-right: 10%;
 				display: block;
 				position: absolute;
 			}
@@ -215,26 +215,25 @@ $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) {
 function load(key)
 {
   
-
-var a = 25 * s;
-	
-			if ( a > 700 )
-				{
-	   				 var w = 700;
-				}
-			else
-				{ 
-				          var w = a;
-				} 
-    			
-   			var h = 24 * s,
+			if (s > 0 ){
+			var a = 50 * s;
+			var w = 700;
+	   		var p = 100 + "%";
+			var h = 600;
+   			var q = 3 * s + 35 + "%";
+			}else{
+			var w = 700;
+	   		var p = 100 + "%";
+			var h = 600;
+   			var q = 110 + "%";			
+			}
         fill = d3.scale.category20();
  
   var vis = d3.select("#chart")
         .append("svg:svg")
 	.attr("id", "amazingViz") 
-        .attr("width", w)
-        .attr("height", h);
+        .attr("width", p)
+        .attr("height", q);
 
     vis.append("svg:g").attr("class", "edges");        
     vis.append("svg:g").attr("class", "nodes");
@@ -469,7 +468,6 @@ $(window).bind('keydown',function(event){
 
 </script>
 
-
 				</div>
 				<div id="sidebar">
 				  {% block sidebar %}
@@ -477,7 +475,7 @@ $(window).bind('keydown',function(event){
 				</div>
 				
 				
-				<div id="footer" class="span-24 last">
+				<div id="footer">
 					<p> 
 
 						<a rel="license"
@@ -490,6 +488,6 @@ $(window).bind('keydown',function(event){
 					</p>
 				</div>
 		
-		
+		</div>
 	</body>
 </html>

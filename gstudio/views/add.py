@@ -20,10 +20,9 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from datetime import datetime
-from reversion.models import *
 from gstudio.forms import *
 
-@reversion.create_revision()
+
 def addmetatype(request):
     if request.method == 'POST':
         formset = MetatypeForm(request.POST)
@@ -43,7 +42,7 @@ def addmetatype(request):
     return render_to_response(template, variables)
 
     
-@reversion.create_revision()
+
 def addobjecttype(request):
         if request.method == 'POST':
             formset = ObjecttypeForm(request.POST)
@@ -62,7 +61,7 @@ def addobjecttype(request):
         return render_to_response(template, variables)
 
 
-@reversion.create_revision()
+
 def addrelationtype(request):
         if request.method == 'POST':
             formset = RelationtypeForm(request.POST)
@@ -80,7 +79,7 @@ def addrelationtype(request):
         return render_to_response(template, variables)
 
 
-@reversion.create_revision()
+
 def addattributetype(request):
         if request.method == 'POST':
             formset = AttributetypeForm(request.POST)
@@ -97,7 +96,7 @@ def addattributetype(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addsystemtype(request):
         if request.method == 'POST':
             formset = SystemtypeForm(request.POST)
@@ -114,7 +113,7 @@ def addsystemtype(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addprocesstype(request):
         if request.method == 'POST':
             formset = ProcesstypeForm(request.POST)
@@ -131,7 +130,7 @@ def addprocesstype(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addattribute(request):
         if request.method == 'POST':
             formset = AttributeForm(request.POST)
@@ -148,7 +147,7 @@ def addattribute(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addrelation(request):
         if request.method == 'POST':
             formset = RelationForm(request.POST)
@@ -165,7 +164,7 @@ def addrelation(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addcomplement(request):
         if request.method == 'POST':
             formset = ComplementForm(request.POST)
@@ -182,7 +181,7 @@ def addcomplement(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addunion(request):
         if request.method == 'POST':
             formset = UnionForm(request.POST)
@@ -199,7 +198,7 @@ def addunion(request):
         variables = RequestContext(request,{'formset':formset})
         return render_to_response(template, variables)
 
-@reversion.create_revision()
+
 def addintersection(request):
         if request.method == 'POST':
             formset = IntersectionForm(request.POST)

@@ -367,6 +367,7 @@ class Gbobject(Node):
 	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
+	g_json["relset"]=[]
 
 	global counter 
 	global attr_counter
@@ -383,6 +384,7 @@ class Gbobject(Node):
 
         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
         g_json["node_metadata"].append(this_node)      
+	g_json["relset"].append(self.id)
 
 	for key in predicate_id.keys():
 		if nbh[key]:
@@ -394,13 +396,27 @@ class Gbobject(Node):
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
+					if item.reftype!="Relation":
                                         # create nodes
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
 
-					# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-					#create links
-                                        g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
-			
+					        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
+						g_json["relset"].append(item.id) 
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+
+					else:
+						
+						 if item.left_subject.id==self.id:
+							item1=item.right_subject
+						 elif item.right_subject.id==self.id:
+							item1=item.left_subject
+						
+						 g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"expanded":"false"})
+
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                 g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
                                 else:
 				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
 		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     

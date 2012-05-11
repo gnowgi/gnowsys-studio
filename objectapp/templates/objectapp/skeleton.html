@@ -47,8 +47,8 @@
 				display: block;
 			}
 			svg {
-				margin-left: 10%;
-				margin-right: 10%;
+				margin-left: 0%;
+				margin-right: 0%;
 				display: block;
 				position: absolute;
 			}
@@ -224,27 +224,26 @@ $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) {
 
 function load(key)
 {
-  
 
-var a = 800 * s;
-	
-			if ( a > 700 )
-				{
-	   				 var w = 700;
-				}
-			else
-				{ 
-				          var w = a;
-				} 
-    			
-   			var h = 232 * s,
+
+if ( s > 0) {
+var w = 700;
+var p = 122 + "%";
+var h = 800;
+var q = 3 * s + 60 + "%";
+}else{
+var w = 700;
+var p = 122 + "%";
+var h = 800;
+var q = 110 + "%";
+} 
         fill = d3.scale.category20();
  
   var vis = d3.select("#chart")
         .append("svg:svg")
 	.attr("id", "amazingViz") 
-        .attr("width", w)
-        .attr("height", h);
+        .attr("width", p)
+        .attr("height", q);
 
     vis.append("svg:g").attr("class", "edges");        
     vis.append("svg:g").attr("class", "nodes");
@@ -264,7 +263,7 @@ var a = 800 * s;
               .charge(-5000)
               .friction(0.7)
               .gravity(0.7)
-              .linkDistance(75)
+              .linkDistance(50)
               .nodes([])
               .links([])
               .size([w, h])
@@ -290,12 +289,12 @@ var a = 800 * s;
         force.links(edges);
         force.start();
 
-        link = d3.select("#chart g.edges").selectAll("line.link")
+        link = d3.select("#chart g.edges").selectAll("line.link").select(this.arrowhead)
                 .data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
                 
                 link.enter().append("svg:line")
                 .attr("class", "link")
-                .style("stroke-width", 2 /* function(d) {
+                .style("stroke-width", 2/* function(d) {
                   return Math.sqrt(d.value);
                 } */ )
                 .attr("x1", function(d) {
@@ -313,9 +312,8 @@ var a = 800 * s;
                 .attr("text", function(d) {
                   return d.type;
                 })
-
-	      .append("a")
-               .text(function(d) { return d.type; }); 	  
+	      
+              .attr("marker-end", "url(#arrowhead)"); 	  
 
 
      
@@ -330,6 +328,23 @@ var a = 800 * s;
               .attr("class", function(d) { var e=(d._id).charAt(0); if (d._id==key) return "mainnode"; else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode"  ; else return "node"; })  	  	      
 	     
 	      .call(force.drag);
+
+
+			new_g.append("svg:marker")
+                                .attr("id", "arrowhead")
+                                .attr("viewBox","0 0 10 10")
+                                .attr("refX","20")
+                                .attr("refY","5")
+                                .attr("markerUnits","strokeWidth")
+                                .attr("markerWidth","9")
+                                .attr("markerHeight","5")
+                                .attr("orient","auto")
+                                .append("svg:path")
+                                .attr("d","M 0 0 L 10 5 L 0 10 z")
+                                .attr("fill", "#6D6666"); 
+
+
+
 
 
 
@@ -408,8 +423,8 @@ $(window).bind('keydown',function(event){
 				    .attr("cx", bbox.x+25)
 				    .attr("cy", bbox.y+13)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 40)})
-				    .attr("ry",13)
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 55)})
+				    .attr("ry",14)
 				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
@@ -458,16 +473,24 @@ $(window).bind('keydown',function(event){
 </script>
          {% block graph %} {% endblock %}
 	</div>
-	<div id="sidebar" class="span-8 last">
+	<div id="sidebar">
 	  {% block sidebar %}
 	  {% endblock %}
 	</div>
-      </div>
-      <div id="footer" class="span-24 last">
-	<p>Powered by <a href="http://www.djangoproject.com" title="http://www.djangoproject.com">Django</a> and <a href="http://github.com/gnowgi/django-gstudio" title="http://github.com/gnowgi/django-gstudio">Gstudio {{ GSTUDIO_VERSION }}</a>.</p>
+	
+      <div id="footer">
+	<p> 
+
+	  <a rel="license"
+	     href="http://creativecommons.org/licenses/by-sa/3.0/" title="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative
+																    Commons License" style="border-width:0"src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a> All material is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" title = "http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> unless mentioned otherwise.
+	  <br/>
+	  Poweredby <a href="http://www.djangoproject.com" title="https://www.djangoproject.com/">Django</a>
+	  and <a href="https://github.com/gnowgi/gnowsys-studio" title="https://github.com/gnowgi/gnowsys-studio">Gstudio
+	    {{ GSTUDIO_VERSION }}</a>.
+	  </p>
       </div>
     </div>
   </body>
 </html>
-
 

@@ -2,7 +2,7 @@
 
 
 /*  Basic Settings, Fieldsets, Form-Rows
------------------------------------------------------------------------------------------------------- */
+----------------------------------------------------------------------------------------------------- */
 
 form {
     margin: 0;
@@ -657,7 +657,7 @@ select.span-16, textarea.span-16,
 div.autocomplete-wrapper-m2m.span-16, 
 .span-20 label + input[type=text], .span-20 label + input[type=password], 
 .span-20 label + select, .span-20 label + textarea {
-    width: 598px;
+    width: 230px;
 }
 .span-16 div.autocomplete-wrapper-m2m ul.repr, 
 .span-16 div.autocomplete-wrapper-m2m ul.repr li, 

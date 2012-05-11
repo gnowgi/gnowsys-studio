@@ -746,14 +746,15 @@ class Nodetype(Node):
 	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
-	
+	g_json["relset"]=[]
+
 	global counter 
 	global attr_counter 
 	nbh = self.get_nbh
 	predicate_id = {}
         
         for key in nbh.keys():
-            val = str(counter)+"a"
+            val = str(counter) + "a"
             predicate_id[key] = val
             counter = counter + 1
         #print predicate_id
@@ -761,7 +762,8 @@ class Nodetype(Node):
         
 
         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
-        g_json["node_metadata"].append(this_node)      
+        g_json["node_metadata"].append(this_node) 
+	g_json["relset"].append(self.id)     
 
 	for key in predicate_id.keys():
 		if nbh[key]:
@@ -774,14 +776,32 @@ class Nodetype(Node):
 				#g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
 
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
+
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
-                                        #create nodes
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
+					if item.reftype!="Relation":
+                                        # create nodes
 
-					# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-					#create links
-                                        g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+					        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
+						g_json["relset"].append(item.id)     
+
+
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+
+					else:
+						
+						 if item.left_subject.id==self.id:
+							item1=item.right_subject
+						 elif item.right_subject.id==self.id:
+							item1=item.left_subject
+						
+						 g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"expanded":"false"})
+
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                 g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
 			
                                 else:
 				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
@@ -789,7 +809,7 @@ class Nodetype(Node):
 				 	#for item in value.keys():
                                     g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
 				    #g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a") })
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
                                     attr_counter-=1
 							
 			except:

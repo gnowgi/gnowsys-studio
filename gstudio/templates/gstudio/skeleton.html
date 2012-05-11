@@ -46,8 +46,8 @@
 				display: block;
 			}
 			svg {
-				margin-left: 50%;
-				margin-right: 50%;
+				margin-left: 0%;
+				margin-right: 10%;
 				display: block;
 				position: absolute;
 			}
@@ -192,10 +192,10 @@ function init(a,b)
   all_edges =_(b).chain().map(function(e) {
         e.source = nodes_by_id[e.from];
         e.target = nodes_by_id[e.to];
-
+	//`e.type = nodes_by_id[e.type]
         return e;
       }).filter(function(e){
-        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content"
+        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content" 
       }).value();
 
 
@@ -207,6 +207,7 @@ $(function fgraph() {
 $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) { 
 										metadata=json1.node_metadata;
   										relations=json1.relations;
+										relnset=json1.relset
 										init(metadata,relations);
 										load({{object.id}}) });
 
@@ -214,26 +215,25 @@ $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) {
 function load(key)
 {
   
-
-var a = 25 * s;
-	
-			if ( a > 700 )
-				{
-	   				 var w = 700;
-				}
-			else
-				{ 
-				          var w = a;
-				} 
-    			
-   			var h = 24 * s,
+			if (s > 0 ){
+			var a = 50 * s;
+			var w = 700;
+	   		var p = 100 + "%";
+			var h = 600;
+   			var q = 3 * s + 35 + "%";
+			}else{
+			var w = 700;
+	   		var p = 100 + "%";
+			var h = 600;
+   			var q = 110 + "%";			
+			}
         fill = d3.scale.category20();
  
   var vis = d3.select("#chart")
         .append("svg:svg")
 	.attr("id", "amazingViz") 
-        .attr("width", w)
-        .attr("height", h);
+        .attr("width", p)
+        .attr("height", q);
 
     vis.append("svg:g").attr("class", "edges");        
     vis.append("svg:g").attr("class", "nodes");
@@ -253,7 +253,7 @@ var a = 25 * s;
               .charge(-5000)
               .friction(0.7)
               .gravity(0.7)
-              .linkDistance(75)
+              .linkDistance(50)
               .nodes([])
               .links([])
               .size([w, h])
@@ -282,7 +282,7 @@ var a = 25 * s;
 
 
 
-        link = d3.select("#chart g.edges").selectAll("line.link")
+        link = d3.select("#chart g.edges").selectAll("line.link").select(this.arrowhead)
                 .data(edges, function(e){return e.from + "-" + e.to + "-" + e.type});
                 
                 link.enter().append("svg:line")
@@ -305,11 +305,11 @@ var a = 25 * s;
                 .attr("text", function(d) {
                   return d.type;
                 })
+		.attr("marker-end", "url(#arrowhead)");
 
-	      .append("a")
-               .text(function(d) { return d.type; });
+		
 
-     
+
 	     
           
 	  var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);  
@@ -324,6 +324,21 @@ var a = 25 * s;
 
 
 
+		new_g.append("svg:marker")
+                                .attr("id", "arrowhead")
+                                .attr("viewBox","0 0 10 10")
+                                .attr("refX","20")
+                                .attr("refY","5")
+                                .attr("markerUnits","strokeWidth")
+                                .attr("markerWidth","9")
+                                .attr("markerHeight","5")
+                                .attr("orient","auto")
+                                .append("svg:path")
+                                .attr("d","M 0 0 L 10 5 L 0 10 z")
+                                .attr("fill", "#6D6666"); 
+
+
+
 $(window).bind('keydown',function(event){
 	if(17==event.keyCode){
          new_g.on("click",function(d){ 
@@ -333,7 +348,8 @@ $(window).bind('keydown',function(event){
 			d.expanded="true";
      			$.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
     			new_metadata=json2.node_metadata;
-  			new_relations=json2.relations;			
+  			new_relations=json2.relations;	
+			new_relnset=json2.relset		
 			metadata=_.union(new_metadata,metadata);
 			relations=_.union(new_relations,relations);			
 			init(metadata,relations);
@@ -383,7 +399,8 @@ $(window).bind('keydown',function(event){
 
 
 		new_g.filter(function(d) { return (d._id).charAt(0)=="-"; }).append("svg:rect")
-                                                      .attr("x",bbox.x-22)
+                                                      .attr("x",bbox.x-22
+ )
 						      .attr("y", bbox.y)	
 						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length+bbox.width+40)})
 							.attr("height", bbox.height)
@@ -407,6 +424,7 @@ $(window).bind('keydown',function(event){
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
 				    .style("fill", function color(d) {var e=(d._id).charAt(0); if (d.expanded=="true") return "red";  else return "none"});
+
 
 
 
@@ -450,7 +468,6 @@ $(window).bind('keydown',function(event){
 
 </script>
 
-
 				</div>
 				<div id="sidebar">
 				  {% block sidebar %}
@@ -458,7 +475,7 @@ $(window).bind('keydown',function(event){
 				</div>
 				
 				
-				<div id="footer" class="span-24 last">
+				<div id="footer">
 					<p> 
 
 						<a rel="license"
@@ -471,6 +488,6 @@ $(window).bind('keydown',function(event){
 					</p>
 				</div>
 		
-		
+		</div>
 	</body>
 </html>

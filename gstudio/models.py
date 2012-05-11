@@ -103,6 +103,7 @@ from gstudio.moderator import NodetypeCommentModerator
 from gstudio.url_shortener import get_url_shortener
 from gstudio.signals import ping_directories_handler
 from gstudio.signals import ping_external_urls_handler
+
 import json
 if GSTUDIO_VERSIONING:
     import reversion
@@ -247,6 +248,7 @@ class NID(models.Model):
 
     @property
     def ref(self):
+        from objectapp.models import *
         return eval(self.nodemodel).objects.get(id=self.id)
         
         # """ 

@@ -279,9 +279,9 @@ class NID(models.Model):
             ALGO: simple wrapper for the __class__.__name__ so that it can be used in templates  
             
             """
-            return self.__class__.__name__
-            # obj = self.ref
-            # return obj.__class__.__name__
+            # return self.__class__.__name__
+            obj = self.ref
+            return obj.__class__.__name__
         
         except:
             return None

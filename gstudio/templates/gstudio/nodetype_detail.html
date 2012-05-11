@@ -248,9 +248,10 @@
 
  {% endwith %}
  {% endblock %}
-
-{% if object.reftype  == 'Objecttype' %}
+<!-- Dynamic form begins -->
 <p>
+
+
 <b>Add Attributes:</b>
 {% for i in object.getat %}
 <a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
@@ -262,9 +263,10 @@
 {% for i in object.getrt %}
 <a href="{{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
 {% endfor %}
-{% endif  %}
-</p>
 
+
+</p>
+<!-- Dyanic form ends -->
 <div class="nodetype-content">
        
 </div>

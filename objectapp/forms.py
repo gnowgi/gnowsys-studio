@@ -15,12 +15,8 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from django import forms
-from django.forms import ModelForm
-from django.forms.fields import DateField
-from django.contrib.admin import widgets                                       
-from django.contrib.admin.widgets import AdminDateWidget
 
+from django.forms import ModelForm
 from gstudio.models import *
 from objectapp.models import *
 
@@ -38,15 +34,3 @@ class SystemForm(ModelForm):
 
     class Meta:
         model = System
-
-
-class ContextForm(forms.Form):
-
-    def __init__(self,rdict, *args, **kwargs):    
-        super(ContextForm, self).__init__(*args, **kwargs)
-        for key, val in rdict.iteritems():
-            print key, val
-            self.fields[str(key)+"_"+str(val)] = getattr(forms,rdict.get(key))(required = False)
-
-
-

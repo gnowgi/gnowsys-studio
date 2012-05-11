@@ -209,6 +209,78 @@ class Gbobject(Node):
     published = GbobjectPublishedManager()
 
 
+    # @property
+    # def getdataType(self):
+    #     gb = 'attribute'+str(self.get_dataType.display())
+    #     gb = gb.lower()
+    #     return gb
+        
+    @property
+    def getattributetypes(self):
+        """ 
+        Returns the attributetypes of self as well as its parent's attributetype.
+        """
+        try:
+            parenttype = []
+            attributetype = []
+            returnlist = []
+            obj = self
+            parenttype = obj.objecttypes.all()
+            attributetype.append(obj.subjecttype_of.all())
+            for each in parenttype:
+                attributetype.append(each.subjecttype_of.all())
+
+            attributetype = [num for elem in attributetype for num in elem]
+            return attributetype
+        
+        except:
+            return None
+
+  
+
+    @property
+    def getrelationtypes(self):
+        pt =[] #contains parenttype
+        reltype =[] #contains relationtype
+        titledict = {} #contains relationtype's title
+        inverselist = [] #contains relationtype's inverse
+        finaldict = {} #contains either title of relationtype or inverse of relationtype
+        listval=[] #contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid
+        
+         #gb= Gbobject.objects.get(title=str(gbid))
+        gb=self
+        pt = gb.objecttypes.all()
+        for i in range(len(pt)):
+            if Relationtype.objects.filter(left_subjecttype = pt[i].id):
+                reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))    
+            if Relationtype.objects.filter(right_subjecttype = pt[i].id):
+                 reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id)) 
+            if Relationtype.objects.filter(left_subjecttype = gb):
+                 reltype.append(Relationtype.objects.filter(left_subjecttype = gb))
+            if Relationtype.objects.filter(right_subjecttype = gb):
+                 reltype.append(Relationtype.objects.filter(right_subjecttype = gb))                           
+        
+                
+        reltype = [num for elem in reltype for num in elem]
+        
+        for i in reltype:
+            titledict.update({i:i.id})
+
+            
+        for i in range(len(titledict)):
+            listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
+            inverselist.append(titledict.keys()[i].inverse)            
+   
+        for j in range(len(pt)):
+            for i in range(len(listval)):
+                if pt[j].id == listval[i].left_subjecttype_id or gb.id == listval[i].left_subjecttype_id :
+                    finaldict.update({titledict.values()[i]: titledict.keys()[i]})
+                elif pt[j].id == listval[i].right_subjecttype_id or gb.id == listval[i].right_subjecttype_id:
+                    finaldict.update({titledict.values()[i]:inverselist[i]})
+
+
+        return finaldict.values()
+ 
     def get_relations(self):
         relation_set = {}
         # ALGO to find the relations and their left-subjecttypes and right_subjecttypes
@@ -248,7 +320,8 @@ class Gbobject(Node):
         relation_set.update(rel_dict['right_subjecttypes'])
         
         return relation_set
-        
+       
+
 
     def get_attributes(self):
         attributes_dict =  {}

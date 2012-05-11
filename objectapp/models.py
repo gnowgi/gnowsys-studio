@@ -98,7 +98,6 @@ from gstudio.models import Node
 from gstudio.models import Edge
 from gstudio.models import Author
 
-import reversion
 from objectapp.settings import UPLOAD_TO
 from objectapp.settings import MARKUP_LANGUAGE
 from objectapp.settings import GBOBJECT_TEMPLATES
@@ -113,6 +112,15 @@ from objectapp.moderator import GbobjectCommentModerator
 from objectapp.url_shortener import get_url_shortener
 from objectapp.signals import ping_directories_handler
 from objectapp.signals import ping_external_urls_handler
+from objectapp.settings import OBJECTAPP_VERSIONING
+if OBJECTAPP_VERSIONING:
+    import reversion
+    from reversion.models import *
+
+
+
+counter = 1
+attr_counter = -1
 
 '''
 class Author(User):
@@ -432,21 +440,24 @@ class Gbobject(Node):
 	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
+	g_json["relset"]=[]
 
-	
+	global counter 
+	global attr_counter
 	nbh = self.get_nbh
 	predicate_id = {}
-        counter = 1
+        
         for key in nbh.keys():
-            val = "a" + str(counter)
+            val = str(counter) + "b"
             predicate_id[key] = val
             counter = counter + 1
         #print predicate_id
 
-        attr_counter = -1
+       
 
-        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url()}
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
         g_json["node_metadata"].append(this_node)      
+	g_json["relset"].append(self.id)
 
 	for key in predicate_id.keys():
 		if nbh[key]:
@@ -458,20 +469,34 @@ class Gbobject(Node):
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
+					if item.reftype!="Relation":
                                         # create nodes
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url()})
 
-					# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-					#create links
-                                        g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
-			
+					        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
+						g_json["relset"].append(item.id) 
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+
+					else:
+						
+						 if item.left_subject.id==self.id:
+							item1=item.right_subject
+						 elif item.right_subject.id==self.id:
+							item1=item.left_subject
+						
+						 g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"expanded":"false"})
+
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                 g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
                                 else:
 				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
 		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
 				 	#for item in value.keys():
-                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":nbh[key]})
+                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":nbh[key]})
 				    #g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":attr_counter })
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"b") })
                                     attr_counter-=1
 							
 			except:
@@ -722,6 +747,20 @@ class Gbobject(Node):
             'day': self.creation_date.strftime('%d'),
             'slug': self.slug})
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
+
+        super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
+    @property
+    def ref(self):
+        return eval(self.nodemodel).objects.get(id=self.id)
+
+
+
     class Meta:
         """Gbobject's Meta"""
         ordering = ['-creation_date']
@@ -761,6 +800,15 @@ class Process(Gbobject):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+
     class Meta:
         verbose_name = _('process')
         verbose_name_plural = _('processes')
@@ -797,21 +845,29 @@ class System(Gbobject):
     system_set = models.ManyToManyField('self', related_name="in_system_set_of", 
                                        verbose_name='nested systems',
                                        blank=True, null=False)
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(System, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(System, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
     def __unicode__(self):
         return self.title
 
 
-    
-if not reversion.is_registered(Process):
-    reversion.register(Process, follow=["priorstate_attribute_set", "priorstate_relation_set", "poststate_attribute_set", "poststate_relation_set", "prior_nodes", "posterior_nodes"])
+if OBJECTAPP_VERSIONING == True:   
+    if not reversion.is_registered(Process):
+        reversion.register(Process, follow=["priorstate_attribute_set", "priorstate_relation_set", "poststate_attribute_set", "poststate_relation_set", "prior_nodes", "posterior_nodes"])
 
-if not reversion.is_registered(System): 
-    reversion.register(System, follow=["systemtypes", "gbobject_set", "relation_set", "attribute_set", "process_set", "system_set", "prior_nodes", "posterior_nodes"])
+    if not reversion.is_registered(System): 
+        reversion.register(System, follow=["systemtypes", "gbobject_set", "relation_set", "attribute_set", "process_set", "system_set", "prior_nodes", "posterior_nodes"])
 
-if not reversion.is_registered(Gbobject):
-    reversion.register(Gbobject, follow=["objecttypes", "prior_nodes", "posterior_nodes"])
+    if not reversion.is_registered(Gbobject):
+        reversion.register(Gbobject, follow=["objecttypes", "prior_nodes", "posterior_nodes"])
 
 
 moderator.register(Gbobject, GbobjectCommentModerator)

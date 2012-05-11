@@ -47,23 +47,24 @@ $ = django.jQuery
 
 	   $("#id_attributetype").change(function() {
 		   test = $("#id_attributetype").val()
-		   url = "/nodetypes/ajax/?id=" + test
+		   url = "/nodetypes/ajax/ajaxattribute/?id=" + test
+
 		   $.get(url,
-			 function(data){			     
+		   	 function(data){			     
 
-			             $("#id_subject").empty()
+		   	             $("#id_subject").empty()
 			     
-			             for (var key in data) {
-					$('#id_subject').append(
-								$('<option></option>').val(key).html(data[key])
-								);
-				     }
+		   	             for (var key in data) {
+		   			$('#id_subject').append(
+		   						$('<option></option>').val(key).html(data[key])
+		   						);
+		   		     }
 
 
 			     
 
 
-			 });
+		   	 });
 
 	   
 	       });

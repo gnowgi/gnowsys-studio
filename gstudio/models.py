@@ -93,6 +93,7 @@ from gstudio.settings import NODETYPE_TEMPLATES
 from gstudio.settings import NODETYPE_BASE_MODEL
 from gstudio.settings import MARKDOWN_EXTENSIONS
 from gstudio.settings import AUTO_CLOSE_COMMENTS_AFTER
+from gstudio.settings import GSTUDIO_VERSIONING
 from gstudio.managers import nodetypes_published
 from gstudio.managers import NodetypePublishedManager
 from gstudio.managers import NodePublishedManager
@@ -102,10 +103,14 @@ from gstudio.moderator import NodetypeCommentModerator
 from gstudio.url_shortener import get_url_shortener
 from gstudio.signals import ping_directories_handler
 from gstudio.signals import ping_external_urls_handler
+
 import json
-import reversion
+if GSTUDIO_VERSIONING:
+    import reversion
 from reversion.models import Version
 from django.core import serializers
+from reversion.models import *
+
 
 NODETYPE_CHOICES = (
     ('ND', 'Nodes'),
@@ -168,6 +173,10 @@ STATUS_CHOICES = ((DRAFT, _('draft')),
                   (HIDDEN, _('hidden')),
                   (PUBLISHED, _('published')))
 
+
+counter = 1
+attr_counter = -1
+
 class Author(User):
     """Proxy Model around User"""
     
@@ -205,6 +214,9 @@ class NID(models.Model):
     slug = models.SlugField(help_text=_('used for publication'),
                             unique_for_date='creation_date',
                             max_length=255)
+    nodemodel = models.CharField(_('nodemodel'),max_length=255)
+
+
 
 
     def get_serialized_dict(self):
@@ -236,22 +248,26 @@ class NID(models.Model):
 
     @property
     def ref(self):
-        """ 
-        Returns the object reference the id belongs to.
-        """
-        try:
-            """ 
-            ALGO:     get object id, go to version model, return for the given id.
-            """
-
-            # Retrieving only the relevant tupleset for the versioned objects
-            vrs = Version.objects.filter(type=0 , object_id=self.id)
-            # Returned value is a list, so splice it.                                                                                                     
-            vrs =  vrs[0]            
-        except:
-            return None
+        from objectapp.models import *
+        return eval(self.nodemodel).objects.get(id=self.id)
         
-        return vrs.object
+        # """ 
+        # Returns the object reference the id belongs to.
+        # """
+        # try:
+        #     """ 
+        #     ALGO:     get object id, go to version model, return for the given id.
+        #     """
+
+        #     # Retrieving only the relevant tupleset for the versioned objects
+        #     # vrs = Version.objects.filter(type=0 , object_id=self.id)
+        #     # Returned value is a list, so splice it.                                                                                                     
+        #     vrs =  vrs[0]            
+        # except:
+        #     return None
+        
+        # return vrs.object
+    
     
     @property
     def reftype(self):
@@ -261,9 +277,11 @@ class NID(models.Model):
         try:
             """ 
             ALGO: simple wrapper for the __class__.__name__ so that it can be used in templates  
+            
             """
-            obj = self.ref
-            return obj.__class__.__name__
+            return self.__class__.__name__
+            # obj = self.ref
+            # return obj.__class__.__name__
         
         except:
             return None
@@ -361,12 +379,24 @@ class Node(NID):
 
     sites = models.ManyToManyField(Site, verbose_name=_('sites publication'),
                                    related_name='nodetypes')
+    nbhood = models.TextField(help_text="The neighbourhood of the model.")
+    
     published = NodePublishedManager()
     def __unicode__(self):
         return self.title
 
     class Meta:
         abstract=False
+
+   
+    def save(self, *args, **kwargs):
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+
 
 class Edge(NID):
 
@@ -376,6 +406,13 @@ class Edge(NID):
 
     class Meta:
         abstract=False
+    def save(self, *args, **kwargs):
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Edge, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Edge, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
  
 class Metatype(Node):
@@ -556,6 +593,16 @@ class Metatype(Node):
         ordering = ['title']
         verbose_name = _('metatype')
         verbose_name_plural = _('metatypes')
+
+    # Save for metatype
+
+    def save(self, *args, **kwargs):
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -740,6 +787,9 @@ class Nodetype(Node):
                      
         return attrs
 
+
+    
+
     def get_graph_json(self):
         
         
@@ -747,21 +797,24 @@ class Nodetype(Node):
 	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
+	g_json["relset"]=[]
 
-	
+	global counter 
+	global attr_counter 
 	nbh = self.get_nbh
 	predicate_id = {}
-        counter = 1
+        
         for key in nbh.keys():
-            val = "a" + str(counter)
+            val = str(counter) + "a"
             predicate_id[key] = val
             counter = counter + 1
         #print predicate_id
 
-        attr_counter = -1
+        
 
-        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url()}
-        g_json["node_metadata"].append(this_node)      
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
+        g_json["node_metadata"].append(this_node) 
+	g_json["relset"].append(self.id)     
 
 	for key in predicate_id.keys():
 		if nbh[key]:
@@ -774,27 +827,46 @@ class Nodetype(Node):
 				#g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
 
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
+
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
-                                        #create nodes
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url()})
+					if item.reftype!="Relation":
+                                        # create nodes
 
-					# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-					#create links
-                                        g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+					        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
+						g_json["relset"].append(item.id)     
+
+
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+
+					else:
+						
+						 if item.left_subject.id==self.id:
+							item1=item.right_subject
+						 elif item.right_subject.id==self.id:
+							item1=item.left_subject
+						
+						 g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"expanded":"false"})
+
+						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+						#create links
+		                                 g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
 			
                                 else:
 				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
 		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
 				 	#for item in value.keys():
-                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":nbh[key]})
+                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
 				    #g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":attr_counter })
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
                                     attr_counter-=1
 							
 			except:
                             pass
         #print g_json
+	
         return json.dumps(g_json)   
 
     @property
@@ -1180,6 +1252,14 @@ class Nodetype(Node):
         verbose_name_plural = _('node types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+    
+    # Save for nodetype
+    def save(self, *args, **kwargs):
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Nodetype, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Nodetype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Objecttype(Nodetype):
@@ -1190,7 +1270,7 @@ class Objecttype(Nodetype):
     def __unicode__(self):
         return self.title
 
-    #def get_graph_json(self):
+    
 	
 	
 
@@ -1292,7 +1372,7 @@ class Objecttype(Nodetype):
 
         nbh['posterior_nodes'] = self.posterior_nodes.all() 
 
-	nbh['authors'] = self.authors.all()
+	#nbh['authors'] = self.authors.all()
 
 	return nbh
     
@@ -1359,6 +1439,17 @@ class Objecttype(Nodetype):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    # Save for Objecttype
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+        
+        super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 
 
 
@@ -1368,10 +1459,10 @@ class Relationtype(Nodetype):
     '''
     inverse = models.CharField(_('inverse name'), help_text=_('when subjecttypes are interchanged, what should be the name of the relation type? This is mandatory field. If the relation is symmetric, same name will do.'), max_length=255,db_index=True ) 
     left_subjecttype = models.ForeignKey(NID,related_name="left_subjecttype_of", verbose_name='left role')  
-    left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Node types for left role')
+    left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for left role')
     left_cardinality = models.IntegerField(null=True, blank=True, verbose_name='cardinality for the left role')
     right_subjecttype = models.ForeignKey(NID,related_name="right_subjecttype_of", verbose_name='right role')  
-    right_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Node types for right role')
+    right_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for right role')
     right_cardinality = models.IntegerField(null=True, blank=True, verbose_name='cardinality for the right role')
     is_symmetrical = models.NullBooleanField(verbose_name='Is symmetrical?')
     is_reflexive = models.NullBooleanField(verbose_name='Is reflexive?')
@@ -1399,6 +1490,18 @@ class Relationtype(Nodetype):
         verbose_name_plural = _('relation types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # Save for Relationtype
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                self.nodemodel = self.__class__.__name__
+
+
+        super(Relationtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Attributetype(Nodetype):
@@ -1449,6 +1552,17 @@ class Attributetype(Nodetype):
         verbose_name_plural = _('attribute types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # Save for Attributetype
+
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
     
@@ -1540,6 +1654,17 @@ class Relation(Edge):
         function that composes the right_subject and relation name, as in "x as a friend", "y as a sibling"
         '''
         return '%s as a %s' % (self.right_subject, self.relationtype) 
+    
+    
+    # Save for Relation
+
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Relation, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Relation, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Attribute(Edge):
@@ -1616,6 +1741,17 @@ class Attribute(Edge):
         for each in Objecttype.objects.all():
             if attr.subjecttype.id == each.id:
                 return each.get_members
+
+    # Save for Attribute
+
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Attribute, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Attribute, self).save(*args, **kwargs) # Call the "real" save() method.
+
                     
             
         
@@ -1626,12 +1762,32 @@ class AttributeCharField(Attribute):
     def __unicode__(self):
         return self.title
 
+    
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeCharField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeCharField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeTextField(Attribute):
     
     value  = models.TextField(verbose_name='text') 
 
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeTextField, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(AttributeTextField, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 class AttributeIntegerField(Attribute):
      value = models.IntegerField(max_length=100, verbose_name='Integer') 
@@ -1639,12 +1795,31 @@ class AttributeIntegerField(Attribute):
      def __unicode__(self):
          return self.title
 
+     # @reversion.create_revision()
+     def save(self, *args, **kwargs):
+         self.nodemodel = self.__class__.__name__
+         if GSTUDIO_VERSIONING:
+             with reversion.create_revision():
+                 super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+         super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+         
+
+
 class AttributeCommaSeparatedIntegerField(Attribute):
     
     value  = models.CommaSeparatedIntegerField(max_length=100, verbose_name='integers separated by comma') 
 
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeCommaSeparatedIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(AttributeCommaSeparatedIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeBigIntegerField(Attribute):
     
@@ -1660,12 +1835,29 @@ class AttributePositiveIntegerField(Attribute):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributePositiveIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(AttributePositiveIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeDecimalField(Attribute):
     
     value  = models.DecimalField(max_digits=3, decimal_places=2, verbose_name='decimal') 
 
     def __unicode__(self):
         return self.title
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeDecimalField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+        super(AttributeDecimalField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeFloatField(Attribute):
     
@@ -1674,12 +1866,30 @@ class AttributeFloatField(Attribute):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeFloatField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeFloatField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeBooleanField(Attribute):
     
     value  = models.BooleanField(verbose_name='boolean') 
 
     def __unicode__(self):
         return self.title
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeBooleanField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeBooleanField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 class AttributeNullBooleanField(Attribute):
     
@@ -1688,6 +1898,15 @@ class AttributeNullBooleanField(Attribute):
     def __unicode__(self):
         return self.title
 
+
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeNullBooleanField, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(AttributeNullBooleanField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeDateField(Attribute):
     
     value  = models.DateField(max_length=100, verbose_name='date') 
@@ -1695,12 +1914,31 @@ class AttributeDateField(Attribute):
     def __unicode__(self):
         return self.title
 
+
+    def save(self, *args, **kwargs):
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeDateField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeDateField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeDateTimeField(Attribute):
     
     value  = models.DateTimeField(max_length=100, verbose_name='date time') 
     
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeDateTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeDateTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 class AttributeTimeField(Attribute):
     
@@ -1709,12 +1947,31 @@ class AttributeTimeField(Attribute):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeEmailField(Attribute):
     
     value  = models.CharField(max_length=100,verbose_name='value') 
 
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeEmailField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeEmailField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 class AttributeFileField(Attribute):
     
@@ -1723,12 +1980,32 @@ class AttributeFileField(Attribute):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeFileField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeFileField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeFilePathField(Attribute):
     
     value  = models.FilePathField(verbose_name='path of file') 
 
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeFilePathField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeFilePathField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 class AttributeImageField(Attribute):
     
@@ -1737,6 +2014,12 @@ class AttributeImageField(Attribute):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        super(AttributeImageField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeURLField(Attribute):
 
     value  = models.URLField(max_length=100, verbose_name='url') 
@@ -1744,12 +2027,32 @@ class AttributeURLField(Attribute):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeURLField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeURLField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class AttributeIPAddressField(Attribute):
 
     value  = models.IPAddressField(max_length=100, verbose_name='ip address') 
 
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeIPAddressField, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeIPAddressField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class Processtype(Nodetype):    
@@ -1774,6 +2077,15 @@ class Processtype(Nodetype):
         verbose_name_plural = _('process types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Processtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Processtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -1805,6 +2117,16 @@ class Systemtype(Nodetype):
         verbose_name_plural = _('system types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
 
 class AttributeSpecification(Node):
@@ -1830,6 +2152,7 @@ class AttributeSpecification(Node):
 
 
     def __unicode__(self):
+        self.nodemodel = self.__class__.__name__
         return self.composed_subject
 
 
@@ -1837,6 +2160,17 @@ class AttributeSpecification(Node):
         verbose_name = _('attribute specification')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(AttributeSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 
 
 class RelationSpecification(Node):
@@ -1861,10 +2195,21 @@ class RelationSpecification(Node):
         return self.composed_subject
 
 
+
     class Meta:
         verbose_name = _('relation specification')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(RelationSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(RelationSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class NodeSpecification(Node):
@@ -1897,6 +2242,17 @@ class NodeSpecification(Node):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(NodeSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(NodeSpecification, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+
 
 class Expression(Node):
     """
@@ -1924,6 +2280,16 @@ class Expression(Node):
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Expression, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Expression, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 
 
 class Union(Node):
@@ -1934,6 +2300,16 @@ class Union(Node):
         
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Union, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Union, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -1946,6 +2322,16 @@ class Complement(Node):
     def __unicode__(self):
         return self.title
 
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Complement, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Complement, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
 class Intersection(Node):
     """
     Intersection of classes
@@ -1954,44 +2340,54 @@ class Intersection(Node):
         
     def __unicode__(self):
         return self.title
+
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(Intersection, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        super(Intersection, self).save(*args, **kwargs) # Call the "real" save() method.
+
     
+if GSTUDIO_VERSIONING == True:
+    reversion.register(NID)
 
-reversion.register(NID)
+    if not reversion.is_registered(Systemtype):
+        reversion.register(Systemtype)
 
-if not reversion.is_registered(Systemtype):
-    reversion.register(Systemtype)
+    if not reversion.is_registered(Objecttype):
+        reversion.register(Objecttype , follow=["nodetype_ptr"])
 
-if not reversion.is_registered(Objecttype):
-    reversion.register(Objecttype , follow=["nodetype_ptr"])
+    if not reversion.is_registered(Node):
+        reversion.register(Node , follow=["nid_ptr"])
 
-if not reversion.is_registered(Node):
-    reversion.register(Node , follow=["nid_ptr"])
-
-if not reversion.is_registered(Edge):
-    reversion.register(Edge , follow=["nid_ptr"])
-
-
-if not reversion.is_registered(Processtype):
-    reversion.register(Processtype, follow=["changing_attributetype_set", "changing_relationtype_set"])
-
-if not reversion.is_registered(Nodetype): 
-    reversion.register(Nodetype, follow=["node_ptr","parent", "metatypes","prior_nodes", "posterior_nodes"])
-
-if not reversion.is_registered(Metatype):
-    reversion.register(Metatype, follow=["node_ptr","parent"])
+    if not reversion.is_registered(Edge):
+        reversion.register(Edge , follow=["nid_ptr"])
 
 
-if not reversion.is_registered(Relationtype): 
-    reversion.register(Relationtype, follow=["left_subjecttype", "right_subjecttype"])
+    if not reversion.is_registered(Processtype):
+        reversion.register(Processtype, follow=["changing_attributetype_set", "changing_relationtype_set"])
 
-if not reversion.is_registered(Attributetype): 
-    reversion.register(Attributetype, follow=["subjecttype"])
+    if not reversion.is_registered(Nodetype): 
+        reversion.register(Nodetype, follow=["node_ptr","parent", "metatypes","prior_nodes", "posterior_nodes"])
 
-if not reversion.is_registered(Attribute): 
-    reversion.register(Attribute, follow=["subject", "attributetype"])
+    if not reversion.is_registered(Metatype):
+        reversion.register(Metatype, follow=["node_ptr","parent"])
 
-if not reversion.is_registered(Relation): 
-    reversion.register(Relation, follow=["left_subject", "right_subject", "relationtype"])
+
+    if not reversion.is_registered(Relationtype): 
+        reversion.register(Relationtype, follow=["left_subjecttype", "right_subjecttype"])
+
+    if not reversion.is_registered(Attributetype): 
+        reversion.register(Attributetype, follow=["subjecttype"])
+
+    if not reversion.is_registered(Attribute): 
+        reversion.register(Attribute, follow=["subject", "attributetype"])
+
+    if not reversion.is_registered(Relation): 
+        reversion.register(Relation, follow=["left_subject", "right_subject", "relationtype"])
 
 moderator.register(Nodetype, NodetypeCommentModerator)
 mptt.register(Metatype, order_insertion_by=['title'])
@@ -2006,5 +2402,10 @@ post_save.connect(ping_directories_handler, sender=Nodetype,
 post_save.connect(ping_external_urls_handler, sender=Nodetype,
                   dispatch_uid='gstudio.nodetype.post_save.ping_external_urls')
 
+class Peer(User):
+    """Subclass for non-human users"""
+    def __unicode__(self):
+        return self.ip
 
-
+    ip = models.IPAddressField("Peer's IP address")
+    pkey = models.CharField(("Peer's public-key"), max_length=255)

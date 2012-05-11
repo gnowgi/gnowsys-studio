@@ -152,3 +152,5 @@ TWITTER_ACCESS_SECRET = getattr(settings, 'TWITTER_ACCESS_SECRET', '')
 USE_TWITTER = getattr(settings, 'GSTUDIO_USE_TWITTER',
                       bool(TWITTER_ACCESS_KEY and TWITTER_ACCESS_SECRET and \
                            TWITTER_CONSUMER_KEY and TWITTER_CONSUMER_SECRET))
+
+GSTUDIO_VERSIONING = False

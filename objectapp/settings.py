@@ -133,3 +133,5 @@ TWITTER_ACCESS_SECRET = getattr(settings, 'TWITTER_ACCESS_SECRET', '')
 USE_TWITTER = getattr(settings, 'OBJECTAPP_USE_TWITTER',
                       bool(TWITTER_ACCESS_KEY and TWITTER_ACCESS_SECRET and \
                            TWITTER_CONSUMER_KEY and TWITTER_CONSUMER_SECRET))
+
+OBJECTAPP_VERSIONING = False

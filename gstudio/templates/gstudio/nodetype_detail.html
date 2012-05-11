@@ -243,18 +243,28 @@
 				s = parseInt(s)
 			  	//alert(s)
 				}
-                        </script>
-                          
+                        </script>                
                                     
 
  {% endwith %}
  {% endblock %}
 
-{% if object.reftype  == 'Objecttype'%}
-<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ object.title }}">Add Attribute</a>
-<br/>
-<a href="{{ get_absolute_url }}/objects/dynamicRelation/displayRT/{{ object.title }}">Add Relation</a>
+{% if object.reftype  == 'Objecttype' %}
+<p>
+<b>Add Attributes:</b>
+{% for i in object.getat %}
+<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
+{% endfor %}
+</p>
+
+<p>
+<b>Add Relations: </b>
+{% for i in object.getrt %}
+<a href="{{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
+{% endfor %}
 {% endif  %}
+</p>
+
 <div class="nodetype-content">
        
 </div>

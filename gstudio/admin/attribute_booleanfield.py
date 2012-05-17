@@ -3,7 +3,11 @@ from django.core.urlresolvers import NoReverseMatch
 from django.utils.translation import ugettext_lazy as _
 
 from gstudio.admin.forms import AttributeBooleanFieldAdminForm
+from gstudio.settings import GSTUDIO_VERSIONING
 import reversion
-
-class AttributeBooleanFieldAdmin(reversion.VersionAdmin):
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
+class AttributeBooleanFieldAdmin(parent_class):
     pass

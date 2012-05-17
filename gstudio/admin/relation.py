@@ -6,8 +6,14 @@ from django.utils.translation import ugettext_lazy as _
 from gstudio.admin.forms import RelationAdminForm
 import reversion
 from django.template.defaultfilters import slugify
+from gstudio.settings import GSTUDIO_VERSIONING
 
-class RelationAdmin(reversion.VersionAdmin):
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
+
+class RelationAdmin(parent_class):
     fieldsets=((_('Relation'),{'fields': ('relationtype','relationtype_scope','left_subject' ,'left_subject_scope','right_subject','right_subject_scope')}),
 
 )

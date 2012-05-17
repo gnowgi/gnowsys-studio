@@ -7,8 +7,14 @@ from gstudio.admin.forms import AttributeAdminForm
 from gstudio.models import *
 import reversion
 from django.template.defaultfilters import slugify
+from gstudio.settings import GSTUDIO_VERSIONING
 
-class AttributeAdmin(reversion.VersionAdmin):
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
+
+class AttributeAdmin(parent_class):
     fieldsets=((_('Attribute'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope')}),
 
 )

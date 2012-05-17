@@ -19,11 +19,15 @@ from gstudio.managers import HIDDEN
 from gstudio.managers import PUBLISHED
 from gstudio.ping import DirectoryPinger
 from gstudio.admin.forms import RelationtypeAdminForm
+from gstudio.settings import GSTUDIO_VERSIONING
 
 
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
 
-
-class RelationtypeAdmin(reversion.VersionAdmin):
+class RelationtypeAdmin(parent_class):
     """Admin for Relationtype model"""
     form = RelationtypeAdminForm
     date_hierarchy = 'creation_date'

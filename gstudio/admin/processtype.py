@@ -20,11 +20,14 @@ from gstudio.managers import HIDDEN
 from gstudio.managers import PUBLISHED
 from gstudio.ping import DirectoryPinger
 from gstudio.admin.forms import ProcesstypeAdminForm
+from gstudio.settings import GSTUDIO_VERSIONING
 
 
-
-
-class ProcesstypeAdmin(reversion.VersionAdmin):
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
+class ProcesstypeAdmin(parent_class):
     """Admin for Processtype model"""
     form = ProcesstypeAdminForm
     date_hierarchy = 'creation_date'

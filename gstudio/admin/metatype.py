@@ -5,8 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from gstudio.admin.forms import MetatypeAdminForm
 import reversion
+from gstudio.settings import GSTUDIO_VERSIONING
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
 
-class MetatypeAdmin(reversion.VersionAdmin):
+class MetatypeAdmin(parent_class):
     """Admin for Metatype model"""
     form = MetatypeAdminForm
     fields = ('title','altnames', 'parent', 'description', 'slug')

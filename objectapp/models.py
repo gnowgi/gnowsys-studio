@@ -98,7 +98,6 @@ from gstudio.models import Node
 from gstudio.models import Edge
 from gstudio.models import Author
 
-import reversion
 from objectapp.settings import UPLOAD_TO
 from objectapp.settings import MARKUP_LANGUAGE
 from objectapp.settings import GBOBJECT_TEMPLATES
@@ -113,12 +112,16 @@ from objectapp.moderator import GbobjectCommentModerator
 from objectapp.url_shortener import get_url_shortener
 from objectapp.signals import ping_directories_handler
 from objectapp.signals import ping_external_urls_handler
-from reversion.models import *
+from objectapp.settings import OBJECTAPP_VERSIONING
+if OBJECTAPP_VERSIONING:
+    import reversion
+    from reversion.models import *
 
 
 
 counter = 1
 attr_counter = -1
+
 '''
 class Author(User):
     """Proxy Model around User"""
@@ -206,6 +209,78 @@ class Gbobject(Node):
     published = GbobjectPublishedManager()
 
 
+    # @property
+    # def getdataType(self):
+    #     gb = 'attribute'+str(self.get_dataType.display())
+    #     gb = gb.lower()
+    #     return gb
+        
+    @property
+    def getattributetypes(self):
+        """ 
+        Returns the attributetypes of self as well as its parent's attributetype.
+        """
+        try:
+            parenttype = []
+            attributetype = []
+            returnlist = []
+            obj = self
+            parenttype = obj.objecttypes.all()
+            attributetype.append(obj.subjecttype_of.all())
+            for each in parenttype:
+                attributetype.append(each.subjecttype_of.all())
+
+            attributetype = [num for elem in attributetype for num in elem]
+            return attributetype
+        
+        except:
+            return None
+
+  
+
+    @property
+    def getrelationtypes(self):
+        pt =[] #contains parenttype
+        reltype =[] #contains relationtype
+        titledict = {} #contains relationtype's title
+        inverselist = [] #contains relationtype's inverse
+        finaldict = {} #contains either title of relationtype or inverse of relationtype
+        listval=[] #contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid
+        
+         #gb= Gbobject.objects.get(title=str(gbid))
+        gb=self
+        pt = gb.objecttypes.all()
+        for i in range(len(pt)):
+            if Relationtype.objects.filter(left_subjecttype = pt[i].id):
+                reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))    
+            if Relationtype.objects.filter(right_subjecttype = pt[i].id):
+                 reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id)) 
+            if Relationtype.objects.filter(left_subjecttype = gb):
+                 reltype.append(Relationtype.objects.filter(left_subjecttype = gb))
+            if Relationtype.objects.filter(right_subjecttype = gb):
+                 reltype.append(Relationtype.objects.filter(right_subjecttype = gb))                           
+        
+                
+        reltype = [num for elem in reltype for num in elem]
+        
+        for i in reltype:
+            titledict.update({i:i.id})
+
+            
+        for i in range(len(titledict)):
+            listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
+            inverselist.append(titledict.keys()[i].inverse)            
+   
+        for j in range(len(pt)):
+            for i in range(len(listval)):
+                if pt[j].id == listval[i].left_subjecttype_id or gb.id == listval[i].left_subjecttype_id :
+                    finaldict.update({titledict.values()[i]: titledict.keys()[i]})
+                elif pt[j].id == listval[i].right_subjecttype_id or gb.id == listval[i].right_subjecttype_id:
+                    finaldict.update({titledict.values()[i]:inverselist[i]})
+
+
+        return finaldict.values()
+ 
     def get_relations(self):
         relation_set = {}
         # ALGO to find the relations and their left-subjecttypes and right_subjecttypes
@@ -245,7 +320,8 @@ class Gbobject(Node):
         relation_set.update(rel_dict['right_subjecttypes'])
         
         return relation_set
-        
+       
+
 
     def get_attributes(self):
         attributes_dict =  {}
@@ -671,9 +747,18 @@ class Gbobject(Node):
             'day': self.creation_date.strftime('%d'),
             'slug': self.slug})
 
-    @reversion.create_revision()
+    # @reversion.create_revision()
     def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
+
         super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
+    @property
+    def ref(self):
+        return eval(self.nodemodel).objects.get(id=self.id)
+
 
 
     class Meta:
@@ -715,8 +800,13 @@ class Process(Gbobject):
     def __unicode__(self):
         return self.title
 
-    @reversion.create_revision()
+    # @reversion.create_revision()
     def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+
         super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
 
     class Meta:
@@ -755,8 +845,13 @@ class System(Gbobject):
     system_set = models.ManyToManyField('self', related_name="in_system_set_of", 
                                        verbose_name='nested systems',
                                        blank=True, null=False)
-    @reversion.create_revision()
+    # @reversion.create_revision()
     def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(System, self).save(*args, **kwargs) # Call the "real" save() method.
+
         super(System, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
@@ -764,15 +859,15 @@ class System(Gbobject):
         return self.title
 
 
-    
-if not reversion.is_registered(Process):
-    reversion.register(Process, follow=["priorstate_attribute_set", "priorstate_relation_set", "poststate_attribute_set", "poststate_relation_set", "prior_nodes", "posterior_nodes"])
+if OBJECTAPP_VERSIONING == True:   
+    if not reversion.is_registered(Process):
+        reversion.register(Process, follow=["priorstate_attribute_set", "priorstate_relation_set", "poststate_attribute_set", "poststate_relation_set", "prior_nodes", "posterior_nodes"])
 
-if not reversion.is_registered(System): 
-    reversion.register(System, follow=["systemtypes", "gbobject_set", "relation_set", "attribute_set", "process_set", "system_set", "prior_nodes", "posterior_nodes"])
+    if not reversion.is_registered(System): 
+        reversion.register(System, follow=["systemtypes", "gbobject_set", "relation_set", "attribute_set", "process_set", "system_set", "prior_nodes", "posterior_nodes"])
 
-if not reversion.is_registered(Gbobject):
-    reversion.register(Gbobject, follow=["objecttypes", "prior_nodes", "posterior_nodes"])
+    if not reversion.is_registered(Gbobject):
+        reversion.register(Gbobject, follow=["objecttypes", "prior_nodes", "posterior_nodes"])
 
 
 moderator.register(Gbobject, GbobjectCommentModerator)

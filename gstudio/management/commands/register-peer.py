@@ -13,40 +13,40 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.core.management.base import BaseCommand
-from optparse import make_option
-import sys
-from gstudio.models import Peer
+# from django.core.management.base import BaseCommand
+# from optparse import make_option
+# import sys
+# from gstudio.models import Peer
 
-class Command(BaseCommand):
-    """Custom manage.py command to register a peer"""
-    option_list = BaseCommand.option_list + (
-        make_option("--ip", action="store", type="string",
-                    dest="ip", help="Specify an IP"),
-        make_option("--pkey", action="store", type="string",
-                    dest="pkey", help="Specify a public-key"))
+# class Command(BaseCommand):
+#     """Custom manage.py command to register a peer"""
+#     option_list = BaseCommand.option_list + (
+#         make_option("--ip", action="store", type="string",
+#                     dest="ip", help="Specify an IP"),
+#         make_option("--pkey", action="store", type="string",
+#                     dest="pkey", help="Specify a public-key"))
 
-    def handle(self, *args, **options):
-        try:
-            ip = options["ip"]
-            pkey = options["pkey"]
+#     def handle(self, *args, **options):
+#         try:
+#             ip = options["ip"]
+#             pkey = options["pkey"]
 
-            if not ip:
-                sys.stderr.write("Please specify an IP\n")
-                sys.exit(2)
+#             if not ip:
+#                 sys.stderr.write("Please specify an IP\n")
+#                 sys.exit(2)
 
-            if not pkey:
-                sys.stderr.write("Please specify a public-key\n")
-                sys.exit(2)
+#             if not pkey:
+#                 sys.stderr.write("Please specify a public-key\n")
+#                 sys.exit(2)
 
-            pkey = open(options["pkey"]).readline().rstrip()
+#             pkey = open(options["pkey"]).readline().rstrip()
 
-        except (IOError, TypeError):
-            sys.stderr.write("Please specify a correct public-key\n")
-            sys.exit(2)
+#         except (IOError, TypeError):
+#             sys.stderr.write("Please specify a correct public-key\n")
+#             sys.exit(2)
 
-        ip = Peer(ip="{0}".format(ip))
-        ip.save()
+#         ip = Peer(ip="{0}".format(ip))
+#         ip.save()
 
-        pkey = Peer(pkey="{0}".format(pkey))
-        pkey.save()
+#         pkey = Peer(pkey="{0}".format(pkey))
+#         pkey.save()

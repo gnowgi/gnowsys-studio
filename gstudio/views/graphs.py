@@ -114,7 +114,7 @@ def version_graph_json(request,ssid):
     try:
         node = Version.objects.get(id=ssid)
 	
-        node = node.object      
+        node = node.object.ref     
     except:
         return HttpResponse("Node not found.", "text/html")
 

@@ -42,16 +42,10 @@
 </div>
 -->
 <div class="History">
-      <!-- <script type="text/javascript"> -->
-      <!--      function go_to_loc(sid) -->
-      <!-- 	   { -->
-      <!-- 	        window.location.href =  "{{ object.get_version_url }}"+sid -->
-      <!-- 	   } -->
-           
-      <!--  </script> -->
+     
        <h3>{% trans "Versions" %}</h3>
         <table border="1" cellspacing="0">
-        {% for sid in object.get_ssid reversed %}
+        {% for sid in object.ref.get_ssid  %}
 	    <a href="{{ object.get_version_url }}{{ sid }}">{{ object.title }}{{ object.id }}{{ sid }}</a><br>
         {% endfor %}
 </div>

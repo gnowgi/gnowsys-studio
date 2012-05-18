@@ -523,28 +523,39 @@ $(function() {
 	  {% block sidebar %}
 	  
 	  <div class="History">
-	    <script type="text/javascript">
-           <!-- function go_to_loc(sid) -->
-	   <!-- { -->
-	        
-	   <!--      window.location.href =  "{{ nt.get_version_url }}"+sid -->
-	        
-	      
-	      
-	   <!-- } -->
-           
-	   <!--  </script> -->
+	  
 	    <h3>{% trans "Versions" %}</h3>
+	    <script type="text/javascript">
+	      function go_to_loc(sid)
+	      {    
+	            
+	             <!-- var len=document.history.group2.length -->
+	             <!-- for(var i=0;i<len;i++) -->
+		     <!-- { -->
+		     <!--      var r=window.document.history.group2[i] -->
+	             <!--      if(sid==r.) -->
+		     <!--      { -->
+		     <!-- 		     r.disabled="false" -->
+		     <!--      } -->
+		     <!--      else -->
+		     <!--      { -->
+		     <!-- 		     r.enabled="true" -->
+		     <!-- 	  } -->
+		     <!--  } -->
+	      
+	      
+	      }
+	   </script>
 	   
-	    <form action="/nodetypes/display/showhistory/" >
+	    <form name="history" action="/nodetypes/display/showhistory/" >
 	    <table cellspacing="0" border="2">
 	    {% for sid in nt.get_ssid reversed %}
 	    <tr>
 	    <td>
-	    <input type="radio" name="group1" value="{{ sid }}"><a href="{{ nt.get_version_url }}{{ sid }}">{{ nt.id }}.{{ sid }}</a></input>
+	    <input type="radio" name="group1" value="{{ sid }}" onclick="go_to_loc('{{ sid }}')" ><a href="{{ nt.get_version_url }}{{ sid }}">{{ nt.id }}.{{ sid }}</a></input>
 	    </td>
 	    <td>
-            <input type="radio" name="group2" value="{{ sid }}">{{ nt.id }}.{{ sid }}</input>
+            <input type="radio" id="{{ sid }}"name="group2" value="{{ sid }}" >{{ nt.id }}.{{ sid }}</input>
             </td>
             {% endfor %}
 	    

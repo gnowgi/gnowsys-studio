@@ -66,6 +66,7 @@
 
 
 """Super models of Gstudio  """
+
 import warnings
 from datetime import datetime
 from django.db import models
@@ -213,17 +214,6 @@ class NID(models.Model):
                             max_length=255)
     
     
-    def convert(self,data):
-    	if isinstance(data, unicode):
-        	return str(data)
-    	elif isinstance(data, collections.Mapping):
-        	return dict(map(convert, data.iteritems()))
-    	elif isinstance(data, collections.Iterable):
-        	return type(data)(map(convert, data))
-    	else:
-        	return data
-
-
     @property
     def get_revisioncount(self):
         """
@@ -274,8 +264,6 @@ class NID(models.Model):
 		ver_nbh_dict[each]=ver_dict[each]
 	return ver_nbh_dict
     
-	
-
     def get_serialized_dict(self):
         """
         return the fields in a serialized form of the current object using the __dict__ function.
@@ -303,7 +291,7 @@ class NID(models.Model):
             """
 
             # Retrieving only the relevant tupleset for the versioned objects
-            vrs = Version.objects.filter(type=0 , object_id=self.id)
+            vrs = Version.objects.filter(type=1 , object_id=self.id)
             # Returned value is a list, so splice it.                                                                                                     
             vrs =  vrs[0]            
         except:
@@ -326,7 +314,7 @@ class NID(models.Model):
         version = Version.objects.get(id=self.id)
         return version.serialized_data
 
-
+    
 
     def get_Version_graph_json(self,ssid):
         
@@ -406,9 +394,7 @@ class Node(NID):
     sites = models.ManyToManyField(Site, verbose_name=_('sites publication'),
                                    related_name='nodetypes')
     nbhood = models.TextField(help_text="The serialized nbh of this version of the Node.")
-
-    
-
+   
     published = NodePublishedManager()
     def __unicode__(self):
         return self.title
@@ -619,9 +605,11 @@ class Metatype(Node):
     # Save for metatype
     @reversion.create_revision()
     def save(self, *args, **kwargs):
-#	self.nbhood=self.get_nbh
-        super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
-
+	super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_nbh
+	with reversion.create_revision():
+        	super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+	
 
 
 
@@ -780,35 +768,6 @@ class Nodetype(Node):
         return rels
 
 
-
-    @property
-    def get_possible_attributes(self):
-        """
-        Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the RT's linked to each ancestor 
-        """
-        #Step 1. 
-        ancestor_list = []
-        this_parent = self.parent
-        
-        # recursive thru parent field and append
-        while this_parent:
-            ancestor_list.append(this_parent)
-            this_parent = this_parent.parent
-            
-        #Step 2.
-        attrs = [] 
-                
-        for each in ancestor_list:
-            # retrieve all the AT's from each ancestor 
-            attrs.extend(Attribute.objects.filter(subject=each.id))
-                     
-        return attrs
-
-
-    
-
     def get_graph_json(self):
         
         
@@ -887,6 +846,33 @@ class Nodetype(Node):
         #print g_json
 	
         return json.dumps(g_json)   
+    @property
+    def get_possible_attributes(self):
+        """
+        Gets the relations possible for this metatype
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
+        2. Get all the RT's linked to each ancestor 
+        """
+        #Step 1. 
+        ancestor_list = []
+        this_parent = self.parent
+        
+        # recursive thru parent field and append
+        while this_parent:
+            ancestor_list.append(this_parent)
+            this_parent = this_parent.parent
+            
+        #Step 2.
+        attrs = [] 
+                
+        for each in ancestor_list:
+            # retrieve all the AT's from each ancestor 
+            attrs.extend(Attribute.objects.filter(subject=each.id))
+                     
+        return attrs
+
+
+     
 
     @property
     def tree_path(self):
@@ -1279,7 +1265,7 @@ class Nodetype(Node):
     @reversion.create_revision()
     def save(self, *args, **kwargs):
         super(Nodetype, self).save(*args, **kwargs) # Call the "real" save() method.
-
+	
 
 
 class Objecttype(Nodetype):
@@ -1462,8 +1448,10 @@ class Objecttype(Nodetype):
     # Save for Objecttype
     @reversion.create_revision()
     def save(self, *args, **kwargs):
-	# self.nbhood=self.get_nbh
-        super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+	super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_nbh
+	with reversion.create_revision():
+	      super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
 

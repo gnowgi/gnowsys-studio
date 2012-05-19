@@ -1,5 +1,7 @@
-{% extends "gstudio/base.html" %}
+{% extends "gstudio/version_base.html" %}
 {% load i18n gstudio_tags %}
+{% load i18n objectapp_tags %}
+
 
 {% block meta-description %}{% trans "Latest nodetypes for" %} {% if metatype %}{% trans "the metatype" %} {{ metatype }}{% if metatype.description %}: {{ metatype.description|striptags|safe }}{% endif %}{% endif %}{% if tag %}{% trans "the tag" %} {{ tag }}{% endif %}{% if author %}{% trans "the author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} {% trans "page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
 

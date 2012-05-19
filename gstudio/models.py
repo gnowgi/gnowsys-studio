@@ -66,6 +66,7 @@
 
 
 """Super models of Gstudio  """
+
 import warnings
 from datetime import datetime
 from django.db import models
@@ -110,6 +111,8 @@ if GSTUDIO_VERSIONING:
 from reversion.models import Version
 from django.core import serializers
 from reversion.models import *
+from reversion.helpers import *
+import ast
 
 
 NODETYPE_CHOICES = (
@@ -216,35 +219,71 @@ class NID(models.Model):
                             max_length=255)
     nodemodel = models.CharField(_('nodemodel'),max_length=255)
 
+    @property
+    def get_revisioncount(self):
+        """
+        Returns Number of Version
+        """
+	i=0
+        ver=Version.objects.get_for_object(self)
+	for each in ver:
+		i=i+1
+        return i
+
+    @property
+    def get_version_list(self):
+        """
+        Returns  Version list
+        """
+        ver=Version.objects.get_for_object(self)
+	return ver
+
+    @property
+    def get_ssid(self):
+	"""
+	return snapshot ids (revision id).
+        returns a list.
+	"""
+	slist=[]
+	vlist=self.get_version_list	
+	for each in vlist:
+		slist.append(each.id)
+	return slist
+
+    def version_info(self,ssid):
+	version_object=Version.objects.get(id=ssid)
+	return version_object.field_dict
 
 
-
+    def get_version_nbh(self,ssid):
+   	"""
+	Returns Version nbh
+	"""
+	ver_dict=self.version_info(ssid)
+	ver_nbh_list=[]
+	ver_nbh_dict={}
+	for item in self.get_nbh.keys():
+    		if item in ver_dict.keys():
+			ver_nbh_list.append(item)
+	for each in ver_nbh_list:
+		ver_nbh_dict[each]=ver_dict[each]
+	return ver_nbh_dict
+    
     def get_serialized_dict(self):
         """
         return the fields in a serialized form of the current object using the __dict__ function.
         """
         return self.__dict__
 
-    @property
-    def get_app_name(self):
-        if self.ref.__class__.__name__=='Gbobject' or self.ref.__class__.__name__=='Process' or self.ref.__class__.__name__=='System' :
-            return 'type'
-
     @models.permalink
     def get_absolute_url(self):
         """Return nodetype's URL"""
-        if self.get_app_name=='type':
-           return ('objectapp_gbobject_detail', (), {
-            	'year': self.creation_date.strftime('%Y'),
-            	'month': self.creation_date.strftime('%m'),
-            	'day': self.creation_date.strftime('%d'),
-            	'slug': self.slug})
-        else:
-           return ('gstudio_nodetype_detail', (), {
-           	'year': self.creation_date.strftime('%Y'),
-            	'month': self.creation_date.strftime('%m'),
-            	'day': self.creation_date.strftime('%d'),
-            	'slug': self.slug})
+        
+        return ('gstudio_nodetype_detail', (), {
+            'year': self.creation_date.strftime('%Y'),
+            'month': self.creation_date.strftime('%m'),
+            'day': self.creation_date.strftime('%d'),
+            'slug': self.slug})
 
     @property
     def ref(self):
@@ -352,13 +391,67 @@ class NID(models.Model):
         version = Version.objects.get(id=self.id)
         return version.serialized_data
 
+    
+
+    def get_Version_graph_json(self,ssid):
+        
+        
+        # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
+        # slist=self.get_ssid
+         ver_dict=self.version_info(ssid)
+	# ver_dict=str(ver['nbhood'])
+	# ver_dict=ast.literal_eval(ver_dict)
+         
+	 g_json = {}
+	 g_json["node_metadata"]= [] 
+	 predicate_id = {}
+         counter = 1
+         for key in ver_dict.keys():
+             val = "a" + str(counter)
+             predicate_id[key] = val
+             counter = counter + 1
+         #print predicate_id
+
+         attr_counter = -1
+
+         this_node = {"_id":str(ver_dict['id']),"title":ver_dict['title'],"screen_name":ver_dict['title'], "url":self.get_absolute_url()}
+         g_json["node_metadata"].append(this_node)      
+
+ 	 for key in predicate_id.keys():
+		if ver_dict[key]:
+			try:
+				g_json[str(key)]=[]      
+				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+				g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
+				if not isinstance(ver_dict[key],basestring):
+                                    for item in ver_dict[key]:
+                                        # user 
+                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
+                                        g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+			
+                                else:
+				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
+		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
+				 	#for item in value.keys():
+                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":ver_dict[key]})
+                                    g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
+                                    attr_counter-=1
+							
+			except:
+                            pass
+        # print g_json
+
+        
+          
+         return json.dumps(g_json)   
+
+
     def __unicode__(self):
         return self.title
 
 
     class Meta:
         """NID's Meta"""
-
 
 
 class Node(NID):
@@ -390,11 +483,13 @@ class Node(NID):
 
    
     def save(self, *args, **kwargs):
+	
+    #	self.nbhood=self.get_nbh      
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
-        super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
-
+     
+	super(Node, self).save(*args, **kwargs)  # Call the "real" save() method.
 
 
 
@@ -597,11 +692,13 @@ class Metatype(Node):
     # Save for metatype
 
     def save(self, *args, **kwargs):
+	super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_nbh
+
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
-                super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+                super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.	
 
-        super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
 
@@ -700,8 +797,8 @@ class Nodetype(Node):
         reltypes['possible_rightroles'] = right_subset
         
         return reltypes
-
-
+    
+    
     @property
     def get_possible_attributetypes(self):
         """
@@ -760,35 +857,6 @@ class Nodetype(Node):
         
         return rels
 
-
-
-    @property
-    def get_possible_attributes(self):
-        """
-        Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the RT's linked to each ancestor 
-        """
-        #Step 1. 
-        ancestor_list = []
-        this_parent = self.parent
-        
-        # recursive thru parent field and append
-        while this_parent:
-            ancestor_list.append(this_parent)
-            this_parent = this_parent.parent
-            
-        #Step 2.
-        attrs = [] 
-                
-        for each in ancestor_list:
-            # retrieve all the AT's from each ancestor 
-            attrs.extend(Attribute.objects.filter(subject=each.id))
-                     
-        return attrs
-
-
-    
 
     def get_graph_json(self):
         
@@ -868,6 +936,33 @@ class Nodetype(Node):
         #print g_json
 	
         return json.dumps(g_json)   
+    @property
+    def get_possible_attributes(self):
+        """
+        Gets the relations possible for this metatype
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
+        2. Get all the RT's linked to each ancestor 
+        """
+        #Step 1. 
+        ancestor_list = []
+        this_parent = self.parent
+        
+        # recursive thru parent field and append
+        while this_parent:
+            ancestor_list.append(this_parent)
+            this_parent = this_parent.parent
+            
+        #Step 2.
+        attrs = [] 
+                
+        for each in ancestor_list:
+            # retrieve all the AT's from each ancestor 
+            attrs.extend(Attribute.objects.filter(subject=each.id))
+                     
+        return attrs
+
+
+     
 
     @property
     def tree_path(self):
@@ -1235,6 +1330,9 @@ class Nodetype(Node):
             'month': self.creation_date.strftime('%m'),
             'day': self.creation_date.strftime('%d'),
             'slug': self.slug})
+    def get_version_url(self):
+         """Return nodetype's URL"""
+         return "/nodetypes/display/viewhistory/"
 
     def get_serialized_data(self):
         """
@@ -1259,7 +1357,7 @@ class Nodetype(Node):
             with reversion.create_revision():
                 super(Nodetype, self).save(*args, **kwargs) # Call the "real" save() method.
         super(Nodetype, self).save(*args, **kwargs) # Call the "real" save() method.
-
+	
 
 
 class Objecttype(Nodetype):
@@ -1443,11 +1541,12 @@ class Objecttype(Nodetype):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
+	super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_nbh
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
-        
-        super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 
@@ -1557,13 +1656,13 @@ class Attributetype(Nodetype):
 
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-
-        if GSTUDIO_VERSIONING:
+	
+#	self.nbhood=self.get_nbh	
+	if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
-        super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
-
-
+        
+	super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
 
     
 class Relation(Edge):

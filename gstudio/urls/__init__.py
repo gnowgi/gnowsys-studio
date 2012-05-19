@@ -32,6 +32,7 @@ urlpatterns = patterns(
     url(r'^discussions/', include('gstudio.urls.discussions')),
     url(r'^add/', include('gstudio.urls.add')),
     url(r'^ajax/', include('gstudio.urls.ajaxurls')),
+    url(r'^display/',include('gstudio.urls.history')),
     url(r'^graphs/', include('gstudio.urls.graphs')),
     url(r'^userdashboard/', include('gstudio.urls.dashboard')),
     url(r'^', include('gstudio.urls.quick_nodetype')),

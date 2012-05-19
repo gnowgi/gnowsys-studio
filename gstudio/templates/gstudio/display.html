@@ -493,10 +493,9 @@ $(function() {
 		<h3>{% block content %}
 		  {% block nodetype-content %}
 		  <h2 class="nodetype-title">
-		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_dict.title }}
+		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_dict.title }} {{ nt.id }}.{{ cnt }}
 		    </a>
 		  </h2>
-		  <br>
 		    {% with nt.html_content|safe as object_content %}
 		    <b>Name:<nbsp></b>{{ ver_dict.title }}<br/>
 		      {% if ver_dict.altnames %}
@@ -547,19 +546,21 @@ $(function() {
 	      }
 	   </script>
 	   
-	    <form name="history" action="/nodetypes/display/showhistory/" >
+	    <form name="history" action="/nodetypes/display/showhistory/{{ ssid }}" >
 	    <table cellspacing="0" border="2">
-	    {% for sid in nt.get_ssid reversed %}
+	    <tr>
+	    <td> <input type="radio" name="group1" value="{{ ssid }}" checked >{{ nt.id }}.{{ cnt }}</input></td>
+	    <td></td></tr>
+	    {% for sid in nt.get_ssid  %}
+	    {% ifnotequal forloop.counter cnt %}
 	    <tr>
 	    <td>
-	    <input type="radio" name="group1" value="{{ sid }}" onclick="go_to_loc('{{ sid }}')" ><a href="{{ nt.get_version_url }}{{ sid }}">{{ nt.id }}.{{ sid }}</a></input>
 	    </td>
 	    <td>
-            <input type="radio" id="{{ sid }}"name="group2" value="{{ sid }}" >{{ nt.id }}.{{ sid }}</input>
-            </td>
-            {% endfor %}
 	    
-	    </table>
+            <input type="radio" id="{{ sid }}"name="group2" value="{{ sid }}" >{{ nt.id }}.{{ forloop.counter }}</input>
+            </td>{% endifnotequal %}
+            {% endfor %}</tr></table>
             <input type="submit" value="Compare" />
 	    </form>
     

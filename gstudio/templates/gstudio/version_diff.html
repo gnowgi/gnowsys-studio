@@ -111,32 +111,32 @@
 		    <a href="{{ nt1.get_absolute_url }}" title="{{ nt1.title }}" rel="bookmark">{{ ver_new.title }}
 		    </a>
 		  </h2>
-		  {% block content56 %}{% for each in diffs1 %}
-                                {% autoescape off %}
-		                  {{ each }}<br>
-                                {% endautoescape %}{% endfor %} {% endblock %}
+		  <!-- {% block content56 %}{% for each in diffs1 %} -->
+                  <!--               {% autoescape off %} -->
+		  <!--                 {{ each }}<br> -->
+                  <!--               {% endautoescape %}{% endfor %} {% endblock %} -->
 		 <!--  <br> -->
-	<!-- 	    {% with nt1.html_content|safe as object_content %} -->
-	<!-- 	    <b>Name:<nbsp></b>{{ ver_new.title }}<br/> -->
-	<!-- 	    {% if ver_new.altnames %} -->
-	<!-- 	    <b> Alternate names:<nbsp></b>{{ ver_new.altnames }} -->
-	<!-- 	      <br/> -->
-	<!-- 	   {% endif %} -->
-	<!-- 	   {% if ver_new.plural %} -->
-	<!-- 	   <b> Plural Name:<nbsp></b>{{ ver_new.plural }} <br/> -->
-	<!-- 	   {% endif %} -->
-	<!-- 	    {% if ver_new.content %} -->
-	<!-- 	   <b> Content:<nbsp></b>{{ ver_new.content }} <br/> -->
-	<!-- 	   {% endif %} -->
+		    {% with nt1.html_content|safe as object_content %}<br>
+		    <b>Name:<nbsp></b>{{ ver_new.title }}<br/>
+		    {% if ver_new.altnames %}
+		    <b> Alternate names:<nbsp></b>{{ ver_new.altnames }}
+		      <br/>
+		   {% endif %}
+		   {% if ver_new.plural %}
+		   <b> Plural Name:<nbsp></b>{{ ver_new.plural }} <br/>
+		   {% endif %}
+		  
+		   <b> Content:<nbsp></b>{{ ver_new.content }} <br/>
+		   
 		    
-	<!-- 	  {% if nt1.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b> -->
-	<!-- 	  {% endif %} -->
-	<!-- 	{% for author in nt1.authors.all %} -->
-      	<!-- <span class="vcard author"> -->
-        <!-- <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author" -->
-        <!--   title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a> -->
-      	<!-- </span>{% if not forloop.last %}, {% endif %} -->
-      	<!-- {% endfor %} <br/> -->
+		  {% if nt1.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b>
+		  {% endif %}
+		{% for author in nt1.authors.all %}
+      	<span class="vcard author">
+        <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
+          title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
+      	</span>{% if not forloop.last %}, {% endif %}
+      	{% endfor %} <br/>
  {% endwith %}
  {% endblock %} 
  {% endblock %}
@@ -149,33 +149,41 @@
 		  <h2 class="nodetype-title">
 		    <a href="{{ nt1.get_absolute_url }}" title="{{ nt1.title }}" rel="bookmark">{{ ver_old.title }}
 		    </a>
-		  </h2>
-		  {% block content85 %}{% for each in diffs %}
-                                {% autoescape off %}
-		                  {{ each }}<br>
-                                {% endautoescape %}{% endfor %} {% endblock %}
-		  <!-- <br> -->
-	<!-- 	    {% with nt1.html_content|safe as object_content %} -->
-	<!-- 	    <b>Name:<nbsp></b>{{ ver_old.title }}<br/> -->
-	<!-- 	      {% if ver_old.altnames %} -->
-	<!-- 	    <b> Alternate names:<nbsp></b>{{ ver_old.altnames}}  -->
-	<!-- 	      <br/> -->
-	<!-- 	   {% endif %} -->
-	<!-- 	   {% if ver_old.plural %} -->
-	<!-- 	   <b> Plural Name:<nbsp></b>{{ ver_old.plural }} <br/> -->
-	<!-- 	   {% endif %} -->
-	<!-- 	   {% if ver_old.content %} -->
-	<!-- 	   <b> Content:<nbsp></b>{{ ver_old.content }} <br/> -->
-	<!-- 	   {% endif %} -->
+		  </h2><!-- <b> -->
+		  <!-- {% block content85 %}{% for each in diffs %} -->
+                  <!--               {% autoescape off %} -->
+		  <!--                 {{ each }}<br> -->
+                  <!--               {% endautoescape %}{% endfor %} {% endblock %}</b> -->
+		  <br>
+		    {% with nt1.html_content|safe as object_content %}
+		    <b>Name:<nbsp></b>{% autoescape off %}
+		                  {{ diffs.0 }}
+                                {% endautoescape %}<br> 
+		      {% if ver_old.altnames %}
+		    <b> Alternate names:<nbsp></b>  {% autoescape off %}
+		                  {{ diffs.1 }}
+                                {% endautoescape %}
+		      <br/>
+		   {% endif %}
+		   {% if ver_old.plural %}
+		   <b> Plural Name:<nbsp></b>   {% autoescape off %}
+		                  {{ diffs.2 }}
+                                {% endautoescape %} <br/>
+		   {% endif %}
+		  
+		   <b> Content:<nbsp></b>  {% autoescape off %}
+		                  {{ diffs.3 }}
+                                {% endautoescape %} <br/>
+		   
 		    
-	<!-- 	  {% if nt1.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b> -->
-	<!-- 	  {% endif %} -->
-	<!-- 	{% for author in nt1.authors.all %} -->
-      	<!-- <span class="vcard author"> -->
-        <!-- <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author" -->
-        <!--   title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a> -->
-      	<!-- </span>{% if not forloop.last %}, {% endif %} -->
-      	<!-- {% endfor %} <br/> -->
+		  {% if nt1.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b>
+		  {% endif %}
+		{% for author in nt1.authors.all %}
+      	<span class="vcard author">
+        <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
+          title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
+      	</span>{% if not forloop.last %}, {% endif %}
+      	{% endfor %} <br/>
  {% endwith %}
  {% endblock %} 
  {% endblock %}
@@ -192,12 +200,12 @@
 					</tr>
 <tr><td><input type="button" value="Merge"></input><input type="button" value="RollBack"></input></td> 
 <td><input type="button" value="Merge"></input><input type="button" value="RollBack"></input></td> </tr>
-<tr><th><b><i>Difference between Selected Versions<b><i><th><tr>
-<tr><td><b>{% block content5 %}{% for each in diffs %}
-                                {% autoescape off %}
-		                  {{ each }}<br>
-                                {% endautoescape %}{% endfor %} {% endblock %} </b> </td></tr>
-			       </table>	
+<!-- <tr><th><b><i>Difference between Selected Versions<b><i><th><tr> -->
+<!-- <tr><td><b>{% block content5 %}{% for each in diffs %} -->
+<!--                                 {% autoescape off %} -->
+<!-- 		                  {{ each }}<br> -->
+<!--                                 {% endautoescape %}{% endfor %} {% endblock %} </b> </td></tr> -->
+<!-- 			       </table>	 -->
 					
 			
 		    

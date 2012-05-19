@@ -112,6 +112,7 @@ from reversion.models import Version
 from django.core import serializers
 from reversion.models import *
 from reversion.helpers import *
+import ast
 
 
 NODETYPE_CHOICES = (
@@ -398,7 +399,9 @@ class NID(models.Model):
         # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
         # slist=self.get_ssid
          ver_dict=self.version_info(ssid)
-        
+	# ver_dict=str(ver['nbhood'])
+	# ver_dict=ast.literal_eval(ver_dict)
+         
 	 g_json = {}
 	 g_json["node_metadata"]= [] 
 	 predicate_id = {}
@@ -480,11 +483,13 @@ class Node(NID):
 
    
     def save(self, *args, **kwargs):
+	
+    #	self.nbhood=self.get_nbh      
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
-        super(Node, self).save(*args, **kwargs) # Call the "real" save() method.
-
+     
+	super(Node, self).save(*args, **kwargs)  # Call the "real" save() method.
 
 
 
@@ -1651,13 +1656,13 @@ class Attributetype(Nodetype):
 
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-
-        if GSTUDIO_VERSIONING:
+	
+#	self.nbhood=self.get_nbh	
+	if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
-        super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
-
-
+        
+	super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
 
     
 class Relation(Edge):

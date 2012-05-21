@@ -124,7 +124,7 @@
     <h3>{% trans "Similar objects" %}</h3>
     {% get_similar_gbobjects 5 %}
   </div>
-</div>
+
 {% endblock %}
  
 
@@ -142,7 +142,7 @@
 <a href=" {{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
 {% endfor %}
 </p>
-
+</div>
 {% block gbobject-comments %}
 <div id="comments" class="span-16 last">
   <h3>{% trans "Comments" %}</h3>

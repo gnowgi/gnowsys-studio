@@ -68,9 +68,10 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from datetime import datetime
 from objectapp.forms import *
-from reversion.models import *
 
-@reversion.create_revision()
+
+
+
 def addgbobject(request):
     if request.method == 'POST':
         formset = GbobjectForm(request.POST)
@@ -91,7 +92,7 @@ def addgbobject(request):
 
 
 
-@reversion.create_revision()
+
 def addprocess(request):
     if request.method == 'POST':
         formset = ProcessForm(request.POST)
@@ -111,7 +112,7 @@ def addprocess(request):
     return render_to_response(template, variables)
 
 
-@reversion.create_revision()
+
 def addsystem(request):
     if request.method == 'POST':
         formset = ProcessForm(request.POST)

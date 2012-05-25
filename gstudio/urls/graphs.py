@@ -27,5 +27,6 @@ from gstudio.settings import ALLOW_FUTURE
 urlpatterns = patterns(
     'gstudio.views.graphs',
     url(r'^graph_json/(?P<node_id>\d+)$','graph_json', name='graph_json_d3'), 
+    url(r'^version_graph_json/(?P<ssid>\d+)$','version_graph_json', name='version_graph_d3'), 
     url(r'^graph/(?P<node_id>\d+)$','force_graph', name='force_graph_d3'), 
     )

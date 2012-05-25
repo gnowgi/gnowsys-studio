@@ -42,10 +42,16 @@ $ = django.jQuery
     }
 	       });	   
 		   $("#id_select_mem").change(function(){
-			   right_member = $(this).val()
-			       document.getElementById("id_right").value = right_member;
-			   // alert("hello "+ right_member);
+			   right = $(this).val()
+			       left =document.getElementById("id_left")
+			       rel=document.getElementById("id_rel")
+			       document.getElementById("id_right").value = right;
+			   //url="/objects/dynamicRelation/save/"+left.value+"/"+rel.value+"/"+right+"/"
+			   //alert("hello "+ ur);
+			   
 
 		       });      
 	   
  });
+
+

@@ -113,6 +113,7 @@ from objectapp.url_shortener import get_url_shortener
 from objectapp.signals import ping_directories_handler
 from objectapp.signals import ping_external_urls_handler
 from objectapp.settings import OBJECTAPP_VERSIONING
+
 if OBJECTAPP_VERSIONING:
     import reversion
     from reversion.models import *

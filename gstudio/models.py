@@ -540,7 +540,7 @@ class Metatype(Node):
             nbh['typeof'] = self.parent
         # generate ids and names of children/members
         nbh['contains_subtypes'] = self.children.get_query_set()
-        nbh['contains_members'] = self.nodetypes.all()
+        nbh['contains_members'] = self.nodetypes_published()
         nbh['left_subjecttype_of'] = Relationtype.objects.filter(left_subjecttype=self.id)
         nbh['right_subjecttype_of'] = Relationtype.objects.filter(right_subjecttype=self.id)
         nbh['attributetypes'] = Attributetype.objects.filter(subjecttype=self.id)
@@ -648,7 +648,7 @@ class Metatype(Node):
         # generate ids and names of children
             nbh['contains_subtypes'] = self.children.get_query_set()
         contains_members_list = []
-        for each in self.nodetypes.all():
+        for each in self.nodetypes_published():
             contains_members_list.append('<a href="%s">%s</a>' % (each.get_absolute_url(), each.title))
         nbh['contains_members'] = contains_members_list
         nbh['left_subjecttype_of'] = Relationtype.objects.filter(left_subjecttype=self.id)
@@ -663,7 +663,7 @@ class Metatype(Node):
     def tree_path(self):
         """Return metatype's tree path, by its ancestors"""
         if self.parent:
-            return '%s/%s' % (self.parent.tree_path, self.slug)
+            return u'%s/%s' % (self.parent.tree_path, self.slug)
         return self.slug
 
     def __unicode__(self):
@@ -673,8 +673,8 @@ class Metatype(Node):
     def composed_sentence(self):
         "composes the relation as a sentence in triple format."
         if self.parent:
-            return '%s is a kind of %s' % (self.title, self.parent.tree_path)
-        return '%s is a root node'  % (self.slug)
+            return u'%s is a kind of %s' % (self.title, self.parent.tree_path)
+        return u'%s is a root node'  % (self.slug)
     
 
     @models.permalink
@@ -968,15 +968,15 @@ class Nodetype(Node):
     def tree_path(self):
         """Return nodetype's tree path, by its ancestors"""
         if self.parent:
-            return '%s/%s' % (self.parent.tree_path, self.slug)
+            return u'%s/%s' % (self.parent.tree_path, self.slug)
         return self.slug
 
     @property
     def tree_path_sentence(self):
         """ Return the parent of the nodetype in a triple form """
         if self.parent:
-            return '%s is a kind of %s' % (self.title, self.parent.tree_path)
-        return '%s is a root node' % (self.title)
+            return u'%s is a kind of %s' % (self.title, self.parent.tree_path)
+        return u'%s is a root node' % (self.title)
 
 
     @property
@@ -1304,22 +1304,22 @@ class Nodetype(Node):
         
         if self.metatypes.count:
             for each in self.metatypes.all():
-                return '%s is a member of metatype %s' % (self.title, each)
-        return '%s is not a fully defined name, consider making it a member of a suitable metatype' % (self.title)
+                return u'%s is a member of metatype %s' % (self.title, each)
+        return u'%s is not a fully defined name, consider making it a member of a suitable metatype' % (self.title)
 
     
     @property
     def subtypeof_sentence(self):
         "composes the relation as a sentence in triple format."
         if self.parent:
-            return '%s is a subtype of %s' % (self.title, self.parent.tree_path)
-        return '%s is a root node' % (self.title)
+            return u'%s is a subtype of %s' % (self.title, self.parent.tree_path)
+        return u'%s is a root node' % (self.title)
     composed_sentence = property(subtypeof_sentence)
 
     def subtypeof(self):
         "retuns the parent nodetype."
         if self.parent:
-            return '%s' % (self.parent.tree_path)
+            return u'%s' % (self.parent.tree_path)
         return None 
 
     @models.permalink
@@ -1723,12 +1723,12 @@ class Relation(Edge):
     @property
     def composed_sentence(self):
         "composes the relation as a sentence in a triple format."
-        return '%s %s %s %s %s %s' % (self.left_subject_scope, self.left_subject, self.relationtype_scope, self.relationtype, self.right_subject_scope, self.right_subject)
+        return u'%s %s %s %s %s %s' % (self.left_subject_scope, self.left_subject, self.relationtype_scope, self.relationtype, self.right_subject_scope, self.right_subject)
 
     @property
     def inversed_sentence(self):
         "composes the inverse relation as a sentence in a triple format."
-        return '%s %s %s %s %s' % (self.objectScope, self.right_subject, self.relationtype.inverse, self.left_subject_scope, self.left_subject )
+        return u'%s %s %s %s %s' % (self.objectScope, self.right_subject, self.relationtype.inverse, self.left_subject_scope, self.left_subject )
 
     @property
     def key_value(self):
@@ -1745,14 +1745,14 @@ class Relation(Edge):
         
         if self.relationtype:
            # for relation in self.relationtype():
-                return '%s %s %s' % (self.left_subject,self.relationtype,self.right_subject )
+                return u'%s %s %s' % (self.left_subject,self.relationtype,self.right_subject )
 
     @property
     def partial_composition(self):
         '''
         function that composes the right_subject and relation name, as in "x as a friend", "y as a sibling"
         '''
-        return '%s as a %s' % (self.right_subject, self.relationtype) 
+        return u'%s as a %s' % (self.right_subject, self.relationtype) 
     
     
     # Save for Relation
@@ -1816,21 +1816,21 @@ class Attribute(Edge):
         '''
         composes the attribution as a sentence in a triple format.
         '''
-        return '%s %s has %s %s %s %s' % (self.subject_scope, self.subject, self.attributetype_scope, self.attributetype, self.value_scope, self.svalue)
+        return u'%s %s has %s %s %s %s' % (self.subject_scope, self.subject, self.attributetype_scope, self.attributetype, self.value_scope, self.svalue)
 
     @property
     def composed_attribution(self):
         '''
         composes a name to the attribute
         '''
-        return 'the %s of %s is %s' % (self.attributetype, self.subject, self.svalue)
+        return u'the %s of %s is %s' % (self.attributetype, self.subject, self.svalue)
     
     @property
     def partial_composition(self):
         '''
         function that composes the value and attribute name, as in "red as color", "4 as length"
         '''
-        return '%s as %s' % (self.svalue, self.attributetype) 
+        return u'%s as %s' % (self.svalue, self.attributetype) 
 
 
     def subject_filter(self,attr):
@@ -2247,7 +2247,7 @@ class AttributeSpecification(Node):
         subjects = u''
         for each in self.subjects.all():
             subjects = subjects + each.title + ' '
-        return 'the %s of %s' % (self.attributetype, subjects)
+        return u'the %s of %s' % (self.attributetype, subjects)
 
 
     def __unicode__(self):
@@ -2288,7 +2288,7 @@ class RelationSpecification(Node):
         subjects = u''
         for each in self.subjects.all():
             subjects = subjects + each.title + ' '
-        return 'the %s of %s' % (self.relationtype, subjects)
+        return u'the %s of %s' % (self.relationtype, subjects)
 
     def __unicode__(self):
         return self.composed_subject
@@ -2330,7 +2330,7 @@ class NodeSpecification(Node):
         attributes = u''
         for each in self.attributes.all():
             attributes = attributes + each.partial_composition + ', '
-        return 'the %s with %s, %s' % (self.subject, self.relations, self.attributes)
+        return u'the %s with %s, %s' % (self.subject, self.relations, self.attributes)
 
     def __unicode__(self):
         return self.composed_subject
@@ -2369,7 +2369,7 @@ class Expression(Node):
     @property
     def composed_sentence(self):
         "composes the relation as a sentence in a triple format."
-        return '%s %s %s' % (self.left_term, self.relationtype, self.right_term)
+        return u'%s %s %s' % (self.left_term, self.relationtype, self.right_term)
 
 
     class Meta:

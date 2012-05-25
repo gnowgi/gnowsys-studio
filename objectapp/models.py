@@ -735,7 +735,7 @@ class Gbobject(Node):
         if self.objecttypes.count:
             for each in self.objecttypes.all():
                 return '%s is a member of objecttype %s' % (self.title, each)
-        return '%s is not a fully defined name, consider making it a member of a suitable objecttype' % (self.title)
+        return u'%s is not a fully defined name, consider making it a member of a suitable objecttype' % (self.title)
 
 
     @models.permalink

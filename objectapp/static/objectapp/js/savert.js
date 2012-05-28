@@ -48,7 +48,7 @@ $ = django.jQuery
 			       absolute_url = document.getElementById("id_back_url")
 			       url = "/objects/dynamicRelation/save/"+ left.value+"/"+rt.value+"/"+right.value+"/"
 			       //alert(url);
-			       $.get(url,function(data){		     
+			       $.get(url, function(data){		     
 			       	      window.location.replace(absolute_url.value);
 			       	   });
 

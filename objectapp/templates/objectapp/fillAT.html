@@ -2,12 +2,12 @@
 {% load i18n %}
 {% block content %}
 
-<form action="." method="POST">
+<form action="." method="POST" enctype="multipart/form-data">
 {% csrf_token %}
 
 <b>{{ title }}</b>
 {% for field in form  %}
-{{ field }} {{ field.errors }}
+{{ field }} {{ field.errors }} {{ field.widget }}
 {% endfor %}
 <input type="submit" id="id_submit" value="Go"/>
 <input type="button" id="id_back" value="Back"/>

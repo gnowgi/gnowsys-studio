@@ -328,36 +328,61 @@ class NID(models.Model):
         
     @property
     def getat(self):        
+
         """This is will give the possible attributetypes """
         try:
+            pt = []
             attributetype = []
-            ot = self.ref
-            attributetype.append(ot.subjecttype_of.all())
+            returndict = {}
+
+            pt.append(self.ref)
+            obj = self.ref
+            while obj.parent:
+                pt.append((obj.parent).ref)
+                obj=obj.parent
+            
+            for each in pt:
+                attributetype.append(each.subjecttype_of.all())
+
             attributetype = [num for elem in attributetype for num in elem]
-            return attributetype
+            
+            for i in attributetype:
+                if str(i.applicable_nodetypes) == 'OT':
+                    returndict.update({str(i.title):i.id})
+
+            return returndict.keys()
         except:
             return None
 
     @property
     def getrt(self):
-        pt =[] #contains parenttype
-        reltype =[] #contains relationtype
-        titledict = {} #contains relationtype's title
-        inverselist = [] #contains relationtype's inverse
-        finaldict = {} #contains either title of relationtype or inverse of relationtype
-        listval=[] #contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid
-        # pt.append(Objecttype.objects.get(title = str(gbid)))
-        # name = NID.objects.get(title = str(gbid))
+        """pt =[] contains parenttype
+        reltype =[] contains relationtype
+        titledict = {} contains relationtype's title
+        inverselist = [] contains relationtype's inverse
+        finaldict = {} contains either title of relationtype or inverse of relationtype
+        listval=[] contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid"""
+
+        pt =[] 
+        reltype =[] 
+        titledict = {}
+        inverselist = []
+        finaldict = {}
+        listval=[] 
+
         pt.append(self.ref)
+        obj = self.ref
+        while obj.parent:
+            pt.append((obj.parent).ref)
+            obj=obj.parent
+            
         for i in range(len(pt)):
             if Relationtype.objects.filter(left_subjecttype = pt[i].id):
                 reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))    
             if Relationtype.objects.filter(right_subjecttype = pt[i].id):
                 reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id)) 
-                
-        # it converts 2 or more list as one list
         reltype = [num for elem in reltype for num in elem] #this rqud for filtering
-            
+
         for i in reltype:
             titledict.update({i:i.id})
             
@@ -365,16 +390,16 @@ class NID(models.Model):
         for i in range(len(titledict)):
             listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
             inverselist.append(str(titledict.keys()[i].inverse))
-            
-   
+     
         for j in range(len(pt)):
             for i in range(len(listval)):
-                if pt[j].id == listval[i].left_subjecttype_id :
-                    finaldict.update({titledict.values()[i]:titledict.keys()[i]})
-                elif pt[j].id == listval[i].right_subjecttype_id:
-                    finaldict.update({titledict.values()[i]:inverselist[i]})
+                if pt[j].id == listval[i].left_subjecttype_id and str(listval[i].left_applicable_nodetypes) == 'OT' :
+                    finaldict.update({titledict.keys()[i]:titledict.values()[i]})
+                if pt[j].id == listval[i].right_subjecttype_id and str(listval[i].right_applicable_nodetypes)=='OT':
+                    finaldict.update({inverselist[i]:titledict.values()[i]})
+        
 
-        return finaldict.values()
+        return finaldict.keys()
 
 
     @property
@@ -2059,7 +2084,7 @@ class AttributeTimeField(Attribute):
 
 class AttributeEmailField(Attribute):
     
-    value  = models.CharField(max_length=100,verbose_name='value') 
+    value  = models.EmailField(max_length=100,verbose_name='value') 
 
     def __unicode__(self):
         return self.title
@@ -2075,7 +2100,7 @@ class AttributeEmailField(Attribute):
 
 class AttributeFileField(Attribute):
     
-    value  = models.FileField(upload_to='/media', verbose_name='file') 
+    value  = models.FileField(upload_to='media/'+UPLOAD_TO, verbose_name='file') 
 
     def __unicode__(self):
         return self.title
@@ -2109,7 +2134,7 @@ class AttributeFilePathField(Attribute):
 
 class AttributeImageField(Attribute):
     
-    value  = models.ImageField(upload_to='/media', verbose_name='image') 
+    value  = models.ImageField(upload_to='media/'+UPLOAD_TO, verbose_name='image') 
 
     def __unicode__(self):
         return self.title

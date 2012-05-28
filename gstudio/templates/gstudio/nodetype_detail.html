@@ -250,6 +250,7 @@
  {% endblock %}
 
 <!-- Dynamic form begins -->
+{% if user.is_authenticated %}
 <p>
 {% if object.reftype == 'Objecttype' %}
 <b>Add Attributes:</b>
@@ -264,7 +265,7 @@
 <a href="{{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
 {% endfor %}
 {% endif %}
-
+{% endif %}
 </p>
 <!-- Dyanic form ends -->
 <div class="nodetype-content">

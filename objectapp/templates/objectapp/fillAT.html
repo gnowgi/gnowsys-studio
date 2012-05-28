@@ -7,7 +7,7 @@
 
 <b>{{ title }}</b>
 {% for field in form  %}
-{{ field }} {{ field.errors }} {{ field.widget }}
+{{ field }} {{ field.errors }}
 {% endfor %}
 <input type="submit" id="id_submit" value="Go"/>
 <input type="button" id="id_back" value="Back"/>

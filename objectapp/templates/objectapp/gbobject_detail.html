@@ -76,9 +76,7 @@
 
 <br/>
 <p><br/>
-
-{% if user.is_authenticated %}
-<b>Add Attributes: </b> 
+<b>AddAttributes: </b> 
 <input type="hidden" id="id_object" value="{{ object.title }}"/>
 {% for i in object.getattributetypes %}
 <a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
@@ -90,7 +88,6 @@
 <a href=" {{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
 {% endfor %}
 </p>
-{% endif %}
 
 {% block gbobject-widgets %}
 <div class="gbobject-widgets span-16 last">
@@ -143,9 +140,10 @@
     <h3>{% trans "Similar objects" %}</h3>
     {% get_similar_gbobjects 5 %}
   </div>
-
+</div>
 {% endblock %}
  
+
 {% block gbobject-comments %}
 <div id="comments" class="span-16 last">
   <h3>{% trans "Comments" %}</h3>

@@ -20,8 +20,8 @@
 {% endblock %}
 
 {% block sidebar %}
- <img src="{{ STATIC_URL }}gstudio/img/rss.png" alt="?" width="20" height="" />
- <a href="{% url gstudio_nodetype_latest_feed %}" class="feeds"><h4>Rssfeed</h4></a>
+ 
+ <a href="{% url gstudio_nodetype_latest_feed %}" class="feeds" title="Rssfeed"><img src="{{ STATIC_URL }}gstudio/img/rss.png" alt="?" width="20" height="" /></a>
 
 <div class="search">
   <h3>{% trans "Search" %}</h3>
@@ -41,6 +41,22 @@
   {% get_objecttypes %}
 </div>
 -->
+<div class="History">
+     
+       <h3>{% trans "Versions" %}</h3>
+        <table border="1" cellspacing="0">
+	
+        {% for sid in object.ref.get_ssid  %}
+	   
+	      
+	     <a href="{{ object.get_version_url }}{{ sid }}/{{ forloop.counter }}">{{ object.title }} {{ object.id }}.{{ forloop.counter }}</a><br>
+	 
+        {% endfor %}
+	</table>
+	   
+</div>
+<br>
+
 <div class="authors">
   <h3>{% trans "Authors" %}</h3>
   {% get_authors %}

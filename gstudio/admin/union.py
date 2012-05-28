@@ -3,7 +3,13 @@ from django.core.urlresolvers import NoReverseMatch
 from django.utils.translation import ugettext_lazy as _
 
 from gstudio.admin.forms import UnionAdminForm
-import reversion
+from gstudio.settings import GSTUDIO_VERSIONING
 
-class UnionAdmin(reversion.VersionAdmin):
+import reversion
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
+
+class UnionAdmin(parent_class):
     pass

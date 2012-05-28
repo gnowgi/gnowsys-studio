@@ -73,6 +73,22 @@
   {% endwith %}
 {% endblock %}
 
+
+<br/>
+<p><br/>
+<b>AddAttributes: </b> 
+<input type="hidden" id="id_object" value="{{ object.title }}"/>
+{% for i in object.getattributetypes %}
+<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
+{% endfor %}
+</p>
+<p>
+<b>Add Relations: </b>
+{% for i in object.getrelationtypes %}
+<a href=" {{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
+{% endfor %}
+</p>
+
 {% block gbobject-widgets %}
 <div class="gbobject-widgets span-16 last">
   {% with object.next_gbobject as next_gbobject %}
@@ -124,25 +140,10 @@
     <h3>{% trans "Similar objects" %}</h3>
     {% get_similar_gbobjects 5 %}
   </div>
-
+</div>
 {% endblock %}
  
 
-
-<p><br/>
-<b>Add Attributes: </b> 
-<input type="hidden" id="id_object" value="{{ object.title }}"/>
-{% for i in object.getattributetypes %}
-<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
-{% endfor %}
-</p>
-<p>
-<b>Add Relations: </b>
-{% for i in object.getrelationtypes %}
-<a href=" {{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
-{% endfor %}
-</p>
-</div>
 {% block gbobject-comments %}
 <div id="comments" class="span-16 last">
   <h3>{% trans "Comments" %}</h3>

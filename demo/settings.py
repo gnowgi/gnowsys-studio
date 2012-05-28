@@ -78,8 +78,10 @@ DATABASES = {'default':
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/static'
-MEDIA_ROOT = '/static'
+#MEDIA_ROOT = '/static'
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
 
+GSTUDIO_UPLOAD_TO = 'img/'
 
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 

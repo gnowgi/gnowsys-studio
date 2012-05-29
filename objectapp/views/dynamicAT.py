@@ -11,7 +11,7 @@ from objectapp.forms import *
 from gstudio.models import *
 from gstudio.admin.forms import *
 
-#http://127.0.0.1:8000/media/img/puppy.jpeg
+
 
 def MakeForm(model_cls, *args, **kwargs):
 	class ContextForm(ModelForm):

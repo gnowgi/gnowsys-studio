@@ -11,22 +11,17 @@ from objectapp.forms import *
 from gstudio.models import *
 from gstudio.admin.forms import *
 
+
+
 def MakeForm(model_cls, *args, **kwargs):
 	class ContextForm(ModelForm):
 		class Meta:
 			model = model_cls.values()[0]
-			print 'model' ,model
 			fields = ('value',)
-			print 'fields',fields
-
-		def __init__(self, *args, **kwargs):
-
-			super(ContextForm,self).__init__(*args, **kwargs)
-		 	
+		# def __init__(self, *args, **kwargs):
+		# 	super(ContextForm,self).__init__(*args, **kwargs)
 			
 	return ContextForm(*args, **kwargs)
-
-
 
 def dynamic_save(request, attit, memtit):
 	rdict ={}
@@ -39,17 +34,24 @@ def dynamic_save(request, attit, memtit):
 	at = Attributetype.objects.get(title = str(attit))
 	dt = str(at.get_dataType_display())
 	MyModel = eval('Attribute'+dt)
-	
+
+	print getattr(models , dt)
+
+	list1 = []
+
 	rdict.update({str(at.title):MyModel})
+	
 	print "rdict",str(rdict)
+	print 'dt ',dt
 
 	if request.method == 'POST':	
 		form = MakeForm(rdict,request.POST,request.FILES)
 		try:
 			if form.is_valid():				
 				value = form.cleaned_data['value']
-			
-				if Attribute.objects.filter(subject = memtit.id) and Attribute.objects.filter(attributetype = at.id):
+				
+
+				if Attribute.objects.filter(subject = memtit.id , attributetype = at.id):
 					att = Attribute.objects.get(subject = memtit.id, attributetype = at.id)	
 					att.delete()
 					del att
@@ -72,7 +74,7 @@ def dynamic_save(request, attit, memtit):
 
 			
 	template = "objectapp/fillAT.html"
-	context = RequestContext(request,{'form' : form,'title':str(attit), 'absolute_url_node':absolute_url_node}) 
+	context = RequestContext(request,{'form' : form,'title':str(attit), 'absolute_url_node':absolute_url_node, 'datatype':dt}) 
 	return render_to_response(template,context)
 
 

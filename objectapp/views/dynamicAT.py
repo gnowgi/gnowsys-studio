@@ -11,18 +11,17 @@ from objectapp.forms import *
 from gstudio.models import *
 from gstudio.admin.forms import *
 
+#http://127.0.0.1:8000/media/img/puppy.jpeg
 
 def MakeForm(model_cls, *args, **kwargs):
 	class ContextForm(ModelForm):
 		class Meta:
 			model = model_cls.values()[0]
 			fields = ('value',)
-			
-		 	
+		# def __init__(self, *args, **kwargs):
+		# 	super(ContextForm,self).__init__(*args, **kwargs)
 			
 	return ContextForm(*args, **kwargs)
-
-
 
 def dynamic_save(request, attit, memtit):
 	rdict ={}
@@ -50,6 +49,7 @@ def dynamic_save(request, attit, memtit):
 		try:
 			if form.is_valid():				
 				value = form.cleaned_data['value']
+				
 
 				if Attribute.objects.filter(subject = memtit.id , attributetype = at.id):
 					att = Attribute.objects.get(subject = memtit.id, attributetype = at.id)	

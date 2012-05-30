@@ -111,7 +111,18 @@ GSTUDIO_XMLRPC_METAWEBLOG = [
      'metaWeblog.getlatestSSID'),
     ('gstudio.xmlrpc.metaweblog.getAllSnapshots',
      'metaWeblog.getAllSnapshots'),
-    
+    ('gstudio.xmlrpc.metaweblog.setAttributetype',
+     'metaWeblog.setAttributetype'),
+    ('gstudio.xmlrpc.metaweblog.setRelationtype',
+     'metaWeblog.setRelationtype'),
+    ('gstudio.xmlrpc.metaweblog.setObjecttype',
+     'metaWeblog.setObjecttype'),
+    ('gstudio.xmlrpc.metaweblog.setObject',
+     'metaWeblog.setObject'),
+    ('gstudio.xmlrpc.metaweblog.setAttribute',
+     'metaWeblog.setAttribute'),
+    ('gstudio.xmlrpc.metaweblog.setRelation',
+     'metaWeblog.setRelation'),
     ('gstudio.xmlrpc.metaweblog.getGbobjectNeighbourhood',
      'metaWeblog.getGbobjectNeighbourhood')
     

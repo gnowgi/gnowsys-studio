@@ -174,7 +174,6 @@ if hasattr(settings, 'XMLRPC_METHODS'):
         xmlrpcdispatcher.register_function(getlatestSSID,'getlatestSSID')
         xmlrpcdispatcher.register_function(getAllSnapshots,'getAllSnapshots')
         xmlrpcdispatcher.register_function(setAttributetype,'setAttributetype')
-        xmlrpcdispatcher.register_function(setuser,'setuser')
         xmlrpcdispatcher.register_function(setRelationtype,'setRelationtype')
         xmlrpcdispatcher.register_function(setObjecttype,'setObjecttype')
         xmlrpcdispatcher.register_function(setObject,'setObject')

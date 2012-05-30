@@ -1140,8 +1140,12 @@ class Nodetype(Node):
 	nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
 	nbh['count_altnames'] = len(nbh['altnames'])
-        nbh['plural'] = self.plural 
-	nbh['count_plural'] = len(nbh['plural'])    
+        nbh['plural'] = self.plural
+        try:
+            nbh['count_plural'] = len(nbh['plural'])    
+        except:
+            pass
+
         #get all MTs 
         member_of_dict = {}
         for each in self.metatypes.all():
@@ -1393,11 +1397,7 @@ class Objecttype(Nodetype):
 
     def __unicode__(self):
         return self.title
-
-    
-	
-	
-
+ 	    
                     
     @property
     def get_attributetypes(self):        
@@ -1606,6 +1606,37 @@ class Relationtype(Nodetype):
 
     def __unicode__(self):
         return self.title
+
+    @property
+    def get_nbh(self):
+        """          
+        Returns the neighbourhood of the nodetype
+        """
+        nbh = {}
+        nbh['title'] = self.title
+        nbh['altnames'] = self.altnames
+        nbh['plural'] = self.plural 
+
+        nbh['contains_subtypes'] = Nodetype.objects.filter(parent=self.id)
+        # get all the objects inheriting this OT 
+        nbh['contains_members'] = self.member_objects.all()
+        nbh['prior_nodes'] = self.prior_nodes.all()             
+        nbh['posterior_nodes'] = self.posterior_nodes.all() 
+        nbh['inverse']=self.inverse
+        nbh['left_subjecttype']=self.left_subjecttype
+        nbh['left_applicable_nodetypes']=self.left_applicable_nodetypes
+        nbh['left_cardinality']=self.left_cardinality
+        nbh['right_subjecttype']=self.right_subjecttype
+        nbh['right_applicable_nodetypes']=self.right_applicable_nodetypes
+        nbh['right_cardinality']=self.right_cardinality
+        nbh['is_symmetrical']=self.is_symmetrical
+        nbh['is_reflexive']=self.is_reflexive
+        nbh['is_transitive']=self.is_transitive
+       
+
+
+	return nbh
+
 
     class Meta:
         """

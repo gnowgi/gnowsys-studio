@@ -78,6 +78,7 @@ urlpatterns = patterns(
     url(r'^trackback/', include('objectapp.urls.trackback')),
     url(r'^discussions/', include('objectapp.urls.discussions')),
     url(r'^add/', include('objectapp.urls.add')),
+    url(r'^display/',include('objectapp.urls.history')),
     url(r'^', include('objectapp.urls.quick_gbobject')),
     url(r'^', include('objectapp.urls.capabilities')),
     url(r'^', include('objectapp.urls.gbobjects')),

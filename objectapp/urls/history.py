@@ -2,7 +2,7 @@
 from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
-urlpatterns = patterns('gstudio.views.history',
+urlpatterns = patterns('objectapp.views.history',
                        url(r'^viewhistory/(?P<ssid>\d+)/(?P<version_no>\d+)/$', 'history',
                            name='gstudio_history'),
 		       url(r'^compare_history/(?P<ssid>\d+)/$','compare_history'),

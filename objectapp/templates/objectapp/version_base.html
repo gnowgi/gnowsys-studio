@@ -1,4 +1,5 @@
-{% extends "objectapp/skeleton.html" %}
+{% extends "gstudio/skeleton.html" %}
+{% load gstudio_tags i18n %}
 {% load objectapp_tags i18n %}
 
   {% block meta %}
@@ -11,11 +12,11 @@
     <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{% url objectapp_wlwmanifest %}" />
     <link rel="search" type="application/opensearchdescription+xml" title="Objectapp's Blog" href="{% url objectapp_opensearch %}" />
     <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of latest gbobjects" %}" href="{% url objectapp_gbobject_latest_feed %}" />
-    {% get_archives_gbobjects "objectapp/tags/archives_gbobjects_link.html" %}
+    <!-- {% get_archives_gbobjects "objectapp/tags/archives_gbobjects_link.html" %} -->
 {% endblock %}
 
 {% block breadcrumbs %}
-  {% objectapp_breadcrumbs %}
+  {% gstudio_breadcrumbs %}
 {% endblock %}
 
 {% block sidebar %}
@@ -41,19 +42,24 @@
 </div>
 -->
 <div class="History">
-     
-       <h3>{% trans "Versions" %}</h3>
-        <table border="1" cellspacing="0">
-	
-        {% for sid in object.ref.get_ssid  %}
-	   
-	      
-	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}">{{ object.title }} {{ object.id }}.{{ forloop.counter }}</a><br>
-	 
-        {% endfor %}
-	   
-</div>
-<br>
+      <!-- <script type="text/javascript"> -->
+      <!--      function go_to_loc(sid) -->
+      <!-- 	   { -->
+      <!-- 	        window.location.href =  "{{ object.get_version_url }}"+sid -->
+      <!-- 	   } -->
+           
+      <!--  </script> -->
+<!--        <h3>{% trans "Versions" %}</h3> -->
+<!--         {% for sid in object.get_ssid reversed %} -->
+<!-- 	    <input type="radio" name="group1" value="{{ sid }}"><a href="{{ object.get_version_url }}{{ sid }}">{{ sid }}</a></input>&nbsp;&nbsp; -->
+<!--             <input type="radio" name="group2" value="{{ sid }}">{{ sid }}</input> -->
+<!--             <br> -->
+<!--         {% endfor %} -->
+<!--         <br> -->
+<!--         <input type="submit" value="Compare" /> -->
+<!-- </div> -->
+<!-- <br> -->
+
 <div class="authors">
   <h3>{% trans "Authors" %}</h3>
   {% get_authors %}
@@ -104,7 +110,7 @@
     {% if perms.objectapp.add_gbobject %}
     <li>
       <a href="{% url admin:objectapp_gbobject_add %}" title="{% trans "Post an gbobject" %}">
-        {% trans "Post a gbobject" %}
+        {% trans "Post an gbobject" %}
       </a>
     </li>
     {% endif %}

@@ -97,7 +97,7 @@ from gstudio.models import Relation
 from gstudio.models import Node
 from gstudio.models import Edge
 from gstudio.models import Author
-
+import ast
 from objectapp.settings import UPLOAD_TO
 from objectapp.settings import MARKUP_LANGUAGE
 from objectapp.settings import GBOBJECT_TEMPLATES
@@ -504,9 +504,8 @@ class Gbobject(Node):
         #print g_json
         return json.dumps(g_json)   
 
-
     @property
-    def get_relations1(self):
+    def get_rendered_relations(self):
         """
         Returns all the relations of the nodetype
         """
@@ -530,7 +529,7 @@ class Gbobject(Node):
                        if each.relationtype.title==key:
                           fl=1
                           predicate_values.append(predicate)
-                          reltype[key]=predicate_values             
+                          reltype[key]=predicate_values
                    if fl==0:
                        predicate_values=predicate
                        reltype[relation]=predicate_values
@@ -569,12 +568,26 @@ class Gbobject(Node):
                    reltype[relation]=predicate_values
                 relations['rrelations']=reltype
         return relations
+
     @property
     def get_rendered_nbh(self):
         """ 
         Returns the neighbourhood of the object
         """
         fields = ['title','altname','pluralform']
+        history=[]
+        version_list=self.get_ssid
+        version_list=self.get_ssid
+        if version_list:
+		length=len(version_list)
+        	history_ssid=version_list[length-1]
+        	history_dict=self.version_info(history_ssid)
+        	history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+        	#ssid_current.append(history_ssid)
+        	history=history_nbh_dict['history']
+        	history.append(history_ssid)
+        else:
+                history.append(0)
         nbh = {}
         nbh['title'] = self.title        
         nbh['altnames'] = self.altnames                
@@ -600,8 +613,8 @@ class Gbobject(Node):
         relns={}
         rellft={}
         relrgt={}
-        if self.get_relations1:
-            NTrelns=self.get_relations1
+        if self.get_rendered_relations:
+            NTrelns=self.get_rendered_relations
             for key,value in NTrelns.items():
                 if key=="rrelations":
                     relrgt={}
@@ -609,9 +622,9 @@ class Gbobject(Node):
                         relnvalue={}
                         if isinstance(rgtvalue,list):
                             for items in rgtvalue:
-                                relnvalue[items]=items.get_absolute_url()
+                                relnvalue[items.title]=items.get_absolute_url()
                         else:
-                            relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
+                            relnvalue[rgtvalue.title]=rgtvalue.get_absolute_url()
                         
                         relrgt[rgtkey]=relnvalue
                     
@@ -622,9 +635,9 @@ class Gbobject(Node):
                         relnvalue={}
                         if isinstance(lftvalue,list):
                              for items in lftvalue:
-                                 relnvalue[items]=items.get_absolute_url()
+                                 relnvalue[items.title]=items.get_absolute_url()
                         else:
-                             relnvalue[lftvalue]=lftvalue.get_absolute_url()
+                             relnvalue[lftvalue.title]=lftvalue.get_absolute_url()
                         
                         rellft[lftkey]=relnvalue
                     
@@ -634,7 +647,8 @@ class Gbobject(Node):
 
         #get Attributes
         attributes =self.get_attributes()
-        nbh['attributes']=attributes     	
+        nbh['attributes']=attributes
+        nbh['history']=history     	
         return nbh
 
 
@@ -737,7 +751,9 @@ class Gbobject(Node):
                 return '%s is a member of objecttype %s' % (self.title, each)
         return '%s is not a fully defined name, consider making it a member of a suitable objecttype' % (self.title)
 
-
+    @property
+    def ref(self):
+        return eval(self.nodemodel).objects.get(id=self.id)
     @models.permalink
     def get_absolute_url(self):
         """Return gbobject's URL"""
@@ -750,16 +766,16 @@ class Gbobject(Node):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
+	super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_rendered_nbh
         if OBJECTAPP_VERSIONING:
             with reversion.create_revision():
                 super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
-
-        super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
-    @property
-    def ref(self):
-        return eval(self.nodemodel).objects.get(id=self.id)
-
-
+        
+    def save_revert_or_merge(self, *args, **kwargs):
+        if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+                super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
 
     class Meta:
         """Gbobject's Meta"""
@@ -803,12 +819,18 @@ class Process(Gbobject):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
+	super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_rendered_nbh
         if OBJECTAPP_VERSIONING:
             with reversion.create_revision():
-                super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
-
-        super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
-
+		super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+    
+    def save_revert_or_merge(self, *args, **kwargs):
+	self.nodemodel = self.__class__.__name__
+	if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+		super(Process, self).save(*args, **kwargs) # Call the "real" save() method.
+    
     class Meta:
         verbose_name = _('process')
         verbose_name_plural = _('processes')
@@ -848,11 +870,19 @@ class System(Gbobject):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
+	super(System, self).save(*args, **kwargs) # Call the "real" save() method.
+	self.nbhood=self.get_rendered_nbh
         if OBJECTAPP_VERSIONING:
             with reversion.create_revision():
                 super(System, self).save(*args, **kwargs) # Call the "real" save() method.
+    
+    def save_revert_or_merge(self, *args, **kwargs):
+	self.nodemodel = self.__class__.__name__
+	if OBJECTAPP_VERSIONING:
+            with reversion.create_revision():
+		super(System, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        super(System, self).save(*args, **kwargs) # Call the "real" save() method.
+        
 
 
     def __unicode__(self):
@@ -861,13 +891,13 @@ class System(Gbobject):
 
 if OBJECTAPP_VERSIONING == True:   
     if not reversion.is_registered(Process):
-        reversion.register(Process, follow=["priorstate_attribute_set", "priorstate_relation_set", "poststate_attribute_set", "poststate_relation_set", "prior_nodes", "posterior_nodes"])
+        reversion.register(Process, follow=["gbobject_ptr","priorstate_attribute_set", "priorstate_relation_set", "poststate_attribute_set", "poststate_relation_set", "prior_nodes", "posterior_nodes"])
 
     if not reversion.is_registered(System): 
-        reversion.register(System, follow=["systemtypes", "gbobject_set", "relation_set", "attribute_set", "process_set", "system_set", "prior_nodes", "posterior_nodes"])
+        reversion.register(System, follow=["gbobject_ptr","systemtypes", "gbobject_set", "relation_set", "attribute_set", "process_set", "system_set", "prior_nodes", "posterior_nodes"])
 
     if not reversion.is_registered(Gbobject):
-        reversion.register(Gbobject, follow=["objecttypes", "prior_nodes", "posterior_nodes"])
+        reversion.register(Gbobject, follow=["node_ptr","objecttypes", "prior_nodes", "posterior_nodes"])
 
 
 moderator.register(Gbobject, GbobjectCommentModerator)
@@ -877,4 +907,4 @@ post_save.connect(ping_directories_handler, sender=Gbobject,
 post_save.connect(ping_external_urls_handler, sender=Gbobject,
                   dispatch_uid='objectapp.gbobject.post_save.ping_external_urls')
 
-
+         

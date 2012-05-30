@@ -11,6 +11,7 @@ from reversion.models import *
 from gstudio.views.decorators import protect_nodetype
 from gstudio.views.decorators import update_queryset
 import ast
+from objectapp.models import *
 
 def history(request,ssid,version_no):
    # iden=request.GET["id"]
@@ -24,7 +25,7 @@ def history(request,ssid,version_no):
     ver_nbh_dict['content']=content
 	
     variables = RequestContext(request,{'ver_nbh_dict':ver_nbh_dict ,'nt':nt,'ssid':ssid,'version_no':version_no})
-    template="gstudio/display.html"
+    template="objectapp/display.html"
     return render_to_response(template,variables)
 
 def get_version_counter(value):
@@ -39,8 +40,13 @@ def get_diff_from_dict(ver_new_nbh_dict,ver_old_nbh_dict,field):
     ver_new=""
     ver_old=""    
     diffs=""
+    ver_new_dict={}
+    ver_old_dict={}
+             
     if ver_new_nbh_dict[field] or ver_old_nbh_dict[field]:
+#	if isinstance(ver_new_nbh_dict[field],dict):
 		for each in ver_new_nbh_dict[field]:
+			#ver_new=ver_new_dict[each]=
 			ver_new+=str(each)+","
 		ver_new=ver_new[0:-1]
 		for each in ver_old_nbh_dict[field]:
@@ -48,7 +54,11 @@ def get_diff_from_dict(ver_new_nbh_dict,ver_old_nbh_dict,field):
 		ver_old=ver_old[0:-1]
 		diffs = dmp.diff_main(ver_new, ver_old)
     return diffs
-	
+
+def get_diff_from_nested_dict(ver_new_nbh_dict,ver_old_nbh_dict,field):
+    
+		
+    return compare	  
 def compare_history(request,ssid):
     ssid1=ssid
     
@@ -103,9 +113,9 @@ def compare_history(request,ssid):
 			ver_old+=ver_old_nbh_dict['plural'] 
 			diffs = dmp.diff_main(ver_new, ver_old)
     			compare_dict['plural']=dmp.diff_prettyHtml(diffs)
-	 elif each =='contains_members':
+	 elif each =='member_of':
 	        diffs=get_diff_from_dict(ver_new_nbh_dict,ver_old_nbh_dict,each)
-    		compare_dict['contains_members']=dmp.diff_prettyHtml(diffs)
+    		compare_dict['member_of']=dmp.diff_prettyHtml(diffs)
 	 elif each =='leftroles':
 		diffs=get_diff_from_dict(ver_new_nbh_dict,ver_old_nbh_dict,each)
     		compare_dict['leftroles']=dmp.diff_prettyHtml(diffs)
@@ -116,6 +126,7 @@ def compare_history(request,ssid):
 		diffs=get_diff_from_dict(ver_new_nbh_dict,ver_old_nbh_dict,each)
     		compare_dict['rightroles']=dmp.diff_prettyHtml(diffs)
 	 elif each =='attributes':
+		
 		compare_rel_new={}
 		compare_rel_old={}
 		compare={}
@@ -151,7 +162,6 @@ def compare_history(request,ssid):
 		compare_dict['attributes']=compare
     	  
 	 elif each =='relations':
-
 		ver_new=""
     		ver_old=""
    	 	compare_rel_new={}
@@ -216,88 +226,9 @@ def compare_history(request,ssid):
     
 
     variables=RequestContext(request,{'nt':ot,'ver_old_dict':ver_old_dict,'ver_new_dict':ver_new_dict,'compare_dict':compare_dict ,'ssid1':ssid1,'ssid2':ssid2,'version_no1':version_no1,'version_no2':version_no2,'ver_new_nbh_dict':ver_new_nbh_dict,'ver_old_nbh_dict':ver_old_nbh_dict})
-    template="gstudio/version_diff.html"
+    template="objectapp/version_diff.html"
     return render_to_response(template,variables)
 
-
-def set_objecttype_field(obj,ver_merge):
-     # setting the objecttypes fields	
-     obj.slug = ver_merge['slug']
-     obj.altnames=ver_merge['altnames']
-     obj.rght = ver_merge['rght']
-     obj.nodemodel = ver_merge['nodemodel']
-     obj.lft = ver_merge['lft']
-     obj.comment_enabled = ver_merge['comment_enabled']
-     obj.title = ver_merge['title']
-     obj.sites = ver_merge['sites']
-     obj.content = ver_merge['content']
-     obj.template = ver_merge['template']
-     obj.tree_id = ver_merge['tree_id']
-     obj.plural = ver_merge['plural']
-     obj.status = ver_merge['status']
-     obj.nid_ptr = NID.objects.get(id=ver_merge['nid_ptr'])
-     
-    # obj.nbh=ver_merge['nbh']
-     obj.id = ver_merge['id']
-     obj.pingback_enabled = ver_merge['pingback_enabled']
-     			
-     return obj
-def set_attributetype_field(obj,ver_merge):
-     # setting the objecttypes fields	
-     obj.subjecttype = NID.objects.get(id=ver_merge['nid_ptr'])
-     obj.applicable_nodetypes=ver_merge['applicable_nodetypes']
-     obj.dataType = ver_merge['dataType']
-     obj.verbose_name = ver_merge['verbose_name']
-     obj.null = ver_merge['null']
-     obj.blank = ver_merge['blank']
-     obj.help_text = ver_merge['help_text']
-    # obj.max_digits = ver_merge['max_digits']
-    # obj.decimal_places = ver_merge['decimal_places']
-     obj.auto_now = ver_merge['auto_now']
-     obj.auto_now_add = ver_merge['auto_now_add']
-     obj.upload_to = ver_merge['upload_to']
-     obj.path = ver_merge['path']
-     obj.verify_exists =  ver_merge['verify_exists']
-    # obj.min_length= ver_merge['min_length']
-     obj.required= ver_merge['required']
-     obj.label = ver_merge['label']
-     obj.unique = ver_merge['unique']
-    # obj.validators= ver_merge['validators']
-     obj.default= ver_merge['default']
-     obj.editable= ver_merge['editable']
-    # return HttpResponse(ver_merge)
-     return obj
-def set_relationtype_field(obj,ver_merge):
-
-  
-     # setting the  relationtype types fields	
-     obj.inverse = ver_merge['inverse']
-     obj.left_subjecttype=ver_merge['left_subjecttype']
-     obj.left_applicable_nodetypes= ver_merge['left_applicable_nodetypes']
-     obj.left_cardinality = ver_merge['left_cardinality']
-     obj.right_subjecttype= ver_merge['right_subjecttype']
-     obj.right_cadinality= ver_merge['right_cadinality']
-     obj.right_cadinality= ver_merge['right_cadinality']
-     obj.is_symmetrical= ver_merge['is_symmetrical']
-     obj.is_reflexive= ver_merge['is_reflexive']
-     obj.is_transitive= ver_merge['is_transitive']
-     
-     return obj
-
-def set_processtype_field(obj,ver_merge):
-     # setting the  processtype types fields	
-     obj.changing_attributetype_set = ver_merge['']
-     obj.changing_relationtype_set=ver_merge['']
-     return obj
-
-def set_systemtype_field(obj,ver_merge):
-     # setting the systemtype types fields	
-     obj.nodetype_set = ver_merge['nodetype_set']
-     obj.relationtype_set=ver_merge['relationtype_set']
-     obj.attributetype_set= ver_merge['attributetype_set']
-     obj.metatype_set = ver_merge['metatype_set']
-     obj.processtype_set= ver_merge['processtype_set']
-     return obj
 
 def get_merge_dict(ssid1,ssid2,direction):
      ver_merge={}
@@ -335,10 +266,9 @@ def get_merge_dict(ssid1,ssid2,direction):
          elif ver_right_dict[each]:
          	 if not ver_left_dict[each]:
          		ver_merge[each]=ver_right_dict[each]
-         else:
-		 if not ver_left_dict[each]:
-		 	if not ver_right_dict[each]:
-                        	ver_merge[each]=ver_right_dict[each]
+         elif not ver_left_dict[each]:
+		 if not ver_right_dict[each]:
+                        ver_merge[each]=''
      ver_merge_nbh_dict={}    
      # processing nbhood for merged version
      for each in ver_left_nbh_dict:
@@ -374,7 +304,7 @@ def get_merge_dict(ssid1,ssid2,direction):
      del(ver_merge['end_publication'])
      del(ver_merge['creation_date'])
      del(ver_merge['last_update'])
-
+     
      history_left_list=[]
      history_right_list=[]
      history_merged_list=[]
@@ -386,28 +316,31 @@ def get_merge_dict(ssid1,ssid2,direction):
      history_merged_list.append(history_left_list)
      history_merged_list.append(history_right_list)
      ver_merge_nbh_dict['history']=history_merged_list
-
      obj.nbhood = unicode(ver_merge_nbh_dict)
-     if isinstance(obj,Objecttype):
-		obj=set_objecttype_field(obj,ver_merge)
-     if isinstance(obj,Attributetype):
-                obj=set_objecttype_field(obj,ver_merge)
-                obj=set_attributetype_field(obj,ver_merge)
-     if isinstance(obj,Relationtype):
-                obj=set_objecttype_field(obj,ver_merge)
-                obj=set_relationtype_field(obj,ver_merge)
-     if isinstance(obj,Processtype):
-                obj=set_objecttype_field(obj,ver_merge)
-                obj=set_processtype_field(obj,ver_merge)
-     if isinstance(obj,Systemtype):
-                obj=set_objecttype_field(obj,ver_merge)
-                obj=set_systemtype_field(obj,ver_merge)
      
+     # setting the objecttypes fields	
+     obj.slug = ver_merge['slug']
+     obj.altnames=ver_merge['altnames']
+     obj.nodemodel = ver_merge['nodemodel']
+     obj.comment_enabled = ver_merge['comment_enabled']
+     obj.title = ver_merge['title']
+     obj.sites = ver_merge['sites']
+     obj.content = ver_merge['content']
+     obj.template = ver_merge['template']
      
+     obj.plural = ver_merge['plural']
+     obj.status = ver_merge['status']
+     obj.nid_ptr = NID.objects.get(id=ver_merge['nid_ptr'])
+     obj.nbhood = ver_merge_nbh_dict
+    # obj.nbh=ver_merge['nbh']
+     obj.id = ver_merge['id']
+     obj.pingback_enabled = ver_merge['pingback_enabled']
      obj.save_revert_or_merge()	
+     # formatting content field
      content=ver_merge['content']
      content=content[3:-4]
-     ver_merge['content']= content 
+     ver_merge['content']= content 			
+      
      return ver_merge
      
 
@@ -427,7 +360,7 @@ def merge_version(request,ssid1,ssid2):
      ver_merged_nbh_dict=ast.literal_eval(ver_merged_dict['nbhood'])
      ver_merged_nbh_dict['content']=ver_merge['content']
      variables = RequestContext(request,{'ver_nbh_dict':ver_merged_nbh_dict ,'nt':obj,'ssid':merged_ver_ssid,'version_no':version_counter})
-     template="gstudio/display.html"
+     template="objectapp/display.html"
      return render_to_response(template,variables)
 
 def revert(ssid):
@@ -441,6 +374,8 @@ def revert(ssid):
      del(ver_revert['end_publication'])
      del(ver_revert['creation_date'])
      del(ver_revert['last_update'])
+     
+     # setting nbhood history 
      history=[]
      ver_revert_nbh_dict=ast.literal_eval(ver_revert['nbhood'])
      
@@ -448,27 +383,26 @@ def revert(ssid):
      history.append(ssid)
      ver_revert_nbh_dict['history']=history
      
-     
-  #   ver_revert_nbh_dict['history']=ver_revert_nbh_history.append(ssid)
-     ver_revert['nbhood']=unicode(ver_revert_nbh_dict)
-     obj.nbhood=ver_revert['nbhood']
-     if isinstance(obj,Objecttype):
-		obj=set_objecttype_field(obj,ver_revert)
-     if isinstance(obj,Attributetype):
-                obj=set_objecttype_field(obj,ver_revert)
-                obj=set_attributetype_field(obj,ver_revert)
-     if isinstance(obj,Relationtype):
-                obj=set_objecttype_field(obj,ver_revert)
-                obj=set_relationtype_field(obj,ver_revert)
-     if isinstance(obj,Processtype):
-                obj=set_objecttype_field(obj,ver_revert)
-                obj=set_processtype_field(obj,ver_revert)
-     if isinstance(obj,Systemtype):
-                obj=set_objecttype_field(obj,ver_revert)
-                obj=set_systemtype_field(obj,ver_revert)
-     
+     # setting the revert version fields	
+     obj.slug = ver_revert['slug']
+     obj.altnames=ver_revert['altnames']
+    
+     obj.nodemodel = ver_revert['nodemodel']
+    
+     obj.comment_enabled = ver_revert['comment_enabled']
+     obj.title = ver_revert['title']
+     obj.sites = ver_revert['sites']
+     obj.content = ver_revert['content']
+     obj.template = ver_revert['template']
+   
+     obj.plural = ver_revert['plural']
+     obj.status = ver_revert['status']
+     obj.nid_ptr = NID.objects.get(id=ver_revert['nid_ptr'])
+     obj.nbhood = unicode(ver_revert_nbh_dict)
+    # obj.nbh=ver_revert['nbh']
+     obj.id = ver_revert['id']
+     obj.pingback_enabled = ver_revert['pingback_enabled']
      obj.save_revert_or_merge()	
-     
      # formatting content field
      content=ver_revert['content']
      content=content[3:-4]
@@ -495,7 +429,7 @@ def revert_version(request):
      ver_revert_nbh_dict['content']=ver_revert['content']
 
      variables = RequestContext(request,{'ver_nbh_dict':ver_revert_nbh_dict ,'nt':obj,'ssid':revert_ver_ssid,'version_no':version_counter})
-     template="gstudio/display.html"
+     template="objectapp/display.html"
      return render_to_response(template,variables)
     # return HttpResponse(ver_revert['nbhood'])
          

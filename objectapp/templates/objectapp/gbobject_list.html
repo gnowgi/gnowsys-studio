@@ -1,4 +1,4 @@
-{% extends "objectapp/base.html" %}
+{% extends "objectapp/version_base.html" %}
 {% load i18n objectapp_tags %}
 
 {% block meta-description %}{% trans "Latest gbobjects for" %} {% if Objecttype %}{% trans "the Objecttype" %} {{ Objecttype }}{% if Objecttype.description %}: {{ Objecttype.description|striptags|safe }}{% endif %}{% endif %}{% if tag %}{% trans "the tag" %} {{ tag }}{% endif %}{% if author %}{% trans "the author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} {% trans "page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}

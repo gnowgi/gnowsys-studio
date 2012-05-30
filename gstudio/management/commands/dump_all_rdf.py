@@ -13,31 +13,7 @@ from django.core.management.base import NoArgsCommand
 from django.core.management.base import BaseCommand
 
 
-
-
-def get_nodetype(name):
-    """
-    returns the model the id belongs to.  
-    """    
-    try:
-        """ 
-        ALGO:     get object id, go to version model, return for the given id.
-        """
-        node = NID.objects.get(title=str(name))
-        # Retrieving only the relevant tupleset for the versioned objects
-        vrs = Version.objects.filter(type=0 , object_id=node.id) 
-        # Returned value is a list, so splice it .
-        vrs =  vrs[0]
-       
-    except Error:
-        return "The item was not found."
-    if (str(vrs.object)=='None'):
-	return str(vrs.object)
-    else:	    
-    	return vrs.object._meta.module_name   
-    
-
-def rdf_description(name,notation='xml' ):
+def rdf_all(notation='xml'):
     """
     Funtion takes  title of node, and rdf notation.
     """
@@ -65,105 +41,107 @@ def rdf_description(name,notation='xml' ):
 
     # Now we'll add some triples to the graph & commit the changes
     #rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
+    rdflib = Namespace('http://example.com/')
     graph.bind("gstudio", "http://gnowledge.org/")
     exclusion_fields = ["id", "rght", "node_ptr_id", "image", "lft", "_state", "_altnames_cache", "_tags_cache", "nid_ptr_id", "_mptt_cached_fields"]
 
-    #verifies the type of node 
-    
-    
-    #node=NID.objects.get(title=name)
-    node_type=get_nodetype(name)
-    
-    
-
-    if (node_type=='gbobject'):
-    	node=Gbobject.objects.get(title=name)
-    	rdflib=link(node)
-    if (node_type=='None'):
-    	node=Gbobject.objects.get(title=name)
-    	rdflib=link(node)  
+    for node in NID.objects.all():
+        node_dict=node.ref.__dict__
+        node_type = node.reftype
+        try:
+            if (node_type=='Gbobject'):
+    	    	node=Gbobject.objects.get(title=node)
+    		rdflib=link(node)
+    	    elif (node_type=='None'):
+    		node=Gbobject.objects.get(title=node)
+    		rdflib=link(node)  
 		   
-    elif (node_type=='processes'):
-    	node=Gbobject.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Processes'):
+    		node=Gbobject.objects.get(title=node)
+    		rdflib=link(node)
 		  
-    elif (node_type=='system'):
-    	node=Gbobject.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='System'):
+    		node=Gbobject.objects.get(title=node)
+    		rdflib=link(node)
 		
-    elif (node_type=='objecttype'):
-    	node=Objecttype.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Objecttype'):
+    		node=Objecttype.objects.get(title=node)
+    		rdflib=link(node)
 
-    elif (node_type=='attributetype'):
-    	node=Attributetype.objects.get(title=name)
-        rdflib=link(node)
+    	    elif (node_type=='Attributetype'):
+    		node=Attributetype.objects.get(title=node)
+    	        rdflib=link(node)
     	
-    elif (node_type=='complement'):
-    	node=Complement.objects.get(title=name)
-    	rdflib=link(node)
+    	    elif (node_type=='Complement'):
+    		node=Complement.objects.get(title=node)
+    		rdflib=link(node)
     
-    elif (node_type=='union'):
-    	node=Union.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Union'):
+    	   	node=Union.objects.get(title=node)
+    		rdflib=link(node)
     	
-    elif (node_type=='intersection'):
-    	node=Intersection.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Intersection'):
+    		node=Intersection.objects.get(title=node)
+    		rdflib=link(node)
     
-    elif (node_type=='expression'):
-    	node=Expression.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Expression'):
+    		node=Expression.objects.get(title=node)
+    		rdflib=link(node)
     
-    elif (node_type=='processtype'):
-    	node=Processtype.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Processtype'):
+    		node=Processtype.objects.get(title=node)
+    		rdflib=link(node)
     
-    elif (node_type=='systemtype'):
-    	node=Systemtype.objects.get(title=name)
-    	rdflib=link(node)
+            elif (node_type=='Systemtype'):
+    	 	node=Systemtype.objects.get(title=node)
+    		rdflib=link(node)
     
-    elif (node_type=='attributespecification'):
-    	node=AttributeSpecification.objects.get(title=name)
-    	rdflib=link(node) 	 
+            elif (node_type=='AttributeSpecification'):
+    		node=AttributeSpecification.objects.get(title=node)
+    		rdflib=link(node) 	 
     
-    elif (node_type=='relationspecification'):
-    	node=RelationSpecification.objects.get(title=name)
-    	rdflib=link(node) 	 
+            elif (node_type=='RelationSpecification'):
+    		node=RelationSpecification.objects.get(title=node)
+    		rdflib=link(node) 	 
     
-    elif(node_type=='attribute'):
-    	node=Attribute.objects.get(title=name)
-    	rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
+            elif(node_type=='Attribute'):
+    		node=Attribute.objects.get(title=node)
+    		rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
     
-    elif(node_type=='relationtype' ):
-    	node=Relationtype.objects.get(title=name)
-    	rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
+            elif(node_type=='Relationtype' ):
+    		node=Relationtype.objects.get(title=node)
+    		rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
     
-    elif(node_type=='metatype'):
-    	node=Metatype.objects.get(title=name)
-    	rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
-		
+    	    elif(node_type=='Metatype'):
+    		node=Metatype.objects.get(title=node)
+    		rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
+        except:
+            if(node_type=='Attribute'):
+                rdflib= Namespace('http://sbox.gnowledge.org/gstudio/')
+    
+            if(node_type=='Relationtype' ):
+                rdflib= Namespace('http://sbox.gnowledge.org/gstudio/')
+                    
+            if(node_type=='Metatype'):
+                rdflib= Namespace('http://sbox.gnowledge.org/gstudio/')
+
+        subject=str(node_dict['id'])
+        for key in node_dict:
+            if key not in exclusion_fields:
+                predicate=str(key)
+                pobject=str(node_dict[predicate])
+                graph.add((rdflib[subject], rdflib[predicate], Literal(pobject)))                        
         
-    
-    node_dict=node.__dict__
-
-    subject=str(node_dict['id'])
-    for key in node_dict:
-        if key not in exclusion_fields:
-            predicate=str(key)
-            pobject=str(node_dict[predicate])
-            graph.add((rdflib[subject], rdflib[predicate], Literal(pobject)))
-
-     
     rdf_code=graph.serialize(format=notation)
-    
+               
+    temp_path = '/home/labadmin/dev/gnowsys-studio/demo/newfiles/' + 'rdfdata'+'.rdf'
+    file = open(temp_path, 'w')
+    file.write(rdf_code)
+    file.close()
     graph.commit()
     print rdf_code
     graph.close()
-    make_file(name,rdf_code)
-
-
-
+    
 
 
 #provides the url address of particular node.
@@ -182,28 +160,22 @@ def link(node):
 
 
 #makes individual rdf file for nodes.
-def make_file(name,rdf_code):
-    	x=str(name)
-	temp_path = '/home/labadmin/dev/gnowsys-studio/demo/rdffiles/' + x + '.rdf'
-	file = open(temp_path, 'w')
-	file.write(rdf_code)
-	file.close()
-        print "executed"
 
+
+    	
+	
+	
+	
+       
 
 
 
 class Command(BaseCommand):
-	def handle(self,*args,**options):
-		
-                # verify the type of the node and pass the node to display the rdf accordingly.
-		
-		inr=0
-		
-		object_list=NID.objects.all()
-		for each in object_list:
-    			rdf_description(object_list[inr],*args)
-    			inr=inr+1
+	def handle(self,*args,**options):		
+                # verify the type of the node and pass the node to display the rdf accordingly.		
+	
+    		rdf_all(*args)
+
 
 
 

@@ -2165,7 +2165,7 @@ class AttributeFilePathField(Attribute):
 
 class AttributeImageField(Attribute):
     
-    value  = models.ImageField(upload_to='media/'+UPLOAD_TO, verbose_name='image') 
+    value  = models.ImageField(upload_to = UPLOAD_TO, verbose_name='image') 
 
     def __unicode__(self):
         return self.title

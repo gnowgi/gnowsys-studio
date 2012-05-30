@@ -207,7 +207,7 @@ $(function fgraph() {
 $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) { 
 										metadata=json1.node_metadata;
   										relations=json1.relations;
-										relnset=json1.relset
+									
 										init(metadata,relations);
 										load({{object.id}}) });
 

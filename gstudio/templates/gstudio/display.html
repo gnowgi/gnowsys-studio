@@ -1,9 +1,7 @@
-
 {% load i18n comments gstudio_tags %}
 {% load gstudio_tags i18n  %}
 {% get_tags as nodetype_tags %}
 {% load adminmedia  grp_tags %}
-
 
 
 
@@ -165,7 +163,7 @@
         .attr("width", w)
         .attr("height", h);
 
-    vis.append("svg:g").attr("class", "edges");        
+    vis.append("svg:g").attr("class", "edges");
     vis.append("svg:g").attr("class", "nodes");
 
 $(function() {
@@ -176,7 +174,7 @@ $(function() {
     success : function(json) {
 
 	//var node = NID.objects.get(slug='{{ slug }}');
-      var force; 
+      var force;
       
 	// this contains all the nodes as a dict with _id as the key
 
@@ -336,18 +334,18 @@ $(function() {
 	nodes_by_id[{{ nt.id }}].y = h/2.0;
       
         all_edges = new Array();
-	all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of, type_of,plural,altnames,contains_members,content, prior_nodes, posterior_nodes); 
-	/* all_edges.concat(follows_edges); 
-         all_edges.concat(member_of_metatype); 
+	all_edges = all_edges.concat(follows_edges, member_of, contains_members, contains_subtypes, mentions_edges, right_subjecttype_of, left_subjecttype_of, subjecttype_of, type_of,plural,altnames,contains_members,content, prior_nodes, posterior_nodes);
+	/* all_edges.concat(follows_edges);
+         all_edges.concat(member_of_metatype);
          all_edges.concat(contains_members);
-	 all_edges.concat(contains_subtypes); 
-         all_edges.concat(mentions_edges); 
+	 all_edges.concat(contains_subtypes);
+         all_edges.concat(mentions_edges);
         
 
-	document.getElementById('debugbox1').value= follows_edges;  //member_of_metatype      	
+	document.getElementById('debugbox1').value= follows_edges;  //member_of_metatype
 	document.getElementById('debugbox2').value= mentions_edges;
-        //document.getElementById('debugbox2').value= member_of_metatype;      	
-	document.getElementById('debugbox3').value= all_edges; 
+        //document.getElementById('debugbox2').value= member_of_metatype;
+	document.getElementById('debugbox3').value= all_edges;
 	*/
       var force = d3.layout.force()
               .linkStrength(0.5)
@@ -372,7 +370,7 @@ $(function() {
           if(nodes_by_id[e.to] && !nodes_by_id[e.to].added){
             nodes_by_id[e.to].added = true;
             acc.push(nodes_by_id[e.to]);
-          }       
+          }
           return acc;
         }, []);
         
@@ -390,7 +388,7 @@ $(function() {
                 } */ )
                 .attr("x1", function(d) {
                   return d.source.x;
-                })		
+                })
                 .attr("y1", function(d) {
                   return d.source.y;
                 })
@@ -405,13 +403,13 @@ $(function() {
                 })
 
 	      .append("a")
-               .text(function(d) { return d.type; }); 	       
+               .text(function(d) { return d.type; });
 	     
           
-	  var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);  
+	  var node = d3.select("#chart g.nodes").selectAll("g.node").data(nodes);
     
           var new_g = node.enter().append("svg:a")
-              .attr("class", function(d) {  if (d._id=={{ nt.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })     
+              .attr("class", function(d) {  if (d._id=={{ nt.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })
 	      .attr("xlink:href",function(d){return d.url;})
 	      .call(force.drag);
 
@@ -428,14 +426,14 @@ $(function() {
 		new_g.append("svg:text")
 			.attr("class",function(d) {  if (d._id=={{ nt.id }}) return "mainnode"; else if (isNaN(d._id)) return "relnode"; else if ((d._id)<0) return "nodetext"; else return "node"; })
                         .attr("dy", 20)
-	                .attr("dx", 25) 
-                        .attr("text-anchor",function text(d) { if (isNaN(d._id) || (d._id)<0) return "middle" ; else return "left"}) 
+	                .attr("dx", 25)
+                        .attr("text-anchor",function text(d) { if (isNaN(d._id) || (d._id)<0) return "middle" ; else return "left"})
 
-//                        .attr("style",function text(d) { if (isNaN(d._id)) return "font-size:9.00pt;fill:#333;" ; else return "font-size:9.00pt;fill:black;"}) 
+//                        .attr("style",function text(d) { if (isNaN(d._id)) return "font-size:9.00pt;fill:#333;" ; else return "font-size:9.00pt;fill:black;"})
     
                         .text(function(d) {
                           return d.screen_name;
-                        });  
+                        });
 			
                 node.exit().remove();
         
@@ -465,7 +463,7 @@ $(function() {
    /*   $('input#follows').change(function(){
         update(all_edges);
       });
-     */ 
+     */
      
  /*	$('input#mentions').change(function(){
         update(all_edges);
@@ -480,9 +478,12 @@ $(function() {
 });
 
 
-</script>			
+</script>
 	</div>
 </div>
+
+
+
 <div>
 	{% include "gstudio/_header.html" %}
 	<div id="breadcrumbs" class="span-24 last">
@@ -493,81 +494,186 @@ $(function() {
 		<h3>{% block content %}
 		  {% block nodetype-content %}
 		  <h2 class="nodetype-title">
-		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_dict.title }} {{ nt.id }}.{{ cnt }}
+		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_nbh_dict.title }} {{ nt.id }}.{{ version_no }}
 		    </a>
+		    <a href="{{ nt.get_edit_url }}/history/{{ ssid }}" target="_blank"  title = "edit">[edit]</a>  
 		  </h2>
-		    {% with nt.html_content|safe as object_content %}
-		    <b>Name:<nbsp></b>{{ ver_dict.title }}<br/>
-		      {% if ver_dict.altnames %}
-		    <b> Alternate names:<nbsp></b>{{ ver_dict.altnames}} 
-		      <br/>
-		   {% endif %}
-		   {% if ver_dict.plural %}
-		   <b> Plural Name:<nbsp></b>{{ ver_dict.plural }} <br/>
-		   {% endif %}
-		  {% if nt.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b>
-		  {% endif %}
-		{% for author in nt.authors.all %}
-      	<span class="vcard author">
-        <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
-          title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
-      	</span>{% if not forloop.last %}, {% endif %}
-      	{% endfor %} <br/>
- {% endwith %}
- {% endblock %} 
- {% endblock %}
+		  {% with nt.html_content|safe as object_content %}
+		   <b>Name:<nbsp></b> {{ ver_nbh_dict.title }} <br/>
+                           
+			   {% if ver_nbh_dict.plural %}
+                                <b> Plural Name:<nbsp></b>
+                                         {{ ver_nbh_dict.plural}} <br/>
+                           {% endif %}
+                            {% if ver_nbh_dict.altnames %}
+                               <b> Alternate names:<nbsp></b>
+                                         {{ ver_nbh_dict.altnames}} <br/>
+		           {% endif %}
+	                   {% if ver_nbh_dict.type_of %}
+                                <b> Type of:<nbsp></b>
+                                {% for typekey,typevalue in ver_nbh_dict.type_of.items %}
+                                       <a href="{{typevalue}}" title = "{{typekey}}">{{typekey}}</a>;
+                                {% endfor %}<br/>
+                           {% endif %}
+
+			  
+			    {% if ver_nbh_dict.member_of_metatypes %}
+                           
+                          
+                                <b> Member of Metatypes:<nbsp></b>
+                                    {% for mkey,mvalue in ver_nbh_dict.member_of_metatypes.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                          
+			   
+			        
+                           {% if ver_nbh_dict.contains_subtypes %}
+                                <b> Contains SubTypes:<nbsp></b>
+                                {% for stkey,stvalue in ver_nbh_dict.contains_subtypes.items %}
+                                        <a href="{{stvalue}}" title = "{{stkey}}">{{stkey}}</a>;
+                                {% endfor %}<br/>
+                           {% endif %}
+                          
+                          
+                           {% if ver_nbh_dict.contains_members %}
+                         
+                          
+                                <b>Contains Members:<nbsp></b>
+                                    {% for mkey,mvalue in ver_nbh_dict.contains_members.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                         
+                           
+                         
+                         
+                           
+                                
+			    <b>Authors: <nbsp> </b>
+                                
+				       
+	                  
+			
+                              {% for author in nt.authors.all %}
+      			<span class="vcard author">
+        		<a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
+           		title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
+      			</span>{% if not forloop.last %}, {% endif %}
+      				{% endfor %} <br/>
+                         
+                            
+                            
+                            {% if ver_nbh_dict.priornodes %}
+                         
+                           
+                                <b>Prior nodes:<nbsp></b>
+                                    {% for mkey,mvalue in ver_nbh_dict.priornodes.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           
+                           {% if ver_nbh_dict.posteriornodes %}
+                         
+                           
+                                <b>Posterior nodes:<nbsp></b>
+                                    {% for mkey,mvalue in ver_nbh_dict.posteriornodes.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                             
+                            {% if ver_nbh_dict.relations %}
+                         
+                         
+                                 {% for relkey,relvalue in ver_nbh_dict.relations.items %}
+                                          <b>{{relkey}}:<nbsp></b>
+					{% for relk, relv in relvalue.items %}
+					    <a href="{{relv}}" title = "{{relk}}">{{relk}}</a>;
+                                        {% endfor %}<br/>
+				 {% endfor %}
+	                   {% endif %}
+                           
+                           {% if ver_nbh_dict.attributes %}
+                           
+				    {% for atkey,atvalue in ver_nbh_dict.attributes.items %}
+                                      {% if atvalue %}
+                                       <b>{{atkey}}:<nbsp> </b>
+                                        {% for atr in atvalue %}
+                                        	   {{atr}};
+                                         {% endfor %} <br/>
+                                      {% endif %}
+				    {% endfor %}
+	                   {% endif %}
+                            {% if ver_nbh_dict.leftroles %}
+                         
+                                                         
+				   <b>Left roles:<nbsp> </b>
+                                
+				    {% for lrkey,lrvalue in ver_nbh_dict.leftroles.items %}
+                                        <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           
+                           {% if ver_nbh_dict.rightroles %}
+                        
+			      <b>Right roles:<nbsp> </b>
+                                
+				    {% for rrkey,rrvalue in ver_nbh_dict.rightroles.items %}
+                                        <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           
+                          
+                           {% if ver_nbh_dict.ats %}
+                                             
+                                
+				   <b>Subjecttype of:<nbsp> </b>
+                                
+				    {% for atkey,atvalue in ver_nbh_dict.ats.items %}
+                                        <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           
+			 
+                           <b>Content:<nbsp></b>{{ ver_nbh_dict.content }}
+                            
+
+		  {% endwith %}
+		  {% endblock %}
+		  {% endblock %}
 </div>
 
          <div id="sidebar">
 	  {% block sidebar %}
 	  
 	  <div class="History">
-	  
+	
 	    <h3>{% trans "Versions" %}</h3>
-	    <script type="text/javascript">
-	      function go_to_loc(sid)
-	      {    
-	            
-	             <!-- var len=document.history.group2.length -->
-	             <!-- for(var i=0;i<len;i++) -->
-		     <!-- { -->
-		     <!--      var r=window.document.history.group2[i] -->
-	             <!--      if(sid==r.) -->
-		     <!--      { -->
-		     <!-- 		     r.disabled="false" -->
-		     <!--      } -->
-		     <!--      else -->
-		     <!--      { -->
-		     <!-- 		     r.enabled="true" -->
-		     <!-- 	  } -->
-		     <!--  } -->
-	      
-	      
-	      }
-	   </script>
 	   
-	    <form name="history" action="/nodetypes/display/showhistory/{{ ssid }}" >
+	    <form name="history" action="/nodetypes/display/compare_history/{{ ssid }}" >
 	    <table cellspacing="0" border="2">
 	    <tr>
-	    <td> <input type="radio" name="group1" value="{{ ssid }}" checked >{{ nt.id }}.{{ cnt }}</input></td>
+	    <td> <input type="radio" name="group1" value="{{ ssid }}.{{ version_no }}" checked >{{ nt.id }}.{{ version_no }}</input></td>
 	    <td></td></tr>
+	    
 	    {% for sid in nt.get_ssid  %}
-	    {% ifnotequal forloop.counter cnt %}
+	    
+	    {% if sid|stringformat:"s" != ssid|stringformat:"s"   %}
 	    <tr>
 	    <td>
 	    </td>
 	    <td>
 	    
-            <input type="radio" id="{{ sid }}"name="group2" value="{{ sid }}" >{{ nt.id }}.{{ forloop.counter }}</input>
-            </td>{% endifnotequal %}
-            {% endfor %}</tr></table>
+            <input type="radio" id="{{ sid }}"name="group2" value="{{ sid }}.{{ forloop.counter }}" >{{ nt.id }}.{{ forloop.counter }}</input>
+            </td></tr>{% endif %}
+            {% endfor %}</table>
             <input type="submit" value="Compare" />
 	    </form>
     
-
+	   
             </div>
 
-
+ 
 	  {% endblock %}
 	  </div>
 			
@@ -583,13 +689,8 @@ $(function() {
 						{{ GSTUDIO_VERSION }}</a>.
 					</p>
 				</div>
-	</div>	
+	</div>
         </div>
 	</body>
 </html>
  
-
-
-
-
-

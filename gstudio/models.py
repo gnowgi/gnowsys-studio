@@ -65,6 +65,7 @@
 
 
 
+
 """Super models of Gstudio  """
 
 import warnings
@@ -327,36 +328,61 @@ class NID(models.Model):
         
     @property
     def getat(self):        
+
         """This is will give the possible attributetypes """
         try:
+            pt = []
             attributetype = []
-            ot = self.ref
-            attributetype.append(ot.subjecttype_of.all())
+            returndict = {}
+
+            pt.append(self.ref)
+            obj = self.ref
+            while obj.parent:
+                pt.append((obj.parent).ref)
+                obj=obj.parent
+            
+            for each in pt:
+                attributetype.append(each.subjecttype_of.all())
+
             attributetype = [num for elem in attributetype for num in elem]
-            return attributetype
+            
+            for i in attributetype:
+                if str(i.applicable_nodetypes) == 'OT':
+                    returndict.update({str(i.title):i.id})
+
+            return returndict.keys()
         except:
             return None
 
     @property
     def getrt(self):
-        pt =[] #contains parenttype
-        reltype =[] #contains relationtype
-        titledict = {} #contains relationtype's title
-        inverselist = [] #contains relationtype's inverse
-        finaldict = {} #contains either title of relationtype or inverse of relationtype
-        listval=[] #contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid
-        # pt.append(Objecttype.objects.get(title = str(gbid)))
-        # name = NID.objects.get(title = str(gbid))
+        """pt =[] contains parenttype
+        reltype =[] contains relationtype
+        titledict = {} contains relationtype's title
+        inverselist = [] contains relationtype's inverse
+        finaldict = {} contains either title of relationtype or inverse of relationtype
+        listval=[] contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid"""
+
+        pt =[] 
+        reltype =[] 
+        titledict = {}
+        inverselist = []
+        finaldict = {}
+        listval=[] 
+
         pt.append(self.ref)
+        obj = self.ref
+        while obj.parent:
+            pt.append((obj.parent).ref)
+            obj=obj.parent
+            
         for i in range(len(pt)):
             if Relationtype.objects.filter(left_subjecttype = pt[i].id):
                 reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))    
             if Relationtype.objects.filter(right_subjecttype = pt[i].id):
                 reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id)) 
-                
-        # it converts 2 or more list as one list
         reltype = [num for elem in reltype for num in elem] #this rqud for filtering
-            
+
         for i in reltype:
             titledict.update({i:i.id})
             
@@ -364,16 +390,16 @@ class NID(models.Model):
         for i in range(len(titledict)):
             listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
             inverselist.append(str(titledict.keys()[i].inverse))
-            
-   
+     
         for j in range(len(pt)):
             for i in range(len(listval)):
-                if pt[j].id == listval[i].left_subjecttype_id :
-                    finaldict.update({titledict.values()[i]:titledict.keys()[i]})
-                elif pt[j].id == listval[i].right_subjecttype_id:
-                    finaldict.update({titledict.values()[i]:inverselist[i]})
+                if pt[j].id == listval[i].left_subjecttype_id and str(listval[i].left_applicable_nodetypes) == 'OT' :
+                    finaldict.update({titledict.keys()[i]:titledict.values()[i]})
+                if pt[j].id == listval[i].right_subjecttype_id and str(listval[i].right_applicable_nodetypes)=='OT':
+                    finaldict.update({inverselist[i]:titledict.values()[i]})
+        
 
-        return finaldict.values()
+        return finaldict.keys()
 
 
     @property
@@ -540,7 +566,7 @@ class Metatype(Node):
             nbh['typeof'] = self.parent
         # generate ids and names of children/members
         nbh['contains_subtypes'] = self.children.get_query_set()
-        nbh['contains_members'] = self.nodetypes.all()
+        nbh['contains_members'] = self.nodetypes_published()
         nbh['left_subjecttype_of'] = Relationtype.objects.filter(left_subjecttype=self.id)
         nbh['right_subjecttype_of'] = Relationtype.objects.filter(right_subjecttype=self.id)
         nbh['attributetypes'] = Attributetype.objects.filter(subjecttype=self.id)
@@ -648,7 +674,7 @@ class Metatype(Node):
         # generate ids and names of children
             nbh['contains_subtypes'] = self.children.get_query_set()
         contains_members_list = []
-        for each in self.nodetypes.all():
+        for each in self.nodetypes_published():
             contains_members_list.append('<a href="%s">%s</a>' % (each.get_absolute_url(), each.title))
         nbh['contains_members'] = contains_members_list
         nbh['left_subjecttype_of'] = Relationtype.objects.filter(left_subjecttype=self.id)
@@ -663,7 +689,7 @@ class Metatype(Node):
     def tree_path(self):
         """Return metatype's tree path, by its ancestors"""
         if self.parent:
-            return '%s/%s' % (self.parent.tree_path, self.slug)
+            return u'%s/%s' % (self.parent.tree_path, self.slug)
         return self.slug
 
     def __unicode__(self):
@@ -673,8 +699,8 @@ class Metatype(Node):
     def composed_sentence(self):
         "composes the relation as a sentence in triple format."
         if self.parent:
-            return '%s is a kind of %s' % (self.title, self.parent.tree_path)
-        return '%s is a root node'  % (self.slug)
+            return u'%s is a kind of %s' % (self.title, self.parent.tree_path)
+        return u'%s is a root node'  % (self.slug)
     
 
     @models.permalink
@@ -968,15 +994,15 @@ class Nodetype(Node):
     def tree_path(self):
         """Return nodetype's tree path, by its ancestors"""
         if self.parent:
-            return '%s/%s' % (self.parent.tree_path, self.slug)
+            return u'%s/%s' % (self.parent.tree_path, self.slug)
         return self.slug
 
     @property
     def tree_path_sentence(self):
         """ Return the parent of the nodetype in a triple form """
         if self.parent:
-            return '%s is a kind of %s' % (self.title, self.parent.tree_path)
-        return '%s is a root node' % (self.title)
+            return u'%s is a kind of %s' % (self.title, self.parent.tree_path)
+        return u'%s is a root node' % (self.title)
 
 
     @property
@@ -1114,8 +1140,12 @@ class Nodetype(Node):
 	nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
 	nbh['count_altnames'] = len(nbh['altnames'])
-        nbh['plural'] = self.plural 
-	nbh['count_plural'] = len(nbh['plural'])    
+        nbh['plural'] = self.plural
+        try:
+            nbh['count_plural'] = len(nbh['plural'])    
+        except:
+            pass
+
         #get all MTs 
         member_of_dict = {}
         for each in self.metatypes.all():
@@ -1304,22 +1334,22 @@ class Nodetype(Node):
         
         if self.metatypes.count:
             for each in self.metatypes.all():
-                return '%s is a member of metatype %s' % (self.title, each)
-        return '%s is not a fully defined name, consider making it a member of a suitable metatype' % (self.title)
+                return u'%s is a member of metatype %s' % (self.title, each)
+        return u'%s is not a fully defined name, consider making it a member of a suitable metatype' % (self.title)
 
     
     @property
     def subtypeof_sentence(self):
         "composes the relation as a sentence in triple format."
         if self.parent:
-            return '%s is a subtype of %s' % (self.title, self.parent.tree_path)
-        return '%s is a root node' % (self.title)
+            return u'%s is a subtype of %s' % (self.title, self.parent.tree_path)
+        return u'%s is a root node' % (self.title)
     composed_sentence = property(subtypeof_sentence)
 
     def subtypeof(self):
         "retuns the parent nodetype."
         if self.parent:
-            return '%s' % (self.parent.tree_path)
+            return u'%s' % (self.parent.tree_path)
         return None 
 
     @models.permalink
@@ -1367,11 +1397,7 @@ class Objecttype(Nodetype):
 
     def __unicode__(self):
         return self.title
-
-    
-	
-	
-
+ 	    
                     
     @property
     def get_attributetypes(self):        
@@ -1581,6 +1607,37 @@ class Relationtype(Nodetype):
     def __unicode__(self):
         return self.title
 
+    @property
+    def get_nbh(self):
+        """          
+        Returns the neighbourhood of the nodetype
+        """
+        nbh = {}
+        nbh['title'] = self.title
+        nbh['altnames'] = self.altnames
+        nbh['plural'] = self.plural 
+
+        nbh['contains_subtypes'] = Nodetype.objects.filter(parent=self.id)
+        # get all the objects inheriting this OT 
+        nbh['contains_members'] = self.member_objects.all()
+        nbh['prior_nodes'] = self.prior_nodes.all()             
+        nbh['posterior_nodes'] = self.posterior_nodes.all() 
+        nbh['inverse']=self.inverse
+        nbh['left_subjecttype']=self.left_subjecttype
+        nbh['left_applicable_nodetypes']=self.left_applicable_nodetypes
+        nbh['left_cardinality']=self.left_cardinality
+        nbh['right_subjecttype']=self.right_subjecttype
+        nbh['right_applicable_nodetypes']=self.right_applicable_nodetypes
+        nbh['right_cardinality']=self.right_cardinality
+        nbh['is_symmetrical']=self.is_symmetrical
+        nbh['is_reflexive']=self.is_reflexive
+        nbh['is_transitive']=self.is_transitive
+       
+
+
+	return nbh
+
+
     class Meta:
         """
         relation type's meta class
@@ -1723,12 +1780,12 @@ class Relation(Edge):
     @property
     def composed_sentence(self):
         "composes the relation as a sentence in a triple format."
-        return '%s %s %s %s %s %s' % (self.left_subject_scope, self.left_subject, self.relationtype_scope, self.relationtype, self.right_subject_scope, self.right_subject)
+        return u'%s %s %s %s %s %s' % (self.left_subject_scope, self.left_subject, self.relationtype_scope, self.relationtype, self.right_subject_scope, self.right_subject)
 
     @property
     def inversed_sentence(self):
         "composes the inverse relation as a sentence in a triple format."
-        return '%s %s %s %s %s' % (self.objectScope, self.right_subject, self.relationtype.inverse, self.left_subject_scope, self.left_subject )
+        return u'%s %s %s %s %s' % (self.objectScope, self.right_subject, self.relationtype.inverse, self.left_subject_scope, self.left_subject )
 
     @property
     def key_value(self):
@@ -1745,14 +1802,14 @@ class Relation(Edge):
         
         if self.relationtype:
            # for relation in self.relationtype():
-                return '%s %s %s' % (self.left_subject,self.relationtype,self.right_subject )
+                return u'%s %s %s' % (self.left_subject,self.relationtype,self.right_subject )
 
     @property
     def partial_composition(self):
         '''
         function that composes the right_subject and relation name, as in "x as a friend", "y as a sibling"
         '''
-        return '%s as a %s' % (self.right_subject, self.relationtype) 
+        return u'%s as a %s' % (self.right_subject, self.relationtype) 
     
     
     # Save for Relation
@@ -1816,21 +1873,21 @@ class Attribute(Edge):
         '''
         composes the attribution as a sentence in a triple format.
         '''
-        return '%s %s has %s %s %s %s' % (self.subject_scope, self.subject, self.attributetype_scope, self.attributetype, self.value_scope, self.svalue)
+        return u'%s %s has %s %s %s %s' % (self.subject_scope, self.subject, self.attributetype_scope, self.attributetype, self.value_scope, self.svalue)
 
     @property
     def composed_attribution(self):
         '''
         composes a name to the attribute
         '''
-        return 'the %s of %s is %s' % (self.attributetype, self.subject, self.svalue)
+        return u'the %s of %s is %s' % (self.attributetype, self.subject, self.svalue)
     
     @property
     def partial_composition(self):
         '''
         function that composes the value and attribute name, as in "red as color", "4 as length"
         '''
-        return '%s as %s' % (self.svalue, self.attributetype) 
+        return u'%s as %s' % (self.svalue, self.attributetype) 
 
 
     def subject_filter(self,attr):
@@ -2058,7 +2115,7 @@ class AttributeTimeField(Attribute):
 
 class AttributeEmailField(Attribute):
     
-    value  = models.CharField(max_length=100,verbose_name='value') 
+    value  = models.EmailField(max_length=100,verbose_name='value') 
 
     def __unicode__(self):
         return self.title
@@ -2074,7 +2131,7 @@ class AttributeEmailField(Attribute):
 
 class AttributeFileField(Attribute):
     
-    value  = models.FileField(upload_to='/media', verbose_name='file') 
+    value  = models.FileField(upload_to='media/'+UPLOAD_TO, verbose_name='file') 
 
     def __unicode__(self):
         return self.title
@@ -2108,7 +2165,7 @@ class AttributeFilePathField(Attribute):
 
 class AttributeImageField(Attribute):
     
-    value  = models.ImageField(upload_to='/media', verbose_name='image') 
+    value  = models.ImageField(upload_to = UPLOAD_TO, verbose_name='image') 
 
     def __unicode__(self):
         return self.title
@@ -2247,7 +2304,7 @@ class AttributeSpecification(Node):
         subjects = u''
         for each in self.subjects.all():
             subjects = subjects + each.title + ' '
-        return 'the %s of %s' % (self.attributetype, subjects)
+        return u'the %s of %s' % (self.attributetype, subjects)
 
 
     def __unicode__(self):
@@ -2288,7 +2345,7 @@ class RelationSpecification(Node):
         subjects = u''
         for each in self.subjects.all():
             subjects = subjects + each.title + ' '
-        return 'the %s of %s' % (self.relationtype, subjects)
+        return u'the %s of %s' % (self.relationtype, subjects)
 
     def __unicode__(self):
         return self.composed_subject
@@ -2330,7 +2387,7 @@ class NodeSpecification(Node):
         attributes = u''
         for each in self.attributes.all():
             attributes = attributes + each.partial_composition + ', '
-        return 'the %s with %s, %s' % (self.subject, self.relations, self.attributes)
+        return u'the %s with %s, %s' % (self.subject, self.relations, self.attributes)
 
     def __unicode__(self):
         return self.composed_subject
@@ -2369,7 +2426,7 @@ class Expression(Node):
     @property
     def composed_sentence(self):
         "composes the relation as a sentence in a triple format."
-        return '%s %s %s' % (self.left_term, self.relationtype, self.right_term)
+        return u'%s %s %s' % (self.left_term, self.relationtype, self.right_term)
 
 
     class Meta:

@@ -54,22 +54,22 @@ def rdf_description(name,notation='xml' ):
     
     
 
-    if (node_type=='Gbobject'):
+    if (node_type=='Gbobject' ):
     	node=Gbobject.objects.get(title=name)
     	rdflib=link(node)
-    if (node_type=='None'):
+    elif (node_type=='None'):
     	node=Gbobject.objects.get(title=name)
     	rdflib=link(node)  
 		   
-    if (node_type=='Processes'):
+    elif (node_type=='Processes'):
     	node=Gbobject.objects.get(title=name)
     	rdflib=link(node)
 		  
-    if (node_type=='System'):
+    elif (node_type=='System'):
     	node=Gbobject.objects.get(title=name)
     	rdflib=link(node)
 		
-    if (node_type=='Objecttype'):
+    elif (node_type=='Objecttype'):
     	node=Objecttype.objects.get(title=name)
     	rdflib=link(node)
 

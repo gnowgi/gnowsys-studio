@@ -156,24 +156,31 @@ if hasattr(settings, 'XMLRPC_METHODS'):
             raise ImproperlyConfigured('Error registering XML-RPC method: ' \
                 + '"%s" is not callable in module %s' % (attr, module))
 
-        xmlrpcdispatcher.register_function(func, name)
+        #xmlrpcdispatcher.register_function(func, name)
 	xmlrpcdispatcher.register_function(getNodetype,'getNodetype')
-	xmlrpcdispatcher.register_function(nidExists,'nidExists')
+        xmlrpcdispatcher.register_function(nidExists,'nidExists')
 	xmlrpcdispatcher.register_function(getinfoFromSSID,'getinfoFromSSID')
-	#xmlrpcdispatcher.register_function(getNeighbourhood,'getNeighbourhood')
+	xmlrpcdispatcher.register_function(getNeighbourhood,'getNeighbourhood')
         xmlrpcdispatcher.register_function(get_nbh,'get_nbh')
-	#xmlrpcdispatcher.register_function(getallNodes,'getallNodes')
+	xmlrpcdispatcher.register_function(getAll,'getAll')
         xmlrpcdispatcher.register_function(getDatatype,'getDatatype')
         xmlrpcdispatcher.register_function(getAttributevalues,'getAttributevalues')
         xmlrpcdispatcher.register_function(getSubjecttypes,'getSubjecttypes')
-        #xmlrpcdispatcher.register_function(getAttributeType,'getAttributeType')
+        xmlrpcdispatcher.register_function(getAttributeType,'getAttributeType')
 	xmlrpcdispatcher.register_function(getRoles,'getRoles')
         xmlrpcdispatcher.register_function(getSubtypes,'getSubtypes')
-        #xmlrpcdispatcher.register_function(Suballtypes,'Suballtypes')
+        xmlrpcdispatcher.register_function(getAllSubtypes,'getAllSubtypes')
         xmlrpcdispatcher.register_function(getRestrictions,'getRestrictions')
         xmlrpcdispatcher.register_function(getlatestSSID,'getlatestSSID')
         xmlrpcdispatcher.register_function(getAllSnapshots,'getAllSnapshots')
-        
+        xmlrpcdispatcher.register_function(setAttributetype,'setAttributetype')
+        xmlrpcdispatcher.register_function(setuser,'setuser')
+        xmlrpcdispatcher.register_function(setRelationtype,'setRelationtype')
+        xmlrpcdispatcher.register_function(setObjecttype,'setObjecttype')
+        xmlrpcdispatcher.register_function(setObject,'setObject')
+        xmlrpcdispatcher.register_function(setAttribute,'setAttribute')
+        xmlrpcdispatcher.register_function(setRelation,'setRelation')
+        xmlrpcdispatcher.register_function(getGbobjectNeighbourhood,'getGbobjectNeighbourhood')
 	
 	
 

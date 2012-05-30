@@ -1,256 +1,279 @@
-from gstudio.models import *
-from objectapp.models import *
+
 from django.http import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db import IntegrityError
+from django.forms import ModelForm
+
+from gstudio.models import *
+from objectapp.models import *
+
+def context_member(request,reltit , memtit):
+
+    member = []
+    subtype = []
+    subtypemember = []
+    finaldict = {}
+    nt = []
+    parenttype = []
+
+#-------------------------------------------------------------
+    if Objecttype.objects.filter(title = str(memtit)):
+        ot = Objecttype.objects.get(title = str(memtit))
+        absolute_url_node = ot.get_absolute_url()
+    elif Gbobject.objects.filter(title = str(memtit)):
+        ot = Gbobject.objects.get(title = str(memtit))
+        absolute_url_node = ot.get_absolute_url()
+#--------------------------------------------------------------
+
+    if Relationtype.objects.filter(title = str(reltit)):
+        r =Relationtype.objects.get(title = str(reltit))
+        role = r.left_subjecttype.ref        
+        roletype = str(r.left_applicable_nodetypes)
+        print "Original is left role of relation"
+        newrole = r.right_subjecttype.ref
+        newroletype = str(r.right_applicable_nodetypes)
+        print 'original ' ,str(role)
+        print 'newrole (i.e right)', str(newrole)
+
+    else:
+        r = Relationtype.objects.get(inverse = str(reltit))
+        role = r.right_subjecttype.ref
+        roletype = str(r.right_applicable_nodetypes)
+        print "Original is right role of relation"
+        newrole = r.left_subjecttype.ref
+        newroletype = str(r.left_applicable_nodetypes)
+        print 'original ' ,str(role)
+        print 'newrole (i.e left)', str(newrole)
 
 
-def context_RT(request, gbid):
-    pt =[] #contains parenttype
-    reltype =[] #contains relationtype
-    titledict = {} #contains relationtype's title
-    inverselist = [] #contains relationtype's inverse
-    finaldict = {} #contains either title of relationtype or inverse of relationtype
-    listval=[] #contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid
+#---------------------------------------------------------------------
 
-    #flag = 0 #check whether OT or OB, flag = 0 means it is OB
+    if newrole.reftype == 'Objecttype' and newroletype == 'OT':
+        print "Objecttype and OT"
+        for i in newrole.get_members:
+            member.append(i)
 
-    # if its an OT, then parse separately
-    if Objecttype.objects.filter(title=str(gbid)):
-        flag = 1
-    elif Gbobject.objects.filter(title = str(gbid)):
-        flag = 0
-    elif Systemtype.objects.filter(title = str(gbid)):
-        flag = 2
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
 
-    if flag == 1:
-        pt.append(Objecttype.objects.get(title = str(gbid)))
-        name = NID.objects.get(title = str(gbid))
+        # for i in newrole.get_children():
+        #     subtype.append(i.ref)
+        for i in newrole.get_descendants():
+            subtype.append(i.ref)
+
+        for i in subtype:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in subtype:
+            subtypemember.append(i.get_members)
+            
+        subtypemember = [num for elem in subtypemember for num in elem] 
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+
+        finaldict.update({newrole.id:str(newrole.title)})
+
+    elif newrole.reftype == 'Gbobject' and newroletype == 'OB':
+        print "Gbobject and OB"
+        nt = newrole.objecttypes.all()
+
+        for i in nt:
+            parenttype.append(i.ref)
         
-        for i in range(len(pt)):
-            if Relationtype.objects.filter(left_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.get(left_subjecttype = pt[i].id))    
-            if Relationtype.objects.filter(right_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.get(right_subjecttype = pt[i].id)) 
-                
-        # it converts 2 or more list as one list
-        #reltype = [num for elem in reltype for num in elem] #this rqud for filtering
-            
-        for i in reltype:
-            titledict.update({i:i.id})
-            
-            
-        for i in range(len(titledict)):
-            listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
-            inverselist.append(titledict.keys()[i].inverse)
-            
-   
-        for j in range(len(pt)):
-            for i in range(len(listval)):
-                if pt[j].id == listval[i].left_subjecttype_id :
-                    finaldict.update({titledict.values()[i]:titledict.keys()[i]})
-                elif pt[j].id == listval[i].right_subjecttype_id:
-                    finaldict.update({titledict.values()[i]:inverselist[i]})
+        for i in parenttype:
+            member.append(i.get_members)
+              
+        member = [num for elem in member for num in elem] 
+        subtypent = []
 
+        # for i in parenttype:
+        #     subtypent.append(i.get_children())
+        # subtypent = [num for elem in subtypent for num in elem]
 
-    elif flag == 0:
-        gb= Gbobject.objects.get(title=str(gbid))
-        name = gb
-        pt = gb.objecttypes.all()
-        for i in range(len(pt)):
-            if Relationtype.objects.filter(left_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.get(left_subjecttype = pt[i].id))    
-            if Relationtype.objects.filter(right_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.get(right_subjecttype = pt[i].id)) 
-            if Relationtype.objects.filter(left_subjecttype = gb):
-                reltype.append(Relationtype.objects.get(left_subjecttype = gb))
-            if Relationtype.objects.filter(right_subjecttype = gb):
-                reltype.append(Relationtype.objects.get(right_subjecttype = gb))                           
+        # for i in subtypent:
+        #     subtype.append(i.ref)
+        # subtype = [num for elem in subtype for num in elem]
 
-                
-        #reltype = [num for elem in reltype for num in elem]
+        for i in parenttype:
+            subtypent.append(i.get_descendants())
+
+        for i in subtypent:
+            subtype.append(i.ref)
+
+        for i in subtype:
+            subtypemember.append(i.get_members)
+        subtypemember = [num for elem in subtypemember for num in elem]
+              
+
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+
+    elif newrole.reftype == 'Objecttype' and newroletype == 'OB':        
+        print "Objecttype and OB"
+        for i in newrole.get_members:
+            member.append(i)
+
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
+
+        # for i in newrole.get_children():
+        #     subtype.append(i.ref)
+
+        for i in newrole.get_descendants():
+            subtype.append(i.ref)
+        for i in subtype:
+            subtypemember.append(i.get_members)
+                     
+        subtypemember = [num for elem in subtypemember for num in elem] 
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+            
+        print 'member',str(member)
+        print 'subtype', str(subtype)
+        print 'subtypemember', str(subtypemember)
+    elif newrole.reftype == 'Gbobject' and newroletype == 'OT':
+        print "Gbobject and OT"
+        nt = newrole.objecttypes.all()
+        for i in nt:
+            parenttype.append(i.ref)
         
-        for i in reltype:
-            titledict.update({i:i.id})
+        for i in parenttype:
+            member.append(i.get_members)
+              
+        member = [num for elem in member for num in elem] 
+        subtypent = []
 
-            
-        for i in range(len(titledict)):
-            listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
-            inverselist.append(titledict.keys()[i].inverse)            
-   
-        for j in range(len(pt)):
-            for i in range(len(listval)):
-                if pt[j].id == listval[i].left_subjecttype_id or gb.id == listval[i].left_subjecttype_id :
-                    finaldict.update({titledict.values()[i]: titledict.keys()[i]})
-                elif pt[j].id == listval[i].right_subjecttype_id or gb.id == listval[i].right_subjecttype_id:
-                    finaldict.update({titledict.values()[i]:inverselist[i]})
+        # for i in parenttype:
+        #     subtypent.append(i.get_children())
+        # subtypent = [num for elem in subtypent for num in elem]
 
-    elif flag == 2:
-        systype = Systemtype.objects.get(title = str(gbid))
-        nodelist = []
-        nodelist = systype.nodetype_set.all()
-        for i in nodelist:
-            pt.append(i.ref)
-        pt.append(systype)
-        name = NID.objects.get(title = str(gbid))
-        
-        for i in range(len(pt)):
-            if Relationtype.objects.filter(left_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.get(left_subjecttype = pt[i].id))    
-            if Relationtype.objects.filter(right_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.get(right_subjecttype = pt[i].id)) 
-                
-        # it converts 2 or more list as one list
-        #reltype = [num for elem in reltype for num in elem] #this rqud for filtering
-            
-        for i in reltype:
-            titledict.update({i:i.id})
-            
-            
-        for i in range(len(titledict)):
-            listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
-            inverselist.append(titledict.keys()[i].inverse)
-            
-   
-        for j in range(len(pt)):
-            for i in range(len(listval)):
-                if pt[j].id == listval[i].left_subjecttype_id :
-                    finaldict.update({titledict.values()[i]:titledict.keys()[i]})
-                elif pt[j].id == listval[i].right_subjecttype_id:
-                    finaldict.update({titledict.values()[i]:inverselist[i]})
-        
-        
-    absolute_url_node = name.get_absolute_url()
+        # for i in subtypent:
+        #     subtype.append(i.ref)
+        # subtype = [num for elem in subtype for num in elem]
+        for i in parenttype:
+            subtypent.append(i.get_descendants())
 
+        for i in subtypent:
+            subtype.append(i.ref)
+        
+        for i in subtype:
+            subtypemember.append(i.get_members)
+        subtypemember = [num for elem in subtypemember for num in elem]
+              
+
+        for i in subtype:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in parenttype:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+
+
+    print 'absolute_url_node', str(absolute_url_node)
     template="objectapp/selectRT.html"
-    context = RequestContext(request,{'final':finaldict , 'gb':name ,'gbid':name.id, 'absolute_url_node':absolute_url_node})
+    context = RequestContext(request,{'finaldict':finaldict,'gb':memtit,'reltit':reltit, 'absolute_url_node': absolute_url_node})
     return render_to_response(template,context)
 
-
-def context_member(request,relid, memid):#id of relationtype, id of selected object
-    try:
-        relid = int(relid) #relationtype
-        memid = int(memid) #left member id
-    except:
-        raise Http404()
-
-    # checks wheter memid is OT or OB
-    flag=0 #means OB
-
-    if Objecttype.objects.filter(id = memid):
-        flag=1
-
-    nt =[] #contains parent as <Nodetype:parent>
-    pt= [] #contains parent as <Objecttype:parent>
-
-    if flag == 1:
-        pt.append(Objecttype.objects.get(id=memid))
-
-    else:
-        gb = Gbobject.objects.get(id = memid)
-        nt = gb.objecttypes.all()
-        for i in range(len(nt)): #conversion of nodetype in objecttype
-            pt.append(Objecttype.objects.get(id = nt[i].id))    
-
-    memlist = [] #contains OB and OT for appearing in 1st combo box
-
-    r = Relationtype.objects.get(id = relid) #contains RelationType
-
-    # extracting left and right applicable nodetypes(OB or OT) of RelationType
-    lefttype = str(r.left_applicable_nodetypes)
-    righttype = str(r.right_applicable_nodetypes)
-
-    if lefttype == righttype:
-        if lefttype == "OB" and righttype == "OB":
-
-            if r.left_subjecttype_id == memid:
-                memlist.append(Gbobject.objects.get(id = r.right_subjecttype_id))
-            else :
-                memlist.append(Gbobject.objects.get(id = r.left_subjecttype_id))
-
-        elif lefttype == "OT" and righttype == "OT":
-            for each in range(len(pt)):
-                if r.left_subjecttype_id == memid or r.left_subjecttype_id == pt[each].id:
-                    o = Objecttype.objects.get(title = NID.objects.get(title=(r.right_subjecttype).title))    
-                    memlist.append(o)
-                    for i in o.get_members:
-                        memlist.append(i)
-                # elif r.right_subjecttype_id == memid or r.right_subejcttype_id == pt[each].id:
-                else:
-                    o = Objecttype.objects.get(title = NID.objects.get(title=(r.left_subjecttype).title))    
-                    memlist.append(o)
-                    for i in o.get_members:
-                        memlist.append(i)
-    else:
-        if r.left_subjecttype_id == memid:
-            if righttype == "OB":
-                memlist.append(Gbobject.objects.get(id = r.right_subjecttype_id))
-
-            else :
-                o = Objecttype.objects.get(title = NID.objects.get(title=(r.right_subjecttype).title)) 
-                memlist.append(o)
-                for i in o.get_members:
-                    memlist.append(i)
-
-        else:
-            if lefttype == "OB":
-                memlist.append(Gbobject.objects.get(id = r.left_subjecttype_id))
-
-            else : 
-                o = Objecttype.objects.get(title = NID.objects.get(title=(r.left_subjecttype).title)) 
-                memlist.append(o)
-                for i in o.get_members:
-                    memlist.append(i)
-
-    memdict = {} #converting list into dict and to set id of right member as hidden field
-    for i in memlist:
-        memdict.update({i.id:i})
-        
-
-    template="objectapp/fillRT.html"
-    context = RequestContext(request,{'memdict':memdict})
-    return render_to_response(template,context)
 
 def context_save(request,leftmem, reltype, rightmem):
     try:
-        leftmem = int(leftmem)
-        reltype = int(reltype)
-        rightmem = int(rightmem)
+        leftmem = str(leftmem)
+        reltype = str(reltype)
+        rightmem = str(rightmem)
 
-        relation = Relationtype.objects.get(id = reltype)
+
+
+        print 'leftmem :', leftmem, 'rightmem :', rightmem
+        pt = []
+        nt = []
+
+        left = NID.objects.get(title = leftmem)       
+        print 'leftid', str(left.id)
+        right = NID.objects.get(title = rightmem)
+        print 'rightid', str(right.id)        
+
+        if Relationtype.objects.filter(title=reltype):
+            relation = Relationtype.objects.get(title = reltype)
+        else:
+            relation = Relationtype.objects.get(inverse = reltype)
+
         rightrole = relation.right_subjecttype_id
+        r = relation.right_subjecttype.ref
+        print 'rightrole', str(r)
         leftrole = relation.left_subjecttype_id
+        l=relation.left_subjecttype.ref
+        print 'leftrole', str(l)
+#-----------------------------------------------------------------------
         flag = 1
-        if Objecttype.objects.filter(id = leftmem):
-            if leftmem == leftrole :
-                flag = 0
-                print "Objecttype flag = 0 "
-            else:
-                print "Objecttype flag = 1 "
-        elif Gbobject.objects.filter(id = leftmem):
-            gb = Gbobject.objects.get(id = leftmem)
-            pt = gb.objecttypes.all()
+        if Objecttype.objects.filter(title = leftmem):
+            
+            obj = Objecttype.objects.get(title = leftmem)
+            print 'OT', str(obj)
+
+            while obj.parent:
+                pt.append((obj.parent).ref)
+                obj=obj.parent
             for i in range(len(pt)):
-                if leftmem == leftrole or pt[i].id == leftrole:
+                if pt[i].id == leftrole :
+                    flag = 0
+                    print "Objecttype flag = 0 "
+                    break
+                else:
+                    print "Objecttype flag = 1 "
+            
+        elif Gbobject.objects.filter(title = leftmem):
+            gb = Gbobject.objects.get(title = leftmem)
+            print 'Ob', str(gb)
+            nt = gb.objecttypes.all()            
+            print 'nt ', str(nt)
+
+
+            for i in range(len(nt)):
+                pt.append(nt[i].ref)
+                obj = nt[i].ref
+                while  obj.parent:
+                    pt.append(obj.parent.ref)
+                    obj = obj.parent
+
+            print 'pt ', str(pt)
+            for i in range(len(pt)):
+                if left.id == leftrole or pt[i].id == leftrole:
                     flag = 0
                     print "Object flag = 0"
+                    break
                 else:
                     print "Object flag = 1"
+        print 'pt:',str(pt)
+#-----------------------------------------------------------------------------------
+
+        
         if flag == 0:
-            savedict = {'title':relation, 'slug':relation, 'left_subject_id':leftmem, 'right_subject_id':rightmem, 'relationtype_id':reltype, 'left_subject_scope':' ', 'right_subject_scope':' ', 'relationtype_scope':' ' }
+            print 'left_subject_id', l
+            savedict = {'title':relation, 'slug':relation, 'left_subject_id':left.id, 'right_subject_id':right.id, 'relationtype_id':relation.id, 'left_subject_scope':' ', 'right_subject_scope':' ', 'relationtype_scope':' ' }
         else:
-            savedict = {'title':relation, 'slug':relation, 'left_subject_id':rightmem, 'right_subject_id':leftmem, 'relationtype_id':reltype, 'left_subject_scope':' ', 'right_subject_scope':' ', 'relationtype_scope':' '}
+            savedict = {'title':relation, 'slug':relation, 'left_subject_id':right.id, 'right_subject_id':left.id, 'relationtype_id':relation.id, 'left_subject_scope':' ', 'right_subject_scope':' ', 'relationtype_scope':' '}
         
         rtt = Relation.objects.create(**savedict)
         rtt.save()
-        print "leftmem"+ str(leftmem) + "   rightmem" + str(rightmem) + "    reltype" +str(reltype)+ "    leftrole"+ str(leftrole) +  "   rightrole " + str(rightrole)
+        print "left"+ str(left) + " right" + str(right) + " reltype" +str(relation)+ "    leftrole"+ str(leftrole) +  "   rightrole " + str(rightrole)
+
         print savedict
     
         return HttpResponseRedirect("/nodetypes/")
         #return savedict
     
     except IntegrityError: #Exception raised when the relational integrity of the database is affected, e.g. a foreign key check fails, duplicate key, etc.
-        raise Http404()
+        return HttpResponseRedirect("/nodetypes/")
         #pass
 

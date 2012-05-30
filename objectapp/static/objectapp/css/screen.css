@@ -1,4 +1,4 @@
-body { line-height: 1.5; font-family: Arial, Helvetica, sans-serif; color: #333333; font-size: 75%; height:1500px;width:1500px}
+body { line-height: 1.5; font-family: Arial, Helvetica, sans-serif; color: #333333; font-size: 75%; height:1500px; width: 85%; }
 
 h1, h2, h3, h4, h5, h6 { font-weight: normal; color: #000000; border-radius:15px; }
 h1 img, h2 img, h3 img, h4 img, h5 img, h6 img { margin: 0; }
@@ -424,7 +424,7 @@ ul, ol { margin: 0 1.5em 1.5em 0; padding-left: 3.333em; }
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-#header { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; }
+#header { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3;  background: #2b3959; color: white;}
 #header h1 { font-size: 2em; font-weight: bold; margin-bottom: 0; }
 #header .top-navigation { float: right; }
 #header .top-navigation img { border: 0; }
@@ -440,7 +440,7 @@ a:hover { text-decoration: underline; }
 #b1 {position:relative; center:5%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 #b2 {position:relative; center:6%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 
-#body { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; }
+#body { margin-bottom: 1em; border-bottom: 0px solid #e9e9f3; width: 100%;}
 
 #content h1, #content h2, #content h3 { margin-top: 10px; }
 
@@ -450,10 +450,10 @@ a:hover { text-decoration: underline; }
     float: left;
     clear: both;
     margin-bottom: 10px;
-    margin-left: 0;
-    margin-right: 60px;
+    margin-left: 0%;
+    margin-right: 0%;
     margin-top: 10px;
-    padding-right: 30px;
+    padding-right: 0%;
     width:250px;
 }
 
@@ -479,14 +479,14 @@ a:hover { text-decoration: underline; }
     font-weight: bold;
 }
 #graphcss{
-    margin-left: 230px;
-    margin-right: 150px;
+    margin-left: 237px;
+    margin-right: 0px;
     margin-top: 1px;
     position: absolute;
-    width: 300px;
+    width: 46%;
     height: 900px
 }
-#sidebar{position:absolute; margin-left:600px; margin-right:150px; margin-top:10px; width:300px;}
+#sidebar{position:relative; margin-left:92%; margin-right:0px; margin-top:10px; width:23%;}
 #sidebar div:first-child h3 { margin-top:0px; }
 #sidebar h3 { background-color: #FFE9E8; padding: 0.5em; }
 #sidebar p { padding-left: 1em; }
@@ -508,7 +508,7 @@ a:hover { text-decoration: underline; }
 #sidebar .tags div ul .tag_4 { font-size: 2em; color: #0070a8; }
 #sidebar .tags div ul .tag_5 { font-size: 2.25em; color: #0099e5; }
 #sidebar .tags div ul .tag_6 { font-size: 3em; color: #00adff; }
-
+#footer{ position:static; border-bottom: 1px solid #E9E9F3; margin-top: 85px; }
 th.month{padding:0cm 2.5cm;}
 table.month { margin-bottom: 0; }
 table.month th.month { text-transform: uppercase; color: #555555; background: none; }
@@ -516,7 +516,7 @@ table.month th { text-transform: capitalize; color: #555555; background-color: #
 table.month td { text-align: center; font-weight: bold; }
 table.month td.objecttype { background-color: #C4EBF4; }
 
-div.paginator { margin-bottom: 1em; }
+div.paginator { margin-bottom: 2em; }
 div.paginator span { font-size: 1.2em; margin-left: 0.3em; padding: 0 0.5em 0 0.5em; float: left; border: 1px solid #e9e9f3; }
 div.paginator span.index { margin-left: 0; }
 div.paginator span.page:hover, div.paginator span.next:hover, div.paginator span.previous:hover { background-color: #006699; }

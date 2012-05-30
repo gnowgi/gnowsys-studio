@@ -20,11 +20,15 @@ from gstudio.managers import HIDDEN
 from gstudio.managers import PUBLISHED
 from gstudio.ping import DirectoryPinger
 from gstudio.admin.forms import AttributetypeAdminForm
+from gstudio.settings import GSTUDIO_VERSIONING
 
 
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+    parent_class = admin.ModelAdmin 
 
-
-class AttributetypeAdmin(reversion.VersionAdmin):
+class AttributetypeAdmin(parent_class):
     """Admin for Attributetype model"""
     form = AttributetypeAdminForm
     date_hierarchy = 'creation_date'

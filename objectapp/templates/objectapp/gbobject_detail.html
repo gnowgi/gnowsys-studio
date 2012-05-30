@@ -1,6 +1,5 @@
 {% extends "objectapp/base.html" %}
 {% load i18n comments objectapp_tags %}
-
 {% block title %}{{ object.title }}{% endblock %}
 
 {% block meta-description %}{% if object.excerpt %}{{ object.excerpt|striptags }}{% else %}{{ object.content|striptags|truncatewords:100 }}{% endif %}{% endblock %}
@@ -30,14 +29,11 @@
 {% endblock %}
 
 
-
-
 {% block content %}
 {% block gbobject-content %}
 
   {% with object.html_content|safe as object_content %}
   {% include "objectapp/_gbobject_detail.html" %}
-
 
   <script type="text/javascript" >
 			  var s = 0
@@ -78,6 +74,20 @@
 {% endblock %}
 
 
+<br/>
+<p><br/>
+<b>AddAttributes: </b> 
+<input type="hidden" id="id_object" value="{{ object.title }}"/>
+{% for i in object.getattributetypes %}
+<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
+{% endfor %}
+</p>
+<p>
+<b>Add Relations: </b>
+{% for i in object.getrelationtypes %}
+<a href=" {{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}/">{{ i }}</a><nbsp>;
+{% endfor %}
+</p>
 
 {% block gbobject-widgets %}
 <div class="gbobject-widgets span-16 last">
@@ -132,11 +142,7 @@
   </div>
 </div>
 {% endblock %}
-
-
-
-
-
+ 
 
 {% block gbobject-comments %}
 <div id="comments" class="span-16 last">

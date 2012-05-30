@@ -14,16 +14,22 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from tagging.models import Tag
 
 import reversion
+
 from gstudio import settings
 from gstudio.managers import HIDDEN
 from gstudio.managers import PUBLISHED
 from gstudio.ping import DirectoryPinger
 from gstudio.admin.forms import ObjecttypeAdminForm
+from gstudio.settings import GSTUDIO_VERSIONING
 
 
+if GSTUDIO_VERSIONING == True:
+    parent_class = reversion.VersionAdmin
+else:
+   parent_class = admin.ModelAdmin
 
 
-class ObjecttypeAdmin(reversion.VersionAdmin):
+class ObjecttypeAdmin(parent_class):
     """Admin for Objecttype model"""
     form = ObjecttypeAdminForm
     date_hierarchy = 'creation_date'
@@ -172,8 +178,10 @@ class ObjecttypeAdmin(reversion.VersionAdmin):
         if not form.cleaned_data.get('authors'):
             form.cleaned_data['authors'].append(request.user)
 
-        nodetype.last_update = datetime.now()
         nodetype.save()
+       # nodetype.nbhood = nodetype.get_nbh
+      #  nodetype.last_update = datetime.now()
+      #  nodetype.save()
 
     def queryset(self, request):
         """Make special filtering by user permissions"""

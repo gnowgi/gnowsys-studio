@@ -3,7 +3,7 @@ $ = django.jQuery
 
  $(document).ready(function() {
 	   
-	   $("#id_submit_rt").ajaxSend(function(e,xhr,settings){
+	   $("#id_go").ajaxSend(function(e,xhr,settings){
 		   
 
     function getCookie(name) {
@@ -41,14 +41,14 @@ $ = django.jQuery
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
 	       });	   
-		   $("#id_submit_rt").click(function(){
+		   $("#id_go").click(function(){
 			   left = document.getElementById("id_left")
-			       rt = document.getElementById("id_reltype")
+			       rt = document.getElementById("id_rel")
 			       right = document.getElementById("id_right")
 			       absolute_url = document.getElementById("id_back_url")
-			       url = "/objects/dynamicRelation/save/"+ left.value + "/" +rt.value+"/"+right.value+"/"
-			       // alert(url);
-			       $.get(url,function(data){		     
+			       url = "/objects/dynamicRelation/save/"+ left.value+"/"+rt.value+"/"+right.value+"/"
+			       //alert(url);
+			       $.get(url, function(data){		     
 			       	      window.location.replace(absolute_url.value);
 			       	   });
 

@@ -56,7 +56,7 @@ SAVE_PING_EXTERNAL_URLS = getattr(settings, 'OBJECTAPP_PING_EXTERNAL_URLS', True
 
 COPYRIGHT = getattr(settings, 'OBJECTAPP_COPYRIGHT', 'Objectapp')
 
-PAGINATION = getattr(settings, 'OBJECTAPP_PAGINATION', 10)
+PAGINATION = getattr(settings, 'OBJECTAPP_PAGINATION', 4)
 ALLOW_EMPTY = getattr(settings, 'OBJECTAPP_ALLOW_EMPTY', True)
 ALLOW_FUTURE = getattr(settings, 'OBJECTAPP_ALLOW_FUTURE', True)
 
@@ -133,3 +133,5 @@ TWITTER_ACCESS_SECRET = getattr(settings, 'TWITTER_ACCESS_SECRET', '')
 USE_TWITTER = getattr(settings, 'OBJECTAPP_USE_TWITTER',
                       bool(TWITTER_ACCESS_KEY and TWITTER_ACCESS_SECRET and \
                            TWITTER_CONSUMER_KEY and TWITTER_CONSUMER_SECRET))
+
+OBJECTAPP_VERSIONING = False

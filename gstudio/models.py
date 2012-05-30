@@ -1618,7 +1618,6 @@ class Relationtype(Nodetype):
         nbh['plural'] = self.plural 
 
         nbh['contains_subtypes'] = Nodetype.objects.filter(parent=self.id)
-        # get all the objects inheriting this OT 
         nbh['contains_members'] = self.member_objects.all()
         nbh['prior_nodes'] = self.prior_nodes.all()             
         nbh['posterior_nodes'] = self.posterior_nodes.all() 

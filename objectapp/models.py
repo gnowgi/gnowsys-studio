@@ -113,6 +113,7 @@ from objectapp.url_shortener import get_url_shortener
 from objectapp.signals import ping_directories_handler
 from objectapp.signals import ping_external_urls_handler
 from objectapp.settings import OBJECTAPP_VERSIONING
+
 if OBJECTAPP_VERSIONING:
     import reversion
     from reversion.models import *
@@ -208,12 +209,6 @@ class Gbobject(Node):
     objects = models.Manager()
     published = GbobjectPublishedManager()
 
-
-    # @property
-    # def getdataType(self):
-    #     gb = 'attribute'+str(self.get_dataType.display())
-    #     gb = gb.lower()
-    #     return gb
         
     @property
     def getattributetypes(self):
@@ -221,17 +216,30 @@ class Gbobject(Node):
         Returns the attributetypes of self as well as its parent's attributetype.
         """
         try:
-            parenttype = []
+            originalnt = []
+            pt = []
             attributetype = []
-            returnlist = []
+            returndict = {}
             obj = self
-            parenttype = obj.objecttypes.all()
+            originalnt = obj.objecttypes.all()
+
+            for i in range(len(originalnt)):
+                obj = originalnt[i].ref
+                pt.append(obj)
+                while  obj.parent:
+                    pt.append((obj.parent).ref)
+                    obj = obj.parent
+            
             attributetype.append(obj.subjecttype_of.all())
-            for each in parenttype:
+            for each in pt:
                 attributetype.append(each.subjecttype_of.all())
 
             attributetype = [num for elem in attributetype for num in elem]
-            return attributetype
+            
+            for i in attributetype:
+                returndict.update({str(i.title):i.id})
+
+            return returndict.keys()
         
         except:
             return None
@@ -240,6 +248,8 @@ class Gbobject(Node):
 
     @property
     def getrelationtypes(self):
+        originalnt= []
+        originalpt = []
         pt =[] #contains parenttype
         reltype =[] #contains relationtype
         titledict = {} #contains relationtype's title
@@ -247,19 +257,22 @@ class Gbobject(Node):
         finaldict = {} #contains either title of relationtype or inverse of relationtype
         listval=[] #contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid
         
-         #gb= Gbobject.objects.get(title=str(gbid))
-        gb=self
-        pt = gb.objecttypes.all()
+        gb=self.ref
+        originalnt = gb.objecttypes.all()
+        for i in originalnt:
+            pt.append(i.ref)
+        
+        for i in range(len(originalnt)):
+            obj = originalnt[i].ref
+            while  obj.parent:
+                pt.append((obj.parent).ref)
+                obj = obj.parent
+        pt.append(gb)
         for i in range(len(pt)):
             if Relationtype.objects.filter(left_subjecttype = pt[i].id):
                 reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))    
             if Relationtype.objects.filter(right_subjecttype = pt[i].id):
                  reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id)) 
-            if Relationtype.objects.filter(left_subjecttype = gb):
-                 reltype.append(Relationtype.objects.filter(left_subjecttype = gb))
-            if Relationtype.objects.filter(right_subjecttype = gb):
-                 reltype.append(Relationtype.objects.filter(right_subjecttype = gb))                           
-        
                 
         reltype = [num for elem in reltype for num in elem]
         
@@ -273,13 +286,14 @@ class Gbobject(Node):
    
         for j in range(len(pt)):
             for i in range(len(listval)):
-                if pt[j].id == listval[i].left_subjecttype_id or gb.id == listval[i].left_subjecttype_id :
-                    finaldict.update({titledict.values()[i]: titledict.keys()[i]})
-                elif pt[j].id == listval[i].right_subjecttype_id or gb.id == listval[i].right_subjecttype_id:
-                    finaldict.update({titledict.values()[i]:inverselist[i]})
+                if pt[j].id == listval[i].left_subjecttype_id and (str(listval[i].left_applicable_nodetypes) == 'OT' or str(listval[i].left_applicable_nodetypes) == 'OB'):
+                    finaldict.update({titledict.keys()[i]:titledict.values()[i]})
+                if pt[j].id == listval[i].right_subjecttype_id and (str(listval[i].right_applicable_nodetypes)=='OT' or str(listval[i].right_applicable_nodetypes) == 'OB'):
+                    finaldict.update({inverselist[i]:titledict.values()[i]})
 
 
-        return finaldict.values()
+
+        return finaldict.keys()
  
     def get_relations(self):
         relation_set = {}
@@ -749,7 +763,7 @@ class Gbobject(Node):
         if self.objecttypes.count:
             for each in self.objecttypes.all():
                 return '%s is a member of objecttype %s' % (self.title, each)
-        return '%s is not a fully defined name, consider making it a member of a suitable objecttype' % (self.title)
+        return u'%s is not a fully defined name, consider making it a member of a suitable objecttype' % (self.title)
 
     @property
     def ref(self):

@@ -496,7 +496,6 @@ $(function() {
 		  <h2 class="nodetype-title">
 		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_nbh_dict.title }} {{ nt.id }}.{{ version_no }}
 		    </a>
-		    <a href="{{ nt.get_edit_url }}/history/{{ ssid }}" target="_blank"  title = "edit">[edit]</a>  
 		  </h2>
 		  {% with nt.html_content|safe as object_content %}
 		   <b>Name:<nbsp></b> {{ ver_nbh_dict.title }} <br/>
@@ -509,53 +508,39 @@ $(function() {
                                <b> Alternate names:<nbsp></b>
                                          {{ ver_nbh_dict.altnames}} <br/>
 		           {% endif %}
-	                   {% if ver_nbh_dict.type_of %}
-                                <b> Type of:<nbsp></b>
-                                {% for typekey,typevalue in ver_nbh_dict.type_of.items %}
-                                       <a href="{{typevalue}}" title = "{{typekey}}">{{typekey}}</a>;
-                                {% endfor %}<br/>
+	                    {% if ver_nbh_dict.member_of %}
+                                <b> Member of :<nbsp></b>
+
+                                    {% for mkey,mvalue in ver_nbh_dict.member_of.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
                            {% endif %}
 
-			  
-			    {% if ver_nbh_dict.member_of_metatypes %}
+              {% if ver_nbh_dict.relations %}
+                         
+                         
+                                 {% for relkey,relvalue in ver_nbh_dict.relations.items %}
+                                          <b>{{relkey}}:<nbsp></b>
+                                    {% for relk, relv in relvalue.items %}
+                                         <a href="{{relv}}">{{relk}}</a>;
+                                        {% endfor %}<br/>
+                                 {% endfor %}
+
+              {% endif %}
                            
-                          
-                                <b> Member of Metatypes:<nbsp></b>
-                                    {% for mkey,mvalue in ver_nbh_dict.member_of_metatypes.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-                          
-			   
-			        
-                           {% if ver_nbh_dict.contains_subtypes %}
-                                <b> Contains SubTypes:<nbsp></b>
-                                {% for stkey,stvalue in ver_nbh_dict.contains_subtypes.items %}
-                                        <a href="{{stvalue}}" title = "{{stkey}}">{{stkey}}</a>;
-                                {% endfor %}<br/>
-                           {% endif %}
-                          
-                          
-                           {% if ver_nbh_dict.contains_members %}
-                         
-                          
-                                <b>Contains Members:<nbsp></b>
-                                    {% for mkey,mvalue in ver_nbh_dict.contains_members.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-                         
-                           
-                         
-                         
-                           
-                                
-			    <b>Authors: <nbsp> </b>
-                                
-				       
-	                  
-			
-                              {% for author in nt.authors.all %}
+                           {% if ver_nbh_dict.attributes %}
+			   {% for atkey,atvalue in ver_nbh_dict.attributes.items %}
+                                 {% if atvalue %}
+			    <b>     {{atkey}}:<nbsp></b>
+                                    
+				    {% for items in atvalue %}
+					{{items}};<nbsp>
+                                    {% endfor %}
+                                 {% endif %}<br/>
+			{% endfor %}                         
+			{% endif %}
+			  <b>Authors: <nbsp> </b>
+                        {% for author in nt.authors.all %}
       			<span class="vcard author">
         		<a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
            		title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
@@ -564,79 +549,7 @@ $(function() {
                          
                             
                             
-                            {% if ver_nbh_dict.priornodes %}
-                         
-                           
-                                <b>Prior nodes:<nbsp></b>
-                                    {% for mkey,mvalue in ver_nbh_dict.priornodes.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-                           
-                           {% if ver_nbh_dict.posteriornodes %}
-                         
-                           
-                                <b>Posterior nodes:<nbsp></b>
-                                    {% for mkey,mvalue in ver_nbh_dict.posteriornodes.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-                             
-                            {% if ver_nbh_dict.relations %}
-                         
-                         
-                                 {% for relkey,relvalue in ver_nbh_dict.relations.items %}
-                                          <b>{{relkey}}:<nbsp></b>
-					{% for relk, relv in relvalue.items %}
-					    <a href="{{relv}}" title = "{{relk}}">{{relk}}</a>;
-                                        {% endfor %}<br/>
-				 {% endfor %}
-	                   {% endif %}
-                           
-                           {% if ver_nbh_dict.attributes %}
-                           
-				    {% for atkey,atvalue in ver_nbh_dict.attributes.items %}
-                                      {% if atvalue %}
-                                       <b>{{atkey}}:<nbsp> </b>
-                                        {% for atr in atvalue %}
-                                        	   {{atr}};
-                                         {% endfor %} <br/>
-                                      {% endif %}
-				    {% endfor %}
-	                   {% endif %}
-                            {% if ver_nbh_dict.leftroles %}
-                         
-                                                         
-				   <b>Left roles:<nbsp> </b>
-                                
-				    {% for lrkey,lrvalue in ver_nbh_dict.leftroles.items %}
-                                        <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;
-				    {% endfor %}       <br/>
-	                   {% endif %}
-                           
-                           {% if ver_nbh_dict.rightroles %}
-                        
-			      <b>Right roles:<nbsp> </b>
-                                
-				    {% for rrkey,rrvalue in ver_nbh_dict.rightroles.items %}
-                                        <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;
-				    {% endfor %}       <br/>
-	                   {% endif %}
-                           
                           
-                           {% if ver_nbh_dict.ats %}
-                                             
-                                
-				   <b>Subjecttype of:<nbsp> </b>
-                                
-				    {% for atkey,atvalue in ver_nbh_dict.ats.items %}
-                                        <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;
-				    {% endfor %}       <br/>
-	                   {% endif %}
-                           
-			 
-                           <b>Content:<nbsp></b>{{ ver_nbh_dict.content }}
-                            
 
 		  {% endwith %}
 		  {% endblock %}
@@ -650,7 +563,7 @@ $(function() {
 	
 	    <h3>{% trans "Versions" %}</h3>
 	   
-	    <form name="history" action="/nodetypes/display/compare_history/{{ ssid }}" >
+	    <form name="history" action="/objects/display/compare_history/{{ ssid }}" >
 	    <table cellspacing="0" border="2">
 	    <tr>
 	    <td> <input type="radio" name="group1" value="{{ ssid }}.{{ version_no }}" checked >{{ nt.id }}.{{ version_no }}</input></td>

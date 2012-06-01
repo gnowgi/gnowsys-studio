@@ -914,7 +914,7 @@ class Nodetype(Node):
 
         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
         g_json["node_metadata"].append(this_node) 
-	g_json["relset"].append(self.id)     
+
 
 	for key in predicate_id.keys():
 		if nbh[key]:

@@ -54,6 +54,7 @@ GSTUDIO_XMLRPC_PINGBACK = [
     ('gstudio.xmlrpc.pingback.pingback_extensions_get_pingbacks',
      'pingback.extensions.getPingbacks')]
 
+# The tuple has been modified to include entries for get and set functions
 GSTUDIO_XMLRPC_METAWEBLOG = [
     ('gstudio.xmlrpc.metaweblog.get_users_blogs',
      'blogger.getUsersBlogs'),

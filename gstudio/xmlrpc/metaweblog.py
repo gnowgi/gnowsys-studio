@@ -380,7 +380,7 @@ def new_media_object(blog_id, username, password, media):
                                 ContentFile(media['bits'].data))
     return {'url': default_storage.url(path)}  
 
-
+# Get functions start from here
 @xmlrpc_func(returns='string', args='int')
 def getNodetype(ssid):
       """Returns the nodetype of given nid """
@@ -478,7 +478,7 @@ def getAttributeType(subjecttypelist):
         d[str(s)] = "Node Does not Exist"
    return d
 
-
+# Get all function for getting all nodetypes
 @xmlrpc_func(returns='struct', args='string')
 
 def getAll(nodetype):
@@ -658,7 +658,7 @@ def getAllSnapshots(nid) :
    return "Node Does Not Exist"
   return n
 
-
+# Set functions begin from here
 @xmlrpc_func(returns='string', args=['struct','string'])
 def setAttributetype(d,objid) :
   

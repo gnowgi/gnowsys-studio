@@ -42,7 +42,7 @@ from xmlrpclib import Fault
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext as _
 
-
+# This file is needed to run XMLRPC !
 # Some constants for your pleasure
 #XXX: Any standardization?
 AUTHENTICATION_FAILED_CODE = 81

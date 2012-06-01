@@ -159,7 +159,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.sites',
     'mptt',
-    'reversion',
+    # 'reversion',
     'tagging',
     'django_xmlrpc',
     'grappelli.dashboard',

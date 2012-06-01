@@ -661,49 +661,57 @@ def getAllSnapshots(nid) :
 
 @xmlrpc_func(returns='string', args=['struct','string'])
 def setAttributetype(d,objid) :
-
-  p = NID.objects.get(id = objid)
-  t = p.ref._meta.module_name
-  w = []
-  if ( t == 'objecttype' or 'metatype') :
-   u = Attributetype.objects.filter(subjecttype_id = objid)
-   y = len(u)
-   r = 0
-   for i in u :
-     if str(i.title) == d['title'] :
-        return "Attributetype:",d['title']," already exists" 
+  
+   try :
+     p = NID.objects.get(id = objid)
+     t = p.ref._meta.module_name
+     w = []
+     if  t == 'objecttype' or t == 'metatype' :
+       u = Attributetype.objects.filter(subjecttype_id = objid)
+       y = len(u)
+       r = 0
+       for i in u :
+          if str(i.title) == d['title'] :
+             return "Attributetype:",d['title']," already exists" 
+          else :
+             r = r + 1
+       if r == y :
+          w = Attributetype(title = d['title'],applicable_nodetypes = d['nodetype'],subjecttype_id = objid,slug = d['slug'])
+          w.save()
+          return w.id
      else :
-        r = r + 1
-   if r == y :
-      w = Attributetype(title = d['title'],applicable_nodetypes = d['nodetype'],subjecttype_id = objid,slug = d['slug'])
-      w.save()
-   return w.id 
-
+        return "Not a objecttype"    
+   except NID.DoesNotExist :
+      return "Node Does Not Exist"
+  
 
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
 def setRelationtype(d,uid) :
  
-   
-   k = NID.objects.get(id = uid)
-   f = k.ref._meta.module_name
-   r = 0
-   t = []
-   if ( f == 'objecttype' or 'metatype') :
-      p = Relationtype.objects.filter(left_subjecttype_id = uid)
-      u = len(p)
-      for n in p :
-       if (str(n.title) == d['title']) :
+   try :
+     k = NID.objects.get(id = uid)
+     f = k.ref._meta.module_name
+     r = 0
+     t = []
+     if ( f == 'objecttype' or f == 'metatype') :
+       p = Relationtype.objects.filter(left_subjecttype_id = uid)
+       u = len(p)
+       for n in p :
+         if (str(n.title) == d['title']) :
            return "Relationtype :",d['title'],"already exists for",n.title
-       else :
+         else :
            r = r + 1
-      if r == u :
-         t = Relationtype(title = d['title'],left_subjecttype_id = uid,right_subjecttype_id = d['right_subjecttype_id'], 
+       if r == u :
+          t = Relationtype(title = d['title'],left_subjecttype_id = uid,right_subjecttype_id = d['right_subjecttype_id'], 
                           slug = d['slug'],inverse = d['inverse'])
-         t.save()
-
-      return t.id
+          t.save()
+          return t.id
+     else :
+       return " Not of type Objecttype or Metatype"
+   except NID.DoesNotExist :
+      return " Node does not Exist"
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
@@ -728,14 +736,15 @@ def setObjecttype(d) :
 @xmlrpc_func(returns='int', args=['struct','string'])
 
 def setObject(d,o) :
- 
-   k = NID.objects.get(id = o)
-   t = k.ref._meta.module_name
-   u = 0
-   r = 0
-   y = []
-   h = []
-   if (t == 'objecttype' or t =='metatype') :
+  
+   try : 
+    k = NID.objects.get(id = o)
+    t = k.ref._meta.module_name
+    u = 0
+    r = 0
+    y = []
+    h = []
+    if (t == 'objecttype' or t =='metatype') :
       p = Objecttype.objects.get(id = o)
       h = p.get_members
       u = len(h)
@@ -744,34 +753,50 @@ def setObject(d,o) :
           return "Object",d['title'],"already exists for",p.title
         else :
           r = r + 1       
-   if r == u :
-      y = Gbobject(title = d['title'],slug = d['slug'])
-      y.save()
-      y.objecttypes.add(p)  
-   return y.id
+      if r == u :
+       y = Gbobject(title = d['title'],slug = d['slug'])
+       y.save()
+       y.objecttypes.add(p)  
+       return y.id
+    else :
+       return "Not of type Objecttype or metatype"
+   except NID.DoesNotExist :
+      return "Node does not exist"
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
 def setAttribute(d,objid) :
-    
-    p = Attributetype.objects.filter(subjecttype_id = objid)
-    s = []
-    for i in p :
-        if (str(i.title) == d['attributetype']) :
-          s = Attribute(attributetype_id = i.id,subject_id = d['subject_id'],svalue = d['svalue'])
-          s.save()
-    return s.id
+    try : 
+      k = NID.objects.get(id = objid)  
+      t = k.ref._meta.module_name
+      if  t == 'objecttype' or t == 'metatype' :
+        p = Attributetype.objects.filter(subjecttype_id = objid)
+        s = []
+        for i in p :
+          if (str(i.title) == d['attributetype']) :
+            s = Attribute(attributetype_id = i.id,subject_id = d['subject_id'],svalue = d['svalue'])
+            s.save()
+            return s.id
+      else :
+        return " The objectid entered is not a objecttype or metatype"
+    except NID.DoesNotExist:
+       return "Node does not Exist"
+            
+     
 
 @xmlrpc_func(returns='int', args=['struct','string','string'])
 
 def setRelation(d,obj1,obj2) :
-    
-    p = Relationtype.objects.filter(left_subjecttype_id = obj1,right_subjecttype_id = obj2)
-    for i in p :
-        if (str(i.title) == d['relationtypename']) :
-          s = Relation(relationtype_id = i.id,left_subject_id = d['left_subject_id'],right_subject_id = d['right_subject_id'])
-          s.save()
-    return s.id
+    try :   
+      p = Relationtype.objects.filter(left_subjecttype_id = obj1,right_subjecttype_id = obj2)
+      s = []
+      for i in p :
+         if (str(i.title) == d['relationtypename']) :
+           s = Relation(relationtype_id = i.id,left_subject_id = d['left_subject_id'],right_subject_id = d['right_subject_id'])
+           s.save()
+           return s.id
+    except Relationtype.DoesNotExist :
+       return "Relationtype Does Not Exist"  
 
 
 

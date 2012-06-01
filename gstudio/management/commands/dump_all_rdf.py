@@ -9,6 +9,8 @@ from rdflib.term import URIRef
 from tempfile import mkdtemp
 from gstudio.models import *
 from objectapp.models import *
+import settings
+import os.path
 from django.core.management.base import NoArgsCommand
 from django.core.management.base import BaseCommand
 
@@ -19,7 +21,7 @@ def rdf_all(notation='xml'):
     """
     valid_formats = ["xml", "n3", "ntriples", "trix"]
     default_graph_uri = "http://gstudio.gnowledge.org/rdfstore"
-   # default_graph_uri = "http://example.com/"
+  
     configString = "/var/tmp/rdfstore"
 
     # Get the IOMemory plugin.
@@ -40,8 +42,7 @@ def rdf_all(notation='xml'):
 
 
     # Now we'll add some triples to the graph & commit the changes
-    #rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
-    rdflib = Namespace('http://example.com/')
+    
     graph.bind("gstudio", "http://gnowledge.org/")
     exclusion_fields = ["id", "rght", "node_ptr_id", "image", "lft", "_state", "_altnames_cache", "_tags_cache", "nid_ptr_id", "_mptt_cached_fields"]
 
@@ -133,8 +134,10 @@ def rdf_all(notation='xml'):
                 graph.add((rdflib[subject], rdflib[predicate], Literal(pobject)))                        
         
     rdf_code=graph.serialize(format=notation)
-               
-    temp_path = '/home/labadmin/dev/gnowsys-studio/demo/newfiles/' + 'rdfdata'+'.rdf'
+               #path to store the rdf in a file
+    
+    x = os.path.join(os.path.dirname(__file__), 'rdffiles.rdf')
+    temp_path=str(x)
     file = open(temp_path, 'w')
     file.write(rdf_code)
     file.close()
@@ -157,9 +160,6 @@ def link(node):
     	url_addr=link+host_name+node_url
     	rdflib=Namespace(url_addr) 
         return rdflib
-
-
-#makes individual rdf file for nodes.
 
 
     	

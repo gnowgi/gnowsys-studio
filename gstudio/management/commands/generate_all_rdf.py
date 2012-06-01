@@ -168,7 +168,7 @@ def link(node):
 class Command(BaseCommand):
 	def handle(self,*args,**options):
 		
-                # verify the type of the node and pass the node to display the rdf accordingly.
+                # verifies and pass  the node rdf_discription() to display the rdf accordingly.
 		
 		inr=0
 		

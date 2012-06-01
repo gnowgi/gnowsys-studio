@@ -105,6 +105,9 @@ setup(name='django-gstudio',
                         'django-ratings>=0.3.6',
                         'rdflib>=3.0.0',
                         'django-registration>=0.8',
+                        'django-4store>=0.3',
+                        'HTTP4Store>=0.2',
+			'html5lib>=0.95', 
 
 
                         ])

@@ -96,6 +96,7 @@ setup(name='django-gstudio',
       include_package_data=True,
       zip_safe=False,
       install_requires=['BeautifulSoup>=3.2.0',
+                        'django>=1.4',
                         'django-mptt>=0.4.2',
                         'django-tagging>=0.3.1',
                         'django-xmlrpc>=0.1.3',
@@ -105,6 +106,6 @@ setup(name='django-gstudio',
                         'django-ratings>=0.3.6',
                         'rdflib>=3.0.0',
                         'django-registration>=0.8',
-
-
+                        'PIL>=1.1.7',
+                        'diff-match-patch>=20120106',
                         ])

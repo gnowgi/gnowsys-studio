@@ -178,8 +178,8 @@
 
 function init(a,b)
 {
+
  
-  
   nodes_by_id = _.reduce(a, function(acc, n) {
         acc[n._id] = n;
         return acc;
@@ -198,16 +198,19 @@ function init(a,b)
         return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content" 
       }).value();
 
-
+ 
 }
 
 $(function fgraph() {
-		  
+neighbour_node= new Array();
+clicked_node=new Array();
+prev_node=new Array();
+neighbour_node= neighbour_node.concat({{object.id}});		  
 
 $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) { 
 										metadata=json1.node_metadata;
   										relations=json1.relations;
-										relnset=json1.relset
+									
 										init(metadata,relations);
 										load({{object.id}}) });
 
@@ -338,29 +341,128 @@ function load(key)
                                 .attr("fill", "#6D6666"); 
 
 
+$(window).bind('keydown',function(event) {
+		if(event.keyCode==17){
+		 
+		 new_g.on("click",function(d){                  
+                               
+                               
+		                 
+				
+                if(d._id>0 && d.expanded=="true")
+				{ 
+				
+                                $.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
+					new_metadata=json2.node_metadata;
 
-$(window).bind('keydown',function(event){
-	if(17==event.keyCode){
-         new_g.on("click",function(d){ 
-                         if(d._id>0 && d.expanded=="false")
-			{ 
-			d3.select("#amazingViz").remove();  
-			d.expanded="true";
-     			$.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
-    			new_metadata=json2.node_metadata;
-  			new_relations=json2.relations;	
-			new_relnset=json2.relset		
-			metadata=_.union(new_metadata,metadata);
-			relations=_.union(new_relations,relations);			
-			init(metadata,relations);
-			load(d._id)
-			})
+ 				});
+                         	
+                               _.filter(new_metadata, function(e){if(e._id>0) 
+				{
+				  clicked_node=clicked_node.concat(e._id) ;   
+                                 }
+                                });
+				
+				
+ 				index = _.indexOf(neighbour_node , d._id);
+				prev_node=neighbour_node.slice(0,index);
+				
+				 neighbour_node = _.difference(neighbour_node,clicked_node) ;
+				
+                                neighbour_node= neighbour_node.concat(prev_node);
+				neighbour_node = _.uniq(neighbour_node);
+				metadata=[]
+				relations=[]
+			        metadata1=[]
+				relations1=[]
+					for(i=0;i<(neighbour_node.length);i++)
+					{
+                 
+					d3.select("#amazingViz").remove();  
+                                         g=neighbour_node[i]			
+                                        
+	    				
+					
+					$.ajax({
+					async:false,
+					url:'/nodetypes/graphs/graph_json/' + g , 
+					datatype:'json',
+					success:function (json2) {
+	    			new_metadata=json2.node_metadata;
+	  			new_relations=json2.relations;	
+				metadata=_.union(new_metadata,metadata);
+						
+				relations=_.union(new_relations,relations);
+				check_Relationtype(metadata,relations); 
+				}});						     			
+							
 			}
-			
-                    });
+				_.each(metadata, function(m){
+				
+				  for(i=0;i<neighbour_node.length;i++)
+				  	{
+					if(m._id==neighbour_node[i])
+						{m.expanded="true";}
+					else 
+						{m.expanded="false";}
+					}
+					   
+                                
+                                });
+				
+         			init(metadata,relations);
+				load({{object.id}}) ;                        
 
-}
+ 				
+	
+                            }
+
+        
+
+
+		else if(d._id>0)
+				{
+                                
+				neighbour_node =neighbour_node.concat(d._id);
+				
+				d3.select("#amazingViz").remove();  
+				
+				$.ajax({
+					async:false,
+					url:'/nodetypes/graphs/graph_json/' + d._id , 
+					datatype:'json',
+					success:function (json2) {
+				
+	    			new_metadata=json2.node_metadata;
+	  			new_relations=json2.relations;	
+						
+				metadata=_.union(new_metadata,metadata);
+				relations=_.union(new_relations,relations);	
+                                check_Relationtype(metadata,relations);
+				_.each(metadata, function(m){
+				
+				  for(i=0;i<neighbour_node.length;i++)
+				  	{
+					if(m._id==neighbour_node[i])
+						m.expanded="true";
+					}
+				});
+					   
+                                
+                                }});
+				console.log(metadata);
+				init(metadata,relations);
+				load({{object.id}});
+
+
+				
+					
+				}
 });
+}
+
+});         
+
 
 
 
@@ -370,15 +472,7 @@ $(window).bind('keydown',function(event){
 		});	
 
 
-  	  /*new_g.append("svg:ellipse")
-			.attr("cx", function(d) { return d.x - w/2.0 +15; })
-			.attr("cy", function(d) { return d.y - h/2.0 +15 ; })
-			.call(force.drag)
-			.attr("rx", function(d) { return ((d.screen_name).length) +10 })
-			.attr("ry", function(d) {  if (d._id==key) return 8; else if (isNaN(d._id) || (d._id)<0) return 1; else return 7 });
-                       //.style("fill", function color(d) { if (d._id==key) return "red"; else if (isNaN(d._id) || (d._id)<0) return "white" ; else return "green"});*/
-			
-
+  	  
 
 
 			
@@ -389,8 +483,7 @@ $(window).bind('keydown',function(event){
 			.attr("dy", ".35em")
                         .attr("text-anchor","middle") 
 			
-                       // .attr("style",function text(d) { if ((d._id)>0) return "font-size:9.00pt;fill:blue;" ; else return "font-size:9.00pt;fill:black;"}) 
-    
+                       
                         .text(function(d) {
                           return d.screen_name;
                         });  
@@ -423,7 +516,7 @@ $(window).bind('keydown',function(event){
 				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
-				    .style("fill", function color(d) {var e=(d._id).charAt(0); if (d.expanded=="true") return "red";  else return "none"});
+				    .style("fill", function(d) {if ((d.expanded=="true" && d.refType=="Objecttype") ||(d._id=={{object.id}}) ) return "blue"; else if(d.expanded=="true" && d.refType=="Gbobject") return "red"; else return "none"});
 
 
 
@@ -462,9 +555,35 @@ $(window).bind('keydown',function(event){
 
 }
 
+function check_Relationtype(metadata,relations)
+{
+			_.each(metadata,function(d){
+						    if (d.refType=="Relationtype")
+							{ 
+							  a=d.inverse;
+							  if (d.flag==1)
+							  {
+							  	relations= _.reject(relations,function(e)
+										     {
+											return e.type==a
+										     });
+							  }
+						          else if (d.flag==0)
+							  {
+							  	relations= _.reject(relations,function(e)
+										     {
+											return e.type==d.screen_name
+										     });
+							  }
+							}
+							 
+						 }); 
+
+
+}
+
 
 });
-//fgraph({{object.id}});
 
 </script>
 

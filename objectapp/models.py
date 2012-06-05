@@ -480,6 +480,7 @@ class Gbobject(Node):
 				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
 				
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
+
 				if not isinstance(nbh[key],basestring):
                                     for item in nbh[key]:
 					if isinstance(item,unicode):
@@ -516,8 +517,9 @@ class Gbobject(Node):
                                     g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"b") })
                                     attr_counter-=1
 							
-			except:
-                            pass
+			except EOFError:
+				 print "Oops!  That was no valid number.  Try again..."
+                            
         #print g_json
         return json.dumps(g_json)   
 

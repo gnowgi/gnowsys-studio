@@ -349,7 +349,7 @@ $(window).bind('keydown',function(event) {
                                
 		                 
 				
-                if(d._id>0 && d.expanded=="true")
+                if(d._id>0 && d.expanded=="true" && d._id!= {{object.id}})
 				{ 
 				
                                 $.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
@@ -393,7 +393,7 @@ $(window).bind('keydown',function(event) {
 				metadata=_.union(new_metadata,metadata);
 						
 				relations=_.union(new_relations,relations);
-				check_Relationtype(metadata,relations); 
+				relations= check_Relationtype(metadata,relations); 
 				}});						     			
 							
 			}
@@ -420,7 +420,7 @@ $(window).bind('keydown',function(event) {
         
 
 
-		else if(d._id>0)
+		else if(d._id>0 && d._id!= {{object.id}})
 				{
                                 
 				neighbour_node =neighbour_node.concat(d._id);
@@ -438,7 +438,7 @@ $(window).bind('keydown',function(event) {
 						
 				metadata=_.union(new_metadata,metadata);
 				relations=_.union(new_relations,relations);	
-                                check_Relationtype(metadata,relations);
+                                relations= check_Relationtype(metadata,relations);
 				_.each(metadata, function(m){
 				
 				  for(i=0;i<neighbour_node.length;i++)
@@ -557,7 +557,9 @@ $(window).bind('keydown',function(event) {
 
 function check_Relationtype(metadata,relations)
 {
-			_.each(metadata,function(d){
+
+	
+		_.each(metadata,function(d){
 						    if (d.refType=="Relationtype")
 							{ 
 							  a=d.inverse;
@@ -578,6 +580,7 @@ function check_Relationtype(metadata,relations)
 							}
 							 
 						 }); 
+return relations;
 
 
 }

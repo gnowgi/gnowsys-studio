@@ -405,7 +405,7 @@ $(window).bind('keydown',function(event) {
 				metadata=_.union(new_metadata,metadata);
 						
 				relations=_.union(new_relations,relations);
-				check_Relation(metadata,relations);
+				relations= check_Relation(metadata,relations);
 				 
 				}});						     			
 							
@@ -446,7 +446,7 @@ $(window).bind('keydown',function(event) {
 						
 				metadata=_.union(new_metadata,metadata);
 				relations=_.union(new_relations,relations);	
-                                check_Relation(metadata,relations);
+                                relations= check_Relation(metadata,relations);
 
 				_.each(metadata, function(m){
 				
@@ -592,6 +592,7 @@ function check_Relation(metadata,relations)
 							}
 							 
 						 }); 
+   return relations;
 
 
 }

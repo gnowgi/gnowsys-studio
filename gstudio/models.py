@@ -893,8 +893,7 @@ class Nodetype(Node):
     def get_graph_json(self):
         
         
-        # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
-	g_json = {}
+       	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
 	
@@ -903,72 +902,57 @@ class Nodetype(Node):
 	global attr_counter 
 	nbh = self.get_nbh
 	predicate_id = {}
-        
+
         for key in nbh.keys():
             val = str(counter) + "a"
             predicate_id[key] = val
-            counter = counter + 1
-        #print predicate_id
+            counter = counter + 1     
 
-        
-
-        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"expanded":"true"}
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
         g_json["node_metadata"].append(this_node) 
 
 
 	for key in predicate_id.keys():
 		if nbh[key]:
 			try:
-				#g_json[str(key)]=[] 
-				#g_json["relations"].append(key)    
-
 				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-
-				#g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
-
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 
 				if not isinstance(nbh[key],basestring):
-                                    for item in nbh[key]:
-					if item.reftype!="Relation":
-                                        # create nodes
+				
+                                    	for item in nbh[key]:		
+						if item.reftype=="Relationtype":
+							if item.left_subjecttype.id==self.id:
+								flag=1
+							elif item.right_subjecttype.id==self.id:
+								flag=0
+							# create nodes
 
-					        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"expanded":"false"})
-					   
 
+							g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype,"inverse":item.inverse,"flag":flag})
 
-						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+					       
+						g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype})			
 						#create links
-		                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+				                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
 
-					else:
-						
-						 if item.left_subject.id==self.id:
-							item1=item.right_subject
-						 elif item.right_subject.id==self.id:
-							item1=item.left_subject
-						
-						 g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"expanded":"false"})
-
-						# g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-						#create links
-		                                 g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
-			
+					
                                 else:
-				 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
-		            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
-				 	#for item in value.keys():
+				    
                                     g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
-				    #g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
+				    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
                                     attr_counter-=1
 							
 			except:
                             pass
-        #print g_json
+       
 	
-        return json.dumps(g_json) 
-    
+
+        return json.dumps(g_json)  
+
+
+
+
     @property
     def get_possible_attributes(self):
         """

@@ -98,12 +98,21 @@ GRAPPELLI_ADMIN_TITLE = '<a href="/">Gnowledge Studio</a>'
 
 GRAPPELLI_INDEX_DASHBOARD = "demo.dashboard.CustomIndexDashboard"
 
+GSTUDIO_RDF_FILEPATH = os.path.join(os.path.dirname(__file__), 'rdffiles.rdf')
 
 # Authentication related
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 LOGIN_REDIRECT_URL = '/'
+
+# fourstore related
+FOURSTORE_KBNAME = "demo"  # Name of 4store knowledge base
+FOURSTORE_PORT = 8067      # Port for 4store HTTP server
+SPARQL_ENDPOINT = "http://localhost:8067/sparql/"
+
+
+
 
 
 
@@ -173,6 +182,9 @@ INSTALLED_APPS = (
     'registration',
     'graphviz',
     'demo',
+    'fourstore',
+    'HTTP4Store',
+    'html5lib',
     # Uncomment the south entry to activate south for database migrations
     # Please do install south before uncommenting
     # command: sudo pip install south 

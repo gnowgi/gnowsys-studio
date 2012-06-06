@@ -57,7 +57,7 @@ def rdf_all(notation='xml'):
     		node=Gbobject.objects.get(title=node)
     		rdflib=link(node)  
 		   
-            elif (node_type=='Processes'):
+            elif (node_type=='Process'):
     		node=Gbobject.objects.get(title=node)
     		rdflib=link(node)
 		  
@@ -100,7 +100,7 @@ def rdf_all(notation='xml'):
             elif (node_type=='AttributeSpecification'):
     		node=AttributeSpecification.objects.get(title=node)
     		rdflib=link(node) 	 
-    
+              
             elif (node_type=='RelationSpecification'):
     		node=RelationSpecification.objects.get(title=node)
     		rdflib=link(node) 	 
@@ -118,12 +118,15 @@ def rdf_all(notation='xml'):
     		rdflib = Namespace('http://sbox.gnowledge.org/gstudio/')
         except:
             if(node_type=='Attribute'):
+                node=Attribute.objects.get(title=node) 
                 rdflib= Namespace('http://sbox.gnowledge.org/gstudio/')
     
             if(node_type=='Relationtype' ):
+                node=Attribute.objects.get(title=node)
                 rdflib= Namespace('http://sbox.gnowledge.org/gstudio/')
                     
             if(node_type=='Metatype'):
+                node=Attribute.objects.get(title=node)
                 rdflib= Namespace('http://sbox.gnowledge.org/gstudio/')
 
         subject=str(node_dict['id'])

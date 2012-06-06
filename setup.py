@@ -96,6 +96,7 @@ setup(name='django-gstudio',
       include_package_data=True,
       zip_safe=False,
       install_requires=['BeautifulSoup>=3.2.0',
+                        'django>=1.4',
                         'django-mptt>=0.4.2',
                         'django-tagging>=0.3.1',
                         'django-xmlrpc>=0.1.3',
@@ -107,7 +108,6 @@ setup(name='django-gstudio',
                         'django-registration>=0.8',
                         'django-4store>=0.3',
                         'HTTP4Store>=0.2',
-			'html5lib>=0.95', 
-
-
+			'html5lib>=0.95',
+                      
                         ])

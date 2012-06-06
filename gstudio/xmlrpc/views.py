@@ -157,6 +157,7 @@ if hasattr(settings, 'XMLRPC_METHODS'):
                 + '"%s" is not callable in module %s' % (attr, module))
 
         #xmlrpcdispatcher.register_function(func, name)
+# Registration for Gnowsys-studio XMLRPC functions
 	xmlrpcdispatcher.register_function(getNodetype,'getNodetype')
         xmlrpcdispatcher.register_function(nidExists,'nidExists')
 	xmlrpcdispatcher.register_function(getinfoFromSSID,'getinfoFromSSID')

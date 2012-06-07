@@ -93,7 +93,7 @@ urlpatterns = patterns(
     url(r'^objects/', include('objectapp.urls')),
     url(r'^comments/', include('django.contrib.comments.urls')),
     #URL for XMLRPC
-    url(r'^xmlrpc/$', 'gstudio.xmlrpc.views.handle_xmlrpc'),
+    url(r'^xmlrpc/$','django_xmlrpc.views.handle_xmlrpc'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/gstudio/', include('gstudio.urls.ajaxurls')),

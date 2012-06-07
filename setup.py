@@ -109,5 +109,7 @@ setup(name='django-gstudio',
                         'django-4store>=0.3',
                         'HTTP4Store>=0.2',
 			'html5lib>=0.95',
+                        'PIL>=1.1.7',
+                        'diff-match-patch>=20120106',
                       
                         ])

@@ -381,27 +381,38 @@ def new_media_object(blog_id, username, password, media):
     return {'url': default_storage.url(path)}  
 
 # Get functions start from here
-@xmlrpc_func(returns='string', args='int')
-def getNodetype(ssid):
-      """Returns the nodetype of given nid """
+@xmlrpc_func(returns='string', args=['int'])
+def get_nodetype(nid):
+      """Returns the nodetype of given nid 
+      => metaWeblog.getNodetype(nid)"""     
       try :
-       g = Nodetype.objects.get(id=ssid)
-       return (g.ref._meta.module_name)
-      except Nodetype.DoesNotExist :
-       return "Node with the given nid does not exist"
+       p = NID.objects.get(id = nid)
+       try :
+           g = Nodetype.objects.get(id=nid)
+           return (g.ref._meta.module_name)
+       except Nodetype.DoesNotExist :
+           return "Not of Type Nodetype "
+      except NID.DoesNotExist :
+       return "Node Does Not Exist"
 
-@xmlrpc_func(returns='int', args='string')
-def nidExists(nid):
-      """Returns 1 if a node with given id exists, else returns a 0 """
-      try:
-      	p = Nodetype.objects.get(title = nid)
-      	return 1
-      except Nodetype.DoesNotExist:
-	return 0
-	
-@xmlrpc_func(returns='struct',args=['string'])
-def getinfoFromSSID(ssid_list) :
-   """Given a list of ssids, it returns entire information of each ssid inside a dictionary with all the dictionaries contained within a list """
+@xmlrpc_func(returns='int', args=['string'])
+def nid_exists(nid):
+      """Returns 1 if a node with given id exists, else returns a 0 
+      => metaWeblog.nidExists(nodetypetitle)"""  
+      try :
+       p = NID.objects.get(title = nid)
+       try:
+      	   p = Nodetype.objects.get(title = nid)
+      	   return 1
+       except Nodetype.DoesNotExist:
+	   return 0
+      except NID.DoesNotExist :
+       return "Node Does Not Exist"
+
+@xmlrpc_func(returns='struct',args=['struct'])
+def get_info_fromSSID(ssid_list) :
+   """Given a list of nids, it returns entire information of each ssid inside a dictionary with all the dictionaries contained within a list 
+   => metaWeblog.getinfoFromSSID(nidlist)"""  
    lst = []
    for ssid in ssid_list :
     try :
@@ -411,13 +422,15 @@ def getinfoFromSSID(ssid_list) :
       nbh = p.ref.get_nbh
       lst.append(str(nbh))
      except Nodetype.DoesNotExist :
-      lst.append("Not of type Nodetype")
+      lst.append('Not of type Nodetype')
     except NID.DoesNotExist :
-      lst.append("Node Does Not Exist")
+      lst.append('Node Does Not Exist' )
    return lst 
 
-@xmlrpc_func(returns='struct', args=['string','string']) 
-def getNeighbourhood(ssid_list, get_what): 	
+@xmlrpc_func(returns='struct', args=['struct','string']) 
+def get_neighbourhood(ssid_list, get_what): 	
+     """ Given a list of nids,it returns the neighbourhood(nbh/rendered) of the Nodetype
+     => metaWeblog.getNeighbourhood(nidlist,nbh/rendered_nbh)"""  
      d = {}
      for ssid in ssid_list:
       try:
@@ -436,8 +449,10 @@ def getNeighbourhood(ssid_list, get_what):
           d[str(ssid)] = "Node Does Not Exist"
      return d
 
-@xmlrpc_func(returns='struct', args=['string','string']) 
-def getGbobjectNeighbourhood(ssid_list, get_what): 	
+@xmlrpc_func(returns='struct', args=['struct','string']) 
+def get_gbobject_neighbourhood(ssid_list, get_what): 
+     """ Given a list of nids,it returns the neighbourhood(nbh/rendered) of the Gbobject
+     => metaWeblog.getGbobjectNeighbourhood(nidlist,nbh/rendered_nbh)"""   	
      d = {}
      for ssid in ssid_list:
       try:
@@ -458,10 +473,11 @@ def getGbobjectNeighbourhood(ssid_list, get_what):
 
 
 
-@xmlrpc_func(returns='struct', args=['string'])
+@xmlrpc_func(returns='struct', args=['struct'])
 
-def getAttributeType(subjecttypelist):
-   """given the list of subjecttype inids the method returns all the attributetypes attached. """
+def get_attributeType(subjecttypelist):
+   """given the list of subjecttype inids the method returns all the attributetypes attached.
+   => metaWeblog.getAttributeType(subjecttypeidlist)"""  
    d = {}
    for s in subjecttypelist :
       try :
@@ -479,10 +495,11 @@ def getAttributeType(subjecttypelist):
    return d
 
 # Get all function for getting all nodetypes
-@xmlrpc_func(returns='struct', args='string')
+@xmlrpc_func(returns='struct', args=['string'])
 
-def getAll(nodetype):
-   """Given a class name it returns all the nids corresponding to their class name."""
+def get_all(nodetype):
+   """Given a class name it returns all the nids corresponding to their class name.
+   => metaWeblog.getAll(classname)"""  
    d = {}
    try :
     p = eval(nodetype)
@@ -494,10 +511,11 @@ def getAll(nodetype):
    return d
 
 
-@xmlrpc_func(returns='struct', args=['string'])
+@xmlrpc_func(returns='struct', args=['struct'])
 
-def getDatatype(attrtype_ssid_list) :
-   """Given a list of attributessids, it returns its datatypes  """
+def get_datatype(attrtype_ssid_list) :
+   """Given a list of attributessids, it returns its datatypes.
+   => metaWeblog.getDatatype(attrtypenidlist)"""  
    d = {}
    for l in attrtype_ssid_list :
       try :
@@ -515,8 +533,9 @@ def getDatatype(attrtype_ssid_list) :
 
 @xmlrpc_func(returns='struct', args=['string'])
 
-def getAttributevalues(Attrssidlist) :
-   """Given a list of attributessid, it returns their values """
+def get_attributevalues(Attrssidlist) :
+   """Given a list of attributessid, it returns their values 
+   => metaWeblog.getAttributevalues(attrnidlist)"""  
    d = {} 
    for l in Attrssidlist :
      try :
@@ -531,9 +550,10 @@ def getAttributevalues(Attrssidlist) :
          d[str(l)] = "Node Does Not Exist"
    return d
 
-@xmlrpc_func(returns='struct', args='string')
-def getSubjecttypes( AttributeTypeNid ):
-    """Given an attributetypenid, it returns the subjecttype participating in the attributetype """
+@xmlrpc_func(returns='struct', args=['string'])
+def get_subjecttypes( AttributeTypeNid ):
+    """Given an attributetypenid, it returns the subjecttype participating in the attributetype.
+    => metaWeblog.getSubjecttypes(attributetypenid)"""  
     try :
       d = {}
       t = NID.objects.get(id = AttributeTypeNid)
@@ -549,10 +569,11 @@ def getSubjecttypes( AttributeTypeNid ):
       return "Node does not exist" 
     return d  
 
-@xmlrpc_func(returns='struct', args='string')
+@xmlrpc_func(returns='struct', args=['string'])
 
-def getRoles(relationtypenid) :
-   """given a relationtype nid this method returns the roles participating in the relationtype """
+def get_roles(relationtypenid) :
+   """given a relationtype nid this method returns the roles participating in the relationtype.
+   => metaWeblog.getRoles(relationtypenid)""" 
    try :
     t = NID.objects.get(id = relationtypenid)
     k = t.ref._meta.module_name
@@ -572,10 +593,11 @@ def getRoles(relationtypenid) :
      return "Node Does Not Exist "
    return  d   
    
-@xmlrpc_func(returns='struct', args='string')
+@xmlrpc_func(returns='struct', args=['string'])
 
-def getSubtypes(nodeid) :
-    """Returns only the immediate subtype of the node specified"""
+def get_subtypes(nodeid) :
+    """Returns only the immediate subtype of the node specified.
+    => metaWeblog.getSubtypes(Nodetypeid)""" 
     try :
       y = NID.objects.get(id = nodeid)
       try :
@@ -590,10 +612,11 @@ def getSubtypes(nodeid) :
       return " Node Does not exist"
     return l 
 
-@xmlrpc_func(returns='struct', args='string')
+@xmlrpc_func(returns='struct', args=['string'])
     
-def getAllSubtypes(nodeid) :
-    """Returns all the 'subtypes' of the node specified"""
+def get_all_subtypes(nodeid) :
+    """Returns all the 'subtypes' of the node specified
+    => metaWeblog.getAllSubtypes(Nodetypenid)""" 
     try :
        l = []
        p = NID.objects.get(id = nodeid)
@@ -608,10 +631,11 @@ def getAllSubtypes(nodeid) :
         return "Node Does not Exist"
     return l
 
-@xmlrpc_func(returns=['struct'], args=['string'])
+@xmlrpc_func(returns=['struct'], args=['struct'])
 
-def getRestrictions(ATlist) :
-  """Given a list of attributetype ssids, this method returns all the restrictions that the attributetypes have  """
+def get_restrictions(ATlist) :
+  """Given a list of attributetype nids, this method returns all the restrictions that the attributetypes have.
+  => metaWeblog.getRestrictions(Attributetypenids)""" 
   d = {}
   ft = []   
   for a in ATlist :
@@ -632,10 +656,11 @@ def getRestrictions(ATlist) :
        d[str(a)] = "Node Does Not Exist"   
   return d
 
-@xmlrpc_func(returns='int', args='string')
+@xmlrpc_func(returns='int', args=['string'])
 
-def getlatestSSID(nid) :
-  """Given the id, this method will return the latest ssid of the given id """
+def get_latest_SSID(nid) :
+  """Given the nid, this method will return the latest ssid of the given id 
+  => metaWeblog.getlatestSSID(nid)""" 
   try :
    p = NID.objects.get(id = nid)
    n = p.get_ssid
@@ -648,9 +673,10 @@ def getlatestSSID(nid) :
   except NID.DoesNotExist:
    return "Node Does Not exist"
 
-@xmlrpc_func(returns='struct', args='int')
-def getAllSnapshots(nid) :
-  """Given the id, this method will return all the ssids of the given id """ 
+@xmlrpc_func(returns='struct', args=['int'])
+def get_all_snapshots(nid) :
+  """Given the id, this method will return all the ssids of the given id.
+  => metaWeblog.getAllSnapshots(nid)""" 
   try :
    p = NID.objects.get(id = nid)
    n = p.get_ssid
@@ -660,8 +686,9 @@ def getAllSnapshots(nid) :
 
 # Set functions begin from here
 @xmlrpc_func(returns='string', args=['struct','string'])
-def setAttributetype(d,objid) :
-  
+def set_attributetype(d,objid) :
+   """ Given a dictionary of title,slug,applicable_nodetype,objectid,it creates an Attributetype for that Objecttypeid
+   => metaWeblog.setAttributetype(d['title' = '',slug = '',applicable_nodetype = ''],objecttypeid)"""   
    try :
      p = NID.objects.get(id = objid)
      t = p.ref._meta.module_name
@@ -676,7 +703,7 @@ def setAttributetype(d,objid) :
           else :
              r = r + 1
        if r == y :
-          w = Attributetype(title = d['title'],applicable_nodetypes = d['nodetype'],subjecttype_id = objid,slug = d['slug'])
+          w = Attributetype(title = d['title'],applicable_nodetypes = d['applicable_nodetype'],subjecttype_id = objid,slug = d['slug'])
           w.save()
           return w.id
      else :
@@ -688,7 +715,9 @@ def setAttributetype(d,objid) :
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
-def setRelationtype(d,uid) :
+def set_relationtype(d,uid) :
+   """ Given a objecttypeid and a dictionary of title,slug,inverse,right_subjecttype_id,it creates an Relationtype for that Objecttype
+   => metaWeblog.setRelationtype(d['title' = '', slug = '', right_subjecttype_id = '', inverse = ''],objecttypeid)""" 
  
    try :
      k = NID.objects.get(id = uid)
@@ -715,8 +744,9 @@ def setRelationtype(d,uid) :
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
-def setObjecttype(d) :
- 
+def set_objecttype(d) :
+   """ Given a dictionary of title,slug,it creates a Objecttype
+   => metaWeblog.setObjecttype(d['title' = '', slug = ''],objecttypeid)""" 
    k = Objecttype.objects.all()
    u = len(k)
    r = 0
@@ -735,7 +765,9 @@ def setObjecttype(d) :
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
-def setObject(d,o) :
+def set_object(d,o) :
+   """ Given a objecttypeid and a dictionary of title,slug,it creates an Object for that objecttypeid
+   => metaWeblog.setAttributetype(d['title' = '',slug = ''],objecttypeid)""" 
   
    try : 
     k = NID.objects.get(id = o)
@@ -765,28 +797,31 @@ def setObject(d,o) :
 
 @xmlrpc_func(returns='int', args=['struct','string'])
 
-def setAttribute(d,objid) :
+def set_attribute(d,objid) :
+    """ Given a objecttypeid and dictionary of attributetypetitle,subject_id,svalue,it creates an Attribute for the Attributetype of that objecttypeid
+    => metaWeblog.setAttributetype(d['attributetypetitle' = '',subject_id = '',svalue = ''],objecttypeid)""" 
     try : 
       k = NID.objects.get(id = objid)  
       t = k.ref._meta.module_name
       if  t == 'objecttype' or t == 'metatype' :
-        p = Attributetype.objects.filter(subjecttype_id = objid)
-        s = []
-        for i in p :
-          if (str(i.title) == d['attributetype']) :
-            s = Attribute(attributetype_id = i.id,subject_id = d['subject_id'],svalue = d['svalue'])
-            s.save()
-            return s.id
+          p = Attributetype.objects.filter(subjecttype_id = objid)
+          s = []
+          for i in p :
+              if (str(i.title) == d['attributetypetitle']) :
+                 s = Attribute(attributetype_id = i.id,subject_id = d['subject_id'],svalue = d['svalue'])
+                 s.save()
+                 return s.id
       else :
         return " The objectid entered is not a objecttype or metatype"
     except NID.DoesNotExist:
        return "Node does not Exist"
             
      
-
 @xmlrpc_func(returns='int', args=['struct','string','string'])
 
-def setRelation(d,obj1,obj2) :
+def set_relation(d,obj1,obj2) :
+    """ Given  objecttype1id and objecttype2id between whose relation is to be established and dictionary of 				  		 	relationtypename,left_subject_id,right_subject_id,it creates a relation between objects of the two objecttype specfied
+    => metaWeblog.setRelation(d['relationtypename' = '',left_subject_id = '',right_subject_id = ''],objecttypeid1,objecttypeid2)""" 
     try :   
       p = Relationtype.objects.filter(left_subjecttype_id = obj1,right_subjecttype_id = obj2)
       s = []
@@ -797,6 +832,8 @@ def setRelation(d,obj1,obj2) :
            return s.id
     except Relationtype.DoesNotExist :
        return "Relationtype Does Not Exist"  
+
+	
 
 
 

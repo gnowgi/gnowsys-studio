@@ -186,9 +186,29 @@
 				    {% endfor %}       <br/>
 	                   {% endif %}
 <!-- Content -->                           
-			  {% if object.content %}
-                            <b>Content:<nbsp></b>{{object_content}}
+			    {% if object.content %}
+                            <b>
+					Content:<nbsp>
+				
+				          <input type="button" id="editdata" value="Edit Content"/><ndsp><nbsp> 
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		         		  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					</b>
+				   	{{object_content}}<br/>
+
+					{% else %}
+						<b>
+					Content:<nbsp> <input type="button"id="editdata" value="Edit Content"/><ndsp><nbsp>
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					 </b>
+				   	{{object_content}}<br/>
+					
                           {% endif %}
+			
 <!-- Neighbourhood Listing ends -->				
 			  <script type="text/javascript" >
 			  var s = 0

@@ -41,7 +41,7 @@ del nodetype_conf_year['month_format']
 
 nodetype_conf_detail = nodetype_conf.copy()
 del nodetype_conf_detail['allow_empty']
-nodetype_conf_detail['queryset'] = Nodetype.published.on_site()
+#nodetype_conf_detail['queryset'] = Nodetype.published.on_site()
 
 
 urlpatterns = patterns(

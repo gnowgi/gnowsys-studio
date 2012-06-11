@@ -42,8 +42,8 @@
 
     </h2>
   {% with object.html_content|safe as object_content %}
-
-
+<!-- Neighbourhood listing starts -->
+<!--Name,Plural Name , Alternate Name ,Type of -->
                            <b>Name:<nbsp></b> {{ object.title }} <br/>
                            
 			   {% if object.get_rendered_nbh.plural %}
@@ -61,7 +61,7 @@
                                 {% endfor %}<br/>
                            {% endif %}
 
-			  
+<!-- Member of metatypes -->
 			    {% if object.get_rendered_nbh.member_of_metatypes %}
                            
                           
@@ -72,7 +72,7 @@
                            {% endif %}
                           
 			   
-			        
+<!-- Subtypes -->			        
                            {% if object.get_rendered_nbh.contains_subtypes %}
                                 <b> Contains SubTypes:<nbsp></b>
                                 {% for stkey,stvalue in object.get_rendered_nbh.contains_subtypes.items %}
@@ -80,7 +80,7 @@
                                 {% endfor %}<br/>
                            {% endif %}
                           
-                          
+<!-- Members -->                          
                            {% if object.get_rendered_nbh.contains_members %}
                          
                           
@@ -90,7 +90,7 @@
                                     {% endfor %}<br/>
                            {% endif %}
                          
-                           
+<!-- Authors -->                           
                            {% if object.get_rendered_nbh.authors %}
                          
                            
@@ -107,7 +107,7 @@
       			</span>{% if not forloop.last %}, {% endif %}
       				{% endfor %} <br/>
                          
-                            
+<!-- Prior nodes -->                            
                             
                             {% if object.get_rendered_nbh.priornodes %}
                          
@@ -117,7 +117,7 @@
                                         <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
-                           
+<!-- Posterior nodes -->                           
                            {% if object.get_rendered_nbh.posteriornodes %}
                          
                            
@@ -126,7 +126,7 @@
                                         <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
-                             
+<!-- Relations -->                             
                             {% if object.get_rendered_nbh.relations %}
                          
                          
@@ -137,18 +137,25 @@
                                         {% endfor %}<br/>
 				 {% endfor %}      
 	                   {% endif %}
-                           
+<!-- Attributes -->                           
                            {% if object.get_rendered_nbh.attributes %}
                            
 				    {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %}
                                       {% if atvalue %}
                                        <b>{{atkey}}:<nbsp> </b>
                                         {% for atr in atvalue %}
-                                        	   {{atr}};   
+						
+                                            {% for urlkey,urlvalue in object.get_edit_url_for_ats.items %}
+                                                     
+                                                   {% ifequal atr urlvalue %}
+                                                         {{atr}}<a href="{{ urlkey}}" title = "edit">[edit]</a> ;
+                                                   {% endifequal %}
+       					     {% endfor %} 
                                          {% endfor %} <br/>
                                       {% endif %}
 				    {% endfor %}       
 	                   {% endif %}
+<!-- Left roles -->
                             {% if object.get_rendered_nbh.leftroles %}
                          
                                                          
@@ -158,7 +165,7 @@
                                         <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
-                           
+<!-- Right roles -->                           
                            {% if object.get_rendered_nbh.rightroles %}
                         
 			      <b>Right roles:<nbsp> </b>
@@ -167,7 +174,7 @@
                                         <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
-                           
+<!-- Attributes -->                           
                           
                            {% if object.get_rendered_nbh.ats %}
                                              
@@ -178,11 +185,11 @@
                                         <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
-                           
+<!-- Content -->                           
 			  {% if object.content %}
                             <b>Content:<nbsp></b>{{object_content}}
                           {% endif %}
-				
+<!-- Neighbourhood Listing ends -->				
 			  <script type="text/javascript" >
 			  var s = 0
 		 	   var i
@@ -253,14 +260,30 @@
 {% if user.is_authenticated %}
 <p>
 {% if object.reftype == 'Objecttype' %}
-<b>Add Attributes:</b>
+<b>Add Attribute for:       </b>
+{% for key,value in object.get_at_url_add.items %}
+<a href="/{{value}}" onclick="return showAddAnotherPopup(this);">  {{key}} </a><nbsp>;<br/>
+{% endfor %}
+</p>
+<p>
+<b>Add Attributes:(</b>
+<a href="/admin/gstudio/attribute
+/add" class="add-another" id="add_id_{{ field }}" onclick="return showAddAnotherPopup(this);">
+<img width="10" height="10" alt="Add Another" src="/static/grappelli/img/admin/icon_addlink.gif">
+</a>
+<b>)</b>
 {% for i in object.getat %}
 <a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
 {% endfor %}
 </p>
 
 <p>
-<b>Add Relations: </b>
+<b>Add Relations:(</b>
+<a href="/admin/gstudio/relation
+/add" class="add-another" id="add_id_{{ field }}" onclick="return showAddAnotherPopup(this);">
+<img width="10" height="10" alt="Add Another" src="/static/grappelli/img/admin/icon_addlink.gif">
+</a>
+<b>)</b>
 {% for i in object.getrt %}
 <a href="{{ get_absolute_url }}/objects/dynamicRelation/displaymem/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
 {% endfor %}

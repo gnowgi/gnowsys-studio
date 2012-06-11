@@ -77,7 +77,7 @@ from gstudio.views.decorators import protect_nodetype
 from gstudio.views.decorators import update_queryset
 
 
-nodetype_index = update_queryset(object_list, Nodetype.published.all)
+nodetype_index = update_queryset(object_list, Nodetype.objects.all)
 
 nodetype_year = update_queryset(archive_year, Nodetype.published.all)
 

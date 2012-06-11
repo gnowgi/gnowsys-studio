@@ -279,12 +279,18 @@ class NID(models.Model):
     @models.permalink
     def get_absolute_url(self):
         """Return nodetype's URL"""
-        
-        return ('gstudio_nodetype_detail', (), {
-            'year': self.creation_date.strftime('%Y'),
-            'month': self.creation_date.strftime('%m'),
-            'day': self.creation_date.strftime('%d'),
-            'slug': self.slug})
+        if self.ref.__class__.__name__=='Gbobject' or self.ref.__class__.__name__=='Process' or self.ref.__class__.__name__=='System':
+            return('objectapp_gbobject_detail',(),{
+                    'year':self.creation_date.strftime('%Y'),
+                    'month':self.creation_date.strftime('%m'),
+                    'day':self.creation_date.strftime('%d'),
+                    'slug':self.slug})
+        else:
+            return ('gstudio_nodetype_detail', (), {
+                    'year': self.creation_date.strftime('%Y'),
+                    'month': self.creation_date.strftime('%m'),
+                    'day': self.creation_date.strftime('%d'),
+                    'slug': self.slug})
 
     @property
     def ref(self):
@@ -830,7 +836,89 @@ class Nodetype(Node):
         
         return reltypes
     
-    
+    @property
+    def get_edit_url_for_ats(self):
+        '''
+        Get all the attributes from get_rendered_nbh and return their URLs   
+        '''
+    	retdict={}
+    	for key,value in self.get_rendered_nbh.items():
+		if key:
+                    if key=='attributes':
+                        for akey,avalue in value.items():
+                            ats=Attributetype.objects.filter(title=akey)
+                            if ats:
+                                ats=Attributetype.objects.get(title=akey)
+                                for atrbs in Attribute.objects.all():
+                                    if  atrbs.attributetype_id==ats.id:
+                                        gid=NID.objects.get(id=atrbs.id).ref.get_edit_url
+                                        retdict[gid]=atrbs.svalue
+                                                        
+    	return retdict
+    @property
+    def get_at_url_add(self):
+        """
+        Gets all the ATs(excluding those for which the Attributes are already added) with their urls for adding attributes
+        Get all ATs of NT. Get the attribute-model-name from its 'dataType'. Check whether entry exists in Attribute table for this AT.
+        Else return it along with its admin-add-form-url.   
+        """
+        retats={}
+        ats=self.subjecttype_of.all()
+        if ats:
+            for each in ats:
+                
+		if each.applicable_nodetypes=='OT':
+	                atdatatype=each.dataType	
+        	        if atdatatype=='1':
+        	            model= 'CharField'    
+        	        if atdatatype=='2':
+        	            model='TextField'
+        	        if atdatatype=='3':
+        	            model='IntegerField'
+        	        if atdatatype=='4':
+        	            model='CommaSeparatedIntegerField'
+        	        if atdatatype=='5':
+        	            model='BigIntegerField'
+        	        if atdatatype=='6':
+        	            model='PositiveIntegerField'
+        	        if atdatatype=='7':
+        	            model='DecimalField'
+        	        if atdatatype=='8':
+        	            model='FloatField'
+        	        if atdatatype=='9':
+        	            model='BooleanField'
+        	        if atdatatype=='10':
+        	            model='NullBooleanField'
+        	        if atdatatype=='11':
+        	            model='DateField'
+        	        if atdatatype=='12':
+        	            model='DateTimeField'
+        	        if atdatatype=='13':
+        	            model='TimeField'
+        	        if atdatatype=='14':
+        	            model= 'EmailField'
+        	        if atdatatype=='15':
+        	            model='FileField'
+        	        if atdatatype=='16':
+        	            model='FilePathField'
+        	        if atdatatype=='17':
+        	            model='ImageField'
+        	        if atdatatype=='18':
+        	            model='URLField'
+        	        if atdatatype=='19':
+        	            model='IPAddressField'
+        	        aturl="admin/gstudio/attribute"+model.lower()+"/add/?attributetype="+str(each.id)+"&subject="+str(self.id)
+        	        atsubject=self.subject_of.all()
+        	        fl=0
+        	        for eachs in atsubject:
+        	            if eachs.attributetype_id==each.id and eachs.subject_id==each.subjecttype.id:
+        	                fl=1
+                        if fl==0:
+        	            retats[each.title]=aturl
+                            
+            return retats
+        	 
+
     @property
     def get_possible_attributetypes(self):
         """

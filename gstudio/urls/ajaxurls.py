@@ -25,4 +25,9 @@ urlpatterns = patterns('gstudio.views.ajaxviews',
 		       url(r'^relation/add/ajaxright/$', 'AjaxRelationright',name='ajax_relnright_views'),
 		       url(r'^relation/ajaxleft/$', 'AjaxRelationleft',name='ajax_relnleft_views'),
 		       url(r'^relation/ajaxright/$', 'AjaxRelationright',name='ajax_relnright_views'),
+ 		       url(r'^contentorgadd/$', 'AjaxAddContentOrg', name='ajax_views_contentorgadd'),
+                       url(r'^ajaxcreatehtml/$', 'AjaxCreateHtml', name='ajax_views_createhtml'),
+                       url(r'^ajaxcreatefile/$', 'AjaxCreateFile', name='ajax_views_createfile'),
+                       url(r'^contentadd/$', 'AjaxAddContent', name='ajax_views_contentadd'),
+                      
                        )

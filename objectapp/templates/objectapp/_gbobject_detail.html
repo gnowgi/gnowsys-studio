@@ -50,6 +50,34 @@
                                         <a href="{{mvalue}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
+			{% if object.content %}
+                            <b>
+					Content:<nbsp>
+				
+				          <input type="button" id="editdata" value="Edit Content"/><ndsp><nbsp> 
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		                          
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					
+					  
+					</b>
+				   	{{object_content}}<br/>
+
+					{% else %}
+						<b>
+					Content:<nbsp> <input type="button"id="editdata"value="Edit Content"/><ndsp><nbsp>
+					  
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					
+					  </b>
+				   	{{object_content}}<br/>
+					
+                          {% endif %}
+		
 
               {% if object.get_rendered_nbh.relations %}
                          
@@ -90,7 +118,7 @@
     </div>
     {% endif %}
     <div class="gbobject-content">
-      {{ object_content }}
+     <!-- {{ object_content }}-->
     </div>
   </div>
 

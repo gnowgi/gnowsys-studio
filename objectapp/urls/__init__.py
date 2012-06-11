@@ -82,6 +82,7 @@ urlpatterns = patterns(
     url(r'^', include('objectapp.urls.quick_gbobject')),
     url(r'^', include('objectapp.urls.capabilities')),
     url(r'^', include('objectapp.urls.gbobjects')),
+    url(r'^ajax/', include('gstudio.urls.ajaxurls')),
     url(r'^dynamicAttribute/', include('objectapp.urls.ATurl')),
     url(r'^dynamicRelation/',include('objectapp.urls.RTurl')),
     )

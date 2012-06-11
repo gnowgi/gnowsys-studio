@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!-- 
+#**** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+# 
+# The contents of this file are subject to the Mozilla Public License
+# Version 1.1 (the "License"); you may not use this file except in
+# compliance with the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+# 
+# Software distributed under the License is distributed on an "AS IS"
+# basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+# License for the specific language governing rights and limitations
+# under the License.
+# 
+# The Original Code is MozGnowser code.
+# 
+# The Initial Developer of the Original Code is Jayakrishnan B Nair
+# Portions created by the Initial Developer are Copyright (C) 2009-2010.
+# All Rights Reserved.
+# 
+# Contributor(s):
+#   Jayakrishnan B Nair <jayakrishnan.bk.nair@gmail.com>
+#   Sai Srivatsan R Iyengar
+#   Ridima Borkar
+#   Foram Dalal
+# 
+# Alternatively, the contents of this file may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+# 
+#**** END LICENSE BLOCK *****
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"   svg="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta> 
+<head>
+<!--<link type="text/css" href="chrome://gnowmoz/content/css/ui-darkness/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />-->
+<link type="text/css" href="chrome://gnowmoz/content/css/cupertino/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />
+<!--<link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/ui.all.css" />-->
+<script type="text/javascript" src="chrome://gnowmoz/content/js/json2.js"></script>
+<script type="text/javascript" src="chrome://gnowmoz/content/js/jquery.js"></script>
+<script type="text/javascript" src="chrome://gnowmoz/content/js/jquery-ui.js"></script>
+<script type="text/javascript" src="chrome://gnowmoz/content/js/jquery.qtip.min.js"></script>
+<script type="text/javascript" src="chrome://gnowmoz/content/js/jquery.jsonviewer.js"></script>
+<!--<script type="text/javascript"  src="http://jqueryui.com/themeroller/themeswitchertool/"></script>-->
+
+<script type="text/javascript" src="chrome://gnowmoz/content/js/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="chrome://gnowmoz/content/js/gnowmoz.js"></script>
+	
+</head>
+<body onLoad="dologin()">
+
+  <!-- HEADER WITH SEARCH BOX -->
+<div id="layout-header" style="display:none">
+  <div id="page-header" style="padding:5px;height:30px;background:#deedf7" class="ui-corner-all">
+    <div style="float:left;width:20%;font-weight:bold">MozGnowser</div>
+    <button style="float:left;width:10%" id="help">HELP TIPS</button>
+    <button style="float:left;" id="gnowql-shell-link" onClick="gnowqlShell()" > GnowQL SHELL </button>
+    <div style="float:left" id="themes" ></div>
+    <button style="float:right;" id="SEARCH" class="ui-widget-content" onClick="GnowqlSearch()">SEARCH</button>
+    <input type="text" style="float:right;font-size:18px" class="ui-widget-content ui-corner-all autocomplete"
+    id="search-value" value="" >
+  <select  style="float:right;font-size:18px" id="search-type" class="ui-widget ui-widget-content ui-corner-all ">
+    <option value="All">ALL</option>
+    <option value="gbobjects">Object</option>
+    <option value="gbobjecttypes">Objecttype</option>
+    <option value="gbrelations">Relation</option>
+    <option value="gbrelationtypes">Relationtype</option>
+    <option value="gbattributes">Attribute</option>
+    <option value="gbattributetypes">Attributetype</option>
+    <option value="gbmetatypes">Metatype</option>
+    <option value="gbusers">User</option>
+    <option value="gbusertypes">Usertype</option>
+    <option value="gbprocess">Process</option>
+    <option value="gbprocesstypes">Processtype</option>
+  </select>
+       
+  </div>
+<div id="search-loading"></div>
+</div>
+
+
+
+<div id="startup-info" style="display:none" class="ui-widget">
+<pre>
+                 Welcome to MozGnowser
+	
+	Searching the Gnowsys DB can be done using the 
+	 search box on the top right of the page.
+     The appropriate item of choice can be selected from the list.
+     The NBH-SVG tab will give a digramatic representation 
+	 of the item selected.
+     The NBH-INFO tab will give u textual representation 
+	 of the node's neighbourhood.
+
+     Various Key Shortcuts are available :
+  (do not press down the buttons continously and make sure to 
+   have clicked outside the SVG image before using the shortcuts)
+	       1) Ctrl + z : Zoom In for the SVG image
+	       2) Ctrl + x : Zoom Out for the SVG image
+	       3) Ctrl + arrowkeys will help u pan the image as per requirement
+
+</pre>
+</div>
+
+<div id="search-tip" style="display:none">
+<pre>
+  Search Box :
+  You can search the title from the Gnowsys DB.
+  You can use "ssid:" without the quotes to
+  make a specific search example: "ssid:108"
+</pre>
+</div>
+
+
+<div  id="result-table" style="width:100%;display:none">
+  
+  <div  id="result-border" style="width:79%;height:100%;border:4px #00FFFF solid;float:left">
+   
+    <div id="add" style="width:100%:z-index:1000">
+      <h3><a href="#">Add</a></h3>
+      <div id="nbh-add" style="height:20%">
+	<ul>
+	  <li><a href="#atabs-1" id="addrel">RELATIONS</a></li>
+	  <li><a href="#atabs-2" id="addatt">ATTRIBUTES</a></li>
+	  <li><a href="#atabs-3" id="adddep">DEPENDSON</a></li>
+	</ul>
+	<div id="atabs-1"  >
+	  <input type="text" id="nbh-add-nid-rel" style="width:30%;float:left;"
+		 class="ui-widget-content ui-corner-all autocomplete"></input>
+	  <select id="nbh-add-select-rel" class="text ui-widget-content " style="width:30%;float:left"></select>
+	  <input type="text" id="nbh-add-text-rel" class="ui-widget-content ui-corner-all autocomplete"
+		 style="width:30%;float:left"></input>
+	      <input type="button" id="nbh-add-submit-rel" class="ui-widget-content ui-corner-all" value="Submit" 
+		     onclick='if(document.getElementById("nbh-add-text-rel").value!="")add("rel");'></input>
+	</div>
+	<div id="atabs-2">
+	  <input type="text" id="nbh-add-nid-att" style="width:30%;float:left;"
+		 class="ui-widget-content ui-corner-all autocomplete"></input>
+	  <select id="nbh-add-select-att"  class="text ui-widget-content" style="width:30%;float:left"></select>
+	  <input type="text" id="nbh-add-text-att"  class="text ui-widget-content ui-corner-all autocomplete"
+		 style="width:30%;float:left"></input>
+	  <input type="button" id="nbh-add-submit-att" class="text ui-widget-content ui-corner-all" 
+		 value="Submit" onclick='if(document.getElementById("nbh-add-text-att").value!="")add("att")'></input>
+	</div>
+	
+	<div id="atabs-3">
+	  <input type="text" id="nbh-add-nid-dep" style="width:30%;float:left;"
+		 class="ui-widget-content ui-corner-all autocomplete"></input>
+	  <select id="nbh-add-select-dep" class="text ui-widget-content" style="width:30%;float:left"></select>
+	  <input type="text" id="nbh-add-text-dep" class="text ui-widget-content ui-corner-all autocomplete"
+		 style="width:30%;float:left"></input>
+	      <input type="button" id="nbh-add-submit-dep" class="text ui-widget-content ui-corner-all" 
+		     value="Submit" onclick='if(document.getElementById("nbh-add-text-dep").value!="")add("dep")'></input>
+	</div>
+	
+      </div>
+    </div>
+    
+    
+    <div id="nbh-resultinfo" style="width:100%">
+      <ul>
+	<li><a href="#tabs-1" >NBH-SVG</a></li>
+	<li><a href="#tabs-2" >NBH-INFO</a></li>
+      </ul>
+      <div id="tabs-1">
+	<div id="nbh-svg" style="height:100%;width:100%"></div>
+      </div>
+      <div id="tabs-2">
+	<div id="nbh-info" style="height:100%;width:100%" ></div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="result-area" class="text" style="width:19.5%;float:right;border:4px #00FFFF solid;overflow:auto" ></div>
+  
+</div>
+
+
+
+<!-- LOGIN FORM DIALOG-->
+<div id="login-form" title="Dialog Title" style="display:none" title="Login Form">
+  <p >All form fields are required.</p>
+  
+  
+  <table style="width:100%" align="left">
+    <tr>
+      <td><label for="name" >Name</label></td>
+      <td><input type="text" name="name" id="login" value="" class="text ui-widget-content ui-corner-all logintext" 
+	       style="width:100%"></td>
+    </tr>
+    
+    <tr>		  
+      <td><label for="password" >Password</label></td>
+      <td><input type="password" name="password" id="pass" value="" style="width:100%" 
+		 class="text ui-widget-content ui-corner-all logintext"></td>
+    </tr>
+    
+    <tr>
+      <td><label for="text" >GnowQL URL</label></td>
+      <td><input type="text" name="url" id="url" value="http://sandboxat.gnowledge.org/gnowql" 
+		 style="width:100%" class="text ui-widget-content ui-corner-all logintext"></td>
+    </tr>
+  </table>
+  <table style="width:100%">
+    <tr>
+      <td>
+	<div id="proxy" style="width:100%">
+	  <h3><a href="#">Proxy Settings : Click To Enable</a></h3>
+	  <div>
+	    <table>
+	      <tr>
+		<td><label style="float:left">Proxy URL</label></td>
+		<td><input type="text" name="url" id="proxy-url" value=""
+			   style="width:100%" class="text ui-widget-content ui-corner-all logintext"> </td>
+	      </tr>
+	      <tr>
+		<td><label style="float:left">Proxy Port</label></td>
+		<td><input type="text" name="url" id="proxy-port" value="0"
+			   style="width:100%" class="text ui-widget-content ui-corner-all logintext"></td>
+	      </tr>
+	      <tr>
+		<td><label >Proxy Username</label></td>
+		<td><input type="text" name="url" id="proxy-username" value=""
+			   style="width:100%" class="text ui-widget-content ui-corner-all logintext"></td>
+	      </tr>
+	      <tr>
+		<td><label >Proxy Password</label></td>
+		<td><input type="password" name="url" id="proxy-password" value=""
+			   style="width:100%" class="text ui-widget-content ui-corner-all logintext"></td>
+	      </tr>
+	    </table>
+	  </div>
+      </td>
+    </tr>
+    <table>
+    </table>
+    <tr>
+      <td></td>
+      <td colspan=2><div id="login-error" style="color:black;visibility:hidden">LOGIN ERROR !!!</div></td>
+    </tr>
+  </table>
+    	
+  
+  </div>
+
+<!-- ADD Options --> 
+<div id="add-options" title="Choice" style="display:none" title="Multiple Choice">
+	<p class="validateTips">Please Select your Choice!!!</p>
+      </div>
+
+<!--GnowQL Shell-->
+
+
+<div id="gnowql-shell" title="GnowQL SHELL" style="display:none" >
+  <label>Type HERE : </label>
+  <input type="text" id="gnowql-shell-text" value="" style="width:100%;height:50px;font-weight:bold;font-size:30px"
+	 class="text ui-widget-content ui-corner-all">
+  <label> Result (JSON string) : </label><br />
+    <textarea id="gnowql-shell-box" cols="130" rows="20" style:"float:left"></textarea>
+  <br />
+<div style="overflow:auto">
+<div id="gnowql-shell-tree"></div>
+</div>
+      </div>
+
+</body>
+</html>

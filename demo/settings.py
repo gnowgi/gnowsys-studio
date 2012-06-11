@@ -80,6 +80,9 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/static'
 #MEDIA_ROOT = '/static'
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
+PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
+PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
+
 
 GSTUDIO_UPLOAD_TO = 'img/'
 

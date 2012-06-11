@@ -123,7 +123,7 @@ if OBJECTAPP_VERSIONING:
 counter = 1
 attr_counter = -1
 
-'''
+
 class Author(User):
     """Proxy Model around User"""
 
@@ -143,7 +143,7 @@ class Author(User):
     class Meta:
         """Author's Meta"""
         proxy = True
-'''
+
 
 
 class Gbobject(Node):

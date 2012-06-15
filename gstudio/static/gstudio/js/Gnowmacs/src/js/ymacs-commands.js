@@ -102,139 +102,43 @@ Ymacs_Buffer.newCommands({
                 var rc = this._rowcol;
                 return this.cmd("goto_char", this._rowColToPosition(rc.row, this.code[rc.row].length));
         }),
-	  wrap : Ymacs_Interactive(function() {
-                                  var i = 0;
-                                  this.cmd("end_of_buffer");
-				  var st1 = this.caretMarker.getPosition(); 
-                                  this.cmd("beginning_of_buffer");
-				  if(st1 != 0)
-				  {
-		                     while(i < 50 ) 
-                                     {   
-                                       this.cmd("goto_line", i);
-                                       i= i+1;
-				       rc = this._rowcol;
-                                       var line = this.code[rc.row];
-				       var line_size = line.length;
-					       if(line_size > 112)
-					       {
-						  this.cmd("move_to_column", 111);
-		                                  this.cmd("insert", "\n");  
-						  this.cmd("forward_line"); 
-						}                     
-				      }
 
-				  }
-				
-                }),  
-
-
-           wrap_at_edge : Ymacs_Interactive(function() {
-                           rc = this._rowcol;
-	       	           var line = this.code[rc.row]; 
-		           var str1 = line.length;      
-                           if(str1 > 112)
-                           {
-                             this.cmd("insert", "\n"); 
-                           }
-              }),
-      
-           wrap_status:Ymacs_Interactive(function() {
-             var one = flag;
-             //alert("inside wrap_status");
-             return one;
-     }),
-
-      word_wrap : Ymacs_Interactive(function() {
-                            
-                          var one1 = this.cmd("wrap_status");
-                          if(one1 == "Word Wrap")
-                          {  
-				      var x = 112;
-				      rc = this._rowcol;
-				      var line = this.code[rc.row]; 
-				      var str1 = line.length;
-				      if(str1 > x)
-				      {
-				        var str2 = line.slice(0,str1-2);
-				        var str3 = str2.lastIndexOf(" ");
-				        this.cmd("move_to_column", str3+1);
-				        this.cmd("insert", "\n");
-		                        this.cmd("end_of_line");
-                                        this.cmd("insert", " ");
-				      }   
-				      else
-				      {
-				        this.cmd("insert", " ");
-				      }
-		           }
-		           else
-                           {  
-
-			       this.cmd("insert", " ");
-		            }
+	wrap : Ymacs_Interactive(function() {
+                   
+                  this.cmd("beginning_of_buffer");
+                  this.cmd("goto_line" ,1);
+                  var i = 0,y = 0, x = 50; 
+                  while(i < 100) 
+                  {
+                     i = i+1; 
+                    
+                     
+                     this.cmd("end_of_line"); 
+                     var ipos = this._positionToRowCol(this.point());   
+		     var charpos = this.caretMarker.getPosition(); // It gives total number of character upto this position.
+                     
+                      
+                               if(ipos.col > x )   //ipos.col gives the column number at this point. 
+		               {  
+                                  y = ipos.col-50;  
+                                  var z = charpos-y;
+                                  this.cmd("goto_char", z);
+		                  this.cmd("insert", "\n"); 
+		               }
+		               else
+		               {
+		                 this.cmd("forward_line");
+		                 
+                               }                   
+                    
+                  }
+                }), 
                 
-                
-           }),
-
-
-      wrap1:Ymacs_Interactive(function() {
-                var i = 1;
-                this.cmd("end_of_buffer");
-                var str1 = this.caretMarker.getPosition(); 
-                //this.cmd("beginning_of_buffer");
-		if(str1 != 0)
-	        {
-		  while(i < 50 ) 
-                  { 
-                    this.cmd("goto_line" ,i);
-                    i=i+1;
-                    rc = this._rowcol;
-		    var line = this.code[rc.row];
-		    var str2 =  line.lastIndexOf(" ");
-		    if(str2 > 112)
-                    {
-                      var str2 = line.slice(0,115);
-		      var str3 = str2.lastIndexOf(" ");
-		      this.cmd("move_to_column", str3+1);
-		      this.cmd("insert", "\n");
-		      this.cmd("forward_line");
-                    }                    
-                  }     
-            }
-          
-       }),
-
 
         beginning_of_buffer: Ymacs_Interactive(function() {
                 return this.cmd("goto_char", 0);
         }),
-	export_as_html: Ymacs_Interactive(function() {
-			//jQuery.get('/ymacs/test.py', function(data) {
-			//alert("jquery");
-			//window.location= "/home/supriya/ymacs/test.py"
-			//alert("test1");
-			
-   			 //do stuff with the data
-			
-
-			//var oShell = new AactiveXObject("WScript.Shell");
-			//shell.Run("/h", 1, true);
-		//	$.ajax({
-     		  //      type: "GET",
-                    //    url: "test.py",
-      	//		success: function() { alert("ajax"); }
-    //} );
-  //} );
-			//url = "~/test.py"
-			//$.get(url,
-			//function(data){
-			//alert("ajax");
-			//});
-		
 	
-	}),
-
 		
         end_of_buffer: Ymacs_Interactive(function() {
                 return this.cmd("goto_char", this.getCodeSize());
@@ -340,9 +244,9 @@ Ymacs_Buffer.newCommands({
                         this.cmd("indent_line");
                 }
         }),
-               
+      
 
-// tab is not working on the 1st position of the buffer
+       // tab is not working on the 1st position of the buffer
 // user should create table from 1st position only
 
         indent_line: Ymacs_Interactive("P", function(noEmpty) {
@@ -496,7 +400,7 @@ Ymacs_Buffer.newCommands({
                 }
                 this.cmd("insert", " ".x(this.getq("indent_line")));
         }),
-        indent_region: Ymacs_Interactive("r", function(begin, end) {
+ indent_region: Ymacs_Interactive("r", function(begin, end) {
                 if (end < begin) { var tmp = begin; begin = end; end = tmp; }
                 this.cmd("save_excursion", function() {
                         var m = this.createMarker(end);

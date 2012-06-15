@@ -171,44 +171,32 @@
 			var org_data = org.getCode();
 			document.getElementById("orgcontent").value = org_data;
 			var encode_data = encodeURIComponent(org_data);
-	  		
-			
-			url = "/nodetypes/ajax/contentorgadd/?id=" + id + "&contentorg=" +encode_data;
-			$.get(url,
-			       function(data){
-			       })
-			url = "/nodetypes/ajax/contentorgadd/?id=" + id + "&contentorg=" +encode_data;
-			$.get(url,
-			       function(data){
-			       })
+	  		url = "/nodetypes/ajax/contentorgadd/?id=" + id + "&contentorg=" +encode_data;
+		        $.get(url,
+		                function(data){
+			   
+				  url1 = "/nodetypes/ajax/ajaxcreatefile/?id=" +id+ "&content_org=" +encode_data;
+				  $.get(url1,
+					function(data){
+					    url2 = "/nodetypes/ajax/ajaxcreatehtml/";
+					    $.get(url2,
+						  function(data){
+						      url3 = "/nodetypes/ajax/contentadd/?id=" + id;
+						      $.get(url3,
+							    function(data){
+								alert("Data Saved");
+								 window.location.reload();
 
-			url = "/nodetypes/ajax/ajaxcreatefile/?id=" +id+ "&content_org=" +encode_data;
-			$.get(url,
-			       function(data){
-			       })
-
-			 url = "/nodetypes/ajax/ajaxcreatehtml/";
-			$.get(url,
-			       function(data){
-			       })
-       
-			url = "/nodetypes/ajax/contentadd/?id=" + id;
-			$.get(url,
-			       function(data){
-			      })
-			url = "/nodetypes/ajax/contentadd/?id=" + id;
-			$.get(url,
-			       function(data){
-			      })
-			url = "/nodetypes/ajax/contentadd/?id=" + id;
-			$.get(url,
-			       function(data){
-			      })
-			       
-			
-			    alert("Data Saved");
-			window.location.reload();
-		    });
+							    })
+			   
+			   
+							  })
+						})
+			          
+				      })
+		
+			    
+			    });
 
                 var item = new DlMenuItem({
                     parent: menu,
@@ -217,29 +205,13 @@
                 item.addEventListener("onSelect", function () {
                     ymacs.getActiveBuffer().cmd("toggle_line_numbers");
                 });
-
-                /*------[ Wrap ]--------
-         flag is a variable to store the current status of wrap.wrap itself switches On n Off depending on previous status.
-         so it is necessary to keep record of previous status*/
-
-               //  var item = new DlMenuItem({
-               //      parent: menu,
-               //      label: "Wrap".makeLabel()
-               //  });
-               //  var flag = "False";
-               //  item.addEventListener("onSelect", function () {
-               //      if (flag == "False") {
-               //          flag = "True";
-               //          alert("Wrapping is ON");
-               //          ymacs.getActiveBuffer().cmd("wrap_text");
-               //      } else {
-               //          flag = "False";
-               //          alert("Wrapping is OFF");
-               //          ymacs.getActiveBuffer().cmd("wrap_text");
-               //      }
-
-               // });
-
+		var item = new DlMenuItem({
+                    parent: menu,
+                    label: "Wrap".makeLabel()
+                });
+                item.addEventListener("onSelect", function () {
+                    ymacs.getActiveBuffer().cmd("wrap");
+                });
 
 
                 /* -----[ insert - just a try] ----- */

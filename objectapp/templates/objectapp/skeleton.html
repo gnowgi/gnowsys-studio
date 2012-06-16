@@ -193,7 +193,7 @@
       {% include "gstudio/_header.html" %}
 
 
-	<div id="breadcrumbs" class="span-24 last">
+	<div id="breadcrumbs" class="">
 	  / {% block breadcrumbs %}{% endblock %}
 	</div>
      
@@ -640,11 +640,8 @@ function check_Relation(metadata,relations)
 </script>
          {% block graph %} {% endblock %}
 	</div>
-	<div id="sidebar">
-	  {% block sidebar %}
-	  {% endblock %}
+
 	</div>
-	
       <div id="footer">
 	<p> 
 
@@ -657,7 +654,7 @@ function check_Relation(metadata,relations)
 	    {{ GSTUDIO_VERSION }}</a>.
 	  </p>
       </div>
-    </div>
+    
   </body>
 </html>
 

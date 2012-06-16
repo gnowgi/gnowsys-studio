@@ -97,7 +97,7 @@ SITE_ID = 1
 
 LANGUAGE_CODE = 'en'
 
-GRAPPELLI_ADMIN_TITLE = '<a href="/">Gnowledge Studio</a>'
+GRAPPELLI_ADMIN_TITLE = '<a href="/nodetypes/" title="Gnowledge Studio">Gnowledge Studio</a>'
 
 GRAPPELLI_INDEX_DASHBOARD = "demo.dashboard.CustomIndexDashboard"
 

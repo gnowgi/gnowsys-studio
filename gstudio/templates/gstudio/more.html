@@ -1,0 +1,241 @@
+{% load objectapp_tags i18n %}
+{% load gstudio_tags i18n %}
+
+{% load adminmedia  grp_tags %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    
+    <style type="text/css">
+      #more_body{
+      background: #B3B3B3;
+      }
+      #header {
+      background: none repeat scroll 0 0 #2B3959;
+      border-bottom: 1px solid #E9E9F3;
+      color: white;
+      margin-bottom: 1em;
+      }
+      #header a:hover, #header a:active{
+      color: red;
+      }	   
+      
+	
+      #portal-footer {
+      background-color: #FFE9E8;
+      border-bottom: 1px solid #FF0026;
+      border-top: 1px solid #FF0026;
+      float: none;
+      line-height: 1.2em;
+      margin: 2em -19px 1em;
+      padding: 0.5em 0 1em;
+      text-align: center;
+      }
+    </style>  
+    
+  </head>
+  <body dir="ltr" id = "more_body" class="section-front-page template-document_view">
+
+    <link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+    <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}jquery/ui/js/jquery-ui-1.8.15.custom.min.js" type="text/javascript"></script>
+    <!-- Grappelli Main JS -->
+    <script src="{% admin_media_prefix %}js/grappelli/grappelli.js" type="text/javascript"></script> 
+    <!-- Grappelli jQuery Plugins, Widgets -->
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_collapsible.js" type="text/javascript"></script>
+    <link rel="shortcut icon" href="/static/gstudio/img/favicon.ico" />
+    <div id="header" >
+      {% include "gstudio/_header.html" %}
+    </div>
+    <link type="text/css" rel="stylesheet" href="more.css">
+      <table id="portal-columns">
+        <tbody>
+            <tr>
+	     
+               <h1 class="documentFirstHeading"> 
+		<center><span id="parent-fieldname-title" class=""><font size="23px">
+		      Welcome to Gnowledge Network! </font>
+		</span></center>
+	      </h1><br/><br/><br/>
+	      <h2><font size="6px">Introduction </font></h2><br/>
+	      <ul><li>This site is based on a simple idea that we 
+		  can build collaboratively a road map of knowledge by specifying the 
+		  prerequisites of concepts, activities, experiences and statements.&nbsp; The resulting road map can be used as a&nbsp; scaffolding to describe each node network by linking the node to other nodes in terms of relations and attributes.
+		  <br/>
+		</li>
+		<li>Look at <a href="http://atlas.gnowledge.org/Data/display/12675_depmap.svg" class="external-link">this map to get an idea of a dependency map based on prerequisites.</a></li>
+		<li>Look at this one to get an idea of how a node can be described as a map (Link required??). <br></li>
+		<li>You will agree that such maps will be very useful to teachers and 
+		  students.  Over a period of time, with your collaboration, we can build a
+		  complete roadmap of all knowledge which will help to generate a non-linear curriculum framework.</li>
+		<li>Read <a href="http://atlas.gnowledge.org/help">Help Document</a> to begin contributing.</li>
+		</ul>
+		<br/><br/><br/>
+		
+		<h2><font size="6px">What you can do?</font></h2><br/>
+		<ul><li>You can specify the prerequisites for any concept or an activity
+		      at this  site.  Or view the existing prerequisites that are already 
+		    defined by the community.    <br>
+		  </li>
+		  <li>We simply add a concept as a 
+		      node (if it does not exist already) and specify a semantic dependency 
+		      (meaning dependency) relation between one node and another.</li>
+		  <li>Ask yourself the following set of questions:</li>
+		    <ul><li>To understand a concept what do you expect the learner must already know?</li>
+		      <li>To understand a concept what do you expect the learner must do?</li>
+		      <li>To impart a skill what what other activities the learner must do?</li><li>To impart a skill what other concepts the learner must already know?</li></ul>
+		  </ul>
+		  <p>Answers to these questions can be specified in this community portal by establishing links between concepts and activities.</p>
+		  <br/><br/><br/>
+		  <h2><font size="6px">What we will get out of this?</font></h2><br/>
+		  <ul><li>a globally useful resource for teachers and students to know the learning track (learning path) for any concept or skill.  <br></li>
+		    <li>teachers and authors of textbooks can use these maps to prepare course materials or sequence their curriculum.</li>
+		    <li>students get to know what they need to know in order to learn something.</li><li>researchers can use the data for analyzing the properties of knowledge structures.<br></li>
+		    <li>a network of concepts and activities that can be used, modified, published and shared  by the entire community.</li><li>a visual map of knowledge and a road map for learning and teaching.</li>
+		    <li>a knowledge base that can be used to profile different domains of knowledge.</li><li>the
+		      resulting map will show us, as it were, the 'cities' (on which we 
+		      depend on most), 'towns' (on which we depend but not as much as the 
+		      cities), 'villages' (on which we depend least), continents (domains that
+		      contain inter-related cities, towns and villages), etc.  <br></li><li>a sequence to automatically guide learners in a machine guided online tutoring system, for example.</li>
+		    <li>a
+		      network analysis linking the number of nodes and links, plots, 
+		      analyses, statistics, distribution properties etc. (very soon as the 
+		      data set increases, we will publish the results on this site.&nbsp; You can access the data dumps (sans privacy information) very soon, so that you can analyze the data yourself.)<br></li>
+		    <li>and we are sure it will have many other uses as well.&nbsp; If you foresee some please discuss with us in the list community@gnowledge.org.&nbsp; Or write or upload a document in the sandbox fodler (follow the link) and send us an email in the list.<br></li></ul>
+		    <br/><br/><br/>
+		    <h2><font size="6px">Yes! You do not have to write essays here.</font></h2><br/>
+		    <ul><li>We can get all the above mentioned goodies without writing any 
+			essays or do so much of research. We do not define concepts either! Just
+			ask yourself the questions mentioned above and provide the answer if 
+			you have them.  We simply make the dependency relations explicit for all
+			concepts that all of us know.  Soon we will be able to do this in all 
+			languages of the world (Our software developers are working on this.).</li></ul>
+		    <br/><br/><br/>
+		    <h2><font size="6px">So, how to get it going? </font></h2><br/>
+		    <ol><li>Join as a member.  Use the join link on the right corner of the site.<br></li>
+		      <li>Use the 'Login' link if you are already a member.<br></li>
+		      <li>Search for a concept or activity using the search form present on the right side of the header or the "<a href="http://localhost:8081/depmap/viewall?val=1">view or edit</a>"
+			link. (We started this site recently and data set is very small, so 
+			don't be surprised if your favorite concepts and activities are not 
+			found here.)<br></li>
+		      <li>Add a non-existing node.  By default it will be
+			  taken as a concept, but if you want it to be an activity, use the check
+			  box.  If a node already exists, you will see a message: "Object already
+			  exists". Then you can visit that node and then decide what more you can
+			  do. <br></li>
+		      <li>Then add appropriate dependency links.  For adding 
+			    dependency link, click on the "Add" button below the relation names 
+			    "Depends on" or its inverse name "Required for".</li>
+		      <li>If you think 
+			that the existing relation is not accurate, you can remove the link 
+			using the "Delete" tab.  Or discuss in the mailing list on the issue and
+			resolve the conflict.<br></li>
+		      <li>Remember!  You cannot add a relation 
+			unless a concept node already exists.  So, if you don't find the node 
+			you are looking for, add one and link it.<br></li>
+		      <li>Remember, all of 
+			us are making only one single map collaboratively.  All contributions 
+			are recorded against your login name with date and time of contribution.
+			<br></li>
+		      <li>Please see below the ownership and license information to know who owns the data made by you.</li></ol>
+	      
+		      <br/><br/><br/>
+		      <h2><font size="6px">Spread the word around the world! </font></h2><br/>
+		      <ul><li>Well!  The site is meant for you.  We made this simplest web 
+			  application so that the whole world gets the benefit.  The outcome of 
+			  this simplest exercise will be a very useful semantic dependency map for
+			  learning and teaching any topic.  The knowledge base built on this site
+			  is available for every one.  For making the maps in other languages we 
+			  have to only add translations to each node.  We will soon add this 
+			  function to have the map in all languages.  However, if you want to add 
+			  concepts in your own language, you can build them right away, and may 
+			  add the translation links latter when the feature is made available.<br></li></ul>
+			<br/><br/><br/>
+			<h2><font size="6px">License</font></h2><br/>
+			The network and the content produced is published under <a href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License" class="external-link">Creative Commons Attribution ShareAlike 3.0</a>
+			<p>&nbsp;</p>
+			<ul><li>  What does this license imply?</li>
+			  <ul><li>you have the freedom to use the maps for any purpose.</li>
+			    <li>you can make modifications to them.<br></li><li>you
+				can distribute or publish or sell them provided you grant the same 
+				freedoms to others as well, i.e., release them again under the terms of 
+				the same license.&nbsp; Please write to us if you have any query on your rights to use them.
+			    </li></ul>
+			  </ul>
+			  <br/><br/><br/>
+			  <h2><font size="6px">We are slowly adding more features!</font></h2><br/>
+			  <p>After depMap (dependency map) we will soon have other kinds of maps as follows:</p>
+			  <ul><li>typeMap (what is a type of what, what is a sub-type of what) for taxonomy<br></li>
+			    <li>partMap (what is a part of what, and what consists of what) for part-whole relation<br></li>
+			    <li>reactionMap (what is a product of what, and what is a reactant of what) for how matter changes<br></li>
+			    <li>causeMap (what is a cause of what, and what is an effect of what) for cause-effect map<br></li>
+			    <li>testsMap (what is a preTest and what is a postTest of each node in the map) for assessment<br></li>
+			    <li>and so on.  If you have another good suggestion tell us, we will try to add that in future.&nbsp; So, write to us or upload your suggestion in the sandbox (you need to register to do this.).<br></li></ul>
+			    <br/><br/><br/>
+			    <h2><font size="6px">Tell us if you have any feedback!</font></h2><br/>
+			    <ul><li>We will make improvements to the user interface to make the 
+				process easy.  If you have good ideas you can tell us, or if you have 
+				skills or willing to contribute you can collaborate in building the 
+				software of this portal as well.&nbsp; If you know how to help us build the site, you are welcome.&nbsp; Send us
+				a patch and if it works and gels with the rest of the site your 
+				contribution will be in.<br></li></ul>
+			      <blockquote>
+				<blockquote>join the room glab@conference.jabber.org to talk to other developers.</blockquote>
+			      </blockquote>
+			      <ul><li>
+				  <div id="text-6">
+				    <ul><li>
+					join the mailing list atlas-dev@gnowledge.org at
+					<a href="http://gnowledge.org/cgi-bin/mailman/listinfo/atlas-dev">http://gnowledge.org/cgi-bin/mailman/listinfo/atlas-dev</a>
+				      </li>
+				      <li>
+					see our code at svn co  <a href="https://svn.gnowledge.org/svn/repo/labcode/atlasv2/atlas">https://svn.gnowledge.org/svn/repo/labcode/atlasv2/atlas</a></li></ul>
+				  </div>
+				  <p>The site uses <a href="http://www.gnu.org/software/gnowsys/" class="external-link">GNOWSYS (Gnowledge Networking and Organizing System)</a>
+				    as a backend.&nbsp; GNOWSYS uses gnowql (gnowledge query library) as API.&nbsp; 
+				    Some documentation about how you can learn gnowql is available <a href="http://lab.gnowledge.org/Software/gnowsys_rc1/documentation-of-new-gnowql" class="external-link">here</a>.</p>
+				</li><li>Use the 'contact' link above to write to us.  If you have any feature request, we will try to add the feature.&nbsp;&nbsp;</li><li><a href="http://gnowledge.org/cgi-bin/mailman/listinfo/community" class="external-link">Join the mailing list here </a> to be in touch with other contributors where you can<br></li>
+				  <ul><li>discuss with them pertaining to the activities on this portal<br></li><li>resolve conflicts if any</li><li>schedule periodic online workshops though collaborative online conferences</li><li>share your experiences <br></li><li>and so on.</li></ul>
+				    </ul>
+				    This site is made and maintained by the <a href="http://trac.gnowledge.org/trac">gnowledge.org lab</a> of Homi Bhabha Centre for Science Educatioin, TIFR.<a href="http://localhost:8081/depmap/" class="external-link"><br></a>
+				      <p>&nbsp;</p>
+				      
+				      
+				   
+			  
+                            </tr>
+			    </tbody>
+			    </table>     
+
+			    <div id="portal-footer">
+
+			      <p>A project of <a href="http://www.hbcse.tifr.res.in" target="_blank">Homi Bhabha Centre for Science Education</a>,
+				<a href="http://www.tifr.res.in" target="_blank">TIFR</a><br>
+				  <!--Plone and its visual design is Copyright 2000 - 2006 by Alexander Limi, Alan Runyan, Vidar Andersen.-->
+        
+				</p>
+
+			      <p>
+				All text is available under the terms of the <a href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License" class="external-link">Creative Commons Attribution ShareAlike 3.0</a>.
+			      </p>
+			      
+			      <p>
+				<a href="http://atlas.gnowledge.org/dedication"  target="_blank">Dedication</a>,<a href="http://atlas.gnowledge.org/credits"  target="_blank">Credits</a> and <a href="http://atlas.gnowledge.org/source"  target="_blank">Source</a> 
+			      </p>
+			      </div>
+
+			       
+				<div >
+				  <ul>
+				    <li><center>
+				      <a href="http://atlas.gnowledge.org/softwares"><img src="/static/gstudio/img/community.png" /></a></center>
+				      </li> 
+				    </ul>
+				    
+				    
+				  </div>
+			
+				
+			      </body>
+			    </html>
+			    

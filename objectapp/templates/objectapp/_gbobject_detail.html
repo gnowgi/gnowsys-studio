@@ -6,6 +6,18 @@
         {{ object.title }}
       </a><a href="{{ object.ref.get_edit_url }}" target="_blank" >[edit]</a>  
     </h2>
+		
+     
+           <table border="1" cellspacing="0">
+	
+        {% for sid in object.ref.get_ssid  %}
+	   
+	      
+	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ object.title }} {{ object.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
+	 
+        {% endfor %}
+	   </table>
+	
     <p class="gbobject-info">
       {% if object.authors.count %}
       {% trans "Written by" %}
@@ -31,6 +43,7 @@
 
 <p>
              <b>Name: </b> {{ object.title }} <br/>
+	
 
                {% if object.get_rendered_nbh.plural %}
                                 <b> Plural Name :<nbsp></b>

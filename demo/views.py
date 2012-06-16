@@ -50,7 +50,10 @@ from django.conf import settings
 from django.template import loader
 from django.template import Context
 from django.http import HttpResponseServerError
-
+from django.shortcuts import render_to_response, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from gstudio.models import Nodetype
 
 def server_error(request, template_name='500.html'):
     """
@@ -63,3 +66,14 @@ def server_error(request, template_name='500.html'):
     t = loader.get_template(template_name)
     return HttpResponseServerError(
         t.render(Context({'STATIC_URL': settings.STATIC_URL})))
+
+def __init__(self):
+    self.site = Site.objects.get_current()
+
+def home_view(request):
+    site = Site.objects.get_current()
+    return render_to_response('gstudio/home.html', {'user':request.user,'data':request.POST , 'site':site})
+
+def more_view(request):
+    return render_to_response('gstudio/more.html', {'user':request.user,'data':request.POST })
+

@@ -1,3 +1,6 @@
+
+{% load gstudio_tags i18n  %}
+{% get_tags as nodetype_tags %}
 {% for crumb in breadcrumbs %}
 {% if not forloop.last %}
 {% if crumb.name %}
@@ -7,3 +10,17 @@
   {{ crumb.name }}
 {% endif %}
 {% endfor %}
+
+<div class="breadcrumbsearch">
+  <form method="get" id="searchform" action="{% url nodes_search %}">
+    <p>
+      <input type="text" value="{% trans "Keywords..." %}" name="pattern" id="searchbox" onfocus="this.value=''" />
+      <input type="submit" class="submitbutton" value="OK" />
+      <a title="{% trans 'You can use - to exclude words or phrases, &quot;double quotes&quot; for exact phrases and the AND/OR boolean operators combined with parenthesis for complex searchs.' %}">
+        <img src="/static/objectapp/img/help.png" alt="?" width="14" height="14" />
+&nbsp;&nbsp;
+	 <a href="{% url gstudio_nodetype_latest_feed %}" class="feeds" title="Rssfeed"><img src="/static/gstudio/img/rss.png" alt="?" width="20" height="" /></a>
+      </a>
+    </p>
+  </form>
+</div>

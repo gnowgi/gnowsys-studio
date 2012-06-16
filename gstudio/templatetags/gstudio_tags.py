@@ -68,10 +68,10 @@ def get_metatypes(template='gstudio/tags/metatypes.html'):
 
 
 @register.inclusion_tag('gstudio/tags/dummy.html')
-def get_authors(template='gstudio/tags/authors.html'):
+def get_authors(number=5, template='gstudio/tags/authors.html'):
     """Return the published authors"""
     return {'template': template,
-            'authors': Author.published.all()}
+            'authors': Author.published.all()[:number]}
 
 
 @register.inclusion_tag('gstudio/tags/dummy.html')

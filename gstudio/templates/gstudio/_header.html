@@ -6,15 +6,17 @@
     <div class="branding">&nbsp;  Gnowledge Studio  </div>
 
     <!-- Title -->
-    <div class="admin-title">    {% if grappelli_admin_title %}{{
+    <div class="admin-title">  
+	<a href="/" title="Home">Home</a> 
+	  |    {% if grappelli_admin_title %}{{
       grappelli_admin_title }}{% else %}{% get_admin_title %}{% endif %}
-    | <a href="/">Home</a>  
-    | <a href="{{ get_absolute_url }}/objects">objects</a>
+  
+    | <a href="{{ get_absolute_url }}/objects" title="Objects">Objects</a>
 
     {% if user.is_authenticated %}
 
        {% if user.is_staff %}
-        | <a href="{{  get_absolute_url }}/admin">Admin Dashboard</a>
+        | <a href="{{  get_absolute_url }}/admin" title="Admin Dashboard">Admin Dashboard</a>
 
        {% endif %}
     {% endif %}
@@ -26,18 +28,18 @@
         <ul id="user-tools">
             <!-- Username -->
             <li class="user-options-container collapse closed">
-                <a href="javascript://" class="user-options-handler collapse-handler">{% firstof user.first_name user.username %}</a>
+                <a href="javascript://" class="user-options-handler collapse-handler" title="{% firstof user.first_name user.username %}">{% firstof user.first_name user.username %}</a>
                 <ul class="user-options">
                     <!-- Change Password -->
                     {% url admin:password_change as password_change_url %}
                     {% if password_change_url %}
-                        <li><a href="{{ password_change_url }}">
+                        <li><a href="{{ password_change_url }}" title="Change Password">
                     {% else %}
                         <li><a href="{{ root_path }}password_change/">
                     {% endif %}
                     {% trans 'Change password' %}</a></li>
                     <!-- Logout -->
-		    <li><a href="{{get_absoulute_url}}/accounts/logout/">
+		    <li><a href="{{get_absoulute_url}}/accounts/logout/" title="Log out">
                     {% trans 'Log out' %}</a></li>
 
                 </ul>
@@ -47,20 +49,20 @@
                 <!-- JS tests -->
                 {% url test-index as testindexurl %}
                 {% if testindexurl %}
-                    <li><a href="{{ testindexurl }}">{% trans 'Tests' %}</a></li>
+                    <li><a href="{{ testindexurl }}" title="Tests">{% trans 'Tests' %}</a></li>
                 {% endif %}
                 <!-- Documentation -->
                 {% url django-admindocs-docroot as docsroot %}
                 {% if docsroot %}
-                    <li><a href="{{ docsroot }}">{% trans 'Documentation' %}</a></li>
+                    <li><a href="{{ docsroot }}" title="Documentation">{% trans 'Documentation' %}</a></li>
                 {% endif %}
-                <li><a href="http://github.com/gnowgi/django-gstudio">Code</a></li>
+                <li><a href="http://github.com/gnowgi/django-gstudio" title="Code">Code</a></li>
             {% endblock %}
         </ul>
     {% else %}
         <ul id="user-tools">
-	  <li><a href="{{root_path}}/accounts/login">{% trans 'Login' %}</a></li>
-	  <li>Not registered ? <a href="{{root_path}}/accounts/register">{% trans 'Register' %}</a></li>
+	  <li><a href="{{root_path}}/accounts/login" title="Login">{% trans 'Login' %}</a></li>
+	  <li>Not registered ? <a href="{{root_path}}/accounts/register" title="Register">{% trans 'Register' %}</a></li>
 	    </ul>
 	 
 	  

@@ -92,6 +92,7 @@ caption { background: #eeeeee; }
 .top { margin-top: 0; padding-top: 0; }
 
 .bottom { margin-bottom: 0; padding-bottom: 0; }
+.breadcrumbsearch {  position: absolute; right: 50px; margin-bottom: -8px;  margin-top: -21px;}
 
 .container { width: 950px; margin: 0 auto; overflow: hidden; *zoom: 1; }
 
@@ -399,14 +400,14 @@ fieldset { padding: 1.4em; margin: 0 0 1em 0; }
 
 legend { font-weight: bold; font-size: 1.2em; }
 
-input.text, input.title, input[type=email], input[type=text], input[type=password] { margin: 0.5em 0; background-color: white; padding: 5px; }
+input.text, input.title, input[type=email], input[type=text], input[type=password] { margin: 0em 0; background-color: white; padding: 5px; }
 input.title { font-size: 1.5em; }
 
 textarea { margin: 0.5em 0; padding: 5px; }
 
 select { margin: 0.5em 0; }
 
-fieldset { border: 1px solid #cccccc; width:150px;}
+fieldset { border: 1px solid #cccccc; width:230px;}
 
 input.text, input.title, input[type=email], input[type=text], input[type=password], textarea { background-color: #fff; border: 1px solid #bbbbbb; }
 input.text:focus, input.title:focus, input[type=email]:focus, input[type=text]:focus, input[type=password]:focus, textarea:focus { border: 1px solid #666666; }
@@ -436,7 +437,7 @@ a:hover { text-decoration: underline; }
 #b1 {position:relative; center:5%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 #b2 {position:relative; center:6%; background-color:#43AEE7; color: white; border: 1px solid #000000; font-size:1em;}
 
-#body { margin-bottom: 1em; border-bottom: 1px solid #e9e9f3; width: 100%; }
+#body { margin-bottom: 1em; border-bottom: 0px solid #e9e9f3; width: 100%; }
 
 #content h1, #content h2, #content h3 { margin-top: 10px; }
 
@@ -503,7 +504,7 @@ a:hover { text-decoration: underline; }
 #sidebar .tags div ul .tag_4 { font-size: 2em; color: #0070a8; }
 #sidebar .tags div ul .tag_5 { font-size: 2.25em; color: #0099e5; }
 #sidebar .tags div ul .tag_6 { font-size: 3em; color: #00adff; }
-#footer{position: static; top: 4px; left: -1px; margin-top: 18px;} 
+#footer{position: static; top: 4px; left: -1px; margin-top: 18px; border-bottom: 1px solid #e9e9f3;} 
 th.month{padding:0cm 2.5cm;}
 table.month { margin-bottom: 0; }
 table.month th.month { text-transform: uppercase; color: #006699; background: none; }

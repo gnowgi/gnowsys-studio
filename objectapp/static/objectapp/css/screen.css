@@ -93,6 +93,8 @@ caption { background: #eeeeee; }
 
 .bottom { margin-bottom: 0; padding-bottom: 0; }
 
+.objectbreadcrumbsearch {  position: absolute; right: 50px; margin-bottom: -8px;  margin-top: -21px;}
+
 .container { width: 950px; margin: 0 auto; overflow: hidden; *zoom: 1; }
 
 .column, .span-1, .span-2, .span-3, .span-4, .span-5, .span-6, .span-7, .span-8, .span-9, .span-10, .span-11, .span-12, .span-13, .span-14, .span-15, .span-16, .span-17, .span-18, .span-19, .span-20, .span-21, .span-22, .span-23, .span-24 { display: inline; float: left; margin-right: 10px; }
@@ -399,7 +401,7 @@ fieldset { padding: 1.4em; margin: 0 0 1.5em 0; }
 
 legend { font-weight: bold; font-size: 1.2em; }
 
-input.text, input.title, input[type=email], input[type=text], input[type=password] { margin: 0.5em 0; background-color: white; padding: 5px; }
+input.text, input.title, input[type=email], input[type=text], input[type=password] { margin: 0em 0; background-color: white; padding: 5px; }
 input.title { font-size: 1.5em; }
 
 textarea { margin: 0.5em 0; padding: 5px; }

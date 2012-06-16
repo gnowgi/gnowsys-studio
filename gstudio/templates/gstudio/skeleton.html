@@ -172,7 +172,7 @@
 		
 		
 			{% include "gstudio/_header.html" %}
-			<div id="breadcrumbs" class="span-24 last">
+			<div id="breadcrumbs" class="">
 				/ {% block breadcrumbs %}{% endblock %}
 			</div>
 			<div id="body" class="span-24 last">
@@ -624,10 +624,7 @@ return relations;
 </script>
 
 				</div>
-				<div id="sidebar">
-				  {% block sidebar %}
-				  {% endblock %}
-				</div>
+		</div>
 				
 				
 				<div id="footer">
@@ -643,6 +640,6 @@ return relations;
 					</p>
 				</div>
 		
-		</div>
+	
 	</body>
 </html>

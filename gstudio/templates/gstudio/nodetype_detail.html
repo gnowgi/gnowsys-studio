@@ -41,6 +41,21 @@
 	<a href="{{ object.ref.get_edit_url }}" target="_blank"  title = "edit">[edit]</a>     
 
     </h2>
+<div class="History">
+     
+      					 
+       					 <table border="1" cellspacing="0">
+						
+        					{% for sid in object.ref.get_ssid  %}
+	   
+	      
+	     					<a href="{{ object.get_version_url }}{{ sid }}/{{ forloop.counter }}" title= "{{ object.title }} {{ object.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;  
+		 
+       						 {% endfor %}
+
+					</table>
+	   
+</div>
   {% with object.html_content|safe as object_content %}
 <!-- Neighbourhood listing starts -->
 <!--Name,Plural Name , Alternate Name ,Type of -->
@@ -185,6 +200,9 @@
                                         <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;	      
 				    {% endfor %}       <br/>
 	                   {% endif %}
+
+
+				
 <!-- Content -->                           
 			    {% if object.content %}
                             <b>
@@ -350,6 +368,8 @@
   {% endif %}
 </div>
 {% endblock %}
+<br/>
+
 
 {% block nodetype-comments %}
 <div id="comments" class="span-16 last">

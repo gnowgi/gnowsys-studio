@@ -1,0 +1,147 @@
+{% load objectapp_tags i18n %}
+{% load gstudio_tags i18n %}
+
+{% load adminmedia  grp_tags %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      .searchbutton{     
+      font-family: Arial,sans-serif;
+      font-size: 22px;
+      font-weight: bold;
+      vertical-align: top;
+      } 
+      #homebody{
+	height:100%;
+	background: #B3B3B3;
+	
+	}
+      #header {
+      background: none repeat scroll 0 0 #2B3959;
+      border-bottom: 1px solid #E9E9F3;
+      color: white;
+      margin-bottom: 1em;
+      }
+      #header a:hover, #header a:active{
+      color: red;
+      }	
+      
+      #main {
+      margin-top: 70px;
+      } 	
+      
+      #searchtext{
+      margin-left:25%;
+      margin-top:10%
+      }
+      #searchidbutton{
+      margin-left:39%;
+      margin-top:2%;
+      }
+      
+      #author{
+      margin-left: 75%;
+      }
+      
+      .bottom h3 {
+      background-color: #C4EBF4;
+      padding: 0.5em;
+      font-size: 1em;
+      line-height: 1;
+      margin-bottom: 1em;
+      border-radius: 15px 15px 15px 15px;
+      color: #176691;
+      font-weight: normal;
+      }
+      
+      .bottom{
+      margin-top:9%;
+      margin-left:11%;
+      }
+      .authors {
+      width: 20%;
+      position:absolute;
+      margin-left: 3%;
+      }	
+      
+      .recentsnodetype{
+      width:22%;
+      position:absolute;
+      margin-left:24%;
+      }
+      
+      
+      .comments{
+      width:22%;
+      position:absolute;
+      margin-left:47%;
+      }
+      }
+    </style>   
+    
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      
+      
+      $(window).load(function() {
+      $(".searchbutton").css({"background": "#F5F5F5" ,"width":"109px" , "height":"30px" , "-moz-box-sizing":"border-box", "margin-left":"45%", "padding":"4px 13px 29px 16px" , "color": "black" , "border":"1px solid #AAAAAA" });
+   
+	
+
+      });
+      
+      
+    </script>
+    
+    <link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+    
+    <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+    
+    <script src="{% admin_media_prefix %}jquery/ui/js/jquery-ui-1.8.15.custom.min.js" type="text/javascript"></script>
+    <!-- Grappelli Main JS -->
+    <script src="{% admin_media_prefix %}js/grappelli/grappelli.js" type="text/javascript"></script> 
+    <!-- Grappelli jQuery Plugins, Widgets -->
+    
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_collapsible.js" type="text/javascript"></script>
+    <link rel="shortcut icon" href="/static/gstudio/img/favicon.ico" />
+    
+    <title>Gnowledge Studio</title>
+  </head>
+  <body id="homebody">
+    
+    
+    <div id="header" >
+      {% include "gstudio/_header.html" %}
+    </div>
+	
+    <div id="main">
+      <center><font size="23" color="#4d659e"><b>{{ site }}</b></font></center>
+      <form action="{% url gstudio_nodetype_search %}" method="get">
+	<input id="searchtext" class="classtext" type="text" value="{{ pattern }}" name="pattern"  onfocus="this.value=''"   style="border: 5; padding: 0pt; margin: 0pt; height: 30px; width: 40%; margin-left:30%; margin-bottom:18px; margin-top:4%" />
+	<input class="searchbutton" type="submit" value="Search" title="Search" />
+&nbsp;&nbsp;
+	 <a href="{% url gstudio_nodetype_latest_feed %}" class="feeds" title="Rssfeed"><img src="/static/gstudio/img/rss.png" alt="?" width="20" height="" /></a>
+      </form>
+    </div><br/><br/><br/>
+<link rel="stylesheet" type="text/css" media="screen, projection" href="/static/gstudio/css/screen.css" />
+<center><p style = " font-size : 19px ; color : #4d659e"><b>Let us collaboratively construct semantic knowledge networks with a special focus on education.<a href="/more/"><font color="red">more</font></a></b></p></center>
+    <div class="bottom">
+      <div class="authors">
+	<h3>{% trans "Recents Authors" %}</h3>
+	{% get_authors %}
+      </div>
+	
+<div class="recentsnodetype">
+<h3>{% trans "Recent Nodes" %}</h3>
+{% get_recent_nodetypes %}
+</div>
+<div class="comments">
+  <h3>{% trans "Recent Comments" %}</h3>
+  {% get_recent_comments 5 %}
+</div>
+    </div>
+
+  </body>
+</html>
+      

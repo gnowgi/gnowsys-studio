@@ -760,12 +760,13 @@ class Nodetype(Node):
                                verbose_name=_('is a kind of'),
                                related_name='children')
 
-    prior_nodes = models.ManyToManyField('self', null=True, blank=True,
+    prior_nodes = models.ManyToManyField('self', symmetrical=False,null=True, blank=True,
                                verbose_name=_('its meaning depends on '),
-                               related_name='posterior_nodes')
-    posterior_nodes = models.ManyToManyField('self', null=True, blank=True,
+                               related_name='nodetype_posterior_nodes')
+
+    posterior_nodes = models.ManyToManyField('self', symmetrical=False,null=True, blank=True,
                                verbose_name=_('required for the meaning of '),
-                               related_name='prior_nodes')
+                               related_name='nodetype_prior_nodes')
 
     image = models.ImageField(_('image'), upload_to=UPLOAD_TO,
                               blank=True, help_text=_('used for illustration'))

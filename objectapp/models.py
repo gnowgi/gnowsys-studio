@@ -167,13 +167,13 @@ class Gbobject(Node):
     excerpt = models.TextField(_('excerpt'), blank=True,
                                 help_text=_('optional element'))
 
-    prior_nodes = models.ManyToManyField('self', null=True, blank=True,
+    prior_nodes = models.ManyToManyField('self', symmetrical=False,null=True, blank=True,
                                verbose_name=_('depends on'),
-                               related_name='posterior_nodes')
+                               related_name='gbobject_posterior_nodes')
 
-    posterior_nodes = models.ManyToManyField('self', null=True, blank=True,
+    posterior_nodes = models.ManyToManyField('self', symmetrical=False,null=True, blank=True,
                                verbose_name=_('required for'),
-                               related_name='prior_nodes')
+                               related_name='gbobject_prior_nodes')
 
 
     tags = TagField(_('tags'))

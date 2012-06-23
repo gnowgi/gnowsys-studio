@@ -831,58 +831,17 @@ def set_relation(d,obj1,obj2) :
            s.save()
            return s.id
     except Relationtype.DoesNotExist :
-       return "Relationtype Does Not Exist"  
+       return "Relationtype Does Not Exist"
 
-	
+@xmlrpc_func(returns='list')
+def list_id():
+    """Get a list of Gbobjects' ids"""
+    return [id.id for id in Gbobject.objects.all()]
 
-
-
-
-
-
-
-      
-  
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                                                                                                                                                                                   
-
-
-
-
-     
-  
-
-
-
- 
-
-
+@xmlrpc_func(returns='struct', args=['string'])
+def dict_id(id=None):
+    """Get a Gbobject as a dict or as a list of dicts"""
+    if id:
+        return Gbobject.objects.get(id="{0}".format(id))
+    else:
+        return [dict_id(id) for id in list_id()]

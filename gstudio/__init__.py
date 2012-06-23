@@ -16,12 +16,12 @@
 
 
 """Gstudio"""
-__version__ = '0.3.dev'
-__license__ = 'BSD License'
+__version__ = '0.4.dev'
+__license__ = 'AGPL 3.0'
 
-__author__ = 'gnowgi'
+__author__ = 'Nagarjuna G.'
 __email__ = 'nagarjun@gnowledge.org'
 
-__url__ = 'http://github.com/gnowgi/django-gstudio'
+__url__ = 'http://www.gnu.org/software/gnowsys/'
 
 

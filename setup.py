@@ -67,7 +67,7 @@ from setuptools import setup, find_packages
 
 import gstudio
 
-setup(name='django-gstudio',
+setup(name='gnowsys-studio',
       version=gstudio.__version__,
 
       description='A collaborative blogspace for constructing and publishing semantic knowledge networks and ontologies',
@@ -89,8 +89,12 @@ setup(name='django-gstudio',
           'Programming Language :: Python',
           'Intended Audience :: Developers',
           'Operating System :: OS Independent',
-          'License :: OSI Approved :: BSD License',
-          'Topic :: Software Development :: Libraries :: Python Modules',],
+          'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
+          'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+          'Topic :: Scientific/Engineering :: Artificial Intelligence',
+          'Topic :: Scientific/Engineering :: Information Analysis',
+          'Topic :: Scientific/Engineering :: Visualization',],
+      
 
       license=gstudio.__license__,
       include_package_data=True,

@@ -2,7 +2,7 @@ include README.rst
 include LICENSE.txt
 include buildout.cfg
 include bootstrap.py
-#recursive-include docs *
+recursive-include docs *
 recursive-include patches *
 recursive-include gstudio/fixtures *.json
 recursive-include gstudio/locale *

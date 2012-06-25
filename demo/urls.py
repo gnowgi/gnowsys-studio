@@ -91,6 +91,7 @@ urlpatterns = patterns(
      {'url': '/nodetypes/'}),
     url(r'^nodetypes/', include('gstudio.urls')),
     url(r'^objects/', include('objectapp.urls')),
+ 
     url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^xmlrpc/$', 'django_xmlrpc.views.handle_xmlrpc'),
     url(r'^i18n/', include('django.conf.urls.i18n')),

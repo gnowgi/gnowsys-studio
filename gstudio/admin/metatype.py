@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.core.urlresolvers import NoReverseMatch
 from django.utils.translation import ugettext_lazy as _
-
+from markitup.widgets import AdminMarkItUpWidget
 from gstudio.admin.forms import MetatypeAdminForm
 import reversion
 from gstudio.settings import GSTUDIO_VERSIONING
@@ -33,3 +33,8 @@ class MetatypeAdmin(parent_class):
             return '/%s/' % metatype.tree_path
     get_tree_path.allow_tags = True
     get_tree_path.short_description = _('tree path')
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(MetatypeAdmin, self).formfield_for_dbfield(db_field, **kwargs)

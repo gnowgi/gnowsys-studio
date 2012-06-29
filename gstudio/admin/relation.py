@@ -2,6 +2,7 @@
 from django.contrib import admin
 from django.core.urlresolvers import NoReverseMatch
 from django.utils.translation import ugettext_lazy as _
+from markitup.widgets import AdminMarkItUpWidget
 
 from gstudio.admin.forms import RelationAdminForm
 import reversion
@@ -33,3 +34,7 @@ class RelationAdmin(parent_class):
         relation.slug = slugify(relation.title)
         relation.save()
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(RelationAdmin, self).formfield_for_dbfield(db_field, **kwargs)

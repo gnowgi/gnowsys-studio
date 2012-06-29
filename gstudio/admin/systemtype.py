@@ -11,7 +11,7 @@ from django.conf.urls.defaults import patterns
 from django.conf import settings as project_settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse, NoReverseMatch
-
+from markitup.widgets import AdminMarkItUpWidget
 from tagging.models import Tag
 
 import reversion
@@ -76,6 +76,11 @@ class SystemtypeAdmin(parent_class):
     def __init__(self, model, admin_site):
         self.form.admin_site = admin_site
         super(SystemtypeAdmin, self).__init__(model, admin_site)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(SystemtypeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
     # Custom Display
     def get_title(self, systemtype):

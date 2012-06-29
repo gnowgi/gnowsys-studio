@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse, NoReverseMatch
 import reversion
 from tagging.models import Tag
-
+from markitup.widgets import AdminMarkItUpWidget
 from objectapp import settings
 from objectapp.managers import HIDDEN
 from objectapp.managers import PUBLISHED
@@ -76,6 +76,11 @@ class SystemAdmin(reversion.VersionAdmin):
     def __init__(self, model, admin_site):
         self.form.admin_site = admin_site
         super(SystemAdmin, self).__init__(model, admin_site)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(SystemAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
     # Custom Display
     def get_title(self, system):

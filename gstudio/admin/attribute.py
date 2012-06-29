@@ -8,6 +8,7 @@ from gstudio.models import *
 import reversion
 from django.template.defaultfilters import slugify
 from gstudio.settings import GSTUDIO_VERSIONING
+from markitup.widgets import AdminMarkItUpWidget
 
 if GSTUDIO_VERSIONING == True:
     parent_class = reversion.VersionAdmin
@@ -29,7 +30,10 @@ class AttributeAdmin(parent_class):
         attribute.slug =   slugify(attribute.title)
         attribute.save()
 
-
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(AttributeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 
 

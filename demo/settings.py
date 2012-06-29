@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'mptt',
     'reversion',
     'tagging',
+    'markitup',
     'django_xmlrpc',
     'grappelli.dashboard',
     'grappelli',

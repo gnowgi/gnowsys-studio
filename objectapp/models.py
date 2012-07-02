@@ -97,6 +97,7 @@ from gstudio.models import Relation
 from gstudio.models import Node
 from gstudio.models import Edge
 from gstudio.models import Author
+from gstudio.models import NID
 import ast
 from objectapp.settings import UPLOAD_TO
 from objectapp.settings import MARKUP_LANGUAGE
@@ -475,53 +476,120 @@ class Gbobject(Node):
 
 	for key in predicate_id.keys():
 		if nbh[key]:
-			try:
+                    try:
 				
-				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-				
-				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
+                        g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+                        
+                        g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 
-				if not isinstance(nbh[key],basestring):
-                                    for item in nbh[key]:
-					if isinstance(item,unicode):
-						g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":str(item)})
-						g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"b") })
-                                   		attr_counter-=1
-
-					elif item.reftype!="Relation":
-                                        # create nodes
-						
-					        	g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url()})	
-							g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
-					
-						
-							
-					else:
-						
-						 if item.left_subject.id==self.id:
-							item1=item.right_subject
-							flag=1
-							
-						 elif item.right_subject.id==self.id:
-							item1=item.left_subject
-							flag=0						
-						
-					         
-						 g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
-
-						
-		                                 g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
-                                else:
-				 	
-                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":nbh[key]})				   
+                        if not isinstance(nbh[key],basestring) and len(nbh[key])<=2:
+                            for item in nbh[key]:
+                                if isinstance(item,unicode):
+                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":str(item)})
                                     g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"b") })
                                     attr_counter-=1
-							
-			except EOFError:
-				 print "Oops!  That was no valid number.  Try again..."
+                                    
+                                elif item.reftype!="Relation":
+                                    # create nodes
+                                    g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype})
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+                                    
+                                else:
+                                    
+                                    if item.left_subject.id==self.id:
+                                        item1=item.right_subject
+                                        flag=1
+                                        
+                                    elif item.right_subject.id==self.id:
+                                        item1=item.left_subject
+                                        flag=0						
+                                        
+                                    g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
+                                        
+                                        
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
+                        else:
+                            if not isinstance(nbh[key],basestring):
+                                g_json["node_metadata"].append({"_id":(str(attr_counter))+"a","screen_name":str(len(nbh[key]))+" nodes...","title":str(key),"url":"/nodetypes/graphs/graph_label/"+str(self.id)+"/"+str(key)})
+					#g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter))})
+                            else:
+                                g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
+    
+                            g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
+
+                            attr_counter-=1
+
+                    except:
+                            pass
                             
         #print g_json
         return json.dumps(g_json)   
+    def get_label(self,key):
+        nbh=self.get_nbh
+        list_of_nodes=[]
+        for item in nbh[key]:
+            node = NID.objects.get(id=item.id)
+            node = node.ref
+            list_of_nodes.append(node)
+            return list_of_nodes
+
+
+
+    def get_Version_graph_json(self,ssid):
+        
+            
+        # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
+        # slist=self.get_ssid
+        ver_dict=self.version_info(ssid)
+        ver_dict1=self.version_info(ssid)
+        #ver_dict=str(ver['nbhood'])
+        ver_dict=ast.literal_eval(ver_dict['nbhood'])
+        g_json = {}
+        g_json["node_metadata"]= [] 
+        g_json["relations"]=[]
+        predicate_id = {}
+        counter=1
+        attr_counter=-1
+        for key in ver_dict.keys():
+            val = "a" + str(counter)
+            predicate_id[key] = val
+            counter = counter + 1
+         #print predicate_id
+            
+         
+
+            this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
+            g_json["node_metadata"].append(this_node) 
+   
+
+            for key in predicate_id.keys():
+        	if (ver_dict[key] and (ver_dict[key])!=0 and not(isinstance(ver_dict[key],int ) )) :
+                    try: 
+                        
+                        g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+                        g_json["relations"].append({"from":self.id , "to":predicate_id[key],"value":1, "type":str(key) })
+                        
+                        if not isinstance(ver_dict[key],basestring):
+                            for item in ver_dict[key]:
+                                # user 
+                                g_json["node_metadata"].append({"_id":(str(attr_counter)+"aa"),"screen_name":item })			
+						#create links
+                                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":(str(attr_counter)+"aa")  })
+                                attr_counter-=1
+                            else:
+                                
+                                g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":ver_dict[key]})
+                                g_json["relations"].append({"from":predicate_id[key] , "to":(str(attr_counter)+"a") ,"value":1, "type":str(key) })
+                                attr_counter-=1
+                                
+                                
+                    except:
+                        pass
+# print g_json
+                    
+                    
+                    
+                    return json.dumps(g_json)
 
     @property
     def get_rendered_relations(self):

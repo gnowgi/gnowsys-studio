@@ -560,12 +560,13 @@ $(window).bind('keydown',function(event) {
 				    .attr("cx", bbox.x+25)
 				    .attr("cy", bbox.y+13)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 55)})
-				    .attr("ry",14)
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 40)})
+				    .attr("ry",13)
+
 				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
-				    .style("fill", function color(d) {if (d.expanded=="true" && d.refType=="Objecttype") return "blue"; else if(d.expanded=="true" && d.refType=="Gbobject") return "red"; else return "none"});
+				    .style("fill", function(d) {if ((d.expanded=="true" && d.refType=="Gbobject") ||(d._id=={{object.id}}) ) return "red"; else if(d.expanded=="true" && d.refType=="Objecttype") return "blue"; else return "none"})
 
 
 

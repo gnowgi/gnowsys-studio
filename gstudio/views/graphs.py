@@ -97,7 +97,19 @@ def graph_json(request, node_id):
     return HttpResponse(node.get_graph_json(), "application/json")
    
 
+def graph_label(request, node_id,key): 
+      
+    
+    try:
+        node = NID.objects.get(id=node_id)
+        node = node.ref 
+    except:
+	
+        return HttpResponse("node not found", "text/html")
+    lis=node.get_label(key)    
 
+    return render_to_response('gstudio/label_list.html',{'lis': lis })
+   
 
 
 def force_graph(request, node_id):

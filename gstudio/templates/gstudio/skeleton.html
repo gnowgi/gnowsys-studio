@@ -502,7 +502,7 @@ $(window).bind('keydown',function(event) {
 
 
 			
-		var text1 = new_g.append("svg:text")
+		text1 = new_g.append("svg:text")
 			.attr("class",function(d) {var e=(d._id).charAt(0);  if (d._id==key) return "mainnode";else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode";  else return "node"; })
                         .attr("y", 20)
 	                .attr("x", 25) 
@@ -514,12 +514,11 @@ $(window).bind('keydown',function(event) {
                           return d.screen_name;
                         });  
 			
-               var bbox = text1.node().getBBox();
-
+                bbox = text1.node().getBBox();
+		console.log(bbox);
 
 		new_g.filter(function(d) { return (d._id).charAt(0)=="-"; }).append("svg:rect")
-                                                      .attr("x",bbox.x-22
- )
+                                                      .attr("x",bbox.x-22)
 						      .attr("y", bbox.y)	
 						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length+bbox.width+40)})
 							.attr("height", bbox.height)

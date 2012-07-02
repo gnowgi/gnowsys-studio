@@ -1007,7 +1007,7 @@ class Nodetype(Node):
 				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
 				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 
-				if not isinstance(nbh[key],basestring):
+				if not isinstance(nbh[key],basestring) and len(nbh[key])<=2:
 				
                                     	for item in nbh[key]:		
 						if item.reftype=="Relationtype":
@@ -1027,9 +1027,13 @@ class Nodetype(Node):
 
 					
                                 else:
-				    
-                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
-				    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
+				    if not isinstance(nbh[key],basestring):
+                                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":str(len(nbh[key]))})
+                                        #g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
+                                    else:
+                                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
+
                                     attr_counter-=1
 							
 			except:
@@ -1040,7 +1044,14 @@ class Nodetype(Node):
         return json.dumps(g_json)  
 
 
-
+    def get_label(self,key):
+        nbh=self.get_nbh
+        list_of_nodes=[]
+        for item in nbh[key]:
+            node=NID.objects.get(id=item.id)
+            node=node.ref
+            list_of_nodes.append(node)
+        return list_of_nodes
 
     @property
     def get_possible_attributes(self):
@@ -1616,10 +1627,11 @@ class Objecttype(Nodetype):
         nbh['member_of_metatypes']=member_of_dict
 	nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])  
         typeof={}
-        parent=self.parent_id
-        if parent:
-            obj=NID.objects.get(id=parent)
-            typeof[parent] = obj.ref.get_absolute_url()
+        parentid=self.parent_id
+        if parentid:
+            parent=Nodetype.objects.get(id=parentid)
+            if parent:
+                typeof[parent] = parent.get_absolute_url()
         nbh['type_of']=typeof
 	nbh['count_type_of'] = len(nbh['type_of'])    
         #get all subtypes 
@@ -1727,37 +1739,38 @@ class Objecttype(Nodetype):
          ver_dict=ast.literal_eval(ver_dict['nbhood'])
          g_json = {}
          g_json["node_metadata"]= [] 
+         g_json["relations"]=[]
          predicate_id = {}
-         counter = 1
+         counter=1
+         attr_counter=-1
          for key in ver_dict.keys():
              val = "a" + str(counter)
              predicate_id[key] = val
              counter = counter + 1
          #print predicate_id
 
-         attr_counter = -1
+         
+         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
+         g_json["node_metadata"].append(this_node)  
 
-         this_node = {"_id":str(self.id),"title":ver_dict['title'],"screen_name":ver_dict['title'], "url":self.get_absolute_url()}
-         g_json["node_metadata"].append(this_node)      
 
          for key in predicate_id.keys():
-        	if ver_dict[key]:
-        		try:
-        			g_json[str(key)]=[]      
+        	if (ver_dict[key] and (ver_dict[key])!=0 and not(isinstance(ver_dict[key],int ) )
+) :
+        		try: 
         			g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-        			g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
+        			g_json["relations"].append({"from":self.id , "to":predicate_id[key],"value":1, "type":str(key) })
         			if not isinstance(ver_dict[key],basestring):
                                     for item in ver_dict[key]:
                                         # user 
-                                        g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
-                                        g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
+                                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"aa"),"screen_name":item })			
+						#create links
+				        g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":(str(attr_counter)+"aa")  })
+					attr_counter-=1
 			
                                 else:
-        			 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
-        	            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
-        			 	#for item in value.keys():
-                                    g_json["node_metadata"].append({"_id":attr_counter,"screen_name":ver_dict[key]})
-                                    g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
+        			    g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":ver_dict[key]})
+		                    g_json["relations"].append({"from":predicate_id[key] , "to":(str(attr_counter)+"a") ,"value":1, "type":str(key) })
                                     attr_counter-=1
 							
         		except:
@@ -2227,7 +2240,8 @@ class Relation(Edge):
     right_subject_scope = models.CharField(max_length=50, verbose_name='object scope or qualification', null=True, blank=True)
     right_subject = models.ForeignKey(NID, related_name="right_subject_of", verbose_name='object name') 
 
-    def ApplicableNodeTypes_filter(self,choice):
+    def ApplicableNodeType
+s_filter(self,choice):
 
         nodeslist = []
         

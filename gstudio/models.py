@@ -15,7 +15,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# This project incorporates work covered by the following copyright and permission notice:  
+# This project incorporates work covered by the following copyright and permission notice:
 
 #    Copyright (c) 2009, Julien Fache
 #    All rights reserved.
@@ -151,24 +151,24 @@ DEPTYPE_CHOICES = (
    )
 
 FIELD_TYPE_CHOICES = (
-    ('1', 'CharField'),    
-    ('2', 'TextField'),    
-    ('3', 'IntegerField'),    
+    ('1', 'CharField'),
+    ('2', 'TextField'),
+    ('3', 'IntegerField'),
     ('4', 'CommaSeparatedIntegerField'),
-    ('5', 'BigIntegerField'),    
-    ('6', 'PositiveIntegerField'),    
+    ('5', 'BigIntegerField'),
+    ('6', 'PositiveIntegerField'),
     ('7', 'DecimalField'),
     ('8', 'FloatField'),
     ('9', 'BooleanField'),
     ('10', 'NullBooleanField'),
     ('11', 'DateField'),
     ('12', 'DateTimeField'),
-    ('13', 'TimeField'),    
+    ('13', 'TimeField'),
     ('14', 'EmailField'),
     ('15', 'FileField'),
     ('16', 'FilePathField'),
     ('17', 'ImageField'),
-    ('18', 'URLField'),    
+    ('18', 'URLField'),
     ('19', 'IPAddressField'),
     )
 
@@ -183,14 +183,14 @@ attr_counter = -1
 
 class Author(User):
     """Proxy Model around User"""
-    
+
     objects = models.Manager()
     published = AuthorPublishedManager()
 
     def nodetypes_published(self):
         """Return only the nodetypes published"""
         return nodetypes_published(self.nodetypes)
-    
+
     @property
     def title(self):
         return self.username
@@ -198,7 +198,7 @@ class Author(User):
     @models.permalink
     def get_absolute_url(self):
         """Return author's URL"""
-        #return "/authors/%s/" %(self.username) 
+        #return "/authors/%s/" %(self.username)
         return ('gstudio_author_detail', (self.username,))
 
     class Meta:
@@ -214,7 +214,7 @@ class NID(models.Model):
     last_update = models.DateTimeField(_('last update'), default=datetime.now)
     creation_date = models.DateTimeField(_('creation date'),
                                          default=datetime.now)
-    
+
     slug = models.SlugField(help_text=_('used for publication'),
                             unique_for_date='creation_date',
                             max_length=255)
@@ -225,10 +225,10 @@ class NID(models.Model):
         """
         Returns Number of Version
         """
-	i=0
+        i=0
         ver=Version.objects.get_for_object(self)
-	for each in ver:
-		i=i+1
+        for each in ver:
+            i=i+1
         return i
 
     @property
@@ -237,39 +237,39 @@ class NID(models.Model):
         Returns  Version list
         """
         ver=Version.objects.get_for_object(self)
-	return ver
+        return ver
 
     @property
     def get_ssid(self):
-	"""
-	return snapshot ids (revision id).
+        """
+        return snapshot ids (revision id).
         returns a list.
-	"""
-	slist=[]
-	vlist=self.get_version_list	
-	for each in vlist:
-		slist.append(each.id)
-	return slist
+        """
+        slist=[]
+        vlist=self.get_version_list
+        for each in vlist:
+            slist.append(each.id)
+        return slist
 
     def version_info(self,ssid):
-	version_object=Version.objects.get(id=ssid)
-	return version_object.field_dict
+        version_object=Version.objects.get(id=ssid)
+        return version_object.field_dict
 
 
     def get_version_nbh(self,ssid):
-   	"""
-	Returns Version nbh
-	"""
-	ver_dict=self.version_info(ssid)
-	ver_nbh_list=[]
-	ver_nbh_dict={}
-	for item in self.get_nbh.keys():
-    		if item in ver_dict.keys():
-			ver_nbh_list.append(item)
-	for each in ver_nbh_list:
-		ver_nbh_dict[each]=ver_dict[each]
-	return ver_nbh_dict
-    
+        """
+        Returns Version nbh
+        """
+        ver_dict=self.version_info(ssid)
+        ver_nbh_list=[]
+        ver_nbh_dict={}
+        for item in self.get_nbh.keys():
+            if item in ver_dict.keys():
+                ver_nbh_list.append(item)
+        for each in ver_nbh_list:
+            ver_nbh_dict[each]=ver_dict[each]
+        return ver_nbh_dict
+
     def get_serialized_dict(self):
         """
         return the fields in a serialized form of the current object using the __dict__ function.
@@ -296,43 +296,43 @@ class NID(models.Model):
     def ref(self):
         from objectapp.models import *
         return eval(self.nodemodel).objects.get(id=self.id)
-        
-        # """ 
+
+        # """
         # Returns the object reference the id belongs to.
         # """
         # try:
-        #     """ 
+        #     """
         #     ALGO:     get object id, go to version model, return for the given id.
         #     """
 
         #     # Retrieving only the relevant tupleset for the versioned objects
         #     # vrs = Version.objects.filter(type=0 , object_id=self.id)
-        #     # Returned value is a list, so splice it.                                                                                                     
-        #     vrs =  vrs[0]            
+        #     # Returned value is a list, so splice it.
+        #     vrs =  vrs[0]
         # except:
-        #     return None        
+        #     return None
         # return vrs.object
-    
-    
+
+
     @property
     def reftype(self):
-        """ 
+        """
         Returns the type the id belongs to.
         """
         try:
-            """ 
-            ALGO: simple wrapper for the __class__.__name__ so that it can be used in templates  
-            
+            """
+            ALGO: simple wrapper for the __class__.__name__ so that it can be used in templates
+
             """
             # return self.__class__.__name__
             obj = self.ref
             return obj.__class__.__name__
-        
+
         except:
             return None
-        
+
     @property
-    def getat(self):        
+    def getat(self):
 
         """This is will give the possible attributetypes """
         try:
@@ -345,12 +345,12 @@ class NID(models.Model):
             while obj.parent:
                 pt.append((obj.parent).ref)
                 obj=obj.parent
-            
+
             for each in pt:
                 attributetype.append(each.subjecttype_of.all())
 
             attributetype = [num for elem in attributetype for num in elem]
-            
+
             for i in attributetype:
                 if str(i.applicable_nodetypes) == 'OT':
                     returndict.update({str(i.title):i.id})
@@ -368,41 +368,41 @@ class NID(models.Model):
         finaldict = {} contains either title of relationtype or inverse of relationtype
         listval=[] contains keys of titledict to check whether parenttype id is equals to listval's left or right subjecttypeid"""
 
-        pt =[] 
-        reltype =[] 
+        pt =[]
+        reltype =[]
         titledict = {}
         inverselist = []
         finaldict = {}
-        listval=[] 
+        listval=[]
 
         pt.append(self.ref)
         obj = self.ref
         while obj.parent:
             pt.append((obj.parent).ref)
             obj=obj.parent
-            
+
         for i in range(len(pt)):
             if Relationtype.objects.filter(left_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))    
+                reltype.append(Relationtype.objects.filter(left_subjecttype = pt[i].id))
             if Relationtype.objects.filter(right_subjecttype = pt[i].id):
-                reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id)) 
+                reltype.append(Relationtype.objects.filter(right_subjecttype = pt[i].id))
         reltype = [num for elem in reltype for num in elem] #this rqud for filtering
 
         for i in reltype:
             titledict.update({i:i.id})
-            
-            
+
+
         for i in range(len(titledict)):
             listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
             inverselist.append(str(titledict.keys()[i].inverse))
-     
+
         for j in range(len(pt)):
             for i in range(len(listval)):
                 if pt[j].id == listval[i].left_subjecttype_id and str(listval[i].left_applicable_nodetypes) == 'OT' :
                     finaldict.update({titledict.keys()[i]:titledict.values()[i]})
                 if pt[j].id == listval[i].right_subjecttype_id and str(listval[i].right_applicable_nodetypes)=='OT':
                     finaldict.update({inverselist[i]:titledict.values()[i]})
-        
+
 
         return finaldict.keys()
 
@@ -410,7 +410,7 @@ class NID(models.Model):
     @property
     def get_edit_url(self):
         return "/admin/" + self._meta.app_label + "/" + self._meta.module_name + "/" + str(self.id)
-   
+
 
 
     def get_serialized_data(self):
@@ -422,19 +422,19 @@ class NID(models.Model):
         version = Version.objects.get(id=self.id)
         return version.serialized_data
 
-   
-    
+
+
     # def get_Version_graph_json(self,ssid):
-        
-        
+
+
     #     # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
     #     # slist=self.get_ssid
     #      ver_dict=self.version_info(ssid)
     #     #ver_dict=str(ver['nbhood'])
     #      ver_dict=ast.literal_eval(ver_dict['nbhood'])
-         
+
     #      g_json = {}
-    #      g_json["node_metadata"]= [] 
+    #      g_json["node_metadata"]= []
     #      predicate_id = {}
     #      counter = 1
     #      for key in ver_dict.keys():
@@ -446,35 +446,35 @@ class NID(models.Model):
     #      attr_counter = -1
 
     #      this_node = {"_id":str(self.id),"title":ver_dict['title'],"screen_name":ver_dict['title'], "url":self.get_absolute_url()}
-    #      g_json["node_metadata"].append(this_node)      
+    #      g_json["node_metadata"].append(this_node)
 
     #      for key in predicate_id.keys():
-    #     	if ver_dict[key]:
-    #     		try:
-    #     			g_json[str(key)]=[]      
-    #     			g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-    #     			g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
-    #     			if not isinstance(ver_dict[key],basestring):
+    #           if ver_dict[key]:
+    #                   try:
+    #                           g_json[str(key)]=[]
+    #                           g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+    #                           g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
+    #                           if not isinstance(ver_dict[key],basestring):
     #                                 for item in ver_dict[key]:
-    #                                     # user 
+    #                                     # user
     #                                     g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
     #                                     g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-			
+
     #                             else:
-    #     			 	#value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}			
-    #     	            	 	#this_node[str(key)]=nbh[key] key, nbh[key]                                     
-    #     			 	#for item in value.keys():
+    #                                   #value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}
+    #                                   #this_node[str(key)]=nbh[key] key, nbh[key]
+    #                                   #for item in value.keys():
     #                                 g_json["node_metadata"].append({"_id":attr_counter,"screen_name":ver_dict[key]})
     #                                 g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
     #                                 attr_counter-=1
-							
-    #     		except:
+
+    #                   except:
     #                         pass
     #     # print g_json
 
-        
-          
-    #      return json.dumps(g_json)   
+
+
+    #      return json.dumps(g_json)
 
 
     def __unicode__(self):
@@ -483,11 +483,11 @@ class NID(models.Model):
 
     class Meta:
         """NID's Meta"""
-    
+
 
 class Node(NID):
     """
-    Super class 
+    Super class
     """
 
     altnames = TagField(_('alternate names'), help_text=_('alternate names if any'), blank=True, null=True)
@@ -505,16 +505,16 @@ class Node(NID):
                                    related_name='nodetypes')
     nbhood = models.TextField(help_text="The rendered neighbourhood of the model.")
     # nbh = models.TextField(help_text="The neighbourhood of the model.")
-    
+
     published = NodePublishedManager()
     def __unicode__(self):
         return self.title
 
     class Meta:
         abstract=False
-    
-   
-   
+
+
+
 
 class Edge(NID):
 
@@ -532,33 +532,33 @@ class Edge(NID):
         super(Edge, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
- 
+
 class Metatype(Node):
     """
     Metatype object for Nodetype
     """
 
-    
+
     description = models.TextField(_('description'), blank=True, null=True)
     parent = models.ForeignKey('self', null=True, blank=True, verbose_name=_('parent metatype'), related_name='children')
 
 
     def nodetypes_published(self):
         """
-        Return only the published nodetypes 
+        Return only the published nodetypes
         """
         return nodetypes_published(self.member_types)
 
     @property
     def get_nbh(self):
-        """  
+        """
         Returns the neighbourhood of the metatype
         """
         nbh = {}
         nbh['title'] = self.title
-        nbh['altnames'] = self.altnames 
+        nbh['altnames'] = self.altnames
         nbh['plural'] = self.plural
-	
+
         if self.parent:
             nbh['typeof'] = self.parent
         # generate ids and names of children/members
@@ -567,7 +567,7 @@ class Metatype(Node):
         nbh['left_subjecttype_of'] = Relationtype.objects.filter(left_subjecttype=self.id)
         nbh['right_subjecttype_of'] = Relationtype.objects.filter(right_subjecttype=self.id)
         nbh['attributetypes'] = Attributetype.objects.filter(subjecttype=self.id)
-        
+
         return nbh
 
 
@@ -575,25 +575,25 @@ class Metatype(Node):
     def get_possible_attributetypes(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the AT's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the AT's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # recursive thru parent field and append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
-        attrtypes = [] 
-                
+        attrtypes = []
+
         for each in ancestor_list:
-            # retrieve all the AT's from each ancestor 
+            # retrieve all the AT's from each ancestor
             attrtypes.extend(Attributetype.objects.filter(subjecttype=each.id))
-                     
+
         return attrtypes
 
 
@@ -601,32 +601,32 @@ class Metatype(Node):
     def get_possible_rels(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the R's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the R's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
         rels = {}
         rt_set = Relation.objects.all()
         right_subset = []
         left_subset = []
-        
+
         for each in ancestor_list:
-            # retrieve all the RT's from each ancestor 
+            # retrieve all the RT's from each ancestor
             right_subset.extend(rt_set.filter(subject1=each.id))
             left_subset.extend(rt_set.filter(subject2=each.id))
-         
+
         rels['possible_leftroles'] = left_subset
         rels['possible_rightroles'] = right_subset
-        
+
         return rels
 
 
@@ -635,25 +635,25 @@ class Metatype(Node):
     def get_possible_attributes(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the RT's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the RT's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # recursive thru parent field and append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
-        attrs = [] 
-                
+        attrs = []
+
         for each in ancestor_list:
-            # retrieve all the AT's from each ancestor 
+            # retrieve all the AT's from each ancestor
             attrs.extend(Attribute.objects.filter(subject=each.id))
-                     
+
         return attrs
 
     @property
@@ -664,23 +664,23 @@ class Metatype(Node):
         history=[]
         version_list=self.get_ssid
         if version_list:
-		length=len(version_list)
-        	history_ssid=version_list[length-1]
-        	history_dict=self.version_info(history_ssid)
-        	history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-        	#ssid_current.append(history_ssid)
-        	history=history_nbh_dict['history']
-        	history.append(history_ssid)
+            length=len(version_list)
+            history_ssid=version_list[length-1]
+            history_dict=self.version_info(history_ssid)
+            history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+            #ssid_current.append(history_ssid)
+            history=history_nbh_dict['history']
+            history.append(history_ssid)
         else:
-                history.append(0)
+            history.append(0)
         nbh = {}
         history_list=self.get_ssid
         nbh['title'] = self.title
         nbh['altnames'] = self.altnames
         nbh['plural'] = self.plural
-	
+
         if self.parent:
-	    obj=NID.objects.get(id=self.parent)
+            obj=NID.objects.get(id=self.parent)
             typeof[parent] = obj.ref.get_absolute_url()
             #nbh['typeof'] = self.parent
         # generate ids and names of children
@@ -692,11 +692,11 @@ class Metatype(Node):
         nbh['left_subjecttype_of'] = Relationtype.objects.filter(left_subjecttype=self.id)
         nbh['right_subjecttype_of'] = Relationtype.objects.filter(right_subjecttype=self.id)
         nbh['attributetypes'] = Attributetype.objects.filter(subjecttype=self.id)
-	nbh['history']=history
+        nbh['history']=history
 
         return nbh
 
-                  
+
     @property
     def tree_path(self):
         """Return metatype's tree path, by its ancestors"""
@@ -713,7 +713,7 @@ class Metatype(Node):
         if self.parent:
             return u'%s is a kind of %s' % (self.title, self.parent.tree_path)
         return u'%s is a root node'  % (self.slug)
-    
+
 
     @models.permalink
     def get_absolute_url(self):
@@ -730,12 +730,12 @@ class Metatype(Node):
     # Save for metatype
 
     def save(self, *args, **kwargs):
-	super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
-	self.nbhood=self.get_rendered_nbh
+        super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
+        self.nbhood=self.get_rendered_nbh
 
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
-                super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.	
+                super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
 
@@ -779,7 +779,7 @@ class Nodetype(Node):
                                         related_name='member_types',
                                         blank=True, null=True)
 
-    
+
 
     authors = models.ManyToManyField(User, verbose_name=_('authors'),
                                      related_name='nodetypes',
@@ -809,140 +809,140 @@ class Nodetype(Node):
     def get_possible_reltypes(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the RT's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the RT's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
         reltypes = {}
         rt_set = Relationtype.objects.all()
         right_subset = []
         left_subset = []
-        
+
         for each in ancestor_list:
-            # retrieve all the RT's from each ancestor 
+            # retrieve all the RT's from each ancestor
             right_subset.extend(rt_set.filter(subjecttypeLeft=each.id))
             left_subset.extend(rt_set.filter(subjecttypeRight=each.id))
-         
+
         reltypes['possible_leftroles'] = left_subset
         reltypes['possible_rightroles'] = right_subset
-        
+
         return reltypes
-    
+
     @property
     def get_edit_url_for_ats(self):
         '''
-        Get all the attributes from get_rendered_nbh and return their URLs   
+        Get all the attributes from get_rendered_nbh and return their URLs
         '''
-    	retdict={}
-    	for key,value in self.get_rendered_nbh.items():
-		if key:
-                    if key=='attributes':
-                        for akey,avalue in value.items():
-                            ats=Attributetype.objects.filter(title=akey)
-                            if ats:
-                                ats=Attributetype.objects.get(title=akey)
-                                for atrbs in Attribute.objects.all():
-                                    if  atrbs.attributetype_id==ats.id:
-                                        gid=NID.objects.get(id=atrbs.id).ref.get_edit_url
-                                        retdict[gid]=atrbs.svalue
-                                                        
-    	return retdict
+        retdict={}
+        for key,value in self.get_rendered_nbh.items():
+            if key:
+                if key=='attributes':
+                    for akey,avalue in value.items():
+                        ats=Attributetype.objects.filter(title=akey)
+                        if ats:
+                            ats=Attributetype.objects.get(title=akey)
+                            for atrbs in Attribute.objects.all():
+                                if  atrbs.attributetype_id==ats.id:
+                                    gid=NID.objects.get(id=atrbs.id).ref.get_edit_url
+                                    retdict[gid]=atrbs.svalue
+
+        return retdict
     @property
     def get_at_url_add(self):
         """
         Gets all the ATs(excluding those for which the Attributes are already added) with their urls for adding attributes
         Get all ATs of NT. Get the attribute-model-name from its 'dataType'. Check whether entry exists in Attribute table for this AT.
-        Else return it along with its admin-add-form-url.   
+        Else return it along with its admin-add-form-url.
         """
         retats={}
         ats=self.subjecttype_of.all()
         if ats:
             for each in ats:
-                
-		if each.applicable_nodetypes=='OT':
-	                atdatatype=each.dataType	
-        	        if atdatatype=='1':
-        	            model= 'CharField'    
-        	        if atdatatype=='2':
-        	            model='TextField'
-        	        if atdatatype=='3':
-        	            model='IntegerField'
-        	        if atdatatype=='4':
-        	            model='CommaSeparatedIntegerField'
-        	        if atdatatype=='5':
-        	            model='BigIntegerField'
-        	        if atdatatype=='6':
-        	            model='PositiveIntegerField'
-        	        if atdatatype=='7':
-        	            model='DecimalField'
-        	        if atdatatype=='8':
-        	            model='FloatField'
-        	        if atdatatype=='9':
-        	            model='BooleanField'
-        	        if atdatatype=='10':
-        	            model='NullBooleanField'
-        	        if atdatatype=='11':
-        	            model='DateField'
-        	        if atdatatype=='12':
-        	            model='DateTimeField'
-        	        if atdatatype=='13':
-        	            model='TimeField'
-        	        if atdatatype=='14':
-        	            model= 'EmailField'
-        	        if atdatatype=='15':
-        	            model='FileField'
-        	        if atdatatype=='16':
-        	            model='FilePathField'
-        	        if atdatatype=='17':
-        	            model='ImageField'
-        	        if atdatatype=='18':
-        	            model='URLField'
-        	        if atdatatype=='19':
-        	            model='IPAddressField'
-        	        aturl="admin/gstudio/attribute"+model.lower()+"/add/?attributetype="+str(each.id)+"&subject="+str(self.id)
-        	        atsubject=self.subject_of.all()
-        	        fl=0
-        	        for eachs in atsubject:
-        	            if eachs.attributetype_id==each.id and eachs.subject_id==each.subjecttype.id:
-        	                fl=1
-                        if fl==0:
-        	            retats[each.title]=aturl
-                            
+
+                if each.applicable_nodetypes=='OT':
+                    atdatatype=each.dataType
+                    if atdatatype=='1':
+                        model= 'CharField'
+                    if atdatatype=='2':
+                        model='TextField'
+                    if atdatatype=='3':
+                        model='IntegerField'
+                    if atdatatype=='4':
+                        model='CommaSeparatedIntegerField'
+                    if atdatatype=='5':
+                        model='BigIntegerField'
+                    if atdatatype=='6':
+                        model='PositiveIntegerField'
+                    if atdatatype=='7':
+                        model='DecimalField'
+                    if atdatatype=='8':
+                        model='FloatField'
+                    if atdatatype=='9':
+                        model='BooleanField'
+                    if atdatatype=='10':
+                        model='NullBooleanField'
+                    if atdatatype=='11':
+                        model='DateField'
+                    if atdatatype=='12':
+                        model='DateTimeField'
+                    if atdatatype=='13':
+                        model='TimeField'
+                    if atdatatype=='14':
+                        model= 'EmailField'
+                    if atdatatype=='15':
+                        model='FileField'
+                    if atdatatype=='16':
+                        model='FilePathField'
+                    if atdatatype=='17':
+                        model='ImageField'
+                    if atdatatype=='18':
+                        model='URLField'
+                    if atdatatype=='19':
+                        model='IPAddressField'
+                    aturl="admin/gstudio/attribute"+model.lower()+"/add/?attributetype="+str(each.id)+"&subject="+str(self.id)
+                    atsubject=self.subject_of.all()
+                    fl=0
+                    for eachs in atsubject:
+                        if eachs.attributetype_id==each.id and eachs.subject_id==each.subjecttype.id:
+                            fl=1
+                    if fl==0:
+                        retats[each.title]=aturl
+
             return retats
-        	 
+
 
     @property
     def get_possible_attributetypes(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the AT's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the AT's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # recursive thru parent field and append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
-        attrtypes = [] 
-                
+        attrtypes = []
+
         for each in ancestor_list:
-            # retrieve all the AT's from each ancestor 
+            # retrieve all the AT's from each ancestor
             attrtypes.extend(Attributetype.objects.filter(subjecttype=each.id))
-                     
+
         return attrtypes
 
 
@@ -950,98 +950,111 @@ class Nodetype(Node):
     def get_possible_rels(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the R's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the R's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
         rels = {}
         rt_set = Relation.objects.all()
         right_subset = []
         left_subset = []
-        
+
         for each in ancestor_list:
-            # retrieve all the RT's from each ancestor 
+            # retrieve all the RT's from each ancestor
             right_subset.extend(rt_set.filter(subject1=each.id))
             left_subset.extend(rt_set.filter(subject2=each.id))
-         
+
         rels['possible_leftroles'] = left_subset
         rels['possible_rightroles'] = right_subset
-        
+
         return rels
-        
-   
+
+
     def get_graph_json(self):
         
         
-       	g_json = {}
+        
+	g_json = {}
 	g_json["node_metadata"]= [] 
 	g_json["relations"]=[]
 	
 
 	global counter 
-	global attr_counter 
+	global attr_counter
 	nbh = self.get_nbh
 	predicate_id = {}
-
+        
         for key in nbh.keys():
-            val = str(counter) + "a"
+            val = str(counter) + "b"
             predicate_id[key] = val
-            counter = counter + 1     
+            counter = counter + 1
+        #print predicate_id
+
+       
 
         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
-        g_json["node_metadata"].append(this_node) 
-
+        g_json["node_metadata"].append(this_node)      
+	
 
 	for key in predicate_id.keys():
 		if nbh[key]:
-			try:
-				g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-				g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
-
-				if not isinstance(nbh[key],basestring) and len(nbh[key])<=2:
+                    try:
 				
-                                    	for item in nbh[key]:		
-						if item.reftype=="Relationtype":
-							if item.left_subjecttype.id==self.id:
-								flag=1
-							elif item.right_subjecttype.id==self.id:
-								flag=0
-							# create nodes
+                        g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+                        
+                        g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 
-
-							g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype,"inverse":item.inverse,"flag":flag})
-
-					       
-						g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype})			
-						#create links
-				                g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
-
-					
-                                else:
-				    if not isinstance(nbh[key],basestring):
-                                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":str(len(nbh[key]))})
-                                        #g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
-                                    else:
-                                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
-                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
-
+                        if not isinstance(nbh[key],basestring) and len(nbh[key])<=2:
+                            for item in nbh[key]:
+                                if isinstance(item,unicode):
+                                    g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":str(item)})
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"b") })
                                     attr_counter-=1
-							
-			except:
-                            pass
-       
-	
+                                    
+                                elif item.reftype!="Relation":
+                                    # create nodes
+                                    g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype})
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
+                                    
+                                else:
+                                    
+                                    if item.left_subject.id==self.id:
+                                        item1=item.right_subject
+                                        flag=1
+                                        
+                                    elif item.right_subject.id==self.id:
+                                        item1=item.left_subject
+                                        flag=0						
+                                        
+                                    g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
+                                        
+                                        
+                                    g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
+                        else:
+                            if not isinstance(nbh[key],basestring):
+                                g_json["node_metadata"].append({"_id":(str(attr_counter))+"a","screen_name":str(len(nbh[key]))+" nodes...","title":str(key),"url":"/nodetypes/graphs/graph_label/"+str(self.id)+"/"+str(key)})
+					#g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter))})
+                            else:
+                                g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":nbh[key]})
+    
+                            g_json["relations"].append({"from":predicate_id[key] ,"type":str(key) ,"value":1,"to":(str(attr_counter)+"a")})
 
-        return json.dumps(g_json)  
+                            attr_counter-=1
+
+                    except:
+                            pass
+                            
+        #print g_json
+        return json.dumps(g_json)   
 
 
     def get_label(self,key):
@@ -1057,29 +1070,29 @@ class Nodetype(Node):
     def get_possible_attributes(self):
         """
         Gets the relations possible for this metatype
-        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT. 
-        2. Get all the RT's linked to each ancestor 
+        1. Recursively create a set of all the ancestors i.e. parent/subtypes of the MT.
+        2. Get all the RT's linked to each ancestor
         """
-        #Step 1. 
+        #Step 1.
         ancestor_list = []
         this_parent = self.parent
-        
+
         # recursive thru parent field and append
         while this_parent:
             ancestor_list.append(this_parent)
             this_parent = this_parent.parent
-            
+
         #Step 2.
-        attrs = [] 
-                
+        attrs = []
+
         for each in ancestor_list:
-            # retrieve all the AT's from each ancestor 
+            # retrieve all the AT's from each ancestor
             attrs.extend(Attribute.objects.filter(subject=each.id))
-                     
+
         return attrs
 
 
-     
+
 
     @property
     def tree_path(self):
@@ -1110,25 +1123,44 @@ class Nodetype(Node):
         return self.content
     @property
     def get_relations(self):
-        """
-        Returns all the relations of the nodetype
-        """
-        relations={}
+        relation_set = {}
+        # ALGO to find the relations and their left-subjecttypes and right_subjecttypes
+        # 1. Get the relations containing a reference to the object. Retrieve where it occurs (left or right)
+        # 2. Find out which RT they come from.
+        # 3. For each RT, create a dict key and a value as a dict. And add the relation as a new key-value pair (rid:subject).
+        # 4. If self is in right value, then add inverse relation as RT and add the relation as a new key-value pair (rid:subject).
+
+        left_relset = Relation.objects.filter(left_subject=self.id) 
+        right_relset = Relation.objects.filter(right_subject=self.id) 
         
-        left_relations=Relation.objects.filter(left_subject=self.id)
-        if left_relations:    
-            for each in left_relations:
-                relation=each.relationtype.title
-                predicate=each.right_subject
-                relations[relation]=predicate
+        #return left_relset + right_relset
+
+        # RT dictionary to store a single relation
+        rel_dict ={}
+        rel_dict['left-subjecttypes'] = {}
+        rel_dict['right_subjecttypes'] ={}
+
+               
+        for relation in left_relset:
+            # check if relation already exists
+            if relation.relationtype.title not in rel_dict['left-subjecttypes'].keys():
+                # create a new list field and add to it
+                rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = []
+            # add 
+            rel_dict['left-subjecttypes'][str(relation.relationtype.title)].append(relation) 
+
+        for relation in right_relset:
+            # check if relation exists
+            if relation.relationtype.inverse not in rel_dict['right_subjecttypes'].keys():
+                # create a new list key field and add to it
+                rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = []
+                # add to the existing key
+            rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].append(relation)
+
+        relation_set.update(rel_dict['left-subjecttypes'])
+        relation_set.update(rel_dict['right_subjecttypes'])
         
-        right_relations=Relation.objects.filter(right_subject=self.id)
-        if right_relations:    
-            for each in right_relations:
-                relation=each.relationtype.inverse
-                predicate=each.left_subject
-                relations[relation]=predicate
-        return relations
+        return relation_set
 
     @property
     def get_rendered_relations(self):
@@ -1139,59 +1171,59 @@ class Nodetype(Node):
         reltype={}
         left_relations=Relation.objects.filter(left_subject=self.id)
         if left_relations:
-           for each in left_relations:
-           	relation=each.relationtype.title
-           	predicate=each.right_subject
-           	predicate_values=[]
+            for each in left_relations:
+                relation=each.relationtype.title
+                predicate=each.right_subject
+                predicate_values=[]
                 if reltype:
-              	   fl=0
-              	   for key,value in reltype.items():
-                       if type(value) <> list:
-                          t=[]
-                          t.append(value)
-                          predicate_values=t
-                       else:
-                          predicate_values=value
-                       if each.relationtype.title==key:
-                          fl=1
-                          predicate_values.append(predicate)
-                          reltype[key]=predicate_values
-                   if fl==0:
-                       predicate_values=predicate
-                       reltype[relation]=predicate_values
+                    fl=0
+                    for key,value in reltype.items():
+                        if type(value) <> list:
+                            t=[]
+                            t.append(value)
+                            predicate_values=t
+                        else:
+                            predicate_values=value
+                        if each.relationtype.title==key:
+                            fl=1
+                            predicate_values.append(predicate)
+                            reltype[key]=predicate_values
+                    if fl==0:
+                        predicate_values=predicate
+                        reltype[relation]=predicate_values
                 else:
                     predicate_values.append(predicate)
                     reltype[relation]=predicate_values
                 relations['lrelations']=reltype
-        
+
         right_relations=Relation.objects.filter(right_subject=self.id)
         reltype={}
         if right_relations:
-           for each in right_relations:
-           	relation=each.relationtype.inverse
-           	predicate=each.left_subject
+            for each in right_relations:
+                relation=each.relationtype.inverse
+                predicate=each.left_subject
                 predicate_values=[]
                 if reltype:
-                   fl=0
-              	   for key,value in reltype.items():
-                       if type(value) <> list:
-                          t=[]
-                          t.append(value)
-                          prdicate_values=t
-                       else:
-                          predicate_values=value
-                       if each.relationtype.inverse==key:
-                          fl=1
-                          predicate_values.append(predicate)
-                          reltype[key]=predicate_values
-                          
-                   if fl==0:
-                       predicate_values=predicate
-                       reltype[relation]=predicate_values
-                          
+                    fl=0
+                    for key,value in reltype.items():
+                        if type(value) <> list:
+                            t=[]
+                            t.append(value)
+                            prdicate_values=t
+                        else:
+                            predicate_values=value
+                        if each.relationtype.inverse==key:
+                            fl=1
+                            predicate_values.append(predicate)
+                            reltype[key]=predicate_values
+
+                    if fl==0:
+                        predicate_values=predicate
+                        reltype[relation]=predicate_values
+
                 else:
-                   predicate_values.append(predicate)
-                   reltype[relation]=predicate_values
+                    predicate_values.append(predicate)
+                    reltype[relation]=predicate_values
                 relations['rrelations']=reltype
         return relations
 
@@ -1201,104 +1233,104 @@ class Nodetype(Node):
         attributes_dict =  {}
         all_attributes=self.subject_of.all()
         for attributes in all_attributes:
-                val=[]
-        	atr_key=attributes.attributetype.title
-                val.append(attributes.svalue)
-		
-                if attributes_dict:
-                     fl=0
-                     itms=attributes_dict
-                     
-                     for key,value in itms.items():
-                     	  if atr_key in key:
-                                 fl=1
-                                 if type(value) <> list:
-                                      t=[]
-                                      t.append(value)
-                                      val.extend(t)
-                                      
-                                 else:
-                                      val.extend(value)
-                attributes_dict[atr_key]=val
+            val=[]
+            atr_key=attributes.attributetype.title
+            val.append(attributes.svalue)
+
+            if attributes_dict:
+                fl=0
+                itms=attributes_dict
+
+                for key,value in itms.items():
+                    if atr_key in key:
+                        fl=1
+                        if type(value) <> list:
+                            t=[]
+                            t.append(value)
+                            val.extend(t)
+
+                        else:
+                            val.extend(value)
+            attributes_dict[atr_key]=val
         return attributes_dict
-    
+
    # def history(self,ssid):
-	#ver
+        #ver
     @property
     def get_rendered_nbh(self):
-        """          
+        """
         Returns the neighbourhood of the nodetype
         """
         history=[]
         version_list=self.get_ssid
         if version_list:
-		length=len(version_list)
-        	history_ssid=version_list[length-1]
-        	history_dict=self.version_info(history_ssid)
-        	history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-        	#ssid_current.append(history_ssid)
-        	history=history_nbh_dict['history']
-        	history.append(history_ssid)
+            length=len(version_list)
+            history_ssid=version_list[length-1]
+            history_dict=self.version_info(history_ssid)
+            # history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+            #ssid_current.append(history_ssid)
+            # history=history_nbh_dict['history']
+            history.append(history_ssid)
         else:
-                history.append(0)
+            history.append(0)
         nbh = {}
         nbh['title'] = self.title
-	nbh['count_title'] = len(nbh['title'])
+        nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
-	nbh['count_altnames'] = len(nbh['altnames'])
+        nbh['count_altnames'] = len(nbh['altnames'])
         nbh['plural'] = self.plural
         try:
-            nbh['count_plural'] = len(nbh['plural'])    
+            nbh['count_plural'] = len(nbh['plural'])
         except:
             pass
 
-        #get all MTs 
+        #get all MTs
         member_of_dict = {}
         for each in self.metatypes.all():
             member_of_dict[each.title]= each.get_absolute_url()
         nbh['member_of_metatypes']=member_of_dict
-	nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])  
+        nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
         typeof={}
         parent=self.parent_id
         if parent:
             typeof[parent] = parent.get_absolute_url()
         nbh['type_of']=typeof
-	nbh['count_type_of'] = len(nbh['type_of'])    
-        #get all subtypes 
+        nbh['count_type_of'] = len(nbh['type_of'])
+        #get all subtypes
         subtypes={}
         for each in Nodetype.objects.filter(parent=self.id):
             subtypes[each.title] =each.get_absolute_url()
-        nbh['contains_subtypes']=subtypes  
-	nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])  
-        # get all the objects inheriting this OT 
+        nbh['contains_subtypes']=subtypes
+        nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
+        # get all the objects inheriting this OT
         contains_members_dict = {}
         for each in self.member_objects.all():
-           contains_members_dict[each.title]= each.get_absolute_url()
+            contains_members_dict[each.title]= each.get_absolute_url()
         nbh['contains_members'] = contains_members_dict
-	nbh['count_contains_members'] = len(nbh['contains_members'])
+        nbh['count_contains_members'] = len(nbh['contains_members'])
         #get prior nodes
         priornodes_dict = {}
         for each in self.prior_nodes.all():
-             priornodes_dict[each.title]= each.get_absolute_url()
+            priornodes_dict[each.title]= each.get_absolute_url()
         nbh['priornodes'] = priornodes_dict
-	nbh['count_priornodes'] = len(nbh['priornodes'])
+        nbh['count_priornodes'] = len(nbh['priornodes'])
         #get posterior nodes
         posteriornodes_dict = {}
         for each in self.posterior_nodes.all():
-             posteriornodes_dict[each.title]= each.get_absolute_url()
+            posteriornodes_dict[each.title]= each.get_absolute_url()
         nbh['posteriornodes'] = posteriornodes_dict
-	nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
+        nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
         #get authors
         author_dict = {}
         for each in self.authors.all():
-             author_dict['User'] = each.get_absolute_url()
+            author_dict['User'] = each.get_absolute_url()
         nbh['authors'] = author_dict
         #get siblings
         siblings={}
         for each in self.get_siblings():
             siblings[each.title]=each.get_absolute_url()
         nbh['siblings']=siblings
-	nbh['count_siblings'] = len(nbh['siblings'])
+        nbh['count_siblings'] = len(nbh['siblings'])
         #get Relations
         relns={}
         rellft={}
@@ -1315,50 +1347,50 @@ class Nodetype(Node):
                                 relnvalue[items.title]=items.get_absolute_url()
                         else:
                             relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
-                        
+
                         relrgt[rgtkey]=relnvalue
-                    
+
                 else:
                     rellft={}
                     relns['left']=rellft
                     for lftkey,lftvalue in value.items():
                         relnvalue={}
                         if isinstance(lftvalue,list):
-                             for items in lftvalue:
-                                 relnvalue[items.title]=items.get_absolute_url()
+                            for items in lftvalue:
+                                relnvalue[items.title]=items.get_absolute_url()
                         else:
-                             relnvalue[lftvalue]=lftvalue.get_absolute_url()
-                        
+                            relnvalue[lftvalue]=lftvalue.get_absolute_url()
+
                         rellft[lftkey]=relnvalue
-                    
+
         nbh['relations']=relrgt
-	
+
         nbh['relations'].update(rellft)
-	nbh['count_relations'] = len(nbh['relations'])
+        nbh['count_relations'] = len(nbh['relations'])
         #get Attributes
         attributes =self.get_attributes
         nbh['attributes']=attributes
-	nbh['count_attributes'] = len(nbh['attributes'])
+        nbh['count_attributes'] = len(nbh['attributes'])
         #get ATs
         attributetypes={}
         for each in self.subjecttype_of.all():
             attributetypes[each.title]=each.get_absolute_url()
         nbh['ats']=attributetypes
         #get RTs as leftroles and rightroles
-        leftroles = {} 
+        leftroles = {}
         for each in self.left_subjecttype_of.all():
             leftroles[each.title]=each.get_absolute_url()
         nbh['leftroles']=leftroles
-	nbh['count_leftroles'] = len(nbh['leftroles'])
-        rightroles = {} 
+        nbh['count_leftroles'] = len(nbh['leftroles'])
+        rightroles = {}
         for each in self.right_subjecttype_of.all():
             rightroles[each.title]=each.get_absolute_url()
         nbh['rightroles']=rightroles
-	nbh['count_rightroles'] = len(nbh['rightroles'])
-	nbh['history']=history
+        nbh['count_rightroles'] = len(nbh['rightroles'])
+        nbh['history']=history
         return nbh
-       
- 
+
+
     @property
     def previous_nodetype(self):
         """Return the previous nodetype"""
@@ -1437,13 +1469,13 @@ class Nodetype(Node):
     @property
     def memberof_sentence(self):
         """Return the metatype of which the nodetype is a member of"""
-        
+
         if self.metatypes.count:
             for each in self.metatypes.all():
                 return u'%s is a member of metatype %s' % (self.title, each)
         return u'%s is not a fully defined name, consider making it a member of a suitable metatype' % (self.title)
 
-    
+
     @property
     def subtypeof_sentence(self):
         "composes the relation as a sentence in triple format."
@@ -1456,7 +1488,7 @@ class Nodetype(Node):
         "retuns the parent nodetype."
         if self.parent:
             return u'%s' % (self.parent.tree_path)
-        return None 
+        return None
 
     @models.permalink
     def get_absolute_url(self):
@@ -1467,8 +1499,8 @@ class Nodetype(Node):
             'day': self.creation_date.strftime('%d'),
             'slug': self.slug})
     def get_version_url(self):
-         """Return nodetype's URL"""
-         return "/nodetypes/display/viewhistory/"
+        """Return nodetype's URL"""
+        return "/nodetypes/display/viewhistory/"
 
     def get_serialized_data(self):
         """
@@ -1486,7 +1518,7 @@ class Nodetype(Node):
         verbose_name_plural = _('node types')
         permissions = (('can_view_all', 'Can view all'),
                        ('can_change_author', 'Can change author'), )
-   
+
 class Objecttype(Nodetype):
     '''
     Object class
@@ -1494,17 +1526,17 @@ class Objecttype(Nodetype):
 
     def __unicode__(self):
         return self.title
- 	    
-                    
+
+
     @property
-    def get_attributetypes(self):        
+    def get_attributetypes(self):
         return self.subjecttype_of.all()
 
     @property
     def get_relationtypes(self):
-        
-        left_relset = self.left_subjecttype_of.all()  
-        right_relset = self.right_subjecttype_of.all() 
+
+        left_relset = self.left_subjecttype_of.all()
+        right_relset = self.right_subjecttype_of.all()
 
         reltypes = {}
         reltypes['left_subjecttype_of']=left_relset
@@ -1517,9 +1549,9 @@ class Objecttype(Nodetype):
         for which relation types does this object become a domain of any relation type
         """
         reltypes = []
-        left_relset = self.left_subjecttype_of.all()  
+        left_relset = self.left_subjecttype_of.all()
         for relationtype in left_relset:
-	    reltypes.append(relationtype)
+            reltypes.append(relationtype)
         return reltypes
 
     @property
@@ -1528,9 +1560,9 @@ class Objecttype(Nodetype):
         for which relation types does this object become a domain of any relation type
         """
         reltypes = []
-        right_relset = self.right_subjecttype_of.all()  
+        right_relset = self.right_subjecttype_of.all()
         for relationtype in right_relset:
-	    reltypes.append(relationtype)
+            reltypes.append(relationtype)
         return reltypes
 
     @property
@@ -1539,11 +1571,11 @@ class Objecttype(Nodetype):
         for which relation types does this object become a domain of any relation type
         """
         subjecttypes = []
-        attrset = self.subjecttype_of.all()  
+        attrset = self.subjecttype_of.all()
         for subjecttype in attrset:
-	    subjecttypes.append(subjecttype)
+            subjecttypes.append(subjecttype)
         return subjecttypes
-        
+
 
     @property
     def member_of_metatypes(self):
@@ -1552,8 +1584,8 @@ class Objecttype(Nodetype):
         """
         types = []
         if self.metatypes.all():
-            for metatype in self.metatypes.all():    
-		types.append(metatype.title)
+            for metatype in self.metatypes.all():
+                types.append(metatype.title)
         return types
 
 
@@ -1564,68 +1596,70 @@ class Objecttype(Nodetype):
         """
         members = []
         if self.member_objects.all():
-            for gbobject in self.member_objects.all():   
-		members.append(gbobject)
-        return members    
+            for gbobject in self.member_objects.all():
+                members.append(gbobject)
+        return members
 
     @property
     def get_nbh(self):
-        """          
+        """
         Returns the neighbourhood of the nodetype
         """
         nbh = {}
         nbh['title'] = self.title
         nbh['altnames'] = self.altnames
-        nbh['plural'] = self.plural        
+        nbh['plural'] = self.plural
         nbh['member_of_metatype'] = self.metatypes.all()
         # get all the ATs for the objecttype
-        nbh['subjecttype_of']= self.subjecttype_of.all() 
-        # get all the RTs for the objecttype        
-        nbh.update(self.get_relationtypes) 
+        nbh['subjecttype_of']= self.subjecttype_of.all()
+        # get all the RTs for the objecttype
+        nbh.update(self.get_relationtypes)
+        # Looks like somebody forgot relations !
+        nbh.update(self.get_relations)
         if self.parent:
             nbh['type_of'] = [self.parent]
 
         nbh['contains_subtypes'] = Nodetype.objects.filter(parent=self.id)
-        # get all the objects inheriting this OT 
+        # get all the objects inheriting this OT
         nbh['contains_members'] = self.member_objects.all()
 
-        nbh['prior_nodes'] = self.prior_nodes.all()             
+        nbh['prior_nodes'] = self.prior_nodes.all()
 
-        nbh['posterior_nodes'] = self.posterior_nodes.all() 
+        nbh['posterior_nodes'] = self.posterior_nodes.all()
 
-	#nbh['authors'] = self.authors.all()
+        #nbh['authors'] = self.authors.all()
 
-	return nbh
+        return nbh
     @property
     def get_rendered_nbh(self):
-        """          
+        """
         Returns the neighbourhood of the nodetype
         """
         history=[]
         version_list=self.get_ssid
         if version_list:
-		length=len(version_list)
-        	history_ssid=version_list[length-1]
-        	history_dict=self.version_info(history_ssid)
-        	history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-        	#ssid_current.append(history_ssid)
-        	history=history_nbh_dict['history']
-        	history.append(history_ssid)
+            length=len(version_list)
+            history_ssid=version_list[length-1]
+            history_dict=self.version_info(history_ssid)
+            # history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+            #ssid_current.append(history_ssid)
+            # history=history_nbh_dict['history']
+            history.append(history_ssid)
         else:
-                history.append(0)
+            history.append(0)
         nbh = {}
         nbh['title'] = self.title
-	nbh['count_title'] = len(nbh['title'])
+        nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
-	nbh['count_altnames'] = len(nbh['altnames'])
-        nbh['plural'] = self.plural 
-	#nbh['count_plural'] = len(nbh['plural'])    
-        #get all MTs 
+        nbh['count_altnames'] = len(nbh['altnames'])
+        nbh['plural'] = self.plural
+        #nbh['count_plural'] = len(nbh['plural'])
+        #get all MTs
         member_of_dict = {}
         for each in self.metatypes.all():
             member_of_dict[each.title]= each.get_absolute_url()
         nbh['member_of_metatypes']=member_of_dict
-	nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])  
+        nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
         typeof={}
         parentid=self.parent_id
         if parentid:
@@ -1633,42 +1667,42 @@ class Objecttype(Nodetype):
             if parent:
                 typeof[parent] = parent.get_absolute_url()
         nbh['type_of']=typeof
-	nbh['count_type_of'] = len(nbh['type_of'])    
-        #get all subtypes 
+        nbh['count_type_of'] = len(nbh['type_of'])
+        #get all subtypes
         subtypes={}
         for each in Nodetype.objects.filter(parent=self.id):
             subtypes[each.title] =each.get_absolute_url()
-        nbh['contains_subtypes']=subtypes  
-	nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])  
-        # get all the objects inheriting this OT 
+        nbh['contains_subtypes']=subtypes
+        nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
+        # get all the objects inheriting this OT
         contains_members_dict = {}
         for each in self.member_objects.all():
-           contains_members_dict[each.title]= each.get_absolute_url()
+            contains_members_dict[each.title]= each.get_absolute_url()
         nbh['contains_members'] = contains_members_dict
-	nbh['count_contains_members'] = len(nbh['contains_members'])
+        nbh['count_contains_members'] = len(nbh['contains_members'])
         #get prior nodes
         priornodes_dict = {}
         for each in self.prior_nodes.all():
-             priornodes_dict[each.title]= each.get_absolute_url()
+            priornodes_dict[each.title]= each.get_absolute_url()
         nbh['priornodes'] = priornodes_dict
-	nbh['count_priornodes'] = len(nbh['priornodes'])
+        nbh['count_priornodes'] = len(nbh['priornodes'])
         #get posterior nodes
         posteriornodes_dict = {}
         for each in self.posterior_nodes.all():
-             posteriornodes_dict[each.title]= each.get_absolute_url()
+            posteriornodes_dict[each.title]= each.get_absolute_url()
         nbh['posteriornodes'] = posteriornodes_dict
-	nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
+        nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
         #get authors
         author_dict = {}
         for each in self.authors.all():
-             author_dict['User'] = each.get_absolute_url()
+            author_dict['User'] = each.get_absolute_url()
         nbh['authors'] = author_dict
         #get siblings
         siblings={}
         for each in self.get_siblings():
             siblings[each.title]=each.get_absolute_url()
         nbh['siblings']=siblings
-	nbh['count_siblings'] = len(nbh['siblings'])
+        nbh['count_siblings'] = len(nbh['siblings'])
         #get Relations
         relns={}
         rellft={}
@@ -1685,103 +1719,103 @@ class Objecttype(Nodetype):
                                 relnvalue[items.title]=items.get_absolute_url()
                         else:
                             relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
-                        
+
                         relrgt[rgtkey]=relnvalue
-                    
+
                 else:
                     rellft={}
                     relns['left']=rellft
                     for lftkey,lftvalue in value.items():
                         relnvalue={}
                         if isinstance(lftvalue,list):
-                             for items in lftvalue:
-                                 relnvalue[items.title]=items.get_absolute_url()
+                            for items in lftvalue:
+                                relnvalue[items.title]=items.get_absolute_url()
                         else:
-                             relnvalue[lftvalue]=lftvalue.get_absolute_url()
-                        
+                            relnvalue[lftvalue]=lftvalue.get_absolute_url()
+
                         rellft[lftkey]=relnvalue
-                    
+
         nbh['relations']=relrgt
-	
+
         nbh['relations'].update(rellft)
-	nbh['count_relations'] = len(nbh['relations'])
+        nbh['count_relations'] = len(nbh['relations'])
         #get Attributes
         attributes =self.get_attributes
         nbh['attributes']=attributes
-	nbh['count_attributes'] = len(nbh['attributes'])
+        nbh['count_attributes'] = len(nbh['attributes'])
         #get ATs
         attributetypes={}
         for each in self.subjecttype_of.all():
             attributetypes[each.title]=each.get_absolute_url()
         nbh['ats']=attributetypes
         #get RTs as leftroles and rightroles
-        leftroles = {} 
+        leftroles = {}
         for each in self.left_subjecttype_of.all():
             leftroles[each.title]=each.get_absolute_url()
         nbh['leftroles']=leftroles
-	nbh['count_leftroles'] = len(nbh['leftroles'])
-        rightroles = {} 
+        nbh['count_leftroles'] = len(nbh['leftroles'])
+        rightroles = {}
         for each in self.right_subjecttype_of.all():
             rightroles[each.title]=each.get_absolute_url()
         nbh['rightroles']=rightroles
-	nbh['count_rightroles'] = len(nbh['rightroles'])
-	nbh['history']=history
+        nbh['count_rightroles'] = len(nbh['rightroles'])
+        nbh['history']=history
         return nbh
-    
+
     def get_Version_graph_json(self,ssid):
-        
-        
+
+
         # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
         # slist=self.get_ssid
-         ver_dict=self.version_info(ssid)
-         ver_dict1=self.version_info(ssid)
+        ver_dict=self.version_info(ssid)
+        ver_dict1=self.version_info(ssid)
         #ver_dict=str(ver['nbhood'])
-         ver_dict=ast.literal_eval(ver_dict['nbhood'])
-         g_json = {}
-         g_json["node_metadata"]= [] 
-         g_json["relations"]=[]
-         predicate_id = {}
-         counter=1
-         attr_counter=-1
-         for key in ver_dict.keys():
-             val = "a" + str(counter)
-             predicate_id[key] = val
-             counter = counter + 1
-         #print predicate_id
-
-         
-         this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
-         g_json["node_metadata"].append(this_node)  
+        ver_dict=ast.literal_eval(ver_dict['nbhood'])
+        g_json = {}
+        g_json["node_metadata"]= []
+        g_json["relations"]=[]
+        predicate_id = {}
+        counter=1
+        attr_counter=-1
+        for key in ver_dict.keys():
+            val = "a" + str(counter)
+            predicate_id[key] = val
+            counter = counter + 1
+        #print predicate_id
 
 
-         for key in predicate_id.keys():
-        	if (ver_dict[key] and (ver_dict[key])!=0 and not(isinstance(ver_dict[key],int ) )
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
+        g_json["node_metadata"].append(this_node)
+
+
+        for key in predicate_id.keys():
+            if (ver_dict[key] and (ver_dict[key])!=0 and not(isinstance(ver_dict[key],int ) )
 ) :
-        		try: 
-        			g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-        			g_json["relations"].append({"from":self.id , "to":predicate_id[key],"value":1, "type":str(key) })
-        			if not isinstance(ver_dict[key],basestring):
-                                    for item in ver_dict[key]:
-                                        # user 
-                                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"aa"),"screen_name":item })			
-						#create links
-				        g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":(str(attr_counter)+"aa")  })
-					attr_counter-=1
-			
-                                else:
-        			    g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":ver_dict[key]})
-		                    g_json["relations"].append({"from":predicate_id[key] , "to":(str(attr_counter)+"a") ,"value":1, "type":str(key) })
-                                    attr_counter-=1
-							
-        		except:
-                            pass
+                try:
+                    g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
+                    g_json["relations"].append({"from":self.id , "to":predicate_id[key],"value":1, "type":str(key) })
+                    if not isinstance(ver_dict[key],basestring):
+                        for item in ver_dict[key]:
+                            # user
+                            g_json["node_metadata"].append({"_id":(str(attr_counter)+"aa"),"screen_name":item })
+                                    #create links
+                            g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":(str(attr_counter)+"aa")  })
+                            attr_counter-=1
+
+                    else:
+                        g_json["node_metadata"].append({"_id":(str(attr_counter)+"a"),"screen_name":ver_dict[key]})
+                        g_json["relations"].append({"from":predicate_id[key] , "to":(str(attr_counter)+"a") ,"value":1, "type":str(key) })
+                        attr_counter-=1
+
+                except:
+                    pass
         # print g_json
 
-        
-          
-         return json.dumps(g_json)   
-   
-       
+
+
+        return json.dumps(g_json)
+
+
     class Meta:
         """
         object type's meta class
@@ -1795,16 +1829,16 @@ class Objecttype(Nodetype):
     # @reversion.create_revision()
     def save(self,*args, **kwargs):
         self.nodemodel = self.__class__.__name__
-	super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
         self.nbhood=self.get_rendered_nbh
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
-		self.nodemodel = self.__class__.__name__
-		if self.parent:
-			ot=NID.objects.get(id=self.parent.id)
-                        ot.ref.save()
+                self.nodemodel = self.__class__.__name__
+                if self.parent:
+                    ot=NID.objects.get(id=self.parent.id)
+                    ot.ref.save()
                 super(Objecttype, self).save(*args, **kwargs) # Call the "real" save() method.
-     
+
     def save_revert_or_merge(self,*args, **kwargs):
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
@@ -1817,11 +1851,11 @@ class Relationtype(Nodetype):
     '''
     Properties with left and right subjects (Binary relations) are defined in this class.
     '''
-    inverse = models.CharField(_('inverse name'), help_text=_('when subjecttypes are interchanged, what should be the name of the relation type? This is mandatory field. If the relation is symmetric, same name will do.'), max_length=255,db_index=True ) 
-    left_subjecttype = models.ForeignKey(NID,related_name="left_subjecttype_of", verbose_name='left role')  
+    inverse = models.CharField(_('inverse name'), help_text=_('when subjecttypes are interchanged, what should be the name of the relation type? This is mandatory field. If the relation is symmetric, same name will do.'), max_length=255,db_index=True )
+    left_subjecttype = models.ForeignKey(NID,related_name="left_subjecttype_of", verbose_name='left role')
     left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for left role')
     left_cardinality = models.IntegerField(null=True, blank=True, verbose_name='cardinality for the left role')
-    right_subjecttype = models.ForeignKey(NID,related_name="right_subjecttype_of", verbose_name='right role')  
+    right_subjecttype = models.ForeignKey(NID,related_name="right_subjecttype_of", verbose_name='right role')
     right_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for right role')
     right_cardinality = models.IntegerField(null=True, blank=True, verbose_name='cardinality for the right role')
     is_symmetrical = models.NullBooleanField(verbose_name='Is symmetrical?')
@@ -1845,76 +1879,76 @@ class Relationtype(Nodetype):
     @property
 
     def get_rendered_nbh(self):
-        """          
+        """
         Returns the neighbourhood of the Relationtype
         """
         history=[]
         version_list=self.get_ssid
         if version_list:
-		length=len(version_list)
-        	history_ssid=version_list[length-1]
-        	history_dict=self.version_info(history_ssid)
-        	history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-        	#ssid_current.append(history_ssid)
-        	history=history_nbh_dict['history']
-        	history.append(history_ssid)
+            length=len(version_list)
+            history_ssid=version_list[length-1]
+            history_dict=self.version_info(history_ssid)
+            history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+            #ssid_current.append(history_ssid)
+            history=history_nbh_dict['history']
+            history.append(history_ssid)
         else:
-                history.append(0)
+            history.append(0)
         nbh = {}
         nbh['title'] = self.title
-	nbh['count_title'] = len(nbh['title'])
+        nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
-	nbh['count_altnames'] = len(nbh['altnames'])
-        nbh['plural'] = self.plural 
-#	nbh['count_plural'] = len(nbh['plural'])    
-        #get all MTs 
+        nbh['count_altnames'] = len(nbh['altnames'])
+        nbh['plural'] = self.plural
+#       nbh['count_plural'] = len(nbh['plural'])
+        #get all MTs
         member_of_dict = {}
         for each in self.metatypes.all():
             member_of_dict[each.title]= each.get_absolute_url()
         nbh['member_of_metatypes']=member_of_dict
-	nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])  
+        nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
         typeof={}
         parent=self.parent_id
         if parent:
             obj=NID.objects.get(id=parent)
             typeof[parent] = obj.ref.get_absolute_url()
         nbh['type_of']=typeof
-	nbh['count_type_of'] = len(nbh['type_of'])    
-        #get all subtypes 
+        nbh['count_type_of'] = len(nbh['type_of'])
+        #get all subtypes
         subtypes={}
         for each in Nodetype.objects.filter(parent=self.id):
             subtypes[each.title] =each.get_absolute_url()
-        nbh['contains_subtypes']=subtypes  
-	nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])  
-        # get all the objects inheriting this OT 
+        nbh['contains_subtypes']=subtypes
+        nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
+        # get all the objects inheriting this OT
         contains_members_dict = {}
         for each in self.member_objects.all():
-           contains_members_dict[each.title]= each.get_absolute_url()
+            contains_members_dict[each.title]= each.get_absolute_url()
         nbh['contains_members'] = contains_members_dict
-	nbh['count_contains_members'] = len(nbh['contains_members'])
+        nbh['count_contains_members'] = len(nbh['contains_members'])
         #get prior nodes
         priornodes_dict = {}
         for each in self.prior_nodes.all():
-             priornodes_dict[each.title]= each.get_absolute_url()
+            priornodes_dict[each.title]= each.get_absolute_url()
         nbh['priornodes'] = priornodes_dict
-	nbh['count_priornodes'] = len(nbh['priornodes'])
+        nbh['count_priornodes'] = len(nbh['priornodes'])
         #get posterior nodes
         posteriornodes_dict = {}
         for each in self.posterior_nodes.all():
-             posteriornodes_dict[each.title]= each.get_absolute_url()
+            posteriornodes_dict[each.title]= each.get_absolute_url()
         nbh['posteriornodes'] = posteriornodes_dict
-	nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
+        nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
         #get authors
         author_dict = {}
         for each in self.authors.all():
-             author_dict['User'] = each.get_absolute_url()
+            author_dict['User'] = each.get_absolute_url()
         nbh['authors'] = author_dict
         #get siblings
         siblings={}
         for each in self.get_siblings():
             siblings[each.title]=each.get_absolute_url()
         nbh['siblings']=siblings
-	nbh['count_siblings'] = len(nbh['siblings'])
+        nbh['count_siblings'] = len(nbh['siblings'])
         #get Relations
         relns={}
         rellft={}
@@ -1931,64 +1965,64 @@ class Relationtype(Nodetype):
                                 relnvalue[items]=items.get_absolute_url()
                         else:
                             relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
-                        
+
                         relrgt[rgtkey]=relnvalue
-                    
+
                 else:
                     rellft={}
                     relns['left']=rellft
                     for lftkey,lftvalue in value.items():
                         relnvalue={}
                         if isinstance(lftvalue,list):
-                             for items in lftvalue:
-                                 relnvalue[items]=items.get_absolute_url()
+                            for items in lftvalue:
+                                relnvalue[items]=items.get_absolute_url()
                         else:
-                             relnvalue[lftvalue]=lftvalue.get_absolute_url()
-                        
+                            relnvalue[lftvalue]=lftvalue.get_absolute_url()
+
                         rellft[lftkey]=relnvalue
-                    
+
         nbh['relations']=relrgt
-	
+
         nbh['relations'].update(rellft)
-	nbh['count_relations'] = len(nbh['relations'])
+        nbh['count_relations'] = len(nbh['relations'])
         #get Attributes
         attributes =self.get_attributes
         nbh['attributes']=attributes
-	nbh['count_attributes'] = len(nbh['attributes'])
+        nbh['count_attributes'] = len(nbh['attributes'])
         #get ATs
         attributetypes={}
         for each in self.subjecttype_of.all():
             attributetypes[each.title]=each.get_absolute_url()
         nbh['ats']=attributetypes
         #get RTs as leftroles and rightroles
-        leftroles = {} 
+        leftroles = {}
         for each in self.left_subjecttype_of.all():
             leftroles[each.title]=each.get_absolute_url()
         nbh['leftroles']=leftroles
-	nbh['count_leftroles'] = len(nbh['leftroles'])
-        rightroles = {} 
+        nbh['count_leftroles'] = len(nbh['leftroles'])
+        rightroles = {}
         for each in self.right_subjecttype_of.all():
             rightroles[each.title]=each.get_absolute_url()
         nbh['rightroles']=rightroles
-	nbh['count_rightroles'] = len(nbh['rightroles'])
-	nbh['history']=history
+        nbh['count_rightroles'] = len(nbh['rightroles'])
+        nbh['history']=history
         return nbh
-       
- 
+
+
 
     def get_nbh(self):
-        """          
+        """
         Returns the neighbourhood of the nodetype
         """
         nbh = {}
         nbh['title'] = self.title
         nbh['altnames'] = self.altnames
-        nbh['plural'] = self.plural 
+        nbh['plural'] = self.plural
 
         nbh['contains_subtypes'] = Nodetype.objects.filter(parent=self.id)
         nbh['contains_members'] = self.member_objects.all()
-        nbh['prior_nodes'] = self.prior_nodes.all()             
-        nbh['posterior_nodes'] = self.posterior_nodes.all() 
+        nbh['prior_nodes'] = self.prior_nodes.all()
+        nbh['posterior_nodes'] = self.posterior_nodes.all()
         nbh['inverse']=self.inverse
         nbh['left_subjecttype']=self.left_subjecttype
         nbh['left_applicable_nodetypes']=self.left_applicable_nodetypes
@@ -1999,10 +2033,10 @@ class Relationtype(Nodetype):
         nbh['is_symmetrical']=self.is_symmetrical
         nbh['is_reflexive']=self.is_reflexive
         nbh['is_transitive']=self.is_transitive
-       
 
 
-	return nbh
+
+        return nbh
 
 
 
@@ -2019,12 +2053,12 @@ class Relationtype(Nodetype):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-	super(Relationtype, self).save(*args, **kwargs) # Call the "real" save() method.
-	self.nbhood=self.get_rendered_nbh
+        super(Relationtype, self).save(*args, **kwargs) # Call the "real" save() method.
+        self.nbhood=self.get_rendered_nbh
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 self.nodemodel = self.__class__.__name__
-		super(Relationtype, self).save(*args, **kwargs) # Call the "real" save() method.
+                super(Relationtype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
 
@@ -2032,19 +2066,19 @@ class Attributetype(Nodetype):
     '''
     To define attributes of objects. First three fields are mandatory.
     The rest of the fields may be required depending on what type of
-    field is selected for datatype. 
+    field is selected for datatype.
     '''
-    subjecttype = models.ForeignKey(NID, related_name="subjecttype_of", verbose_name='subject type name')  
-    applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='applicable nodetypes') 
-    dataType = models.CharField(max_length=2, choices=FIELD_TYPE_CHOICES,default='01', verbose_name='data type of value') 
- 
+    subjecttype = models.ForeignKey(NID, related_name="subjecttype_of", verbose_name='subject type name')
+    applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='applicable nodetypes')
+    dataType = models.CharField(max_length=2, choices=FIELD_TYPE_CHOICES,default='01', verbose_name='data type of value')
+
     verbose_name = models.CharField(max_length=500, null=True, blank=True, verbose_name='verbosename', help_text='verbose name')
     null = models.NullBooleanField(verbose_name='Null', help_text='can the value be null?')
     blank = models.NullBooleanField(verbose_name='Blank', help_text='can the form be left blank?')
     help_text = models.CharField(max_length=500, null=True, blank=True, verbose_name='Help text', help_text='help text for the field')
     max_digits = models.IntegerField(max_length=5, null=True, blank=True, verbose_name='Max digit', help_text='If you have selected Decimal Field for datatype, you have to specify the number of digits.')
     decimal_places = models.IntegerField(max_length=2, null=True, blank=True, verbose_name='Decimal places', help_text='If you have selected Decimal Field for datatype, you have to specify the decimal places.')
-    auto_now = models.NullBooleanField(verbose_name='Auto now',  null=True, blank=True, help_text='Use this if DateTime & Time Field was chosen above for datatype') 
+    auto_now = models.NullBooleanField(verbose_name='Auto now',  null=True, blank=True, help_text='Use this if DateTime & Time Field was chosen above for datatype')
     auto_now_add = models.NullBooleanField(verbose_name='Auto now add',  null=True, blank=True, help_text='Use this if DateTime & Time Field was chosen above for datatype')
     upload_to = models.CharField(max_length=500,verbose_name='Upload to', null=True, blank=True, help_text='Required for FileField and ImageField')
     path=models.CharField(max_length=500,verbose_name='Path', null=True, blank=True, help_text='Required for FilePathField')
@@ -2056,81 +2090,81 @@ class Attributetype(Nodetype):
     validators=models.ManyToManyField('self', verbose_name='validators',blank=True, null=True,help_text='A list of validators to run for this field')
     default=models.CharField(max_length=500, null=True, blank=True, verbose_name='default', help_text='The default value for the field')
     editable=models.NullBooleanField(verbose_name='required', null=True, blank=True, help_text='If False, the field will not be editable')
-    
+
 
 
     @property
     def get_rendered_nbh(self):
-        """          
+        """
         Returns the neighbourhood of the Attributetype
         """
         history=[]
         version_list=self.get_ssid
         if version_list:
-		length=len(version_list)
-        	history_ssid=version_list[length-1]
-        	history_dict=self.version_info(history_ssid)
-        	history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-        	#ssid_current.append(history_ssid)
-        	history=history_nbh_dict['history']
-        	history.append(history_ssid)
+            length=len(version_list)
+            history_ssid=version_list[length-1]
+            history_dict=self.version_info(history_ssid)
+            history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+            #ssid_current.append(history_ssid)
+            history=history_nbh_dict['history']
+            history.append(history_ssid)
         else:
-                history.append(0)
+            history.append(0)
         nbh = {}
         nbh['title'] = self.title
-	nbh['count_title'] = len(nbh['title'])
+        nbh['count_title'] = len(nbh['title'])
         nbh['altnames'] = self.altnames
-	nbh['count_altnames'] = len(nbh['altnames'])
-       # nbh['plural'] = self.plural 
-       # nbh['count_plural'] = len(nbh['plural'])    
-        #get all MTs 
+        nbh['count_altnames'] = len(nbh['altnames'])
+       # nbh['plural'] = self.plural
+       # nbh['count_plural'] = len(nbh['plural'])
+        #get all MTs
         member_of_dict = {}
         for each in self.metatypes.all():
             member_of_dict[each.title]= each.get_absolute_url()
         nbh['member_of_metatypes']=member_of_dict
-	nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])  
+        nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
         typeof={}
         parent=self.parent_id
         if parent:
             obj=NID.objects.get(id=parent)
             typeof[parent] = obj.ref.get_absolute_url()
         nbh['type_of']=typeof
-	nbh['count_type_of'] = len(nbh['type_of'])    
-        #get all subtypes 
+        nbh['count_type_of'] = len(nbh['type_of'])
+        #get all subtypes
         subtypes={}
         for each in Nodetype.objects.filter(parent=self.id):
             subtypes[each.title] =each.get_absolute_url()
-        nbh['contains_subtypes']=subtypes  
-	nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])  
-        # get all the objects inheriting this OT 
+        nbh['contains_subtypes']=subtypes
+        nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
+        # get all the objects inheriting this OT
         contains_members_dict = {}
         for each in self.member_objects.all():
-           contains_members_dict[each.title]= each.get_absolute_url()
+            contains_members_dict[each.title]= each.get_absolute_url()
         nbh['contains_members'] = contains_members_dict
-	nbh['count_contains_members'] = len(nbh['contains_members'])
+        nbh['count_contains_members'] = len(nbh['contains_members'])
         #get prior nodes
         priornodes_dict = {}
         for each in self.prior_nodes.all():
-             priornodes_dict[each.title]= each.get_absolute_url()
+            priornodes_dict[each.title]= each.get_absolute_url()
         nbh['priornodes'] = priornodes_dict
-	nbh['count_priornodes'] = len(nbh['priornodes'])
+        nbh['count_priornodes'] = len(nbh['priornodes'])
         #get posterior nodes
         posteriornodes_dict = {}
         for each in self.posterior_nodes.all():
-             posteriornodes_dict[each.title]= each.get_absolute_url()
+            posteriornodes_dict[each.title]= each.get_absolute_url()
         nbh['posteriornodes'] = posteriornodes_dict
-	nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
+        nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
         #get authors
         author_dict = {}
         for each in self.authors.all():
-             author_dict['User'] = each.get_absolute_url()
+            author_dict['User'] = each.get_absolute_url()
         nbh['authors'] = author_dict
         #get siblings
         siblings={}
         for each in self.get_siblings():
             siblings[each.title]=each.get_absolute_url()
         nbh['siblings']=siblings
-	nbh['count_siblings'] = len(nbh['siblings'])
+        nbh['count_siblings'] = len(nbh['siblings'])
         #get Relations
         relns={}
         rellft={}
@@ -2147,51 +2181,51 @@ class Attributetype(Nodetype):
                                 relnvalue[items]=items.get_absolute_url()
                         else:
                             relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
-                        
+
                         relrgt[rgtkey]=relnvalue
-                    
+
                 else:
                     rellft={}
                     relns['left']=rellft
                     for lftkey,lftvalue in value.items():
                         relnvalue={}
                         if isinstance(lftvalue,list):
-                             for items in lftvalue:
-                                 relnvalue[items]=items.get_absolute_url()
+                            for items in lftvalue:
+                                relnvalue[items]=items.get_absolute_url()
                         else:
-                             relnvalue[lftvalue]=lftvalue.get_absolute_url()
-                        
+                            relnvalue[lftvalue]=lftvalue.get_absolute_url()
+
                         rellft[lftkey]=relnvalue
-                    
+
         nbh['relations']=relrgt
-	
+
         nbh['relations'].update(rellft)
-	nbh['count_relations'] = len(nbh['relations'])
+        nbh['count_relations'] = len(nbh['relations'])
         #get Attributes
         attributes =self.get_attributes
         nbh['attributes']=attributes
-	nbh['count_attributes'] = len(nbh['attributes'])
+        nbh['count_attributes'] = len(nbh['attributes'])
         #get ATs
         attributetypes={}
         for each in self.subjecttype_of.all():
             attributetypes[each.title]=each.get_absolute_url()
         nbh['ats']=attributetypes
         #get RTs as leftroles and rightroles
-        leftroles = {} 
+        leftroles = {}
         for each in self.left_subjecttype_of.all():
             leftroles[each.title]=each.get_absolute_url()
         nbh['leftroles']=leftroles
-	nbh['count_leftroles'] = len(nbh['leftroles'])
-        rightroles = {} 
+        nbh['count_leftroles'] = len(nbh['leftroles'])
+        rightroles = {}
         for each in self.right_subjecttype_of.all():
             rightroles[each.title]=each.get_absolute_url()
         nbh['rightroles']=rightroles
-	nbh['count_rightroles'] = len(nbh['rightroles'])
+        nbh['count_rightroles'] = len(nbh['rightroles'])
         nbh['history']=history
-	
+
         return nbh
-       
- 
+
+
     def __unicode__(self):
         return self.title
 
@@ -2215,9 +2249,9 @@ class Attributetype(Nodetype):
 
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-	super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
-  	self.nbhood=self.get_rendered_nbh
-	if GSTUDIO_VERSIONING:
+        super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
+        self.nbhood=self.get_rendered_nbh
+        if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
     def save_revert_or_merge(self, *args, **kwargs):
@@ -2225,29 +2259,28 @@ class Attributetype(Nodetype):
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Attributetype, self).save(*args, **kwargs) # Call the "real" save() method.
-	
 
-    
+
+
 class Relation(Edge):
     '''
     Relations, instances of relationtypes
     '''
 
     left_subject_scope = models.CharField(max_length=50, verbose_name='subject scope or qualification', null=True, blank=True)
-    left_subject = models.ForeignKey(NID, related_name="left_subject_of", verbose_name='subject name') 
+    left_subject = models.ForeignKey(NID, related_name="left_subject_of", verbose_name='subject name')
     relationtype_scope = models.CharField(max_length=50, verbose_name='relation scope or qualification', null=True, blank=True)
     relationtype = models.ForeignKey(Relationtype, verbose_name='relation name')
     right_subject_scope = models.CharField(max_length=50, verbose_name='object scope or qualification', null=True, blank=True)
-    right_subject = models.ForeignKey(NID, related_name="right_subject_of", verbose_name='object name') 
+    right_subject = models.ForeignKey(NID, related_name="right_subject_of", verbose_name='object name')
 
-    def ApplicableNodeType
-s_filter(self,choice):
+    def ApplicableNodeTypes_filter(self,choice):
 
         nodeslist = []
-        
+
         if choice == 'ED':
             nodeslist = Edge.objects.all()
-	if choice == 'OB':
+        if choice == 'OB':
             nodeslist = Objects.objects.all()
         if choice == 'ND':
             nodeslist = Node.objects.all()
@@ -2269,9 +2302,9 @@ s_filter(self,choice):
             nodeslist = Systemtype.objects.all()
         if choice == 'SY':
             nodeslist = System.objects.all()
-        
+
         return nodeslist
-        
+
 
     class Meta:
         unique_together = (('left_subject_scope','left_subject','relationtype_scope', 'relationtype', 'right_subject_scope','right_subject'),)
@@ -2306,19 +2339,19 @@ s_filter(self,choice):
     @property
     def relation_sentence(self):
         """Return the relations of the objecttypes"""
-        
+
         if self.relationtype:
-           # for relation in self.relationtype():
-                return u'%s %s %s' % (self.left_subject,self.relationtype,self.right_subject )
+            # for relation in self.relationtype():
+            return u'%s %s %s' % (self.left_subject,self.relationtype,self.right_subject )
 
     @property
     def partial_composition(self):
         '''
         function that composes the right_subject and relation name, as in "x as a friend", "y as a sibling"
         '''
-        return u'%s as a %s' % (self.right_subject, self.relationtype) 
-    
-    
+        return u'%s as a %s' % (self.right_subject, self.relationtype)
+
+
     # Save for Relation
 
     def save(self, *args, **kwargs):
@@ -2327,7 +2360,7 @@ s_filter(self,choice):
         left_subject and right_subject should be saved after creating the relation
         """
         self.nodemodel = self.__class__.__name__
-       
+
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Relation, self).save(*args, **kwargs) # Call the "real" save() method.
@@ -2341,18 +2374,18 @@ s_filter(self,choice):
 class Attribute(Edge):
     '''
     Attribute value store for default datatype varchar. Subject can be any of the
-    nodetypes. 
+    nodetypes.
     '''
 
     subject_scope = models.CharField(max_length=50, verbose_name='subject scope or qualification', null=True, blank=True)
-    subject = models.ForeignKey(NID, related_name="subject_of", verbose_name='subject name') 
+    subject = models.ForeignKey(NID, related_name="subject_of", verbose_name='subject name')
     attributetype_scope = models.CharField(max_length=50, verbose_name='property scope or qualification', null=True, blank=True)
     attributetype = models.ForeignKey(Attributetype, verbose_name='property name')
     value_scope = models.CharField(max_length=50, verbose_name='value scope or qualification', null=True, blank=True)
-    svalue  = models.CharField(max_length=100, verbose_name='serialized value') 
-    
+    svalue  = models.CharField(max_length=100, verbose_name='serialized value')
 
-    
+
+
     class Meta:
         unique_together = (('subject_scope', 'subject', 'attributetype_scope', 'attributetype', 'value_scope', 'svalue'),)
         verbose_name = _('attribute')
@@ -2370,7 +2403,7 @@ class Attribute(Edge):
         for each in Objecttype.objects.all():
             if attr.subjecttype.id == each.id:
                 return each.get_members
-        
+
 
 
     def __unicode__(self):
@@ -2396,13 +2429,13 @@ class Attribute(Edge):
         composes a name to the attribute
         '''
         return u'the %s of %s is %s' % (self.attributetype, self.subject, self.svalue)
-    
+
     @property
     def partial_composition(self):
         '''
         function that composes the value and attribute name, as in "red as color", "4 as length"
         '''
-        return u'%s as %s' % (self.svalue, self.attributetype) 
+        return u'%s as %s' % (self.svalue, self.attributetype)
 
 
     def subject_filter(self,attr):
@@ -2424,33 +2457,33 @@ class Attribute(Edge):
                 subject.ref.save()
         super(Attribute, self).save(*args, **kwargs) # Call the "real" save() method.
 
-                    
-            
-        
-class AttributeCharField(Attribute):    
 
-    value  = models.CharField(max_length=100, verbose_name='string') 
+
+
+class AttributeCharField(Attribute):
+
+    value  = models.CharField(max_length=100, verbose_name='string')
 
     def __unicode__(self):
         return self.title
 
-    
+
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-       
+
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(AttributeCharField, self).save(*args, **kwargs) # Call the "real" save() method.
                 subject=self.subject
                 subject.ref.save()
         super(AttributeCharField, self).save(*args, **kwargs) # Call the "real" save() method.
-       
+
 
 
 class AttributeTextField(Attribute):
-    
-    value  = models.TextField(verbose_name='text') 
+
+    value  = models.TextField(verbose_name='text')
 
     def __unicode__(self):
         return self.title
@@ -2465,28 +2498,28 @@ class AttributeTextField(Attribute):
                 subject.ref.save()
         super(AttributeTextField, self).save(*args, **kwargs) # Call the "real" save() method.
 
-    
+
 class AttributeIntegerField(Attribute):
-     value = models.IntegerField(max_length=100, verbose_name='Integer') 
+    value = models.IntegerField(max_length=100, verbose_name='Integer')
 
-     def __unicode__(self):
-         return self.title
+    def __unicode__(self):
+        return self.title
 
-     # @reversion.create_revision()
-     def save(self, *args, **kwargs):
-         self.nodemodel = self.__class__.__name__
-         if GSTUDIO_VERSIONING:
-             with reversion.create_revision():
-                 super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
-                 subject=self.subject
-                 subject.ref.save()
-         super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
-         
+    # @reversion.create_revision()
+    def save(self, *args, **kwargs):
+        self.nodemodel = self.__class__.__name__
+        if GSTUDIO_VERSIONING:
+            with reversion.create_revision():
+                super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+                subject=self.subject
+                subject.ref.save()
+        super(AttributeIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 
 class AttributeCommaSeparatedIntegerField(Attribute):
-    
-    value  = models.CommaSeparatedIntegerField(max_length=100, verbose_name='integers separated by comma') 
+
+    value  = models.CommaSeparatedIntegerField(max_length=100, verbose_name='integers separated by comma')
 
     def __unicode__(self):
         return self.title
@@ -2502,12 +2535,12 @@ class AttributeCommaSeparatedIntegerField(Attribute):
         super(AttributeCommaSeparatedIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeBigIntegerField(Attribute):
-    
-    value  = models.BigIntegerField(max_length=100, verbose_name='big integer') 
+
+    value  = models.BigIntegerField(max_length=100, verbose_name='big integer')
 
     def __unicode__(self):
         return self.title
-    
+
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
@@ -2520,8 +2553,8 @@ class AttributeBigIntegerField(Attribute):
 
 
 class AttributePositiveIntegerField(Attribute):
-    
-    value  = models.PositiveIntegerField(max_length=100, verbose_name='positive integer') 
+
+    value  = models.PositiveIntegerField(max_length=100, verbose_name='positive integer')
 
     def __unicode__(self):
         return self.title
@@ -2538,8 +2571,8 @@ class AttributePositiveIntegerField(Attribute):
 
 
 class AttributeDecimalField(Attribute):
-    
-    value  = models.DecimalField(max_digits=3, decimal_places=2, verbose_name='decimal') 
+
+    value  = models.DecimalField(max_digits=3, decimal_places=2, verbose_name='decimal')
 
     def __unicode__(self):
         return self.title
@@ -2553,8 +2586,8 @@ class AttributeDecimalField(Attribute):
         super(AttributeDecimalField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeFloatField(Attribute):
-    
-    value  = models.FloatField(max_length=100, verbose_name='number as float') 
+
+    value  = models.FloatField(max_length=100, verbose_name='number as float')
 
     def __unicode__(self):
         return self.title
@@ -2571,8 +2604,8 @@ class AttributeFloatField(Attribute):
 
 
 class AttributeBooleanField(Attribute):
-    
-    value  = models.BooleanField(verbose_name='boolean') 
+
+    value  = models.BooleanField(verbose_name='boolean')
 
     def __unicode__(self):
         return self.title
@@ -2587,8 +2620,8 @@ class AttributeBooleanField(Attribute):
 
 
 class AttributeNullBooleanField(Attribute):
-    
-    value  = models.NullBooleanField(verbose_name='true false or unknown') 
+
+    value  = models.NullBooleanField(verbose_name='true false or unknown')
 
     def __unicode__(self):
         return self.title
@@ -2605,8 +2638,8 @@ class AttributeNullBooleanField(Attribute):
 
 
 class AttributeDateField(Attribute):
-    
-    value  = models.DateField(max_length=100, verbose_name='date') 
+
+    value  = models.DateField(max_length=100, verbose_name='date')
 
     def __unicode__(self):
         return self.title
@@ -2622,9 +2655,9 @@ class AttributeDateField(Attribute):
 
 
 class AttributeDateTimeField(Attribute):
-    
-    value  = models.DateTimeField(max_length=100, verbose_name='date time') 
-    
+
+    value  = models.DateTimeField(max_length=100, verbose_name='date time')
+
     def __unicode__(self):
         return self.title
 
@@ -2638,10 +2671,10 @@ class AttributeDateTimeField(Attribute):
                 subject.ref.save()
         super(AttributeDateTimeField, self).save(*args, **kwargs) # Call the "real" save() method.
 
-    
+
 class AttributeTimeField(Attribute):
-    
-    value  = models.TimeField(max_length=100, verbose_name='time') 
+
+    value  = models.TimeField(max_length=100, verbose_name='time')
 
     def __unicode__(self):
         return self.title
@@ -2658,8 +2691,8 @@ class AttributeTimeField(Attribute):
 
 
 class AttributeEmailField(Attribute):
-    
-    value  = models.EmailField(max_length=100,verbose_name='value') 
+
+    value  = models.EmailField(max_length=100,verbose_name='value')
 
     def __unicode__(self):
         return self.title
@@ -2675,8 +2708,8 @@ class AttributeEmailField(Attribute):
 
 
 class AttributeFileField(Attribute):
-    
-    value  = models.FileField(upload_to='media/'+UPLOAD_TO, verbose_name='file') 
+
+    value  = models.FileField(upload_to='media/'+UPLOAD_TO, verbose_name='file')
 
     def __unicode__(self):
         return self.title
@@ -2693,8 +2726,8 @@ class AttributeFileField(Attribute):
 
 
 class AttributeFilePathField(Attribute):
-    
-    value  = models.FilePathField(verbose_name='path of file') 
+
+    value  = models.FilePathField(verbose_name='path of file')
 
     def __unicode__(self):
         return self.title
@@ -2711,8 +2744,8 @@ class AttributeFilePathField(Attribute):
 
 
 class AttributeImageField(Attribute):
-    
-    value  = models.ImageField(upload_to = UPLOAD_TO, verbose_name='image') 
+
+    value  = models.ImageField(upload_to = UPLOAD_TO, verbose_name='image')
 
     def __unicode__(self):
         return self.title
@@ -2730,7 +2763,7 @@ class AttributeImageField(Attribute):
 
 class AttributeURLField(Attribute):
 
-    value  = models.URLField(max_length=100, verbose_name='url') 
+    value  = models.URLField(max_length=100, verbose_name='url')
 
     def __unicode__(self):
         return self.title
@@ -2748,7 +2781,7 @@ class AttributeURLField(Attribute):
 
 class AttributeIPAddressField(Attribute):
 
-    value  = models.IPAddressField(max_length=100, verbose_name='ip address') 
+    value  = models.IPAddressField(max_length=100, verbose_name='ip address')
 
     def __unicode__(self):
         return self.title
@@ -2765,11 +2798,11 @@ class AttributeIPAddressField(Attribute):
 
 
 
-class Processtype(Nodetype):    
+class Processtype(Nodetype):
 
     """
     A kind of nodetype for defining processes or events or temporal
-    objects involving change.  
+    objects involving change.
     """
     changing_attributetype_set = models.ManyToManyField(Attributetype, null=True, blank=True,
                                verbose_name=_('attribute set involved in the process'),
@@ -2790,35 +2823,35 @@ class Processtype(Nodetype):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-	super(Processtype, self).save(*args, **kwargs) # Call the "real" save() method.
-	self.nbhood=self.get_rendered_nbh
+        super(Processtype, self).save(*args, **kwargs) # Call the "real" save() method.
+        self.nbhood=self.get_rendered_nbh
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Processtype, self).save(*args, **kwargs) # Call the "real" save() method.
 
-        
 
 
 
 
 
-class Systemtype(Nodetype):    
+
+class Systemtype(Nodetype):
 
     """
     class to organize Systems
     """
 
 
-    nodetype_set = models.ManyToManyField(Nodetype, related_name="nodetype_set_of", verbose_name='Possible edges in the system',    
-                                           blank=True, null=False) 
-    relationtype_set = models.ManyToManyField(Relationtype, related_name="relationtype_set_of", verbose_name='Possible nodetypes in the system',    
-                                             blank=True, null=False) 
+    nodetype_set = models.ManyToManyField(Nodetype, related_name="nodetype_set_of", verbose_name='Possible edges in the system',
+                                           blank=True, null=False)
+    relationtype_set = models.ManyToManyField(Relationtype, related_name="relationtype_set_of", verbose_name='Possible nodetypes in the system',
+                                             blank=True, null=False)
     attributetype_set = models.ManyToManyField(Attributetype, related_name="attributetype_set_of", verbose_name='systems to be nested in the system',
                                               blank=True, null=False)
-    metatype_set = models.ManyToManyField(Metatype, related_name="metatype_set_of", verbose_name='Possible edges in the system',    
-                                         blank=True, null=False) 
-    processtype_set = models.ManyToManyField(Processtype, related_name="processtype_set_of", verbose_name='Possible edges in the system',    
-                                            blank=True, null=False) 
+    metatype_set = models.ManyToManyField(Metatype, related_name="metatype_set_of", verbose_name='Possible edges in the system',
+                                         blank=True, null=False)
+    processtype_set = models.ManyToManyField(Processtype, related_name="processtype_set_of", verbose_name='Possible edges in the system',
+                                            blank=True, null=False)
 
 
     def __unicode__(self):
@@ -2833,8 +2866,8 @@ class Systemtype(Nodetype):
     # @reversion.create_revision()
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
-	super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
-	self.nbhood=self.get_rendered_nbh
+        super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
+        self.nbhood=self.get_rendered_nbh
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
@@ -2886,7 +2919,7 @@ class AttributeSpecification(Node):
 
 class RelationSpecification(Node):
     """
-    specifying a relation with a subject 
+    specifying a relation with a subject
     """
     relationtype = models.ForeignKey(Relationtype, verbose_name='relation name')
     subjects = models.ManyToManyField(NID, related_name="subjects_in_relspec", verbose_name='subjects')
@@ -2925,7 +2958,7 @@ class RelationSpecification(Node):
 
 class NodeSpecification(Node):
     """
-    A node specified (described) by its relations or attributes or both.  
+    A node specified (described) by its relations or attributes or both.
     """
     subject = models.ForeignKey(Node, related_name="subject_nodespec", verbose_name='subject name')
     relations = models.ManyToManyField(Relation, related_name="relations_in_nodespec", verbose_name='relations used to specify the domain')
@@ -2970,9 +3003,9 @@ class Expression(Node):
     Expression constructor
     """
 
-    left_term = models.ForeignKey(NID, related_name="left_term_of", verbose_name='left term name') 
+    left_term = models.ForeignKey(NID, related_name="left_term_of", verbose_name='left term name')
     relationtype = models.ForeignKey(Relationtype, verbose_name='relation name')
-    right_term = models.ForeignKey(NID, related_name="right_term_of", verbose_name='right term name') 
+    right_term = models.ForeignKey(NID, related_name="right_term_of", verbose_name='right term name')
 
 
     def __unicode__(self):
@@ -3008,7 +3041,7 @@ class Union(Node):
     union of two classes
     """
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'union_of', verbose_name='node types for union')
-        
+
     def __unicode__(self):
         return self.title
 
@@ -3029,7 +3062,7 @@ class Complement(Node):
     complement of a  class
     """
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'complement_of', verbose_name='complementary nodes')
-        
+
     def __unicode__(self):
         return self.title
 
@@ -3048,7 +3081,7 @@ class Intersection(Node):
     Intersection of classes
     """
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'intersection_of', verbose_name='intersection of classes')
-        
+
     def __unicode__(self):
         return self.title
 
@@ -3061,7 +3094,7 @@ class Intersection(Node):
 
         super(Intersection, self).save(*args, **kwargs) # Call the "real" save() method.
 
-    
+
 if GSTUDIO_VERSIONING == True:
     reversion.register(NID)
 
@@ -3081,23 +3114,23 @@ if GSTUDIO_VERSIONING == True:
     if not reversion.is_registered(Processtype):
         reversion.register(Processtype, follow=["nodetype_ptr","changing_attributetype_set", "changing_relationtype_set"])
 
-    if not reversion.is_registered(Nodetype): 
+    if not reversion.is_registered(Nodetype):
         reversion.register(Nodetype, follow=["node_ptr","parent", "metatypes","prior_nodes", "posterior_nodes"])
 
     if not reversion.is_registered(Metatype):
         reversion.register(Metatype, follow=["node_ptr","parent"])
 
 
-    if not reversion.is_registered(Relationtype): 
+    if not reversion.is_registered(Relationtype):
         reversion.register(Relationtype, follow=["nodetype_ptr","left_subjecttype", "right_subjecttype"])
 
-    if not reversion.is_registered(Attributetype): 
+    if not reversion.is_registered(Attributetype):
         reversion.register(Attributetype, follow=["nodetype_ptr","subjecttype"])
 
-    if not reversion.is_registered(Attribute): 
+    if not reversion.is_registered(Attribute):
         reversion.register(Attribute, follow=["subject", "attributetype"])
 
-    if not reversion.is_registered(Relation): 
+    if not reversion.is_registered(Relation):
         reversion.register(Relation, follow=["left_subject", "right_subject", "relationtype"])
 
 moderator.register(Nodetype, NodetypeCommentModerator)

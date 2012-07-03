@@ -1,0 +1,16 @@
+<html>
+<head>
+<h> List of Nodes </h>
+<br>
+</head>
+
+<body>
+<div>
+<ul>
+{% for item in lis %}
+  <li><a href="{{ item.get_absolute_url }}" >{{ item.title }}</a></li>
+{% endfor %}
+</ul>
+</div>
+</body>
+</html>

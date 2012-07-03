@@ -47,7 +47,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse, NoReverseMatch
 import reversion
 from tagging.models import Tag
-
+from markitup.widgets import AdminMarkItUpWidget
 from objectapp import settings
 from objectapp.managers import HIDDEN
 from objectapp.managers import PUBLISHED
@@ -59,7 +59,7 @@ class GbobjectAdmin(reversion.VersionAdmin):
     """Admin for Gbobject model"""
     form = GbobjectAdminForm
     date_hierarchy = 'creation_date'
-    fieldsets = ((_('Content'), {'fields': ('title', 'altnames', 'objecttypes','content',
+    fieldsets = ((_('Content'), {'fields': ('title', 'altnames', 'objecttypes','content','content_org',
                                             'image', 'status')}),
                  (_('Dependency'), {'fields': ('prior_nodes', 'posterior_nodes',),
                                  'classes': ('collapse', 'collapse-closed')}),
@@ -125,6 +125,11 @@ class GbobjectAdmin(reversion.VersionAdmin):
     get_authors.allow_tags = True
     get_authors.short_description = _('author(s)')
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(GbobjectAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+    
     def get_objecttypes(self, gbobject):
         """Return the objecttypes linked in HTML"""
         try:

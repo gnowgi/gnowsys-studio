@@ -30,7 +30,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse, NoReverseMatch
 import reversion
 from tagging.models import Tag
-
+from markitup.widgets import AdminMarkItUpWidget
 from objectapp import settings
 from objectapp.managers import HIDDEN
 from objectapp.managers import PUBLISHED
@@ -105,7 +105,12 @@ class ProcessAdmin(reversion.VersionAdmin):
                    {'title': title, 'comments': comments}
         return title
     get_title.short_description = _('title')
-
+    
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(ProcessAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+    
     def get_authors(self, process):
         """Return the authors in HTML"""
         try:

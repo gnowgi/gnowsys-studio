@@ -1,50 +1,3 @@
-# Copyright (c) 2011,  2012 Free Software Foundation
-
-#     This program is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU Affero General Public License as
-#     published by the Free Software Foundation, either version 3 of the
-#     License, or (at your option) any later version.
-
-#     This program is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU Affero General Public License for more details.
-
-#     You should have received a copy of the GNU Affero General Public License
-#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-# This project incorporates work covered by the following copyright and permission notice:  
-
-#    Copyright (c) 2009, Julien Fache
-#    All rights reserved.
-
-#    Redistribution and use in source and binary forms, with or without
-#    modification, are permitted provided that the following conditions
-#    are met:
-
-#    * Redistributions of source code must retain the above copyright
-#      notice, this list of conditions and the following disclaimer.
-#    * Redistributions in binary form must reproduce the above copyright
-#      notice, this list of conditions and the following disclaimer in
-#      the documentation and/or other materials provided with the
-#      distribution.
-#    * Neither the name of the author nor the names of other
-#      contributors may be used to endorse or promote products derived
-#      from this software without specific prior written permission.
-
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-#    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-#    COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-#    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-#    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-#    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-#    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-#    STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-#    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-#    OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Copyright (c) 2011,  2012 Free Software Foundation
 
@@ -78,8 +31,13 @@ DATABASES = {'default':
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/static'
-MEDIA_ROOT = '/static'
+#MEDIA_ROOT = '/static'
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
+PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
+PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
 
+
+GSTUDIO_UPLOAD_TO = 'img/'
 
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 
@@ -92,16 +50,25 @@ SITE_ID = 1
 
 LANGUAGE_CODE = 'en'
 
-GRAPPELLI_ADMIN_TITLE = '<a href="/">Gnowledge Studio</a>'
+GRAPPELLI_ADMIN_TITLE = '<a href="/nodetypes/" title="Gnowledge Studio">Gnowledge Studio</a>'
 
 GRAPPELLI_INDEX_DASHBOARD = "demo.dashboard.CustomIndexDashboard"
 
+GSTUDIO_RDF_FILEPATH = os.path.join(os.path.dirname(__file__), 'rdffiles.rdf')
 
 # Authentication related
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 LOGIN_REDIRECT_URL = '/'
+
+# fourstore related
+FOURSTORE_KBNAME = "demo"  # Name of 4store knowledge base
+FOURSTORE_PORT = 8067      # Port for 4store HTTP server
+SPARQL_ENDPOINT = "http://localhost:8067/sparql/"
+
+
+
 
 
 
@@ -159,6 +126,7 @@ INSTALLED_APPS = (
     'mptt',
     'reversion',
     'tagging',
+    'markitup',
     'django_xmlrpc',
     'grappelli.dashboard',
     'grappelli',
@@ -171,6 +139,9 @@ INSTALLED_APPS = (
     'registration',
     'graphviz',
     'demo',
+    'fourstore',
+    'HTTP4Store',
+    'html5lib',
     # Uncomment the south entry to activate south for database migrations
     # Please do install south before uncommenting
     # command: sudo pip install south 

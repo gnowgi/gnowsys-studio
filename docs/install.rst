@@ -2,7 +2,7 @@
 Installation
 ============
 
-.. module:: gstudio
+.. module:: gnowsys-studio
 
 .. _dependencies:
 
@@ -16,14 +16,23 @@ Make sure to install these packages prior to installation :
 * `django-mptt`_ >= 0.4.2
 * `django-tagging`_ >= 0.3.1
 * `BeautifulSoup`_ >= 3.2.0
-
-The packages below are optionnal but needed for run the full test suite.
-
-* `pyparsing`_ >= 1.5.5
 * `django-xmlrpc`_ >= 0.1.3
+* `pyparsing`_ >= 1.5.5
+* `django-reversion`_ >= 1.5.1
+* `django-grappelli`_ >= 2.3.4
+* `django-ratings`_ >= 0.3.6
+* `rdflib`_ >= 3.0.0
+* `django-registration`_ >=0.8
+* `django-4store`_ >= 0.3
+* `HTTP4Store`_ >= 0.2
+* `html5lib`_ >=  0.95
+* `PIL`_ >= 1.1.7
+* `diff-match-patch`_ >= 20120106
+
 
 Note that all the dependencies will be resolved if you install
-Gstudio with :program:`pip` or :program:`easy_install`, excepting Django.
+gnowsys-studio with :program:`pip` or :program:`easy_install`,
+excepting Django.
 
 .. _getting-the-code:
 
@@ -32,25 +41,25 @@ Getting the code
 
 .. highlight:: console
 
-For the latest stable version of Gstudio use :program:`easy_install`: ::
+For the latest version of Gstudio use :program:`easy_install`: ::
 
-  $ easy_install django-gstudio
+  $ easy_install gnowsys-studio
 
 or use :program:`pip`: ::
 
-  $ pip install django-gstudio
+  $ pip install gnowsys-studio
 
 You could also retrieve the last sources from
 https://github.com/gnowgi/django-gstudio. Clone the repository
 using :program:`git` and run the installation script: ::
 
-  $ git clone git://github.com/gnowgi/django-gstudio.git
-  $ cd django-gstudio
+  $ git clone git://github.com/gnowgi/gnowsys-studio.git
+  $ cd gnowsys-studio
   $ python setup.py install
 
 or more easily via :program:`pip`: ::
 
-  $ pip install -e git://github.com/gnowgi/django-gstudio.git#egg=django-gstudio
+  $ pip install -e git://github.com/gnowgi/gnowsys-studio.git#egg=gnowsys-studio
 
 .. _applications:
 
@@ -59,19 +68,41 @@ Applications
 
 .. highlight:: python
 
-Then register :mod:`gstudio`, and these following applications in the
-:setting:`INSTALLED_APPS` section of your project's settings. ::
+Then register :mod:`gstudio`, `objectapp`, and these following
+applications in the :setting:`INSTALLED_APPS` section of your
+project's settings. ::
 
-  INSTALLED_APPS = (
-    # Your favorite apps
-    'django.contrib.contenttypes',
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.sitemaps',
     'django.contrib.comments',
+    'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.sites',
-    'django.contrib.admin',
-    'tagging',
     'mptt',
-    'gstudio',)
+    'reversion',
+    'tagging',
+    'django_xmlrpc',
+    'grappelli.dashboard',
+    'grappelli',
+    'gstudio',
+    'objectapp',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
+    'django.contrib.staticfiles',
+    'djangoratings',
+    'registration',
+    'graphviz',
+    'demo',
+    'fourstore',
+    'HTTP4Store',
+    'html5lib',
+    # Uncomment the south entry to activate south for database migrations
+    # Please do install south before uncommenting
+    # command: sudo pip install south 
+    # 'south',
+    )
 
 .. _template-context-processors:
 
@@ -96,33 +127,43 @@ URLs
 ====
 
 Add the following lines to your project's urls.py in order to display the
-blog. ::
+site.
 
-  url(r'^gstudio/', include('gstudio.urls')),
-  url(r'^comments/', include('django.contrib.comments.urls')),
+Note that the default gnowsys-studio URLset is provided for convenient
+usage, but you can customize your URLs if you want. Here's how: ::
 
-Note that the default gstudio URLset is provided for convenient usage, but
-you can customize your URLs if you want. Here's how: ::
+urlpatterns = patterns(
+    '',
+    (r'^$', 'django.views.generic.simple.redirect_to',
+     {'url': '/home/'}),
+    url(r'^home/', home_view),
+    url(r'^more/',more_view),
+    url(r'^nodetypes/', include('gstudio.urls')),
+    url(r'^objects/', include('objectapp.urls')),
+    url(r'^comments/', include('django.contrib.comments.urls')),
+    #URL for XMLRPC
+    url(r'^xmlrpc/$','django_xmlrpc.views.handle_xmlrpc'),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/gstudio/', include('gstudio.urls.ajaxurls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^objects/admin/', include(admin.site.urls)),
+    url(r'^nodetypes/admin/', include(admin.site.urls)),
+    url(r'^grappelli/', include('grappelli.urls')),
+    url(r'^accounts/register/$', register, {'backend': 'gstudio.regbackend.MyBackend','form_class': UserRegistrationForm}, name='registration_register'),
 
-  url(r'^', include('gstudio.urls.capabilities')),
-  url(r'^search/', include('gstudio.urls.search')),
-  url(r'^sitemap/', include('gstudio.urls.sitemap')),
-  url(r'^trackback/', include('gstudio.urls.trackback')),
-  url(r'^gstudio/tags/', include('gstudio.urls.tags')),
-  url(r'^gstudio/feeds/', include('gstudio.urls.feeds')),
-  url(r'^gstudio/authors/', include('gstudio.urls.authors')),
-  url(r'^gstudio/categories/', include('gstudio.urls.categories')),
-  url(r'^gstudio/discussions/', include('gstudio.urls.discussions')),
-  url(r'^gstudio/', include('gstudio.urls.quick_entry')),
-  url(r'^gstudio/', include('gstudio.urls.entries')),
-  url(r'^comments/', include('django.contrib.comments.urls')),
+    url(r'^accounts/', include('registration.urls')),
+
+    url(r'^$', 'django.views.generic.simple.redirect_to',
+            { 'template': 'index.html' }, 'index'),
+    )
 
 .. _static-files:
 
 Static Files
 ============
 
-Since the version 1.3 of Django, Gstudio uses the
+Since the version 1.3 of Django, gnowsys-studio uses the
 :mod:`django.contrib.staticfiles` application to serve the static files
 needed. Please refer to
 https://docs.djangoproject.com/en/dev/howto/static-files/ for more

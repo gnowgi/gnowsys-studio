@@ -40,6 +40,20 @@
   {% get_objecttypes %}
 </div>
 -->
+<div class="History">
+     
+       <h3>{% trans "Versions" %}</h3>
+        <table border="1" cellspacing="0">
+	
+        {% for sid in object.ref.get_ssid  %}
+	   
+	      
+	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}">{{ object.title }} {{ object.id }}.{{ forloop.counter }}</a><br>
+	 
+        {% endfor %}
+	   
+</div>
+<br>
 <div class="authors">
   <h3>{% trans "Authors" %}</h3>
   {% get_authors %}

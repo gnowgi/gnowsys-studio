@@ -1,10 +1,11 @@
-======================
-Contributing to Zinnia
-======================
+==============================
+Contributing to GNOWSYS-STUDIO
+==============================
 
 .. highlightlang:: console
 
-Zinnia is an open-source project, so yours contributions are welcomed and needed.
+GNOWSYS-studio is a free software project, so yours contributions are
+welcome and needed.
 
 .. _writing-code:
 
@@ -19,7 +20,7 @@ code ? You are welcome.
 Process
 -------
 
-#. `Fork`_ the code on Github.
+#. `Fork`_ the code on Github or savannah.
 #. Clone a local copy of your fork.
 #. Write tests.
 #. Develop your code.
@@ -66,7 +67,7 @@ project, and serves as a reference for old timers.
 
 On top of this, documentation is the one area where less technical people
 can help most - you just need to write a semi-decent English. People need
-to understand you. We don’t care about style or correctness.
+to understand you. We don’t care about style or rigorously grammatical.
 
 The documentation should :
 
@@ -76,7 +77,7 @@ The documentation should :
 * Be accessible. You should assume the reader to be moderately familiar
   with Python and Django, but not anything else.
 
-Keep it mind that documenting is most useful than coding, so your
+Keep it in mind that documenting is most useful than coding, so your
 contribution will be greatly appreciated.
 
 .. _writing-translations:
@@ -85,15 +86,4 @@ Translations
 ------------
 
 If you want to contribute by updating a translation or adding a translation
-in your language, it's simple: create a account on Transifex.net and you
-will be able to edit the translations at this URL :
-
-https://www.transifex.net/projects/p/django-blog-zinnia/resource/djangopo/
-
-.. image:: http://www.transifex.net/projects/p/django-blog-zinnia/resource/djangopo/chart/image_png
-
-The translations hosted on Transifex.net will be pulled periodically in the
-repository, but if you are in a hurry, `send me a message`_.
-
-.. _`Fork`: https://github.com/Fantomas42/django-blog-zinnia/fork
-.. _`send me a message`: https://github.com/inbox/new/Fantomas42
+in your language, let us know. 

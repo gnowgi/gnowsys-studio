@@ -4,11 +4,11 @@ Search Engines
 
 .. module:: gstudio.views.search
 
-Gstudio like almost all blogging systems contains a
+Gstudio like almost all web publishing systems contains a
 :func:`search engine<entry_search>` feature.
 
 But in fact there are 2 search engines, a basic and an advanced, the
-advanced search engine is enabled by default, but if he fails the
+advanced search engine is enabled by default, but if it  fails the
 basic search engine will resume the job.
 
 .. _basic-search-engine:
@@ -117,3 +117,9 @@ These are words such as **on**, **the** or **which** that are generally
 not meaningful and cause irrelevant results.
 
 The list of stop words is stored in the :setting:`GSTUDIO_STOP_WORDS` setting.
+
+Since the apps gstudio and objectapp are implemented similarly, all
+the above features work similarly for the objectapp as well. 
+
+As and when we integrate the search engine into a common module, we
+will update the documentation here.

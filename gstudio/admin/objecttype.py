@@ -10,6 +10,7 @@ from django.conf.urls.defaults import patterns
 from django.conf import settings as project_settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse, NoReverseMatch
+from markitup.widgets import AdminMarkItUpWidget
 
 from tagging.models import Tag
 
@@ -34,7 +35,7 @@ class ObjecttypeAdmin(parent_class):
     form = ObjecttypeAdminForm
     date_hierarchy = 'creation_date'
     fieldsets = ((_('Neighbourhood'), {'fields': ('title','altnames','plural','parent','slug',
-                                            'metatypes','tags','image', 'status','content')}),
+                                            'metatypes','tags','image', 'status','content','content_org')}),
                  (_('Dependency'), {'fields': ('prior_nodes', 'posterior_nodes',), 
                                  'classes': ('collapse', 'collapse-closed')}),
                  (_('Options'), {'fields': ('featured', 'excerpt', 'template',
@@ -111,6 +112,11 @@ class ObjecttypeAdmin(parent_class):
     get_metatypes.allow_tags = True
     get_metatypes.short_description = _('metatype(s)')
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(ObjecttypeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+    
     def get_tags(self, nodetype):
         """Return the tags linked in HTML"""
         try:
@@ -177,7 +183,6 @@ class ObjecttypeAdmin(parent_class):
 
         if not form.cleaned_data.get('authors'):
             form.cleaned_data['authors'].append(request.user)
-
         nodetype.save()
        # nodetype.nbhood = nodetype.get_nbh
       #  nodetype.last_update = datetime.now()

@@ -83,9 +83,9 @@
     		<link rel="pingback" href="/xmlrpc/" />
     		<link rel="shortcut icon" href="{{ STATIC_URL }}gstudio/img/favicon.ico" />
     		<link rel="home" href="{% url gstudio_nodetype_archive_index %}" />
-    		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/grappelli_skin_default.css" />
+
     		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
-    		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen_gstudio.css" />
+
     		<link rel="stylesheet" type="text/css" media="print" href="{{ STATIC_URL }}gstudio/css/print.css" />
     		{% block link %}{% endblock %}
     		{% block script %}{% endblock %} <title>Gnowledge Studio - {% block title %}{% endblock %}</title>
@@ -108,38 +108,154 @@
 		<h3>{% block content %}
 		  {% block nodetype-content %}
 		  <h2 class="nodetype-title">
-		    <a href="{{ nt1.get_absolute_url }}" title="{{ nt1.title }}" rel="bookmark">{{ ver_new.title }}
+		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_new_dict.title }} {{ nt.id }}.{{ version_no1 }}
 		    </a>
 		  </h2>
-		  <!-- {% block content56 %}{% for each in diffs1 %} -->
-                  <!--               {% autoescape off %} -->
-		  <!--                 {{ each }}<br> -->
-                  <!--               {% endautoescape %}{% endfor %} {% endblock %} -->
-		 <!--  <br> -->
-		    {% with nt1.html_content|safe as object_content %}<br>
-		    <b>Name:<nbsp></b>{{ ver_new.title }}<br/>
-		    {% if ver_new.altnames %}
-		    <b> Alternate names:<nbsp></b>{{ ver_new.altnames }}
-		      <br/>
-		   {% endif %}
-		   {% if ver_new.plural %}
-		   <b> Plural Name:<nbsp></b>{{ ver_new.plural }} <br/>
-		   {% endif %}
-		  
-		   <b> Content:<nbsp></b>{{ ver_new.content }} <br/>
-		   
+		 
+		   {% with nt.html_content|safe as object_content %}<br>
 		    
-		  {% if nt1.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b>
-		  {% endif %}
-		{% for author in nt1.authors.all %}
-      	<span class="vcard author">
-        <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
-          title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
-      	</span>{% if not forloop.last %}, {% endif %}
-      	{% endfor %} <br/>
- {% endwith %}
- {% endblock %} 
- {% endblock %}
+		     <b>Name:<nbsp></b> {{ ver_new_nbh_dict.title  }} <br/>
+                           
+			   {% if ver_new_nbh_dict.plural or ver_old_nbh_dict.plural  %}
+                                <b> Plural Name:<nbsp></b>
+                                         {{ ver_new_nbh_dict.plural}} <br/>
+                           {% endif %}
+                            {% if ver_new_nbh_dict.altnames or ver_old_nbh_dict.altnames%}
+                               <b> Alternate names:<nbsp></b>
+                                         {{ ver_new_nbh_dict.altnames}} <br/>
+		           {% endif %}
+	                   {% if ver_new_nbh_dict.type_of  or ver_old_nbh_dict.type_of %}
+                                <b> Type of:<nbsp></b>
+                                {% for typekey,typevalue in ver_new_nbh_dict.type_of.items %}
+                                       <a href="{{typevalue}}" title = "{{typekey}}">{{typekey}}</a>;
+                                {% endfor %}<br/>
+                           {% endif %}
+
+			  
+			    {% if ver_new_nbh_dict.member_of_metatypes  or ver_old_nbh_dict.member_of_metatypes %}
+                           
+                          
+                                <b> Member of Metatypes:<nbsp></b>
+                                    {% for mkey,mvalue in ver_new_nbh_dict.member_of_metatypes.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                          
+			   
+			        
+                           {% if ver_new_nbh_dict.contains_subtypes   or ver_old_nbh_dict.contains_subtypes %}
+                                <b> Contains SubTypes:<nbsp></b>
+                                {% for stkey,stvalue in ver_new_nbh_dict.items %}
+                                        <a href="{{stvalue}}" title = "{{stkey}}">{{stkey}}</a>;
+                                {% endfor %}<br/>
+                           {% endif %}
+                          
+                          
+                           {% if ver_new_nbh_dict.contains_members  or ver_old_nbh_dict.contains_members  %}
+                         
+                          
+                                <b>Contains Members:<nbsp></b>
+                                    {% for mkey,mvalue in ver_new_nbh_dict.contains_members.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                         
+                           
+                         
+                         
+                           
+                                
+			<!-- 	   <b>Authors: <nbsp> </b> -->
+                                
+				       
+	                  
+			
+                        <!--       {% for author in nt.authors.all %} -->
+      			<!-- <span class="vcard author"> -->
+        		<!-- <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author" -->
+           		<!-- title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a> -->
+      			<!-- </span>{% if not forloop.last %}, {% endif %} -->
+      			<!-- 	{% endfor %} <br/> -->
+                         
+                            
+                            
+                            {% if ver_new_nbh_dict.priornodes  or ver_old_nbh_dict.priornodes %}
+                         
+                           
+                                <b>Prior nodes:<nbsp></b>
+                                    {% for mkey,mvalue in ver_new_nbh_dict.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                           
+                           {% if ver_new_nbh_dict.posteriornodes  or ver_old_nbh_dict.posteriornodes %}
+                         
+                           
+                                <b>Posterior nodes:<nbsp></b>
+                                    {% for mkey,mvalue in ver_new_nbh_dict.items %}
+                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+                             
+                            {% if ver_new_nbh_dict.relations  or ver_old_nbh_dict.relations %}
+                         
+                         
+                                 {% for relkey,relvalue in ver_new_nbh_dict.relations.items %}
+                                          <b>{{relkey}}:<nbsp></b>
+					{% for relk, relv in relvalue.items %}
+					    <a href="{{relv}}" title = "{{relk}}">{{relk}}</a>;	      
+                                        {% endfor %}<br/>
+				 {% endfor %}      
+	                   {% endif %}
+                           
+                           {% if ver_new_nbh_dict.attributes  or ver_old_nbh_dict.attributes %}
+                           
+				    {% for atkey,atvalue in ver_new_nbh_dict.attributes.items %}
+                                      {% if atvalue %}
+                                       <b>{{atkey}}:<nbsp> </b>
+                                        {% for atr in atvalue %}
+                                        	   {{atr}};   
+                                         {% endfor %} <br/>
+                                      {% endif %}
+				    {% endfor %}       
+	                   {% endif %}
+                            {% if ver_new_nbh_dict.leftroles   or ver_old_nbh_dict.leftroles %}
+                         
+                                                         
+				   <b>Left roles:<nbsp> </b>
+                                
+				    {% for lrkey,lrvalue in ver_new_nbh_dict.leftroles.items %}
+                                        <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;	      
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           
+                           {% if ver_new_nbh_dict.rightroles  or ver_old_nbh_dict.rightroles  %}
+                        
+			      <b>Right roles:<nbsp> </b>
+                                
+				    {% for rrkey,rrvalue in ver_new_nbh_dict.rightroles.items %}
+                                        <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;	      
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           
+                          
+                           {% if ver_new_nbh_dict.ats  or ver_old_nbh_dict.ats  %}
+                                             
+                                
+				   <b>Subjecttype of:<nbsp> </b>
+                                
+				    {% for atkey,atvalue in ver_new_nbh_dict.ats.items %}
+                                        <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;	      
+				    {% endfor %}       <br/>
+	                   {% endif %}
+                           
+			   {% if ver_new_nbh_dict.content or  ver_old_nbh_dict.content   %} 
+                            <b>Content:<nbsp></b>{{ ver_new_nbh_dict.content }}
+                           {% endif %}
+
+		   {% endwith %}
+		   {% endblock %} 
+		   {% endblock %}
 
 					    </td>
 					    <td>
@@ -147,71 +263,126 @@
 		<h3>{% block content1 %}
 		  {% block nodetype-content1 %}
 		  <h2 class="nodetype-title">
-		    <a href="{{ nt1.get_absolute_url }}" title="{{ nt1.title }}" rel="bookmark">{{ ver_old.title }}
+		    <a href="{{ nt.get_absolute_url }}" title="{{ nt.title }}" rel="bookmark">{{ ver_old_dict.title }} {{ nt.id }}.{{ version_no2 }}
 		    </a>
-		  </h2><!-- <b> -->
-		  <!-- {% block content85 %}{% for each in diffs %} -->
-                  <!--               {% autoescape off %} -->
-		  <!--                 {{ each }}<br> -->
-                  <!--               {% endautoescape %}{% endfor %} {% endblock %}</b> -->
-		  <br>
-		    {% with nt1.html_content|safe as object_content %}
+		  </h2> <br>
+		    {% with nt.html_content|safe as object_content %}
+
 		    <b>Name:<nbsp></b>{% autoescape off %}
-		                  {{ diffs.0 }}
+		                  {{ compare_dict.title }}
                                 {% endautoescape %}<br> 
-		      {% if ver_old.altnames %}
+	           {% if ver_old_nbh_dict.plural or ver_new_nbh_dict.plural %}
+		   <b> Plural Name:<nbsp></b>   {% autoescape off %}
+		                  {{ compare_dict.plural }}
+                                {% endautoescape %} <br/>
+		   {% endif %}
+		   {% if ver_old_nbh_dict.altnames or ver_new_nbh_dict.altnames %}
 		    <b> Alternate names:<nbsp></b>  {% autoescape off %}
-		                  {{ diffs.1 }}
+		                  {{ compare_dict.altnames }}
                                 {% endautoescape %}
 		      <br/>
 		   {% endif %}
-		   {% if ver_old.plural %}
-		   <b> Plural Name:<nbsp></b>   {% autoescape off %}
-		                  {{ diffs.2 }}
-                                {% endautoescape %} <br/>
+		   {% if ver_new_nbh_dict.type_of or ver_old_nbh_dict.type_of %}
+		      <b> Type of:<nbsp></b>  {% autoescape off %}
+		                  {{ compare_dict.type_of }}
+                                {% endautoescape %}
+		      <br/>
 		   {% endif %}
-		  
-		   <b> Content:<nbsp></b>  {% autoescape off %}
-		                  {{ diffs.3 }}
+		   {% if ver_new_nbh_dict.member_of_metatypes or ver_old_nbh_dict.member_of_metatypes %}
+		      <b>Member of Metatypes:<nbsp></b>  {% autoescape off %}
+		                  {{ compare_dict.member_of_metatypes }}
+                                {% endautoescape %}
+		      <br/>
+		   {% endif %}
+		   {% if ver_new_nbh_dict.contains_subtypes or ver_old_nbh_dict.contains_subtypes %}
+		      <b>Contain subtypes:<nbsp></b>  {% autoescape off %}
+		                  {{ compare_dict.contains_subtypes }}
+                                {% endautoescape %}
+		      <br/>
+		   {% endif %}
+                                
+		   {% if ver_old_nbh_dict.contains_members or ver_new_nbh_dict.contains_members  %}
+		   <b>Contains Members:<nbsp></b>{% autoescape off %}
+		                  {{ compare_dict.contains_members }}
                                 {% endautoescape %} <br/>
+		    {% endif %}
+		    {% if ver_new_nbh_dict.priornodes or ver_old_nbh_dict.priornodes %}
+				  <b>Prior nodes:<nbsp></b> {% autoescape off %}
+		                  {{ compare_dict.priornodes }}
+                                {% endautoescape %}<br/>
+                           
+                              
+                     {% endif %}
+                     {% if ver_new_nbh_dict.posteriornodes or ver_old_nbh_dict.posteriornodes %}
+		     <b>Posterior nodes:<nbsp></b> {% autoescape off %}
+		                                         {{ compare_dict.posteriornodes }}
+                                            {% endautoescape %}<br/>
+                           
+                              
+                      {% endif %}
+                           
+                      {% if ver_new_nbh_dict.relations or ver_old_nbh_dict.relations %}
+                        {% for relkey,relvalue in compare_dict.relations.items %}
+                             <b>{{relkey}}:<nbsp></b>             
+					    {% autoescape off %}
+					    
+					       
+		                               {{ relvalue }}
+					      
+                                       
+					    {% endautoescape %}
+                                            <br/>  
+		       {% endfor %} 
+	               {% endif %}
+                           
+                       {% if ver_new_nbh_dict.attributes or ver_old_nbh_dict.attributes %}
+                        <b>Attributes:<nbsp></b> {% autoescape off %}
+		                                         {{ compare_dict.attributes }}
+                                            {% endautoescape %}<br/>   
+	               {% endif %}
 		   
-		    
-		  {% if nt1.get_rendered_nbh.authors %}<b>Authors: <nbsp> </b>
-		  {% endif %}
-		{% for author in nt1.authors.all %}
-      	<span class="vcard author">
-        <a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
-          title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
-      	</span>{% if not forloop.last %}, {% endif %}
-      	{% endfor %} <br/>
+	
+	           {% if ver_new_nbh_dict.leftroles or ver_old_nbh_dict.leftroles %}
+                  <b>Left roles:<nbsp> </b> {% autoescape off %}
+		                  {{ compare_dict.leftroles }}
+                                {% endautoescape %}
+                                       <br/>
+	          {% endif %}
+	          {% if ver_new_nbh_dict.rightroles or ver_old_nbh_dict.rightroles %}
+                  <b>Right roles:<nbsp> </b> {% autoescape off %}
+		                  {{ compare_dict.rightroles }}
+                                {% endautoescape %}
+                                       <br/>
+	          {% endif %}
+                   {% if ver_new_nbh_dict.ats or ver_old_nbh_dict.ats %}
+                                             
+                                
+				   <b>Subjecttype of:<nbsp> </b> {% autoescape off %}
+		                  {{ compare_dict.ats }}
+                                {% endautoescape %}<br>
+		    {% endif %}
+                    {% if ver_new_nbh_dict.content or ver_old_nbh_dict.content %}
+                     <b> Content:<nbsp></b>  {% autoescape off %}
+		         {{ compare_dict.content }}
+                       {% endautoescape %} <br/>
+                    {% endif %}                                     
  {% endwith %}
  {% endblock %} 
  {% endblock %}
-
-					    </td>
-					
-<!-- <th><b><i><br><u>Difference between Selected Versions</u></b></i><br><br> -->
-<!-- {% block content6 %}{% for each in diffs %} -->
-<!--                                 {% autoescape off %} -->
-<!-- 		                  {{ each }}<br> -->
-<!--                                 {% endautoescape %}{% endfor %} {% endblock %}  -->
-<!-- </th> -->
-
-					</tr>
-<tr><td><input type="button" value="Merge"></input><input type="button" value="RollBack"></input></td> 
-<td><input type="button" value="Merge"></input><input type="button" value="RollBack"></input></td> </tr>
-<!-- <tr><th><b><i>Difference between Selected Versions<b><i><th><tr> -->
-<!-- <tr><td><b>{% block content5 %}{% for each in diffs %} -->
-<!--                                 {% autoescape off %} -->
-<!-- 		                  {{ each }}<br> -->
-<!--                                 {% endautoescape %}{% endfor %} {% endblock %} </b> </td></tr> -->
-<!-- 			       </table>	 -->
-					
-			
-		    
-
-
-	</body>
+<br>
+</td></tr>
+<tr><td>
+<form method="get" action="/nodetypes/display/merge/{{ ssid1 }}/{{ ssid2 }}">
+<input type="submit" value="Merge {{ nt.id }}.{{ version_no1 }} with {{ nt.id }}.{{ version_no2 }}" id="merge1" name="left" ></input></td>
+<td><input type="submit" value="Merge {{ nt.id }}.{{ version_no2 }} with {{ nt.id }}.{{ version_no1 }}" id="merge2" name="right"></input></td></form>
+</tr>
+<tr><td>
+<form method="get" action="/nodetypes/display/revert" >
+<input type="submit" value="Revert" name="{{ ssid1 }}"></input></td>
+<td><input type="submit" value="Revert" name="{{ ssid2 }}"></input></td>
+</form></tr>
+</table>						
+</body>
 </html>
 
 

@@ -98,7 +98,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Django Blog Gstudio'
+project = u'GNOWSYS Studio'
 copyright = u'%s, %s' % (date.today().year, gstudio.__author__)
 
 # The version info for the project you're documenting, acts as replacement for
@@ -271,6 +271,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-gstudio', u'django-gstudio Documentation',
+    ('index', 'gnowsys-studio', u'gnowsys-studio Documentation',
      [u'gnowgi'], 1)
 ]

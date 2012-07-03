@@ -6,6 +6,18 @@
         {{ object.title }}
       </a><a href="{{ object.ref.get_edit_url }}" target="_blank" >[edit]</a>  
     </h2>
+		
+     
+           <table border="1" cellspacing="0">
+	
+        {% for sid in object.ref.get_ssid  %}
+	   
+	      
+	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ object.title }} {{ object.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
+	 
+        {% endfor %}
+	   </table>
+	
     <p class="gbobject-info">
       {% if object.authors.count %}
       {% trans "Written by" %}
@@ -31,6 +43,7 @@
 
 <p>
              <b>Name: </b> {{ object.title }} <br/>
+	
 
                {% if object.get_rendered_nbh.plural %}
                                 <b> Plural Name :<nbsp></b>
@@ -50,6 +63,34 @@
                                         <a href="{{mvalue}}">{{mkey}}</a>;
                                     {% endfor %}<br/>
                            {% endif %}
+			{% if object.content %}
+                            <b>
+					Content:<nbsp>
+				
+				          <input type="button" id="editdata" value="Edit Content"/><ndsp><nbsp> 
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		                          
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					
+					  
+					</b>
+				   	{{object_content}}<br/>
+
+					{% else %}
+						<b>
+					Content:<nbsp> <input type="button"id="editdata"value="Edit Content"/><ndsp><nbsp>
+					  
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					
+					  </b>
+				   	{{object_content}}<br/>
+					
+                          {% endif %}
+		
 
               {% if object.get_rendered_nbh.relations %}
                          
@@ -90,7 +131,7 @@
     </div>
     {% endif %}
     <div class="gbobject-content">
-      {{ object_content }}
+     <!-- {{ object_content }}-->
     </div>
   </div>
 

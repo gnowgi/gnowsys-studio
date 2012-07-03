@@ -54,10 +54,10 @@ To define binary relations (object properties) between classes and objects.  e.g
 
 * Attribute Specification
 
-    To specify an attribute by a subject to say for example:
-    population of India, color of a flower etc.  These do not yeild a
-    proposition but an expression, which can be used as a subject in
-    another sentence.
+  To specify an attribute by a subject to say for example: population
+  of India, color of a flower etc.  These do not yeild a proposition
+  but an expression, which can be used as a subject in another
+  sentence.
 
 * Expression
   
@@ -136,7 +136,7 @@ django-blog-zinnia, which taught us best software development
 practices as well! After reviewing each feature for the purpose of
 semantic blogging, we will retain or extend the following features.
 
-
+The features listed here are not thourougly tested.  There is a likelyhood of misbehavior. 
 
 * Comments
 * Sitemaps
@@ -147,7 +147,7 @@ semantic blogging, we will retain or extend the following features.
 * Tags 
 * Advanced search engine
 * Prepublication and expiration
-* Edition in MarkDown, Textile or reStructuredText
+* Editing in MarkDown, Textile or reStructuredText
 * Widgets (Popular entries, Similar entries, ...)
 * Spam protection with Akismet or TypePad
 * Admin dashboard

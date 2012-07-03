@@ -8,96 +8,181 @@ from django.forms import ModelForm
 from gstudio.models import *
 from objectapp.models import *
 
-
 def context_member(request,reltit , memtit):
+
+    member = []
+    subtype = []
+    subtypemember = []
+    finaldict = {}
+    nt = []
+    parenttype = []
+
+#-------------------------------------------------------------
+    if Objecttype.objects.filter(title = str(memtit)):
+        ot = Objecttype.objects.get(title = str(memtit))
+        absolute_url_node = ot.get_absolute_url()
+    elif Gbobject.objects.filter(title = str(memtit)):
+        ot = Gbobject.objects.get(title = str(memtit))
+        absolute_url_node = ot.get_absolute_url()
+#--------------------------------------------------------------
 
     if Relationtype.objects.filter(title = str(reltit)):
         r =Relationtype.objects.get(title = str(reltit))
+        role = r.left_subjecttype.ref        
+        roletype = str(r.left_applicable_nodetypes)
+        print "Original is left role of relation"
+        newrole = r.right_subjecttype.ref
+        newroletype = str(r.right_applicable_nodetypes)
+        print 'original ' ,str(role)
+        print 'newrole (i.e right)', str(newrole)
+
     else:
         r = Relationtype.objects.get(inverse = str(reltit))
+        role = r.right_subjecttype.ref
+        roletype = str(r.right_applicable_nodetypes)
+        print "Original is right role of relation"
+        newrole = r.left_subjecttype.ref
+        newroletype = str(r.left_applicable_nodetypes)
+        print 'original ' ,str(role)
+        print 'newrole (i.e left)', str(newrole)
 
-    gbdict = {}
-    otmem=[]
-    childpt = []
-    childmem = []
-    finaldict={}
-    memdict = {} #otmem + childmem
-	
-    if Objecttype.objects.filter(title = str(memtit)):
-        flag = 1
-        name = Objecttype.objects.get(title = str(memtit))
-	#get members of name
-        for i in name.get_members:
-            otmem.append(i)
 
-	#get children of name
-        for i in name.children.all():
-            childpt.append(Objecttype.objects.get(title = NID.objects.get(title = i.title)))
-	#get child's members
-        for i in childpt:
-            childmem = i.get_members
-        for i in otmem:
-            memdict.update({i.id:str(i.title)})
-        for i in childmem:	
-            memdict.update({i.id:str(i.title)})
+#---------------------------------------------------------------------
 
-    elif Gbobject.objects.filter(title = str(memtit)):
-        flag = 0	
-        nt = []
-        name = Gbobject.objects.get(title = str(memtit))
-        nt = name.objecttypes.all() #nodetype
-        pt = []
+    if newrole.reftype == 'Objecttype' and newroletype == 'OT':
+        print "Objecttype and OT"
+        for i in newrole.get_members:
+            member.append(i)
+
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
+
+        # for i in newrole.get_children():
+        #     subtype.append(i.ref)
+        for i in newrole.get_descendants():
+            subtype.append(i.ref)
+
+        for i in subtype:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in subtype:
+            subtypemember.append(i.get_members)
+            
+        subtypemember = [num for elem in subtypemember for num in elem] 
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+
+        finaldict.update({newrole.id:str(newrole.title)})
+
+    elif newrole.reftype == 'Gbobject' and newroletype == 'OB':
+        print "Gbobject and OB"
+        nt = newrole.objecttypes.all()
+
         for i in nt:
-            pt.append(Objecttype.objects.get(title = NID.objects.get(title = i.title)))
-        for i in pt:
-            otmem.append(i.get_members)       
+            parenttype.append(i.ref)
+        
+        for i in parenttype:
+            member.append(i.get_members)
+              
+        member = [num for elem in member for num in elem] 
+        subtypent = []
 
-        otmem = [num for elem in otmem for num in elem]
-        gbdict.update({name.id :str(name.title)})        
+        # for i in parenttype:
+        #     subtypent.append(i.get_children())
+        # subtypent = [num for elem in subtypent for num in elem]
 
-#-----------------------------------------------------------------------
-    
-    memid = name.id
-    if r.left_subjecttype_id == memid:	
-        nodetype = str(r.right_applicable_nodetypes)
-        print"equal to left"
-    else:
-        print"equal to right"
-        nodetype = str(r.left_applicable_nodetypes)
+        # for i in subtypent:
+        #     subtype.append(i.ref)
+        # subtype = [num for elem in subtype for num in elem]
 
-#------------------------------------------------------------------------
+        for i in parenttype:
+            subtypent.append(i.get_descendants())
 
-    if nodetype=="OB" and flag==0:# gb itself
-        finaldict=gbdict
-        for i in otmem:
-            finaldict.update({i.id:str(i.title)})
-        print "nodetype OB and Flag 0"
+        for i in subtypent:
+            subtype.append(i.ref)
 
-    elif nodetype=="OT" and flag==1:#name,name ka child ,member of both
-        print "nodetype OT and Flag 1"
-        finaldict.update({name.id:str(name.title)})#ot itself 
-        for i in childpt:#otchild
-            finaldict.update({i.id:str(i.title)})
-        for i in range(len(memdict)):#member of both 
-            finaldict.update({memdict.keys()[i]:memdict.values()[i]})
+        for i in subtype:
+            subtypemember.append(i.get_members)
+        subtypemember = [num for elem in subtypemember for num in elem]
+              
 
-    elif nodetype=="OT" and flag==0: #name,name ka ot ,ot ka mem
-        print "nodetype OT and Flag 0"
-        finaldict.update({name.id:str(name.title)})
-        for i in name.objecttypes.all():
-            finaldict.update({i.id : str(i.title)})            
-        for i in otmem:
+        for i in member:
             finaldict.update({i.id:str(i.title)})
 
-    elif nodetype=="OB" and flag==1: #child of both
-        print "nodetype OB and Flag 1"
-        finaldict=memdict
-	
-    absolute_url_node = name.get_absolute_url()
-    print finaldict	
-    
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+
+    elif newrole.reftype == 'Objecttype' and newroletype == 'OB':        
+        print "Objecttype and OB"
+        for i in newrole.get_members:
+            member.append(i)
+
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
+
+        # for i in newrole.get_children():
+        #     subtype.append(i.ref)
+
+        for i in newrole.get_descendants():
+            subtype.append(i.ref)
+        for i in subtype:
+            subtypemember.append(i.get_members)
+                     
+        subtypemember = [num for elem in subtypemember for num in elem] 
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+            
+        print 'member',str(member)
+        print 'subtype', str(subtype)
+        print 'subtypemember', str(subtypemember)
+    elif newrole.reftype == 'Gbobject' and newroletype == 'OT':
+        print "Gbobject and OT"
+        nt = newrole.objecttypes.all()
+        for i in nt:
+            parenttype.append(i.ref)
+        
+        for i in parenttype:
+            member.append(i.get_members)
+              
+        member = [num for elem in member for num in elem] 
+        subtypent = []
+
+        # for i in parenttype:
+        #     subtypent.append(i.get_children())
+        # subtypent = [num for elem in subtypent for num in elem]
+
+        # for i in subtypent:
+        #     subtype.append(i.ref)
+        # subtype = [num for elem in subtype for num in elem]
+        for i in parenttype:
+            subtypent.append(i.get_descendants())
+
+        for i in subtypent:
+            subtype.append(i.ref)
+        
+        for i in subtype:
+            subtypemember.append(i.get_members)
+        subtypemember = [num for elem in subtypemember for num in elem]
+              
+
+        for i in subtype:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in parenttype:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in member:
+            finaldict.update({i.id:str(i.title)})
+
+        for i in subtypemember:
+            finaldict.update({i.id:str(i.title)})
+
+
+    print 'absolute_url_node', str(absolute_url_node)
     template="objectapp/selectRT.html"
-    context = RequestContext(request,{'finaldict':finaldict,'gb':name,'reltit':reltit, 'absolute_url_node': absolute_url_node})
+    context = RequestContext(request,{'finaldict':finaldict,'gb':memtit,'reltit':reltit, 'absolute_url_node': absolute_url_node})
     return render_to_response(template,context)
 
 
@@ -107,37 +192,74 @@ def context_save(request,leftmem, reltype, rightmem):
         reltype = str(reltype)
         rightmem = str(rightmem)
 
+
+
+        print 'leftmem :', leftmem, 'rightmem :', rightmem
+        pt = []
+        nt = []
+
         left = NID.objects.get(title = leftmem)       
+        print 'leftid', str(left.id)
         right = NID.objects.get(title = rightmem)
-        
+        print 'rightid', str(right.id)        
+
         if Relationtype.objects.filter(title=reltype):
             relation = Relationtype.objects.get(title = reltype)
         else:
             relation = Relationtype.objects.get(inverse = reltype)
 
         rightrole = relation.right_subjecttype_id
+        r = relation.right_subjecttype.ref
+        print 'rightrole', str(r)
         leftrole = relation.left_subjecttype_id
+        l=relation.left_subjecttype.ref
+        print 'leftrole', str(l)
 #-----------------------------------------------------------------------
         flag = 1
         if Objecttype.objects.filter(title = leftmem):
-            if left.id == leftrole :
-                flag = 0
-                print "Objecttype flag = 0 "
-            else:
-                print "Objecttype flag = 1 "
+            
+            obj = Objecttype.objects.get(title = leftmem)
+            print 'OT', str(obj)
+
+            while obj.parent:
+                pt.append((obj.parent).ref)
+                obj=obj.parent
+            for i in range(len(pt)):
+                if pt[i].id == leftrole :
+                    flag = 0
+                    print "Objecttype flag = 0 "
+                    break
+                else:
+                    print "Objecttype flag = 1 "
+            
         elif Gbobject.objects.filter(title = leftmem):
             gb = Gbobject.objects.get(title = leftmem)
-            pt = gb.objecttypes.all()
+            print 'Ob', str(gb)
+            nt = gb.objecttypes.all()            
+            print 'nt ', str(nt)
+
+
+            for i in range(len(nt)):
+                pt.append(nt[i].ref)
+                obj = nt[i].ref
+                while  obj.parent:
+                    pt.append(obj.parent.ref)
+                    obj = obj.parent
+
+            print 'pt ', str(pt)
             for i in range(len(pt)):
                 if left.id == leftrole or pt[i].id == leftrole:
                     flag = 0
                     print "Object flag = 0"
+                    break
                 else:
                     print "Object flag = 1"
-
+        print 'pt:',str(pt)
 #-----------------------------------------------------------------------------------
 
+        
         if flag == 0:
+            print 'left_subject_id', l
             savedict = {'title':relation, 'slug':relation, 'left_subject_id':left.id, 'right_subject_id':right.id, 'relationtype_id':relation.id, 'left_subject_scope':' ', 'right_subject_scope':' ', 'relationtype_scope':' ' }
         else:
             savedict = {'title':relation, 'slug':relation, 'left_subject_id':right.id, 'right_subject_id':left.id, 'relationtype_id':relation.id, 'left_subject_scope':' ', 'right_subject_scope':' ', 'relationtype_scope':' '}
@@ -152,6 +274,6 @@ def context_save(request,leftmem, reltype, rightmem):
         #return savedict
     
     except IntegrityError: #Exception raised when the relational integrity of the database is affected, e.g. a foreign key check fails, duplicate key, etc.
-        raise Http404()
+        return HttpResponseRedirect("/nodetypes/")
         #pass
 

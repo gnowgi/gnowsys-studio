@@ -4,6 +4,11 @@ Import / Export
 
 .. highlightlang:: console
 
+As the codebase of gnowsys-studio is based on a blog application, we
+inherited some import/export features.  The following features have
+not been tested thoroughly.  Each published node is considered in this
+documentation as a blog.
+
 If you already have a blog, Gstudio has the ability to import your posts
 from other blogging platforms. Useful for rapid migration.  Since
 Gstudio is a semantic blogging application, all the data that goes to

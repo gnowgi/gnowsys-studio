@@ -38,4 +38,7 @@ urlpatterns = patterns(
     url(r'^', include('gstudio.urls.quick_nodetype')),
     url(r'^', include('gstudio.urls.capabilities')),
     url(r'^', include('gstudio.urls.nodetypes')),
+url(r'^', include('gstudio.urls.chat')),
+
+
     )

@@ -17,7 +17,7 @@
 			.mainnode{
 
  				font: 15px sans-serif;
-			           fill:"black";
+			        fill:black;
 				border-width: 1px;
 				font-weight:bold;
 				border-color: gray;
@@ -106,6 +106,38 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}objectapp/js/setdate.js"></script>
+	 <!-- Gnowmacs css, js -->
+
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/test/dl/js/thelib.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/jquery-1.7.1.min.js"></script> 
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/jquery-ui-1.8.18.custom.min.js"></script>
+	
+	    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}objectapp/js/Gnowmacs/test/dl/css/default.css" />
+	    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}objectapp/js/Gnowmacs/src/css/ymacs.css" />
+	
+
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/jquery.ui.gnowmacs.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-keyboard.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-regexp.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-frame.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-textprop.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-exception.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-interactive.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-buffer.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-marker.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-commands.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-commands-utils.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-keymap.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-keymap-isearch.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-minibuffer.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-tokenizer.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-mode-paren-match.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/gnowmacs.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/savedata.js"></script>
+	  
+	    <script type="text/javascript" src="{{STATIC_URL}}objectapp/js/Gnowmacs/src/js/ymacs-keymap-emacs.js"></script>
+
 
 
 
@@ -161,7 +193,7 @@
       {% include "gstudio/_header.html" %}
 
 
-	<div id="breadcrumbs" class="span-24 last">
+	<div id="breadcrumbs" class="">
 	  / {% block breadcrumbs %}{% endblock %}
 	</div>
      
@@ -172,6 +204,9 @@
 	  {% endblock %}
 	</div>
 	<div id="graphcss">
+	<div id="gnoweditor">
+	</div>
+
 
 	<div id="chart">
    </div>
@@ -214,7 +249,10 @@ function init(a,b)
 }
 
 $(function fgraph() {
-		  
+neighbour_node= new Array();
+clicked_node=new Array();
+prev_node=new Array();
+neighbour_node= neighbour_node.concat({{object.id}});		  
 
 $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) { 
 										metadata=json1.node_metadata;
@@ -350,26 +388,124 @@ var q = 110 + "%";
 
 
 
-$(window).bind('keydown',function(event){
-	if(17==event.keyCode){
-         new_g.on("click",function(d){ 
-                         if(d._id>0 && d.expanded=="false")
-			{ 
-			d3.select("#amazingViz").remove();  
-			d.expanded="true";
-     			$.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
-    			new_metadata=json2.node_metadata;
-  			new_relations=json2.relations;
-			metadata=_.union(new_metadata,metadata);
-			relations=_.union(new_relations,relations);			
-			init(metadata,relations);
-			load(d._id)
-			})
-			
+$(window).bind('keydown',function(event) {
+		if(event.keyCode==17){
+		 
+		 new_g.on("click",function(d){                  
+                               
+                               
+		                 
+				
+                if(d._id>0 && d.expanded=="true")
+				{ 
+				
+                                $.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
+					new_metadata=json2.node_metadata;
+
+ 				});
+                         	
+                               _.filter(new_metadata, function(e){if(e._id>0) 
+				{
+				  clicked_node=clicked_node.concat(e._id) ;   
+                                 }
+                                });
+				
+				
+ 				index = _.indexOf(neighbour_node , d._id);
+				prev_node=neighbour_node.slice(0,index);
+				
+				 neighbour_node = _.difference(neighbour_node,clicked_node) ;
+				
+                                neighbour_node= neighbour_node.concat(prev_node);
+				neighbour_node = _.uniq(neighbour_node);
+				metadata=[]
+				relations=[]
+			        metadata1=[]
+				relations1=[]
+					for(i=0;i<(neighbour_node.length);i++)
+					{
+                 
+					d3.select("#amazingViz").remove();  
+                                         g=neighbour_node[i]			
+                                        
+	    				
+					
+					$.ajax({
+					async:false,
+					url:'/nodetypes/graphs/graph_json/' + g , 
+					datatype:'json',
+					success:function (json2) {
+	    			new_metadata=json2.node_metadata;
+	  			new_relations=json2.relations;	
+				metadata=_.union(new_metadata,metadata);
+						
+				relations=_.union(new_relations,relations);
+				relations= check_Relation(metadata,relations);
+				 
+				}});						     			
+							
 			}
-                         });
-}
+				_.each(metadata, function(m){
+				
+				  for(i=0;i<neighbour_node.length;i++)
+				  	{
+					if(m._id==neighbour_node[i])
+						{m.expanded="true";}
+					else 
+						{m.expanded="false";}
+					}
+					   
+                                
+                                });
+				
+         			init(metadata,relations);
+				load({{object.id}}) ;                        
+
+ 				
+	
+                            }
+
+        
+
+
+		else if(d._id>0)
+				{
+                                
+				neighbour_node =neighbour_node.concat(d._id);
+				
+				d3.select("#amazingViz").remove();  
+				
+				$.getJSON('/nodetypes/graphs/graph_json/' + d._id , function (json2) {
+	    			new_metadata=json2.node_metadata;
+	  			new_relations=json2.relations;	
+						
+				metadata=_.union(new_metadata,metadata);
+				relations=_.union(new_relations,relations);	
+                                relations= check_Relation(metadata,relations);
+
+				_.each(metadata, function(m){
+				
+				  for(i=0;i<neighbour_node.length;i++)
+				  	{
+					if(m._id==neighbour_node[i])
+						m.expanded="true";
+					}
+					   
+                                
+                                });
+				
+				init(metadata,relations);
+				load({{object.id}});
+
+
+				});
+					
+				}
 });
+}
+
+});         
+
 
 	new_g.on("click", function(d) {
 
@@ -424,12 +560,14 @@ $(window).bind('keydown',function(event){
 				    .attr("cx", bbox.x+25)
 				    .attr("cy", bbox.y+13)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 55)})
-				    .attr("ry",14)
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 40)})
+				    .attr("ry",13)
+
 				    .style("fill-opacity", ".2")
 				    .style("stroke", "#666")
 				    .style("stroke-width", "1.5px")
-				    .style("fill", function color(d) {var e=(d._id).charAt(0); if (d.expanded=="true") return "red";  else return "none"});
+				    .style("fill", function(d) {if ((d.expanded=="true" && d.refType=="Gbobject") ||(d._id=={{object.id}}) ) return "red"; else if(d.expanded=="true" && d.refType=="Objecttype") return "blue"; else return "none"})
+
 
 
 
@@ -467,6 +605,35 @@ $(window).bind('keydown',function(event){
 
 }
 
+function check_Relation(metadata,relations)
+{
+			_.each(metadata,function(d){
+						    if (d.refType=="Relation")
+							{ 
+							  a=d.inverse;
+							  if (d.flag==1)
+							  {
+							  	relations= _.reject(relations,function(e)
+										     {
+											return e.type==a
+										     });
+							  }
+						          else if (d.flag==0)
+							  {
+							  	relations= _.reject(relations,function(e)
+										     {
+											return e.type==d.screen_name
+										     });
+							  }
+							}
+							 
+						 }); 
+   return relations;
+
+
+}
+
+
 
 });
 //fgraph({{object.id}});
@@ -474,11 +641,8 @@ $(window).bind('keydown',function(event){
 </script>
          {% block graph %} {% endblock %}
 	</div>
-	<div id="sidebar">
-	  {% block sidebar %}
-	  {% endblock %}
+
 	</div>
-	
       <div id="footer">
 	<p> 
 
@@ -491,7 +655,7 @@ $(window).bind('keydown',function(event){
 	    {{ GSTUDIO_VERSION }}</a>.
 	  </p>
       </div>
-    </div>
+    
   </body>
 </html>
 

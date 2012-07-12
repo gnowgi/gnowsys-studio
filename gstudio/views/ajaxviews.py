@@ -361,6 +361,7 @@ def AjaxCreateFile(request):
     myfile.readline()
     myfile = open('/tmp/file.org', 'a')
     myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+    myfile.write("\n#+TITLE:nil ")
     myfile = open('/tmp/file.org', 'r')
     
 #   os.remove("/tmp/file.org")
@@ -375,7 +376,7 @@ def AjaxCreateFile(request):
 def AjaxCreateHtml(request):
     stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
     output = stdout.read()
-    return HttpResponse(output)
+    return HttpResponse("sucess")
 
 def AjaxAddContent(request):
     iden = request.GET["id"]

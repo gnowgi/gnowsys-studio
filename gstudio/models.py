@@ -755,7 +755,7 @@ class Nodetype(Node):
                       (PUBLISHED, _('published')))
 
     content = models.TextField(_('content'), null=True, blank=True)
-   # content_org = models.TextField(_('content'), null=True, blank=True)
+    content_org = models.TextField(_('content_org'), null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True,
                                verbose_name=_('is a kind of'),
                                related_name='children')

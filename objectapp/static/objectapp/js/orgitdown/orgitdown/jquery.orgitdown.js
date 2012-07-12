@@ -438,7 +438,34 @@
 				} 
 				return selection;
 			}
-
+	                function save() {
+			         var org_data = $("#gnoweditor").val();
+			         var id =  document.getElementById("objectid").value
+			         document.getElementById("orgcontent").value = org_data;
+			         var encode_data = encodeURIComponent(org_data);
+                                                       
+		         $.ajax({
+			       url: '/nodetypes/ajax/contentorgadd/?id=' + id + '&contentorg=' + encode_data,
+			       success: function(data) {
+			         $.ajax({
+				    url: '/nodetypes/ajax/ajaxcreatefile/?id=' +id+ '&content_org=' +encode_data,
+				    success: function(data) {
+				    	$.ajax({
+				    		url: '/nodetypes/ajax/ajaxcreatehtml/',
+				    		success: function(data) {
+				    		    $.ajax({
+				    			    url: '/nodetypes/ajax/contentadd/?id=' +id,
+                                                            success: function(data) {
+                                                              alert("Data Saved");
+                                                              location.reload();}
+				    			});
+				    		}      
+				     	    });
+				     }
+				}); 
+			    
+                    }
+                 });}
 			// open preview window
 			function preview() {
 				if (typeof options.previewHandler === 'function') {

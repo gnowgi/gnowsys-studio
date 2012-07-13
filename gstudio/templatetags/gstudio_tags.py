@@ -23,7 +23,7 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.db import connection
-from django.template import Node
+from django.template import Node as nd
 from django.template import Library
 from django.template import TemplateSyntaxError
 from django.contrib.comments.models import CommentFlag
@@ -45,6 +45,8 @@ from gstudio.comparison import VectorBuilder
 from gstudio.comparison import pearson_score
 from gstudio.templatetags.zcalendar import GstudioCalendar
 from gstudio.templatetags.zbreadcrumbs import retrieve_breadcrumbs
+
+from gstudio.CNL import *
 
 register = Library()
 
@@ -217,8 +219,16 @@ def get_calendar_nodetypes(context, year=None, month=None,
 def get_recent_comments(number=5, template='gstudio/tags/recent_comments.html'):
     """Return the most recent comments"""
     # Using map(smart_unicode... fix bug related to issue #8554
-  
-    comments = get_comment_model().objects.filter(is_public=True).order_by('-submit_date')[:number]
+    #Modified comments to include CNL
+    nodetype_published_pks = map(smart_unicode,
+                              Nodetype.published.values_list('id', flat=True))
+    content_type = ContentType.objects.get_for_model(Nodetype)
+
+    comments = get_comment_model().objects.filter(
+        Q(flags=None) | Q(flags__flag=CommentFlag.MODERATOR_APPROVAL),
+        content_type=content_type, object_pk__in=nodetype_published_pks,
+        is_public=True).order_by('-submit_date')[:number]
+ 
 
     return {'template': template,
             'comments': comments}
@@ -330,15 +340,19 @@ def get_type(name):
     return get_node(name)
 
 
-class TagsNode(Node):
+class TagsNode(nd):
     def __init__(self, context_var):
         self.context_var = context_var
-
     def render(self, context):
         context[self.context_var] = tags_published()
         return ''
-
-
+#define get_CNL function
+@register.assignment_tag
+def get_CNL(no, takes_context = True):
+       
+    l = get_CNL_list(no)
+    return l
+ 
 @register.tag
 def get_tags(parser, token):
     """{% get_tags as var %}"""

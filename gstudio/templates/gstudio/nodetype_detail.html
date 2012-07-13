@@ -60,150 +60,156 @@
 <!-- Neighbourhood listing starts -->
 <!--Name,Plural Name , Alternate Name ,Type of -->
                            <b>Name:<nbsp></b> {{ object.title }} <br/>
+<!-- Include CNL -->
+			   <b>CNL:<nbsp></b><br>
+			   {% get_CNL object as cnlobj %}
+			   {% for obj in cnlobj %}
+			        {{obj}}<br>
+			   {% endfor %}
                            
-			   {% if object.get_rendered_nbh.plural %}
-                                <b> Plural Name:<nbsp></b>
-                                         {{object.get_rendered_nbh.plural}} <br/>
-                           {% endif %}
-                            {% if object.get_rendered_nbh.altnames %}
-                               <b> Alternate names:<nbsp></b>
-                                         {{object.get_rendered_nbh.altnames}} <br/>
-		           {% endif %}
-	                   {% if object.get_rendered_nbh.type_of %}
-                                <b> Type of:<nbsp></b>
-                                {% for typekey,typevalue in object.get_rendered_nbh.type_of.items %}
-                                       <a href="{{typevalue}}" title = "{{typekey}}">{{typekey}}</a>;
-                                {% endfor %}<br/>
-                           {% endif %}
+<!-- 			   {% if object.get_rendered_nbh.plural %} -->
+<!--                                 <b> Plural Name:<nbsp></b> -->
+<!--                                          {{object.get_rendered_nbh.plural}} <br/> -->
+<!--                            {% endif %} -->
+<!--                             {% if object.get_rendered_nbh.altnames %} -->
+<!--                                <b> Alternate names:<nbsp></b> -->
+<!--                                          {{object.get_rendered_nbh.altnames}} <br/> -->
+<!-- 		           {% endif %} -->
+<!-- 	                   {% if object.get_rendered_nbh.type_of %} -->
+<!--                                 <b> Type of:<nbsp></b> -->
+<!--                                 {% for typekey,typevalue in object.get_rendered_nbh.type_of.items %} -->
+<!--                                        <a href="{{typevalue}}" title = "{{typekey}}">{{typekey}}</a>; -->
+<!--                                 {% endfor %}<br/> -->
+<!--                            {% endif %} -->
 
-<!-- Member of metatypes -->
-			    {% if object.get_rendered_nbh.member_of_metatypes %}
+<!-- <\!-- Member of metatypes -\-> -->
+<!-- 			    {% if object.get_rendered_nbh.member_of_metatypes %} -->
                            
                           
-                                <b> Member of Metatypes:<nbsp></b>
-                                    {% for mkey,mvalue in object.get_rendered_nbh.member_of_metatypes.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
+<!--                                 <b> Member of Metatypes:<nbsp></b> -->
+<!--                                     {% for mkey,mvalue in object.get_rendered_nbh.member_of_metatypes.items %} -->
+<!--                                         <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>; -->
+<!--                                     {% endfor %}<br/> -->
+<!--                            {% endif %} -->
                           
 			   
-<!-- Subtypes -->			        
-                           {% if object.get_rendered_nbh.contains_subtypes %}
-                                <b> Contains SubTypes:<nbsp></b>
-                                {% for stkey,stvalue in object.get_rendered_nbh.contains_subtypes.items %}
-                                        <a href="{{stvalue}}" title = "{{stkey}}">{{stkey}}</a>;
-                                {% endfor %}<br/>
-                           {% endif %}
+<!-- <\!-- Subtypes -\->			         -->
+<!--                            {% if object.get_rendered_nbh.contains_subtypes %} -->
+<!--                                 <b> Contains SubTypes:<nbsp></b> -->
+<!--                                 {% for stkey,stvalue in object.get_rendered_nbh.contains_subtypes.items %} -->
+<!--                                         <a href="{{stvalue}}" title = "{{stkey}}">{{stkey}}</a>; -->
+<!--                                 {% endfor %}<br/> -->
+<!--                            {% endif %} -->
                           
-<!-- Members -->                          
-                           {% if object.get_rendered_nbh.contains_members %}
+<!-- <\!-- Members -\->                           -->
+<!--                            {% if object.get_rendered_nbh.contains_members %} -->
                          
                           
-                                <b>Contains Members:<nbsp></b>
-                                    {% for mkey,mvalue in object.get_rendered_nbh.contains_members.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
+<!--                                 <b>Contains Members:<nbsp></b> -->
+<!--                                     {% for mkey,mvalue in object.get_rendered_nbh.contains_members.items %} -->
+<!--                                         <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>; -->
+<!--                                     {% endfor %}<br/> -->
+<!--                            {% endif %} -->
                          
-<!-- Authors -->                           
-                           {% if object.get_rendered_nbh.authors %}
+<!-- <\!-- Authors -\->                            -->
+<!--                            {% if object.get_rendered_nbh.authors %} -->
                          
                            
                                 
-				   <b>Authors: <nbsp> </b>
+<!-- 				   <b>Authors: <nbsp> </b> -->
                                 
 				       
-	                   {% endif %}
+<!-- 	                   {% endif %} -->
 			
-                              {% for author in object.authors.all %}
-      			<span class="vcard author">
-        		<a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author"
-           		title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a>
-      			</span>{% if not forloop.last %}, {% endif %}
-      				{% endfor %} <br/>
+<!--                               {% for author in object.authors.all %} -->
+<!--       			<span class="vcard author"> -->
+<!--         		<a href="{% url gstudio_author_detail author %}" class="fn nickname url" rel="author" -->
+<!--            		title="{% blocktrans with author as author %}Show {{ author }} nodetypes{% endblocktrans %}">{{ author }}</a> -->
+<!--       			</span>{% if not forloop.last %}, {% endif %} -->
+<!--       				{% endfor %} <br/> -->
                          
-<!-- Prior nodes -->                            
+<!-- <\!-- Prior nodes -\->                             -->
                             
-                            {% if object.get_rendered_nbh.priornodes %}
+<!--                             {% if object.get_rendered_nbh.priornodes %} -->
                          
                            
-                                <b>Prior nodes:<nbsp></b>
-                                    {% for mkey,mvalue in object.get_rendered_nbh.priornodes.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-<!-- Posterior nodes -->                           
-                           {% if object.get_rendered_nbh.posteriornodes %}
+<!--                                 <b>Prior nodes:<nbsp></b> -->
+<!--                                     {% for mkey,mvalue in object.get_rendered_nbh.priornodes.items %} -->
+<!--                                         <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>; -->
+<!--                                     {% endfor %}<br/> -->
+<!--                            {% endif %} -->
+<!-- <\!-- Posterior nodes -\->                            -->
+<!--                            {% if object.get_rendered_nbh.posteriornodes %} -->
                          
                            
-                                <b>Posterior nodes:<nbsp></b>
-                                    {% for mkey,mvalue in object.get_rendered_nbh.posteriornodes.items %}
-                                        <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-<!-- Relations -->                             
-                            {% if object.get_rendered_nbh.relations %}
+<!--                                 <b>Posterior nodes:<nbsp></b> -->
+<!--                                     {% for mkey,mvalue in object.get_rendered_nbh.posteriornodes.items %} -->
+<!--                                         <a href="{{mvalue}}" title = "{{mkey}}">{{mkey}}</a>; -->
+<!--                                     {% endfor %}<br/> -->
+<!--                            {% endif %} -->
+<!-- <\!-- Relations -\->                              -->
+<!--                             {% if object.get_rendered_nbh.relations %} -->
                          
                          
-                                 {% for relkey,relvalue in object.get_rendered_nbh.relations.items %}
-                                          <b>{{relkey}}:<nbsp></b>
-					{% for relk, relv in relvalue.items %}
-					    <a href="{{relv}}" title = "{{relk}}">{{relk}}</a>;	      
-                                        {% endfor %}<br/>
-				 {% endfor %}      
-	                   {% endif %}
-<!-- Attributes -->                           
-                           {% if object.get_rendered_nbh.attributes %}
+<!--                                  {% for relkey,relvalue in object.get_rendered_nbh.relations.items %} -->
+<!--                                           <b>{{relkey}}:<nbsp></b> -->
+<!-- 					{% for relk, relv in relvalue.items %} -->
+<!-- 					    <a href="{{relv}}" title = "{{relk}}">{{relk}}</a>;	       -->
+<!--                                         {% endfor %}<br/> -->
+<!-- 				 {% endfor %}       -->
+<!-- 	                   {% endif %} -->
+<!-- <\!-- Attributes -\->                            -->
+<!--                            {% if object.get_rendered_nbh.attributes %} -->
                            
-				    {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %}
-                                      {% if atvalue %}
-                                       <b>{{atkey}}:<nbsp> </b>
-                                        {% for atr in atvalue %}
+<!-- 				    {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %} -->
+<!--                                       {% if atvalue %} -->
+<!--                                        <b>{{atkey}}:<nbsp> </b> -->
+<!--                                         {% for atr in atvalue %} -->
 						
-                                            {% for urlkey,urlvalue in object.get_edit_url_for_ats.items %}
+<!--                                             {% for urlkey,urlvalue in object.get_edit_url_for_ats.items %} -->
                                                      
-                                                   {% ifequal atr urlvalue %}
-                                                         {{atr}}<a href="{{ urlkey}}" title = "edit">[edit]</a> ;
-                                                   {% endifequal %}
-       					     {% endfor %} 
-                                         {% endfor %} <br/>
-                                      {% endif %}
-				    {% endfor %}       
-	                   {% endif %}
-<!-- Left roles -->
-                            {% if object.get_rendered_nbh.leftroles %}
+<!--                                                    {% ifequal atr urlvalue %} -->
+<!--                                                          {{atr}}<a href="{{ urlkey}}" title = "edit">[edit]</a> ; -->
+<!--                                                    {% endifequal %} -->
+<!--        					     {% endfor %}  -->
+<!--                                          {% endfor %} <br/> -->
+<!--                                       {% endif %} -->
+<!-- 				    {% endfor %}        -->
+<!-- 	                   {% endif %} -->
+<!-- <\!-- Left roles -\-> -->
+<!--                             {% if object.get_rendered_nbh.leftroles %} -->
                          
                                                          
-				   <b>Left roles:<nbsp> </b>
+<!-- 				   <b>Left roles:<nbsp> </b> -->
                                 
-				    {% for lrkey,lrvalue in object.get_rendered_nbh.leftroles.items %}
-                                        <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;	      
-				    {% endfor %}       <br/>
-	                   {% endif %}
-<!-- Right roles -->                           
-                           {% if object.get_rendered_nbh.rightroles %}
+<!-- 				    {% for lrkey,lrvalue in object.get_rendered_nbh.leftroles.items %} -->
+<!--                                         <a href="{{lrvalue}}" title = "{{lrkey}}">{{lrkey}}</a>;	       -->
+<!-- 				    {% endfor %}       <br/> -->
+<!-- 	                   {% endif %} -->
+<!-- <\!-- Right roles -\->                            -->
+<!--                            {% if object.get_rendered_nbh.rightroles %} -->
                         
-			      <b>Right roles:<nbsp> </b>
+<!-- 			      <b>Right roles:<nbsp> </b> -->
                                 
-				    {% for rrkey,rrvalue in object.get_rendered_nbh.rightroles.items %}
-                                        <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;	      
-				    {% endfor %}       <br/>
-	                   {% endif %}
-<!-- Attributes -->                           
+<!-- 				    {% for rrkey,rrvalue in object.get_rendered_nbh.rightroles.items %} -->
+<!--                                         <a href="{{rrvalue}}" title = "{{rrkey}}">{{rrkey}}</a>;	       -->
+<!-- 				    {% endfor %}       <br/> -->
+<!-- 	                   {% endif %} -->
+<!-- <\!-- Attributes -\->                            -->
                           
-                           {% if object.get_rendered_nbh.ats %}
+<!--                            {% if object.get_rendered_nbh.ats %} -->
                                              
                                 
-				   <b>Subjecttype of:<nbsp> </b>
+<!-- 				   <b>Subjecttype of:<nbsp> </b> -->
                                 
-				    {% for atkey,atvalue in object.get_rendered_nbh.ats.items %}
-                                        <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;	      
-				    {% endfor %}       <br/>
-	                   {% endif %}
+<!-- 				    {% for atkey,atvalue in object.get_rendered_nbh.ats.items %} -->
+<!--                                         <a href="{{atvalue}}" title = "{{atkey}}">{{atkey}}</a>;	       -->
+<!-- 				    {% endfor %}       <br/> -->
+<!-- 	                   {% endif %} -->
 
 
 				
-<!-- Content -->                           
+<!-- <\!-- Content -\->                            -->
 			    {% if object.content %}
                             <b>
 					Content:<nbsp>

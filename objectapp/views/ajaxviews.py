@@ -44,6 +44,7 @@ def AjaxCreateFile(request):
     myfile.readline()
     myfile = open('/tmp/file.org', 'a')
     myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:t toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+    myfile.write("\n#+TITLE: ")
     myfile = open('/tmp/file.org', 'r')
     return HttpResponse("test sucess")
 

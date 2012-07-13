@@ -352,7 +352,6 @@ def AjaxAddContentOrg(request):
 
 def AjaxCreateFile(request):
     iden = request.GET["id"]
-    # newtitle = request.GET["title"]
     orgcontent = request.GET["content_org"]
     myfile = open('/tmp/file.org', 'w')
     myfile.write(orgcontent)
@@ -361,21 +360,14 @@ def AjaxCreateFile(request):
     myfile.readline()
     myfile = open('/tmp/file.org', 'a')
     myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+    myfile.write("\n#+TITLE: ")
     myfile = open('/tmp/file.org', 'r')
-    
-#   os.remove("/tmp/file.org")
     return HttpResponse("test sucess")
-
-# def AjaxSetOption(request):
-#     myfile = open('/tmp/file.org', 'a')
-#     myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:t toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
-#     myfile = open('/tmp/file.org', 'r')
-#     return HttpResponse("set option")
 
 def AjaxCreateHtml(request):
     stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
     output = stdout.read()
-    return HttpResponse(output)
+    return HttpResponse("sucess")
 
 def AjaxAddContent(request):
     iden = request.GET["id"]

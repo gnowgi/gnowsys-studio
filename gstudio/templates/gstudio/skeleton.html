@@ -1,4 +1,417 @@
+<<<<<<< HEAD
 
+=======
+{% load gstudio_tags i18n  %}
+{% get_tags as nodetype_tags %}
+{% load adminmedia  grp_tags %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<style type="text/css">
+			.link {
+				stroke: #ccc;
+			}
+			.nodetext {
+				#pointer-events: none;
+				font: 12px Serif;
+				font-style:italic;
+			}
+			.mainnode{
+
+ 				font: 15px sans-serif;
+			        fill:black;
+				border-width: 1px;
+				font-weight:bold;
+				border-color: gray;
+
+			}
+			.relnode {
+ 				font: 12px sans-serif;
+				font-weight:bold;
+			           fill:#000;
+			}
+			
+
+			.node {
+				border-width: 1px;
+				border-color: gray;
+			      	font: 12px sans-serif;
+					fill:#25587E;
+				font-weight:bold;
+			}
+			body {
+				background-color: white;
+			}
+			#chart {
+				height: 90%;
+				margin: 0 auto;
+				width: 90%;
+				display: block;
+			}
+			svg {
+				margin-left: 0%;
+				margin-right: 10%;
+				display: block;
+				position: absolute;
+			}
+.orgitdown .orgitdownButton1 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/save.jpeg);
+}
+.orgitdown .orgitdownButton2 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/bold.png);
+}
+.orgitdown .orgitdownButton3 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/italic.png);
+}
+.orgitdown .orgitdownButton4 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/stroke.png);
+}
+
+.orgitdown .orgitdownButton5 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/list-bullet.png); 
+}
+.orgitdown .orgitdownButton6 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/list-numeric.png);
+}
+
+.orgitdown .orgitdownButton7 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/picture.png); 
+}
+.orgitdown .orgitdownButton8 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/link.png);
+}
+
+.orgitdown .orgitdownButton9 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/clean.png);
+}
+.orgitdown .preview a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/preview.png);
+}
+
+.orgitdown * {
+	margin:0px; padding:0px;
+	outline:none;
+}
+.orgitdown a:link,
+.orgitdown a:visited {
+	color:#000;
+	text-decoration:none;
+}
+.orgitdown  {
+	width:700px;
+	margin:5px 0 5px 0;
+		
+}
+.orgitdownContainer  {
+	border:1px solid #3C769D;	
+	background:#FFF url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-container.png) repeat-x top left; 
+	padding:5px 5px 2px 5px;
+	font:11px Verdana, Arial, Helvetica, sans-serif;
+        margin-left:450px;
+        width:450px;
+        margin-top:30px;
+}
+.orgitdownEditor {
+	font:12px 'Courier New', Courier, monospace;
+	padding:5px 5px 5px 35px;
+	border:3px solid #3C769D;
+	width:643px;
+	height:320px;
+	background:#FFF url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-editor.png) no-repeat;
+	clear:both;
+	line-height:18px;
+	overflow:auto;
+}
+.orgitdownPreviewFrame	{
+	overflow:auto;
+	background-color:#FFFFFF;
+	border:1px solid #3C769D;
+	width:99.9%;
+	height:300px;
+	margin:5px 0;
+}
+.orgitdownFooter {
+	width:100%;
+	cursor:n-resize;
+}
+.orgitdownResizeHandle {
+	overflow:hidden;
+	width:22px; height:5px;
+	margin-left:auto;
+	margin-right:auto;
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/handle.png);
+	cursor:n-resize;
+}
+/***************************************************************************************/
+/* first row of buttons */
+.orgitdownHeader ul li	{
+	list-style:none;
+	float:left;
+	position:relative;
+}
+.orgitdownHeader ul li ul{
+	display:none;
+}
+.orgitdownHeader ul li:hover > ul{
+	display:block;
+}
+.orgitdownHeader ul .orgitdownDropMenu {
+	background:transparent url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/menu.png) no-repeat 115% 50%;
+	margin-right:5px;
+}
+.orgitdownHeader ul .orgitdownDropMenu li {
+	margin-right:0px;
+}
+.orgitdownHeader ul .orgitdownSeparator {
+	margin:0 10px;
+	width:1px;
+	height:16px;
+	overflow:hidden;
+	background-color:#CCC;
+}
+.orgitdownHeader ul ul .orgitdownSeparator {
+	width:auto; height:1px;
+	margin:0px;
+}
+/* next rows of buttons */
+.orgitdownHeader ul ul {
+	display:none;
+	position:absolute;
+	top:18px; left:0px;	
+	background:#F5F5F5;
+	border:1px solid #3C769D;
+	height:inherit;
+}
+.orgitdownHeader ul ul li {
+	float:none;
+	border-bottom:1px solid #3C769D;
+}
+.orgitdownHeader ul ul .orgitdownDropMenu {
+	background:#F5F5F5 url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/submenu.png) no-repeat 100% 50%;
+}
+/* next rows of buttons */
+.orgitdownHeader ul ul ul {
+	position:absolute;
+	top:-1px; left:150px;
+}
+.orgitdownHeader ul ul ul li {
+	float:none;
+}
+.orgitdownHeader ul a {
+	display:block;
+	width:16px; height:16px;
+	text-indent:-10000px;
+	background-repeat:no-repeat;
+	padding:3px;
+	margin:0px;
+}
+.orgitdownHeader ul ul a {
+	display:block;
+	padding-left:0px;
+	text-indent:0;
+	width:120px; 
+	padding:5px 5px 5px 25px;
+	background-position:2px 50%;
+}
+.orgitdownHeader ul ul a:hover  {
+	color:#FFF;
+	background-color:#3C769D;
+}
+/***************************************************************************************/
+.html .orgitdownEditor {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-editor-html.png);
+}
+.markdown .orgitdownEditor {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-editor-markdown.png);
+}
+.textile .orgitdownEditor {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-editor-textile.png);
+}
+.bbcode .orgitdownEditor {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-editor-bbcode.png);
+}
+.wiki .orgitdownEditor,
+.dotclear .orgitdownEditor {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-editor-wiki.png);
+}
+
+		</style>
+		<!-- the header lines from grappelli -->
+		{% block blockbots %}
+		<meta name="robots" content="NONE,NOARCHIVE" />
+		{% endblock %} <!-- STYLESHEETS -->
+		{% block stylesheets %}
+		<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+		{% if LANGUAGE_BIDI %}
+		<link href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" rel="stylesheet" type="text/css" />
+		{% endif %}
+		<link href="{% admin_media_prefix %}jquery/ui/css/custom-theme/jquery-ui-1.8.custom.css" rel="stylesheet" type="text/css" media="screen" title="no title" charset="utf-8" />
+		<link href="{% admin_media_prefix %}css/jquery-ui-grappelli-extensions.css" rel="stylesheet" type="text/css" />
+		{% endblock %} <!-- EXTRASTYLES -->
+		{% block extrastyle %}{% endblock %} <!-- JAVASCRIPTS -->
+		{% block javascripts %}
+		<script type="text/javascript">
+			// GLOBALS
+			var grappelli = {},
+			// TODO: klemens: drop ADMIN_URL
+			ADMIN_URL = "{% url admin:index %}",
+			MODEL_URL_ARRAY = {% get_content_types %}, DATE_FORMAT = "{% get_date_format %}", TIME_FORMAT = "{% get_time_format %}", DATETIME_FORMAT = "{% get_datetime_format %}";
+		</script>
+		<!-- jQuery, jQuery-UI -->
+		<script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}jquery/ui/js/jquery-ui-1.8.15.custom.min.js" type="text/javascript"></script>
+		<!-- Grappelli Main JS -->
+		<script src="{% admin_media_prefix %}js/grappelli/grappelli.js" type="text/javascript"></script>
+		<!-- Grappelli jQuery Plugins, Widgets -->
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_collapsible.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_collapsible_group.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_timepicker.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_related_fk.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_related_m2m.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_related_generic.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_autocomplete_fk.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_autocomplete_m2m.js" type="text/javascript"></script>
+		<script src="{% admin_media_prefix %}js/grappelli/jquery.grp_autocomplete_generic.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+<!-- orgitdowm css,js -->
+            <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
+
+	    <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
+
+	    <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/savedata.js"></script>
+
+		<!-- EXTRAHEAD -->
+		{% block extrahead %}{% endblock %}
+
+		{% endblock %} <!-- the header lines from gstudio -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="cache-control" content="public" />
+		<meta name="robots" content="follow, all" />
+		<meta name="language" content="{{ LANGUAGE_CODE }}" />
+		<meta name="description" content="{% block meta-description %}Demonstration of the Gstudio Blog application.{% endblock %}" />
+		<meta name="keywords" content="{% block meta-keywords %}django, blog, gstudio, {{ nodetype_tags|join:", "}}{% endblock %}" />
+		<meta name="author" content="gnowgi" />
+		{% block meta %}{% endblock %}
+		<link rel="pingback" href="/xmlrpc/" />
+		<link rel="shortcut icon" href="{{ STATIC_URL }}gstudio/img/favicon.ico" />
+		<link rel="home" href="{% url gstudio_nodetype_archive_index %}" />
+
+		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
+
+		<link rel="stylesheet" type="text/css" media="print" href="{{ STATIC_URL }}gstudio/css/print.css" />
+		<!--[if lt IE 8]>
+		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/ie.css" />
+		<![endif]-->
+		{% block link %}{% endblock %}
+		{% block script %}{% endblock %} <title>Gnowledge Studio - {% block title %}{% endblock %}</title>
+	</head>
+	<body id="gstudio">
+		
+				<!--
+				<div id="relation_type" class="ui-buttonset">
+				<span>Relation type:</span>
+				<input checked="checked" value="follows" type="radio" id="follows" name="radio" class="ui-helper-hidden-accessible"><label for="follows" class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left" aria-pressed="false" role="button" aria-disabled="false"><span class="ui-button-text">Followers</span></label>
+				<input value="mentions" type="radio" id="mentions" name="radio" class="ui-helper-hidden-accessible"><label for="mentions" aria-pressed="true" class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right ui-state-active" role="button" aria-disabled="false"><span class="ui-button-text">Mentions</span></label>
+				<input value="hashtags" type="radio" id="hashtags" name="radio"/><label for="hashtags">Shared interests</label>
+				</div>
+				-->
+				
+
+
+	
+		
+		
+			{% include "gstudio/_header.html" %}
+			<div id="breadcrumbs" class="">
+				/ {% block breadcrumbs %}{% endblock %}
+			</div>
+			<div id="body" class="span-24 last">
+				<div id="content" class="hfeed span-16 border">
+					{% block content %} <h3>The content block need to be overrided!</h3>
+					{% endblock %}
+				</div>
+
+				<textarea id="gnoweditor" style="visibility:hidden;">
+				</textarea>
+				
+				
+				<div id="graphcss">
+				<div id="chart">
+					
+				</div>
+				<script type="text/javascript" src="/static/gstudio/js/jquery.min.js" ></script>
+				<script type="text/javascript" src="/static/gstudio/js/jquery-ui.js" ></script>
+				<script type="text/javascript" src="/static/gstudio/js/underscore.js" ></script>
+				<script type="text/javascript" src="/static/gstudio/js/d3.js"></script>
+				<script type="text/javascript" src="/static/gstudio/js/d3.layout.js"></script>
+				<script type="text/javascript" src="/static/gstudio/js/d3.geom.js"></script>
+				<!-- <script type="text/javascript" src="/static/gstudio/js/force.js"></script>
+
+				Javascript for Object type force graph
+				-->
+				
+<script type="text/javascript" >
+
+function init(a,b)
+{
+
+ 
+  nodes_by_id = _.reduce(a, function(acc, n) {
+        acc[n._id] = n;
+        return acc;
+      }, {});
+     
+     
+	all_edges=new Array();  
+
+	//this contains all the links between the nodes
+  all_edges =_(b).chain().map(function(e) {
+        e.source = nodes_by_id[e.from];
+        e.target = nodes_by_id[e.to];
+	//`e.type = nodes_by_id[e.type]
+        return e;
+      }).filter(function(e){
+        return nodes_by_id[e.from] && nodes_by_id[e.to]&& e.type!="title" && e.type!="content" 
+      }).value();
+
+ 
+}
+
+$(function fgraph() {
+neighbour_node= new Array();
+clicked_node=new Array();
+prev_node=new Array();
+neighbour_node= neighbour_node.concat({{object.id}});		  
+
+$.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) { 
+										metadata=json1.node_metadata;
+  										relations=json1.relations;
+									
+										init(metadata,relations);
+										load({{object.id}}) });
+
+
+function load(key)
+{
+  
+			if (s > 0 ){
+			var a = 50 * s;
+			var w = 1000;
+	   		var p = 140 + "%";
+			var h = 650;
+   			var q = 3 * s + 75 + "%";
+			}else{
+			var w = 1000;
+	   		var p = 140 + "%";
+			var h = 650;
+   			var q = 110 + "%";			
+			}
+        fill = d3.scale.category20();
+ 
+>>>>>>> 184877f00ded7fe61420111de4ec8d48d3bee634
   var vis = d3.select("#chart")
         .append("svg:svg")
 	.attr("id", "amazingViz") 

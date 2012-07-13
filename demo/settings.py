@@ -17,7 +17,7 @@
 
 """This file has the settings for Gstudio Demo"""
 import os
-
+TIME_ZONE = None
 gettext = lambda s: s
 
 DEBUG = True
@@ -31,10 +31,16 @@ DATABASES = {'default':
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/static'
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
+MEDIA_ROOTNEW2 = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
+MEDIA_ROOTNEW3 = os.path.join(os.path.dirname(__file__), '../gstudio/static/gstudio/documents')
+MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../media')
 #MEDIA_ROOT = '/static'
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
+#MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
 PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
 PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
+FILE_UPLOAD_MAX_MEMORY_SIZE= 524288000
+JPEG_ROOT = None
 
 
 GSTUDIO_UPLOAD_TO = 'img/'
@@ -145,7 +151,7 @@ INSTALLED_APPS = (
     # Uncomment the south entry to activate south for database migrations
     # Please do install south before uncommenting
     # command: sudo pip install south 
-    # 'south',
+    #'south',
     )
 
 

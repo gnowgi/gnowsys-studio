@@ -1,0 +1,7 @@
+{%extends "gstudio/base.html"%}
+{%load i18n %}
+{% block content  %}
+sorry, the meeting <b>{{sys.title}}</b>was over on {{endtime}}
+<input type="button" value="Home" onClick="location.href='/nodetypes/user/{{user.username}}';">
+
+{%endblock%}

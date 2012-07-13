@@ -762,11 +762,11 @@ class Nodetype(Node):
 
     prior_nodes = models.ManyToManyField('self', symmetrical=False,null=True, blank=True,
                                verbose_name=_('its meaning depends on '),
-                               related_name='nodetype_posterior_nodes')
+                               related_name='nodetype_prior_nodes')
 
     posterior_nodes = models.ManyToManyField('self', symmetrical=False,null=True, blank=True,
                                verbose_name=_('required for the meaning of '),
-                               related_name='nodetype_prior_nodes')
+                               related_name='nodetype_posterior_nodes')
 
     image = models.ImageField(_('image'), upload_to=UPLOAD_TO,
                               blank=True, help_text=_('used for illustration'))
@@ -2852,6 +2852,9 @@ class Systemtype(Nodetype):
                                          blank=True, null=False)
     processtype_set = models.ManyToManyField(Processtype, related_name="processtype_set_of", verbose_name='Possible edges in the system',
                                             blank=True, null=False)
+    author_set = models.ManyToManyField(Author, related_name="author_set_of", verbose_name='Possible authors in the system',
+                                            blank=True, null=False)
+
 
 
     def __unicode__(self):

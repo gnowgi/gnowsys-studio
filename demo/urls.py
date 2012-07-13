@@ -45,7 +45,9 @@ urlpatterns = patterns(
     url(r'^home/', home_view),
     url(r'^more/',more_view),
     url(r'^nodetypes/', include('gstudio.urls')),
+    url(r'^gstudio/', include('gstudio.urls')),
     url(r'^objects/', include('objectapp.urls')),
+ 
     url(r'^comments/', include('django.contrib.comments.urls')),
     #URL for XMLRPC
     url(r'^xmlrpc/$','django_xmlrpc.views.handle_xmlrpc'),

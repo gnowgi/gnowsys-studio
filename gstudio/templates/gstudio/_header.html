@@ -8,14 +8,17 @@
     <!-- Title -->
     <div class="admin-title">  
 	<a href="/" title="Home">Home</a> 
-	  |    {% if grappelli_admin_title %}{{
+	 <!-- |    {% if grappelli_admin_title %}{{
       grappelli_admin_title }}{% else %}{% get_admin_title %}{% endif %}
-  
-    | <a href="{{ get_absolute_url }}/objects" title="Objects">Objects</a>
+  -->
+<!--    | <a href="{{ get_absolute_url }}/objects" title="Objects">Objects</a>-->
 
     {% if user.is_authenticated %}
-
-       {% if user.is_staff %}
+	{% if user.is_staff %}
+        | <a href="{{  get_absolute_url }}/gstudio/user/{{user.username}}" title="MyBoard">Gnowledge Studio</a>
+	| <a href="{{  get_absolute_url }}/gstudio/resources/documents" title="My Documents">Documents</a>
+        | <a href="{{  get_absolute_url }}/gstudio/resources/images" title="Images">Images</a>
+        | <a href="{{  get_absolute_url }}/gstudio/resources/videos" title="My Videos">Videos</a>
         | <a href="{{  get_absolute_url }}/admin" title="Admin Dashboard">Admin Dashboard</a>
 
        {% endif %}

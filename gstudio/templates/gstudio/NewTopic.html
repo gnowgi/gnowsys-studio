@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Setting a new Topic</title>
+</head>
+<body>
+<h1>Add a new Topic for The group Discussion</h1>
+{% if errors %}
+<ul>
+{% for error in errors %}
+<li><font color="red">{{ error }}</font></li>
+{% endfor %}
+</ul>
+{% endif %}
+<form action="" method="post">{% csrf_token %}
+<p>Title: <input type="text" name="subject"></p>
+<p>Description: <textarea name="message" rows="10" cols="50"></textarea></p>
+<input type="hidden" value={{user.id}} name = "idusr">
+<input type="submit" value="Submit">
+</form>
+</body>
+</html>

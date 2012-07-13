@@ -1,0 +1,109 @@
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags %}
+{% load i18n %}
+{% block content %}
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "1000px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ 
+ $("#graphcss").hide();   
+  });
+</script>
+
+{% if user.is_authenticated %}
+   <input type="button" value="Home" onClick="location.href='/gstudio/user/{{user.username}}';">
+   <h>Hello Welcome to the {{ meet_ob.title }}</h></br>
+	<h3> This Discussion was initiated by {{admin_m.username}}</h3>
+
+   <h>You are logged in as <font color="blue">{{user.username}}</font></h>
+         </br>
+   {%if flag %}
+   <div id="Release">
+   <form method="post" action=".">{% csrf_token %}
+   <input type="submit" value="Release Replies">
+       <input type="hidden" value="hits" name = "release">
+   </form>
+   </div>
+   <div>
+   <form method="post" action=".">{% csrf_token %}
+   <input type="submit" value="Block Replies">
+       <input type="hidden" value="hits" name = "block">
+   </form>
+   </div>
+   {% endif %}
+   </br>
+
+
+	<form method="post" action=".">{% csrf_token %}
+      <!--  <input type="hidden" value="{{meet_ob.id}}" name = "meetid">-->
+	<input type="button" value="Add a new Topic" onClick="location.href='topicadd1/{{meet_ob.id}}';">
+        </form>
+
+<!--direct link to identica-->
+<a href="http://www.addtoany.com/add_to/identi_ca?linkurl=ur url&linkname={{post}} via" ><img src="http://www.tildehash.com/identishare/share.png" ></img></a>
+
+<!-- Twitter syndicating button -->
+<a href="https://twitter.com/share" class="twitter-share-button"  data-url="https://127.0.0.1:8000/chat/" data-via="{{user.title}}" data-lang="en" data-text="{{post}}" data-related="anywhereTheJavascriptAPI" data-count="none">Tweet</a>
+
+<!-- Diaspora syndicating button -->
+<script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
+<input id="diasporacontent" value="{{post}}" type="hidden" name="diaspora"></input>
+<div id="R-button" style="width:44px;height:44px;cursor:pointer;">
+<img id="asterisk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQ1JREFUeNpi/P//PwO9ACMJajuA2BiL+FkgriDGABYSLANZ5EKJz5gY6AhGLaO6ZaAEoERl85WQUzCyZeVAfBeIz0DZShRYUA41B2ReGjZF/7FgZIt341CzG80CdPl36BaF4jCIWjgUORhdaJw2UMx/R2OfgYOSGYgFgfgoED8HYikon1rgHhDPAuJOIH6PqwzEFdnEYFiiMiYnGc8k0pIOSkNFiYT4fEepZbtJDMJV5FpUTmaclZNqkTER8YMvOIlOHIIEUmIHET4/Q0pb4z+echAZrCLCUXiLFVJSmyC0ZMelh2AxGIojubuQEL/vYIUvsflrNwkprBxLlUNW8ic276wi5ChGeraIAQIMAFUG5PAQfeaJAAAAAElFTkSuQmCC" width="26" height="26">
+</div>
+
+</br>   {% autoescape off %}
+   {% for each in topic %}
+      	<h4><font size="5" color="red">{{each.title}}</font></h4>
+      		Posted on : {{each.creation_date}}
+		Posted by : 
+   		{% for author in each.authors.all %} 
+   			{{author}}
+   		{% endfor %}</br>
+     		Current rating is <h5>{{ each.rating.get_rating }}</h5>
+   	{%autoescape on%}
+		<font color="green">{{each.content}}</font>
+	{% endautoescape%}
+	<form method="post" action=".">{% csrf_token %}
+        	 Reply to the main thread :
+    		<input type="text" name = "reply">
+    		<input type="hidden" value="{{each.id}}" name = "iden">
+	    	<input type="hidden" value="{{user.id}}" name = "idusr">
+	        <input type="submit" value="Reply to Topic"></br>
+		<!--<input name="del_topic" type="checkbox" value="delete_topic"/>Delete topic
+  		<input type="submit" value="Delete the topic"></br>
+-->
+         	Do you wanna rate it ? </br>
+		<input name="star1" type="radio" value=1 class="star"/>
+		<input name="star1" type="radio" value=2 class="star"/>
+		<input name="star1" type="radio" value=3 class="star"/>
+		<input name="star1" type="radio" value=4 class="star"/>
+		<input name="star1" type="radio" value=5 class="star"/>
+		<!--topic id and user id hidden fields-->
+		</br>
+		<input type="submit" value="Rate it!!!">
+         </form>   
+        <p>
+	 Replies :
+	<!--	<div id="main">
+	<div id="sidetree">
+	<div class="treeheader">&nbsp;</div>
+ 	<a href="?#">Expand All</a> </div>-->
+	<!--<ul class="treeview" id="tree">
+ 	<li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li>-->
+         {% show_comment each user.id flag1 admin_id attribute  %}
+     {% endfor %}
+	The discussion freezes at {{endtime}}
+{% endautoescape %}
+
+{% else %}
+  <h1> <p style = "color :red;">OOPS!!! Login Please!</p></h1>
+{% endif %}
+{% endblock %}
+

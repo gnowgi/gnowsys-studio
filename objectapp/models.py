@@ -954,15 +954,18 @@ class System(Gbobject):
     system_set = models.ManyToManyField('self', related_name="in_system_set_of", 
                                        verbose_name='nested systems',
                                        blank=True, null=False)
+    member_set = models.ManyToManyField(Author, related_name="in_member_set_of", 
+                                       verbose_name='members',
+                                       blank=True, null=False)
     # @reversion.create_revision()
-    def save(self, *args, **kwargs):
+    '''def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
 	super(System, self).save(*args, **kwargs) # Call the "real" save() method.
 	self.nbhood=self.get_rendered_nbh
         if OBJECTAPP_VERSIONING:
             with reversion.create_revision():
                 super(System, self).save(*args, **kwargs) # Call the "real" save() method.
-    
+    '''
     def save_revert_or_merge(self, *args, **kwargs):
 	self.nodemodel = self.__class__.__name__
 	if OBJECTAPP_VERSIONING:

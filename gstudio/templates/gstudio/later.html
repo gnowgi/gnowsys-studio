@@ -1,0 +1,8 @@
+{%extends "gstudio/base.html"%}
+{%load i18n %}
+{% block content  %}
+<input type="button" value="Home" onClick="location.href='/nodetypes/user/{{user.username}}';">
+<h2> Sorry The meeting is scheduled later! </h2>
+
+<p> The meeting<b> {{sys.title}}</b> is scheduled to start at {{starttime}} please try later</p>
+{%endblock%}

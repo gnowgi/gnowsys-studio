@@ -68,5 +68,7 @@ setup(name='gnowsys-studio',
 			'html5lib>=0.95',
                         'PIL>=1.1.7',
                         'diff-match-patch>=20120106',
+                        'ox>=2.0.356',
+                        'pandora_client>=0.2.94',
                       
                         ])

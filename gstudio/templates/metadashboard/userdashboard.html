@@ -1,0 +1,74 @@
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags %}
+{% load i18n %}
+{% block content %}
+
+
+{% if user.is_authenticated %}
+   <h> Welcome to the  GnowledgeStudio</h></br>
+   <h>You are logged in as <font color="blue">{{user.username}}</font></h>
+    <p></br>
+<p> Here is a list of all the groups:</p>
+</br>
+    {% for each in meetings.member_systems.all %}
+    <a href="/gstudio/group/gnowsys-grp/{{each.id}}/">{{each.title}}</a></br>
+    {% endfor %}
+    <input type="button" value="Create a new meeting" onClick="location.href='groupadd/';">
+    </p>
+    <p>
+    </br>
+{% else %}
+  <h1> <p style = "color :black;">OOPS!!! Login Please!</p></h1>
+{% endif %}
+
+
+
+{% endblock %}
+
+<!--<html>
+<head>
+<script type="text/javascript" src="{{ STATIC_URL }}gstudio/js/domtab.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}gstudio/css/domtab.css" />
+
+</head>
+<body>
+<div class="domtab">
+  <ul class="domtabs">
+    <li><a href="#t1">Create a group</a></li>
+    <li><a href="#t2">MyGroups</a></li>
+    <li><a href="#t3">Join a group</a></li>
+    <li><a href="#t4">Statopedia</a></li>
+  </ul>
+  <div>
+    <h2><a name="t1" id="t1">Create a group</a></h2>
+    <p><!-- link to group makers page</p>
+   <!-- <p><a href="#top">back to menu</a></p>
+  </div>
+  <div>
+    <h2><a name="t2" id="t2">My Groups</a></h2>
+    <p>Unfortunate to find none :(</p>
+    <p><a href="#top">back to menu</a></p>
+  </div>
+ <div>
+    <h2><a name="t3" id="t3">Find a Group</a></h2>
+    <p><!-- runa for loop for all systemtype objects meeting "></p>
+    <p><a href="#top">back to menu</a></p>
+  </div>
+ <div>
+    <h2><a name="t4" id="t4">Stats</a></h2>
+   <p>Nothing!!!!</p>
+      <p><a href="#top">back to menu</a></p>
+
+   
+  </div>
+cd ..
+
+
+</body>
+</html>
+-->
+
+
+	
+
+

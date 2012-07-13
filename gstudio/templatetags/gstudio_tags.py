@@ -45,6 +45,7 @@ from gstudio.comparison import VectorBuilder
 from gstudio.comparison import pearson_score
 from gstudio.templatetags.zcalendar import GstudioCalendar
 from gstudio.templatetags.zbreadcrumbs import retrieve_breadcrumbs
+from django.http import HttpResponseRedirect
 
 register = Library()
 
@@ -342,6 +343,12 @@ def get_tags(parser, token):
             "first argument to get_tags tag must be 'as'")
     return TagsNode(bits[2])
 
+@register.simple_tag
+def redirect(username):
+ link = "/"
+ return HttpResponseRedirect(link)
+ 
+
 
 @register.inclusion_tag('gstudio/tags/dummy.html')
 def get_tag_cloud(steps=6, template='gstudio/tags/tag_cloud.html'):
@@ -350,3 +357,7 @@ def get_tag_cloud(steps=6, template='gstudio/tags/tag_cloud.html'):
         Nodetype.published.all(), counts=True)
     return {'template': template,
             'tags': calculate_cloud(tags, steps)}
+
+@register.inclusion_tag('gstudio/tags/comment.html')
+def show_comment(comment,idusr,flag,admin_id,attob):
+  return {'comment':comment , 'idusr' : idusr, "flag" : flag, "admin_id" : admin_id , "attribute" : attob}

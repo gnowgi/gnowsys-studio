@@ -1,0 +1,53 @@
+{%extends "gstudio/base.html"%}
+{%load i18n %}
+{%block extrahead%}
+        <script type="text/javascript">
+        $(document).ready(function()
+        {          
+        $('#id_value_1').datepicker();
+        $('#id_value_2').datepicker();
+        });
+        </script>
+{%endblock%}
+{% block content  %}
+{%if user.is_authenticated%}
+{% if errors %}
+<ul>
+{% for error in errors %}
+<li><font color="red">{{ error }}</font></li>
+{% endfor %}
+</ul>
+{% endif %}
+<form action="" method="post">
+{% csrf_token %}
+<p>Name of the Group: <input type="text" name="subject"></p>
+<p>Brief Description: <textarea name="message" rows="10" cols="50"></textarea></p>
+</br>
+<p>If you want to leave any instructions for the participants you may mention them above as well </p>
+Please Set the time 
+</br>
+Starts at time:
+</br>
+        <span class="datetimeshortcuts">
+        	<a href="javascript:DateTimeShortcuts.openCalendar(0);"id = "calendarlink0"></a>
+        </span>
+        Date: <input id="id_value_1" type="text" class="vTimeField hasTimepicker" name="stDate" size ="8">
+        Hours:<input type = "text" name = "hours1">
+        Minutes:<input type = "text" name = "minutes1">  <hr>
+	<p><b>Note</b>The group will be accessible to members (except the creator)only after the scheduled start time</p>
+        Ends at time:   </br>
+        Date: <input id="id_value_2" type="text" class="vTimeField hasTimepicker" name="endDate" size ="8">
+        Hours:<input type = "text" name = "hours2">
+        Minutes:<input type = "text" name = "minutes2">
+<p>After this time the group posts remain but the activity is frozen<p>
+<input type="hidden" value={{user.id}} name = "idusr">
+<input type="submit" value="Submit">
+</form>
+<p>Creating a group will require to schedule it for an indefinite period of time. So in this case, please enter end time of say 50 years from now</p>
+{%else%}
+<p> Sorry! Login To proceed </p>
+
+{%endif%}
+{% endblock %}
+
+

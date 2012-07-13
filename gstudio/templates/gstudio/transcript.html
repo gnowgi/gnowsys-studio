@@ -1,0 +1,28 @@
+{% load gstudio_tags i18n %}
+{% get_tags as nodetype_tags %}
+{% load adminmedia grp_tags %}
+ 
+ 
+ 
+<!doctype html>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.7.2.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/jquery.pandoravideo.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/jquery.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/jquery-ui-1.8.21.custom.min.js"></script>
+ 
+<script type="text/javascript">
+ 
+$.noConflict();	
+$(function() {
+$('#pandoravideo').pandoravideo();
+});
+</script>
+</head>
+<body>
+<div id="pandoravideo" data-pandora-id={{id}} data-pandora-layers="transcripts, descriptions, keywords, places">
+</div>
+</body>
+ 
+</html>

@@ -161,7 +161,7 @@ class Gbobject(Node):
                       (PUBLISHED, _('published')))
 
     content = models.TextField(_('content'), null=True, blank=True)
-    content_org = models.TextField(_('content'), null=True, blank=True)
+    content_org = models.TextField(_('content_org'), null=True, blank=True)
     image = models.ImageField(_('image'), upload_to=UPLOAD_TO,
                               blank=True, help_text=_('used for illustration'))
 

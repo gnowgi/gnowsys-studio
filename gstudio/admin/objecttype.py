@@ -35,7 +35,7 @@ class ObjecttypeAdmin(parent_class):
     form = ObjecttypeAdminForm
     date_hierarchy = 'creation_date'
     fieldsets = ((_('Neighbourhood'), {'fields': ('title','altnames','plural','parent','slug',
-                                            'metatypes','tags','image', 'status','content','content_org')}),
+                                            'metatypes','tags','image', 'status','content')}),
                  (_('Dependency'), {'fields': ('prior_nodes', 'posterior_nodes',), 
                                  'classes': ('collapse', 'collapse-closed')}),
                  (_('Options'), {'fields': ('featured', 'excerpt', 'template',

@@ -1,0 +1,114 @@
+.orgitdown * {
+	margin:0px; padding:0px;
+	outline:none;
+}
+.orgitdown a:link,
+.orgitdown a:visited {
+	color:#000;
+	text-decoration:none;
+}
+.orgitdown  {
+	width:700px;
+	margin:5px 0 5px 0;
+}
+.orgitdownContainer  {
+	font:11px Verdana, Arial, Helvetica, sans-serif;
+}
+.orgitdownEditor {
+	font:12px 'Courier New', Courier, monospace;
+	padding:5px;
+	width:690px;
+	height:320px;
+	clear:both;
+	line-height:18px;
+	overflow:auto;
+}
+.orgitdownPreviewFrame	{
+	overflow:auto;
+	background-color:#FFF;
+	width:99.9%;
+	height:300px;
+	margin:5px 0;
+}
+.orgitdownFooter {
+	width:100%;
+}
+.orgitdownResizeHandle {
+	overflow:hidden;
+	width:22px; height:5px;
+	margin-left:auto;
+	margin-right:auto;
+	background-image:url(images/handle.png);
+	cursor:n-resize;
+}
+/***************************************************************************************/
+/* first row of buttons */
+.orgitdownHeader ul li	{
+	list-style:none;
+	float:left;
+	position:relative;
+}
+.orgitdownHeader ul li:hover > ul{
+	display:block;
+}
+.orgitdownHeader ul .orgitdownDropMenu {
+	background:transparent url(images/menu.png) no-repeat 115% 50%;
+	margin-right:5px;
+}
+.orgitdownHeader ul .orgitdownDropMenu li {
+	margin-right:0px;
+}
+/* next rows of buttons */
+.orgitdownHeader ul ul {
+	display:none;
+	position:absolute;
+	top:18px; left:0px;	
+	background:#FFF;
+	border:1px solid #000;
+}
+.orgitdownHeader ul ul li {
+	float:none;
+	border-bottom:1px solid #000;
+}
+.orgitdownHeader ul ul .orgitdownDropMenu {
+	background:#FFF url(images/submenu.png) no-repeat 100% 50%;
+}
+.orgitdownHeader ul .orgitdownSeparator {
+	margin:0 10px;
+	width:1px;
+	height:16px;
+	overflow:hidden;
+	background-color:#CCC;
+}
+.orgitdownHeader ul ul .orgitdownSeparator {
+	width:auto; height:1px;
+	margin:0px;
+}
+/* next rows of buttons */
+.orgitdownHeader ul ul ul {
+	position:absolute;
+	top:-1px; left:150px; 
+}
+.orgitdownHeader ul ul ul li {
+	float:none;
+}
+.orgitdownHeader ul a {
+	display:block;
+	width:16px; height:16px;
+	text-indent:-10000px;
+	background-repeat:no-repeat;
+	padding:3px;
+	margin:0px;
+}
+.orgitdownHeader ul ul a {
+	display:block;
+	padding-left:0px;
+	text-indent:0;
+	width:120px; 
+	padding:5px 5px 5px 25px;
+	background-position:2px 50%;
+}
+.orgitdownHeader ul ul a:hover  {
+	color:#FFF;
+	background-color:#000;
+}

@@ -755,7 +755,7 @@ class Nodetype(Node):
                       (PUBLISHED, _('published')))
 
     content = models.TextField(_('content'), null=True, blank=True)
-    content_org = models.TextField(_('content'), null=True, blank=True)
+    content_org = models.TextField(_('content_org'), null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True,
                                verbose_name=_('is a kind of'),
                                related_name='children')
@@ -1256,139 +1256,139 @@ class Nodetype(Node):
 
    # def history(self,ssid):
         #ver
-    @property
-    def get_rendered_nbh(self):
-        """
-        Returns the neighbourhood of the nodetype
-        """
-        history=[]
-        version_list=self.get_ssid
-        if version_list:
-            length=len(version_list)
-            history_ssid=version_list[length-1]
-            history_dict=self.version_info(history_ssid)
-            # history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-            #ssid_current.append(history_ssid)
-            # history=history_nbh_dict['history']
-            history.append(history_ssid)
-        else:
-            history.append(0)
-        nbh = {}
-        nbh['title'] = self.title
-        nbh['count_title'] = len(nbh['title'])
-        nbh['altnames'] = self.altnames
-        nbh['count_altnames'] = len(nbh['altnames'])
-        nbh['plural'] = self.plural
-        try:
-            nbh['count_plural'] = len(nbh['plural'])
-        except:
-            pass
+    # @property
+    # def get_rendered_nbh(self):
+    #     """
+    #     Returns the neighbourhood of the nodetype
+    #     """
+    #     history=[]
+    #     version_list=self.get_ssid
+    #     if version_list:
+    #         length=len(version_list)
+    #         history_ssid=version_list[length-1]
+    #         history_dict=self.version_info(history_ssid)
+    #         # history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
+    #         #ssid_current.append(history_ssid)
+    #         # history=history_nbh_dict['history']
+    #         history.append(history_ssid)
+    #     else:
+    #         history.append(0)
+    #     nbh = {}
+    #     nbh['title'] = self.title
+    #     nbh['count_title'] = len(nbh['title'])
+    #     nbh['altnames'] = self.altnames
+    #     nbh['count_altnames'] = len(nbh['altnames'])
+    #     nbh['plural'] = self.plural
+    #     try:
+    #         nbh['count_plural'] = len(nbh['plural'])
+    #     except:
+    #         pass
 
-        #get all MTs
-        member_of_dict = {}
-        for each in self.metatypes.all():
-            member_of_dict[each.title]= each.get_absolute_url()
-        nbh['member_of_metatypes']=member_of_dict
-        nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
-        typeof={}
-        parent=self.parent_id
-        if parent:
-            typeof[parent] = parent.get_absolute_url()
-        nbh['type_of']=typeof
-        nbh['count_type_of'] = len(nbh['type_of'])
-        #get all subtypes
-        subtypes={}
-        for each in Nodetype.objects.filter(parent=self.id):
-            subtypes[each.title] =each.get_absolute_url()
-        nbh['contains_subtypes']=subtypes
-        nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
-        # get all the objects inheriting this OT
-        contains_members_dict = {}
-        for each in self.member_objects.all():
-            contains_members_dict[each.title]= each.get_absolute_url()
-        nbh['contains_members'] = contains_members_dict
-        nbh['count_contains_members'] = len(nbh['contains_members'])
-        #get prior nodes
-        priornodes_dict = {}
-        for each in self.prior_nodes.all():
-            priornodes_dict[each.title]= each.get_absolute_url()
-        nbh['priornodes'] = priornodes_dict
-        nbh['count_priornodes'] = len(nbh['priornodes'])
-        #get posterior nodes
-        posteriornodes_dict = {}
-        for each in self.posterior_nodes.all():
-            posteriornodes_dict[each.title]= each.get_absolute_url()
-        nbh['posteriornodes'] = posteriornodes_dict
-        nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
-        #get authors
-        author_dict = {}
-        for each in self.authors.all():
-            author_dict['User'] = each.get_absolute_url()
-        nbh['authors'] = author_dict
-        #get siblings
-        siblings={}
-        for each in self.get_siblings():
-            siblings[each.title]=each.get_absolute_url()
-        nbh['siblings']=siblings
-        nbh['count_siblings'] = len(nbh['siblings'])
-        #get Relations
-        relns={}
-        rellft={}
-        relrgt={}
-        if self.get_rendered_relations:
-            NTrelns=self.get_rendered_relations
-            for key,value in NTrelns.items():
-                if key=="rrelations":
-                    relrgt={}
-                    for rgtkey,rgtvalue in value.items():
-                        relnvalue={}
-                        if isinstance(rgtvalue,list):
-                            for items in rgtvalue:
-                                relnvalue[items.title]=items.get_absolute_url()
-                        else:
-                            relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
+    #     #get all MTs
+    #     member_of_dict = {}
+    #     for each in self.metatypes.all():
+    #         member_of_dict[each.title]= each.get_absolute_url()
+    #     nbh['member_of_metatypes']=member_of_dict
+    #     nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
+    #     typeof={}
+    #     parent=self.parent_id
+    #     if parent:
+    #         typeof[parent] = parent.get_absolute_url()
+    #     nbh['type_of']=typeof
+    #     nbh['count_type_of'] = len(nbh['type_of'])
+    #     #get all subtypes
+    #     subtypes={}
+    #     for each in Nodetype.objects.filter(parent=self.id):
+    #         subtypes[each.title] =each.get_absolute_url()
+    #     nbh['contains_subtypes']=subtypes
+    #     nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
+    #     # get all the objects inheriting this OT
+    #     contains_members_dict = {}
+    #     for each in self.member_objects.all():
+    #         contains_members_dict[each.title]= each.get_absolute_url()
+    #     nbh['contains_members'] = contains_members_dict
+    #     nbh['count_contains_members'] = len(nbh['contains_members'])
+    #     #get prior nodes
+    #     priornodes_dict = {}
+    #     for each in self.prior_nodes.all():
+    #         priornodes_dict[each.title]= each.get_absolute_url()
+    #     nbh['priornodes'] = priornodes_dict
+    #     nbh['count_priornodes'] = len(nbh['priornodes'])
+    #     #get posterior nodes
+    #     posteriornodes_dict = {}
+    #     for each in self.posterior_nodes.all():
+    #         posteriornodes_dict[each.title]= each.get_absolute_url()
+    #     nbh['posteriornodes'] = posteriornodes_dict
+    #     nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
+    #     #get authors
+    #     author_dict = {}
+    #     for each in self.authors.all():
+    #         author_dict['User'] = each.get_absolute_url()
+    #     nbh['authors'] = author_dict
+    #     #get siblings
+    #     siblings={}
+    #     for each in self.get_siblings():
+    #         siblings[each.title]=each.get_absolute_url()
+    #     nbh['siblings']=siblings
+    #     nbh['count_siblings'] = len(nbh['siblings'])
+    #     #get Relations
+    #     relns={}
+    #     rellft={}
+    #     relrgt={}
+    #     if self.get_rendered_relations:
+    #         NTrelns=self.get_rendered_relations
+    #         for key,value in NTrelns.items():
+    #             if key=="rrelations":
+    #                 relrgt={}
+    #                 for rgtkey,rgtvalue in value.items():
+    #                     relnvalue={}
+    #                     if isinstance(rgtvalue,list):
+    #                         for items in rgtvalue:
+    #                             relnvalue[items.title]=items.get_absolute_url()
+    #                     else:
+    #                         relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
 
-                        relrgt[rgtkey]=relnvalue
+    #                     relrgt[rgtkey]=relnvalue
 
-                else:
-                    rellft={}
-                    relns['left']=rellft
-                    for lftkey,lftvalue in value.items():
-                        relnvalue={}
-                        if isinstance(lftvalue,list):
-                            for items in lftvalue:
-                                relnvalue[items.title]=items.get_absolute_url()
-                        else:
-                            relnvalue[lftvalue]=lftvalue.get_absolute_url()
+    #             else:
+    #                 rellft={}
+    #                 relns['left']=rellft
+    #                 for lftkey,lftvalue in value.items():
+    #                     relnvalue={}
+    #                     if isinstance(lftvalue,list):
+    #                         for items in lftvalue:
+    #                             relnvalue[items.title]=items.get_absolute_url()
+    #                     else:
+    #                         relnvalue[lftvalue]=lftvalue.get_absolute_url()
 
-                        rellft[lftkey]=relnvalue
+    #                     rellft[lftkey]=relnvalue
 
-        nbh['relations']=relrgt
+    #     nbh['relations']=relrgt
 
-        nbh['relations'].update(rellft)
-        nbh['count_relations'] = len(nbh['relations'])
-        #get Attributes
-        attributes =self.get_attributes
-        nbh['attributes']=attributes
-        nbh['count_attributes'] = len(nbh['attributes'])
-        #get ATs
-        attributetypes={}
-        for each in self.subjecttype_of.all():
-            attributetypes[each.title]=each.get_absolute_url()
-        nbh['ats']=attributetypes
-        #get RTs as leftroles and rightroles
-        leftroles = {}
-        for each in self.left_subjecttype_of.all():
-            leftroles[each.title]=each.get_absolute_url()
-        nbh['leftroles']=leftroles
-        nbh['count_leftroles'] = len(nbh['leftroles'])
-        rightroles = {}
-        for each in self.right_subjecttype_of.all():
-            rightroles[each.title]=each.get_absolute_url()
-        nbh['rightroles']=rightroles
-        nbh['count_rightroles'] = len(nbh['rightroles'])
-        nbh['history']=history
-        return nbh
+    #     nbh['relations'].update(rellft)
+    #     nbh['count_relations'] = len(nbh['relations'])
+    #     #get Attributes
+    #     attributes =self.get_attributes
+    #     nbh['attributes']=attributes
+    #     nbh['count_attributes'] = len(nbh['attributes'])
+    #     #get ATs
+    #     attributetypes={}
+    #     for each in self.subjecttype_of.all():
+    #         attributetypes[each.title]=each.get_absolute_url()
+    #     nbh['ats']=attributetypes
+    #     #get RTs as leftroles and rightroles
+    #     leftroles = {}
+    #     for each in self.left_subjecttype_of.all():
+    #         leftroles[each.title]=each.get_absolute_url()
+    #     nbh['leftroles']=leftroles
+    #     nbh['count_leftroles'] = len(nbh['leftroles'])
+    #     rightroles = {}
+    #     for each in self.right_subjecttype_of.all():
+    #         rightroles[each.title]=each.get_absolute_url()
+    #     nbh['rightroles']=rightroles
+    #     nbh['count_rightroles'] = len(nbh['rightroles'])
+    #     nbh['history']=history
+    #     return nbh
 
 
     @property

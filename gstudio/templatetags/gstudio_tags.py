@@ -218,6 +218,17 @@ def get_calendar_nodetypes(context, year=None, month=None,
 def get_recent_comments(number=5, template='gstudio/tags/recent_comments.html'):
     """Return the most recent comments"""
     # Using map(smart_unicode... fix bug related to issue #8554
+  
+    comments = get_comment_model().objects.filter(is_public=True).order_by('-submit_date')[:number]
+
+    return {'template': template,
+            'comments': comments}
+
+
+@register.inclusion_tag('gstudio/tags/dummy.html')
+def get_recent_oldcomments(number=5, template='gstudio/tags/recent_comments.html'):
+    """Return the most recent comments"""
+    # Using map(smart_unicode... fix bug related to issue #8554
     nodetype_published_pks = map(smart_unicode,
                               Nodetype.published.values_list('id', flat=True))
     content_type = ContentType.objects.get_for_model(Nodetype)
@@ -229,7 +240,6 @@ def get_recent_comments(number=5, template='gstudio/tags/recent_comments.html'):
 
     return {'template': template,
             'comments': comments}
-
 
 @register.inclusion_tag('gstudio/tags/dummy.html')
 def get_recent_linkbacks(number=5,

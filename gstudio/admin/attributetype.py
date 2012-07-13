@@ -21,6 +21,7 @@ from gstudio.managers import PUBLISHED
 from gstudio.ping import DirectoryPinger
 from gstudio.admin.forms import AttributetypeAdminForm
 from gstudio.settings import GSTUDIO_VERSIONING
+from markitup.widgets import AdminMarkItUpWidget
 
 
 if GSTUDIO_VERSIONING == True:
@@ -76,6 +77,11 @@ types','dataType','verbose_name','null','blank','help_text','max_digits','decima
     def __init__(self, model, admin_site):
         self.form.admin_site = admin_site
         super(AttributetypeAdmin, self).__init__(model, admin_site)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = AdminMarkItUpWidget()
+        return super(AttributetypeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
     # Custom Display
     def get_title(self, attributetype):

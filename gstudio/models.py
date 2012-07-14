@@ -47,26 +47,9 @@
 #    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 #    OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Copyright (c) 2011,  2012 Free Software Foundation
-
-#     This program is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU Affero General Public License as
-#     published by the Free Software Foundation, either version 3 of the
-#     License, or (at your option) any later version.
-
-#     This program is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU Affero General Public License for more details.
-
-#     You should have received a copy of the GNU Affero General Public License
-#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-
-
-"""Super models of Gstudio  """
+"""Storage models of gnowsys-studio, all types, relations  """
 
 import warnings
 from datetime import datetime
@@ -423,58 +406,6 @@ class NID(models.Model):
         return version.serialized_data
 
 
-
-    # def get_Version_graph_json(self,ssid):
-
-
-    #     # # predicate_id={"plural":"a1","altnames":"a2","contains_members":"a3","contains_subtypes":"a4","prior_nodes":"a5", "posterior_nodes":"a6"}
-    #     # slist=self.get_ssid
-    #      ver_dict=self.version_info(ssid)
-    #     #ver_dict=str(ver['nbhood'])
-    #      ver_dict=ast.literal_eval(ver_dict['nbhood'])
-
-    #      g_json = {}
-    #      g_json["node_metadata"]= []
-    #      predicate_id = {}
-    #      counter = 1
-    #      for key in ver_dict.keys():
-    #          val = "a" + str(counter)
-    #          predicate_id[key] = val
-    #          counter = counter + 1
-    #      #print predicate_id
-
-    #      attr_counter = -1
-
-    #      this_node = {"_id":str(self.id),"title":ver_dict['title'],"screen_name":ver_dict['title'], "url":self.get_absolute_url()}
-    #      g_json["node_metadata"].append(this_node)
-
-    #      for key in predicate_id.keys():
-    #           if ver_dict[key]:
-    #                   try:
-    #                           g_json[str(key)]=[]
-    #                           g_json["node_metadata"].append({"_id":str(predicate_id[key]),"screen_name":key})
-    #                           g_json[str(key)].append({"from":self.id , "to":predicate_id[key],"value":1, "level":1  })
-    #                           if not isinstance(ver_dict[key],basestring):
-    #                                 for item in ver_dict[key]:
-    #                                     # user
-    #                                     g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title, "title":item.title, "url":item.get_absolute_url()})
-    #                                     g_json[str(key)].append({"from":predicate_id[key] , "to":item.id ,"value":1  })
-
-    #                             else:
-    #                                   #value={nbh["plural"]:"a4",nbh["altnames"]:"a5"}
-    #                                   #this_node[str(key)]=nbh[key] key, nbh[key]
-    #                                   #for item in value.keys():
-    #                                 g_json["node_metadata"].append({"_id":attr_counter,"screen_name":ver_dict[key]})
-    #                                 g_json[str(key)].append({"from":predicate_id[key] , "to":attr_counter ,"value":1, "level":2 })
-    #                                 attr_counter-=1
-
-    #                   except:
-    #                         pass
-    #     # print g_json
-
-
-
-    #      return json.dumps(g_json)
 
 
     def __unicode__(self):
@@ -1253,142 +1184,6 @@ class Nodetype(Node):
                             val.extend(value)
             attributes_dict[atr_key]=val
         return attributes_dict
-
-   # def history(self,ssid):
-        #ver
-    # @property
-    # def get_rendered_nbh(self):
-    #     """
-    #     Returns the neighbourhood of the nodetype
-    #     """
-    #     history=[]
-    #     version_list=self.get_ssid
-    #     if version_list:
-    #         length=len(version_list)
-    #         history_ssid=version_list[length-1]
-    #         history_dict=self.version_info(history_ssid)
-    #         # history_nbh_dict=ast.literal_eval(history_dict['nbhood'])
-    #         #ssid_current.append(history_ssid)
-    #         # history=history_nbh_dict['history']
-    #         history.append(history_ssid)
-    #     else:
-    #         history.append(0)
-    #     nbh = {}
-    #     nbh['title'] = self.title
-    #     nbh['count_title'] = len(nbh['title'])
-    #     nbh['altnames'] = self.altnames
-    #     nbh['count_altnames'] = len(nbh['altnames'])
-    #     nbh['plural'] = self.plural
-    #     try:
-    #         nbh['count_plural'] = len(nbh['plural'])
-    #     except:
-    #         pass
-
-    #     #get all MTs
-    #     member_of_dict = {}
-    #     for each in self.metatypes.all():
-    #         member_of_dict[each.title]= each.get_absolute_url()
-    #     nbh['member_of_metatypes']=member_of_dict
-    #     nbh['count_member_of_metatypes'] = len(nbh['member_of_metatypes'])
-    #     typeof={}
-    #     parent=self.parent_id
-    #     if parent:
-    #         typeof[parent] = parent.get_absolute_url()
-    #     nbh['type_of']=typeof
-    #     nbh['count_type_of'] = len(nbh['type_of'])
-    #     #get all subtypes
-    #     subtypes={}
-    #     for each in Nodetype.objects.filter(parent=self.id):
-    #         subtypes[each.title] =each.get_absolute_url()
-    #     nbh['contains_subtypes']=subtypes
-    #     nbh['count_contains_subtypes'] = len(nbh['contains_subtypes'])
-    #     # get all the objects inheriting this OT
-    #     contains_members_dict = {}
-    #     for each in self.member_objects.all():
-    #         contains_members_dict[each.title]= each.get_absolute_url()
-    #     nbh['contains_members'] = contains_members_dict
-    #     nbh['count_contains_members'] = len(nbh['contains_members'])
-    #     #get prior nodes
-    #     priornodes_dict = {}
-    #     for each in self.prior_nodes.all():
-    #         priornodes_dict[each.title]= each.get_absolute_url()
-    #     nbh['priornodes'] = priornodes_dict
-    #     nbh['count_priornodes'] = len(nbh['priornodes'])
-    #     #get posterior nodes
-    #     posteriornodes_dict = {}
-    #     for each in self.posterior_nodes.all():
-    #         posteriornodes_dict[each.title]= each.get_absolute_url()
-    #     nbh['posteriornodes'] = posteriornodes_dict
-    #     nbh['count_posteriornodes'] = len(nbh['posteriornodes'])
-    #     #get authors
-    #     author_dict = {}
-    #     for each in self.authors.all():
-    #         author_dict['User'] = each.get_absolute_url()
-    #     nbh['authors'] = author_dict
-    #     #get siblings
-    #     siblings={}
-    #     for each in self.get_siblings():
-    #         siblings[each.title]=each.get_absolute_url()
-    #     nbh['siblings']=siblings
-    #     nbh['count_siblings'] = len(nbh['siblings'])
-    #     #get Relations
-    #     relns={}
-    #     rellft={}
-    #     relrgt={}
-    #     if self.get_rendered_relations:
-    #         NTrelns=self.get_rendered_relations
-    #         for key,value in NTrelns.items():
-    #             if key=="rrelations":
-    #                 relrgt={}
-    #                 for rgtkey,rgtvalue in value.items():
-    #                     relnvalue={}
-    #                     if isinstance(rgtvalue,list):
-    #                         for items in rgtvalue:
-    #                             relnvalue[items.title]=items.get_absolute_url()
-    #                     else:
-    #                         relnvalue[rgtvalue]=rgtvalue.get_absolute_url()
-
-    #                     relrgt[rgtkey]=relnvalue
-
-    #             else:
-    #                 rellft={}
-    #                 relns['left']=rellft
-    #                 for lftkey,lftvalue in value.items():
-    #                     relnvalue={}
-    #                     if isinstance(lftvalue,list):
-    #                         for items in lftvalue:
-    #                             relnvalue[items.title]=items.get_absolute_url()
-    #                     else:
-    #                         relnvalue[lftvalue]=lftvalue.get_absolute_url()
-
-    #                     rellft[lftkey]=relnvalue
-
-    #     nbh['relations']=relrgt
-
-    #     nbh['relations'].update(rellft)
-    #     nbh['count_relations'] = len(nbh['relations'])
-    #     #get Attributes
-    #     attributes =self.get_attributes
-    #     nbh['attributes']=attributes
-    #     nbh['count_attributes'] = len(nbh['attributes'])
-    #     #get ATs
-    #     attributetypes={}
-    #     for each in self.subjecttype_of.all():
-    #         attributetypes[each.title]=each.get_absolute_url()
-    #     nbh['ats']=attributetypes
-    #     #get RTs as leftroles and rightroles
-    #     leftroles = {}
-    #     for each in self.left_subjecttype_of.all():
-    #         leftroles[each.title]=each.get_absolute_url()
-    #     nbh['leftroles']=leftroles
-    #     nbh['count_leftroles'] = len(nbh['leftroles'])
-    #     rightroles = {}
-    #     for each in self.right_subjecttype_of.all():
-    #         rightroles[each.title]=each.get_absolute_url()
-    #     nbh['rightroles']=rightroles
-    #     nbh['count_rightroles'] = len(nbh['rightroles'])
-    #     nbh['history']=history
-    #     return nbh
 
 
     @property
@@ -2852,7 +2647,7 @@ class Systemtype(Nodetype):
                                          blank=True, null=False)
     processtype_set = models.ManyToManyField(Processtype, related_name="processtype_set_of", verbose_name='Possible edges in the system',
                                             blank=True, null=False)
-    author_set = models.ManyToManyField(Author, related_name="author_set_of", verbose_name='Possible authors in the system',
+    author_set = models.ManyToManyField(User, related_name="author_set_of", verbose_name='Possible authors in the system',
                                             blank=True, null=False)
 
 
@@ -2870,7 +2665,7 @@ class Systemtype(Nodetype):
     def save(self, *args, **kwargs):
         self.nodemodel = self.__class__.__name__
         super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.
-        self.nbhood=self.get_rendered_nbh
+#        self.nbhood=self.get_rendered_nbh
         if GSTUDIO_VERSIONING:
             with reversion.create_revision():
                 super(Systemtype, self).save(*args, **kwargs) # Call the "real" save() method.

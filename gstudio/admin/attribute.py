@@ -16,12 +16,11 @@ else:
     parent_class = admin.ModelAdmin 
 
 class AttributeAdmin(parent_class):
-    fieldsets=((_('Attribute'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope')}),
+    fieldsets=((_('Attribute'),{'fields': ('metatypes','subject','attributetype','attributetype_scope','subject_scope','svalue','value_scope')}),
 
 )
     
     
-
     class Media:
         js = ("gstudio/js/gstudio.js",)
     

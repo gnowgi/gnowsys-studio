@@ -12,7 +12,7 @@ else:
 
 
 class AttributeIntegerFieldAdmin(parent_class):
-    fieldsets=((_('AttributIntegerField'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
+    fieldsets=((_('AttributIntegerField'),{'fields': ('metatypes','attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
 
 )
     prepopulated_fields = {'svalue': ('value', )}

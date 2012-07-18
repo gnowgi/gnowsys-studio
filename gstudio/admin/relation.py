@@ -15,7 +15,7 @@ else:
     parent_class = admin.ModelAdmin 
 
 class RelationAdmin(parent_class):
-    fieldsets=((_('Relation'),{'fields': ('relationtype','relationtype_scope','left_subject' ,'left_subject_scope','right_subject','right_subject_scope')}),
+    fieldsets=((_('Relation'),{'fields': ('relationtype','relationtype_scope','left_subject' ,'left_subject_scope','right_subject','right_subject_scope','metatypes')}),
 
 )
     

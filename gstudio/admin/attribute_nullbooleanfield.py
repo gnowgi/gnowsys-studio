@@ -11,7 +11,7 @@ else:
     parent_class = admin.ModelAdmin 
 
 class AttributeNullBooleanFieldAdmin(parent_class):
-    fieldsets=((_('AttributeNullBooleanField'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
+    fieldsets=((_('AttributeNullBooleanField'),{'fields': ('metatypes','attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
 
 )
     prepopulated_fields = {'svalue': ('value', )} 

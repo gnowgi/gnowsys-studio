@@ -12,7 +12,7 @@ else:
    parent_class = admin.ModelAdmin
 class AttributeBigIntegerFieldAdmin(parent_class):
 
-   fieldsets=((_('AttributeBigIntegerField'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
+   fieldsets=((_('AttributeBigIntegerField'),{'fields': ('metatypes','attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
 
 )
    prepopulated_fields = {'svalue': ('value', )} 

@@ -11,7 +11,7 @@ else:
     parent_class = admin.ModelAdmin 
 
 class AttributePositiveIntegerFieldAdmin(parent_class):
-    fieldsets=((_('AttributePositiveIntegerField'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
+    fieldsets=((_('AttributePositiveIntegerField'),{'fields': ('metatypes','attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
 
 )
     prepopulated_fields = {'svalue': ('value', )} 

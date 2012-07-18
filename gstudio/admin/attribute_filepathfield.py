@@ -10,7 +10,7 @@ else:
     parent_class = admin.ModelAdmin 
 
 class AttributeFilePathFieldAdmin(parent_class):
-    fieldsets=((_('AttributeFilePathField'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
+    fieldsets=((_('AttributeFilePathField'),{'fields': ('metatypes','attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
 
 )
     prepopulated_fields = {'svalue': ('value', )}

@@ -15,6 +15,6 @@ class AttributeBooleanFieldAdmin(parent_class):
 )
     prepopulated_fields = {'svalue': ('value',)} 
     def save_model(self, request, attributebooleanfield, form, change):
-    	attributebigintegerfield.title = attributeboofield.composed_sentence
-        attributebigintegerfield.slug =   slugify(attributebigintegerfield.title)
-        attributebigintegerfield.save()
+    	attributebooleanfield.title = attributebooleanfield.composed_sentence
+        attributebooleanfield.slug =   slugify(attributebooleanfield.title)
+        attributebooleanfield.save()

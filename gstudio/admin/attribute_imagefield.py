@@ -11,7 +11,7 @@ else:
     parent_class = admin.ModelAdmin 
 
 class AttributeImageFieldAdmin(parent_class):
-    fieldsets=((_('AttributeImageField'),{'fields': ('attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
+    fieldsets=((_('AttributeImageField'),{'fields': ('metatypes','attributetype','attributetype_scope','subject','subject_scope','svalue','value_scope','value')}),
 
 ) 
     prepopulated_fields = {'svalue': ('value', )}

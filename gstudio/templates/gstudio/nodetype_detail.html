@@ -309,17 +309,17 @@
 <a href="/{{value}}" onclick="return showAddAnotherPopup(this);">  {{key}} </a><nbsp>;<br/>
 {% endfor %}
 </p>
-<p>
-<b>Add Attributes:(</b>
-<a href="/admin/gstudio/attribute
-/add" class="add-another" id="add_id_{{ field }}" onclick="return showAddAnotherPopup(this);">
-<img width="10" height="10" alt="Add Another" src="/static/grappelli/img/admin/icon_addlink.gif">
-</a>
-<b>)</b>
-{% for i in object.getat %}
-<a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>;
-{% endfor %}
-</p>
+<!-- <p> -->
+<!-- <b>Add Attributes:(</b> -->
+<!-- <a href="/admin/gstudio/attribute -->
+<!-- /add" class="add-another" id="add_id_{{ field }}" onclick="return showAddAnotherPopup(this);"> -->
+<!-- <img width="10" height="10" alt="Add Another" src="/static/grappelli/img/admin/icon_addlink.gif"> -->
+<!-- </a> -->
+<!-- <b>)</b> -->
+<!-- {% for i in object.getat %} -->
+<!-- <a href="{{ get_absolute_url }}/objects/dynamicAttribute/save/{{ i }}/{{ object.title }}">{{ i }}</a><nbsp>; -->
+<!-- {% endfor %} -->
+<!-- </p> -->
 
 <p>
 <b>Add Relations:(</b>

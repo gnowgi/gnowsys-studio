@@ -21,8 +21,8 @@ class AttributeAdmin(parent_class):
 )
     
     
-    class Media:
-        js = ("gstudio/js/gstudio.js",)
+    # class Media:
+    #     js = ("gstudio/js/gstudio.js",)
     
     def save_model(self, request, attribute, form, change):
         attribute.title = attribute.composed_sentence

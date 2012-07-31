@@ -371,12 +371,13 @@ class NID(models.Model):
         reltype = [num for elem in reltype for num in elem] #this rqud for filtering
 
         for i in reltype:
-            titledict.update({i:i.id})
+            titledict.update({i.title:i.id})
 
 
         for i in range(len(titledict)):
             listval.append(Relationtype.objects.get(title = titledict.keys()[i]))
-            inverselist.append(str(titledict.keys()[i].inverse))
+            obj=Relationtype.objects.get(title=titledict.keys()[i])
+            inverselist.append(str(obj.inverse))
 
         for j in range(len(pt)):
             for i in range(len(listval)):
@@ -845,10 +846,16 @@ class Nodetype(Node):
                         model='IPAddressField'
                     aturl="admin/gstudio/attribute"+model.lower()+"/add/?attributetype="+str(each.id)+"&subject="+str(self.id)
                     atsubject=self.subject_of.all()
+                    """
+                    check whether Attribute for the current AT is already added or not
+                    """
                     fl=0
                     for eachs in atsubject:
                         if eachs.attributetype_id==each.id and eachs.subject_id==each.subjecttype.id:
                             fl=1
+                    """
+                    fl=0 means, Attribute for AT is not added, now show it as to be added
+                    " " "
                     if fl==0:
                         retats[each.title]=aturl
 
@@ -1263,8 +1270,12 @@ class Nodetype(Node):
         return get_url_shortener()(self)
 
     def __unicode__(self):
-        displayname="NT: "+self.title
-        return displayname
+        objref=str(self.ref)
+        reftitle=str(self.ref.title)
+        objref=objref.replace(reftitle,"")
+        objtype=objref.strip()
+        return objtype + " " + self.title
+    
 
     @property
     def memberof_sentence(self):

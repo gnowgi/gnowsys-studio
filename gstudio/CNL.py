@@ -1,7 +1,7 @@
 from gstudio.models import *
 from django.template.defaultfilters import slugify
 import inflect
-
+import os
 
 def get_CNL_list(self):
 	x = []
@@ -433,7 +433,7 @@ def istv_title(self):
 #Checks if RT-inverse is a transitive verb finite singular or an iterative adjective
 def istv_inverse(self):
         p = inflect.engine()        
-        destination = open( "/home/user/gnowsys-studio/demo/aFile.pl", "r+"  )        
+        destination = open( os.path.join(os.getcwd(),'aFile.pl'), "r+"  )        
         f = destination.read()
         a_t = self.inverse
         a = slugify(a_t)               
@@ -473,7 +473,7 @@ def get_attr_sentence(self):
 
 def get_list_relation(self, lr):
       """Returns the list of relations"""     
-      gbr = self.get_relations1
+      gbr = self.get_rendered_relations
       if not gbr:
             pass
       else:
@@ -540,6 +540,7 @@ def get_CNL_sentence_RT(self, lst, rst, detail_level):
                    left_subtype = sen                    
          else:
                  """If llist is not a list"""
+                 lst=NID.objects.get(title=lst)
                  if lst.ref.__class__.__name__ is 'Gbobject':  
                      left_subtype = lst
                  else:

@@ -855,7 +855,7 @@ class Nodetype(Node):
                             fl=1
                     """
                     fl=0 means, Attribute for AT is not added, now show it as to be added
-                    " " "
+                    """
                     if fl==0:
                         retats[each.title]=aturl
 

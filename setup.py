@@ -71,5 +71,6 @@ setup(name='gnowsys-studio',
                         'diff-match-patch>=20120106',
                         'ox>=2.0.356',
                         'pandora_client>=0.2.94',
+			'django-pagination>=1.0.7',
                     
                         ])

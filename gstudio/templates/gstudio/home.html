@@ -1,6 +1,6 @@
-{% load objectapp_tags i18n %}
-{% load gstudio_tags i18n %}
 
+{% load gstudio_tags i18n %}
+{% load objectapp_tags i18n %}
 {% load adminmedia  grp_tags %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
@@ -114,6 +114,10 @@
     <div id="header" >
       {% include "gstudio/_header.html" %}
     </div>
+   <div class="tags">
+	<h3>{% trans "Tags" %}</h3>
+  	{% get_tag_cloud %}
+   </div>
 	
     <div id="main">
       <center><font size="23" color="#4d659e"><b>{{ site }}</b></font></center>
@@ -128,7 +132,7 @@
 <center><p style = " font-size : 19px ; color : #4d659e"><b>Let us collaboratively construct semantic knowledge networks with a special focus on education.<a href="/more/"><font color="red">more</font></a></b></p></center>
     <div class="bottom">
       <div class="authors">
-	<h3>{% trans "Recent Authors" %}</h3>
+	<h3>{% trans "Recents Authors" %}</h3>
 	{% get_authors %}
       </div>
 	

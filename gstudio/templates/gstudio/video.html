@@ -1,181 +1,199 @@
 {% extends "gstudio/base.html" %}
+{% load pagination_tags %}
 {% load i18n %}
 {% load adminmedia grp_tags %}
+{% load i18n comments gstudio_tags %}
+
 {% block content %}
+<script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "600px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ 
+ $("#graphcss").hide();   
+  });
+var i = 0;
+</script>
+<style type="text/css">
+#div2
+{
+background-color:#E8E8E8 ;
+}
+#div1
+{
+background-color:white
+}
+#divpost
+{
+position:relative;
+}
+#divsearch
+{
+position:absolute;
+margin-left:61%;
+margin-top:-23%;
+}
+</style>
+
 {% if user.is_authenticated %}
-<h1 style="color: teal;">Welcome to the VideoCore</h1>
-<p><img id="zoomable" src="{% admin_media_prefix %}img/videos.jpg" alt="{{ image.title }}" class="left" /></p>
-<h2>Logged in as: {{user.username}}</h2>
-<br>
+
+{% autopaginate vids 10 %}
+
+
+<h2 style="color: teal;">Video Library</h2>
+<br/>
+<div id="divpost">
 <form enctype="multipart/form-data" method="post" action="">
 {% csrf_token %}
-<p><h4 style="color: black;">Post Video:</h4><input type="file" name="clip[]" multiple="multiple" /></p>
+<p><h4 style="color: black;">Submit Videos:</h4>Video:&nbsp;<input type="file" name="clip" multiple="multiple" /></p><br/>
+Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
 <input type="hidden" name="user" value={{user.username}}>
-<input type="submit" value="Upload">
+<input type="hidden" name="userpassword" value={{user.password}}>
+<input type="hidden" name="useremail" value={{user.email}}>
+<br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="submit" value="Upload" onclick="return myupload();" >
+<input type="hidden" name="upload" id = "uploadid">
+<script type="text/javascript">
+function myupload()
+{
+
+var prompta = prompt("Enter your password")
+document.getElementById("uploadid").setAttribute("value",prompta);
+}
+</script>
+
 </form>
-<br>
+</div>
+<div id="divsearch">
 <form method="post" action="">
 {% csrf_token %}
-<h4 style="color: black;">Search Video</h4>
+<h4 style="color: black;">Search Videos:</h4>
 <p><input type="text" name="svid" value={{val}}></p>
-<h4 style="color: black;">Sort videos by:</h4>
-<p><div align="center">
+
+
 <select name="mydropdown">
 <option value="title">Title</option>
 <option value="creation_date">Creation Date</option>
 </select>
-</div>
+
 <input type="submit" name="norm" value="Search">
 <input type="submit" name="spe" value="Search by User">
 </form>
 <br>
-<form method="post" action="">
+<form method="post" action="/gstudio/resources/videos/">
 {% csrf_token %}
 <input type="hidden" name="user" value={{user.username}}>
 <input type="submit" name="fav" value="View Favourites">
 </form>
-
-<h4 style="color: teal;">VIDEOS</h4><br>
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-  
-  <script>
- 
-       
-$(function() {
-    
-
-
-
-
-
-$('#progressbar').progressbar({ value: 0.0001 }); 
-    $pVal = $('.ui-progressbar-value').addClass('ui-corner-right');
-    var pGress = setInterval(function() { //generate our endless loop
-        var pCnt = $pVal.width(); // get width as int
-        // generate a random number between our max 100 and it's half 50, 
-        // this is optional, and make the bar move back and forth before
-        // we reach the end.
-        var rDom = Math.floor(Math.random() * (100 - 0 + 1) + 0);
-       var step = rDom >= 100 ? 100: rDom; // reached our max ? reset step.
-       doAnim(step);
-    },1000);
-    var doAnim = function(wD) {
-        // complete easing list http://jqueryui.com/demos/effect/easing.html
-        $pVal.stop(true).animate({width: wD + '%'},1000, 'easeOutBack');
-        if (wD >= 100) clearInterval(pGress) /* run callbacks here */
-    }
-
- var time = new Date().getTime();
-     $(document.body).bind("mousemove keypress", function(e) {
-         time = new Date().getTime();
-     });
-
-     function refresh() {
-         if(new Date().getTime() - time >= 200000) 
-             window.location.reload(true);
-         else 
-             setTimeout(refresh, 10000);
-     }
-
-     setTimeout(refresh, 10000);
-
-
-
-
-
-
-});
-
-  
-
-
-
-
-
-</script>
-
-
- <div id="progressbar"></div>
-
-
-
-
-
-
-
-<br>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 {% if fav %}
-<h4 style="color: teal;">Favourite Videos</h4>
+<h2 style="color: teal;">Favourite Videos</h2><br/>
+{% else %}
+<h2 style="color: teal;">List of Videos in the library </h2><br/>
 {% endif %}
-<br>
+
 
 {% for video in vids %}
-<iframe src="{{video.rurl}}/embed?in=0&out=10000&view=video" width="256" height="144" allowfullscreen></iframe>
-<h4>{{video.title}}</a></h4>
+<!--<iframe src="{{video.rurl}}/embed?in=0&out=10000&view=video" width="256" height="144" allowfullscreen></iframe>-->
+
+
+<div id="divvideo">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0){
+document.getElementById("divvideo").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divvideo").setAttribute("id","div2");
+}
+
+</script>
+<font size="4">{{video.title}}</font>
 <form enctype="multipart/form-data" method="post" action="" target="_blank">
 {% csrf_token %}
 <input type="hidden" name = "full" value ={{video.slug}}>
-<input type="submit" value="FullScreen">
-</form>	
-<h4><a href={{video.rurl}} target="_blank">Right click to download</a></h4><br>
-<font color = 'black'>Posted By : </font>
+<input type="submit" value="Play">
+	
+<a href={{video.rurl}} target="_blank">Right click to download</a><br>
+<!-- <font color = 'black'>Posted By : </font> -->
 {% for author in video.get_nbh.posted_by %}
-  <font color = 'teal'>{{author}}</font>
+
+  <input type="hidden" name="authorname" value="{{ author }}"  />
 {% endfor %}
-<br>
-<font color = 'black'>Posted At :</font>
+
+<!-- <br> -->
+<!-- <font color = 'black'>Posted At :</font> -->
 {% for date in video.get_nbh.creation_day %}
- <font color = 'teal'>{{date}}</font>
+ <input type="hidden" name="datename" value="{{ date }}"  />
 {% endfor %}
-<br>
-{% for we in video.get_nbh.source %}		
-		<font color = 'black'>Location: </font>
+ <input type="hidden" name="titlename" value="{{ video.title }}"  />
+
+<!-- <br> -->
+{% for we in video.get_nbh.source %}
+		<!-- <font color = 'black'>Location: </font>  -->
 			{% for map in video.get_nbh.map_link %}
-				{% ifnotequal map '' %}		
-					<a href=http://maps.google.co.in/maps?hl=en&cp=43&gs_id=6&xhr=t&q={{map}}&bav=on.2,or.r_gc.r_pw.r_qf.,cf.osb&biw=1304&bih=680&um=1&ie=UTF-8&sa=N&tab=wl target="_blank">{{we}}</a>
-				{% endifnotequal %}			
+				{% ifnotequal map '' %}
+		                    <input type="hidden" name="mapname" value="{{ map }}"  />
+				     <input type="hidden" name="wename" value="{{ we }}"  />
+					<!-- <a href=http://maps.google.co.in/maps?hl=en&cp=43&gs_id=6&xhr=t&q={{map}}&bav=on.2,or.r_gc.r_pw.r_qf.,cf.osb&biw=1304&bih=680&um=1&ie=UTF-8&sa=N&tab=wl target="_blank">{{we}}</a> -->
+				{% endifnotequal %}
 			{% endfor %}
 		{% endfor %}
-<br>
-<font color = 'black'>Current rating is </font><h4>{{ video.rating.get_rating }}</h4>
-<br>
-<form method="post" action="">
-{% csrf_token %}
-<input name="star1" type="radio" value=1 class="star"/>
-<input name="star1" type="radio" value=2 class="star"/>
-<input name="star1" type="radio" value=3 class="star"/>
-<input name="star1" type="radio" value=4 class="star"/>
-<input name="star1" type="radio" value=5 class="star"/>
+<!-- <br> -->
+ <input type="hidden" name="contentname" value="{{ video.content }}" />
+ <input type="hidden" name="ratename" value="{{ video.rating.get_rating }}" />
+
+<!-- <br> -->
+<!-- <form method="post" action=""> -->
+<!-- {% csrf_token %} -->
+<!-- <input name="star1" type="radio" value=1 class="star"/> -->
+<!-- <input name="star1" type="radio" value=2 class="star"/> -->
+<!-- <input name="star1" type="radio" value=3 class="star"/> -->
+<!-- <input name="star1" type="radio" value=4 class="star"/> -->
+<!-- <input name="star1" type="radio" value=5 class="star"/> -->
   
 <input type="hidden" name="vidid" value={{video.id}}>
-<input type="submit" value="Rate it!!!">
 </form>
-<br>
-<form method="post" action="">
-{% csrf_token %}
-<input type="hidden" name="favid" value={{video.id}}>
-<input type="hidden" name="favusr" value={{user.username}}>
-<input type="submit" value="Add to favourites">
-</form><br>
-<hr width="100%" style="height:5px;" color="black"/>
-<br>
-{% endfor %}<br>
+<!-- <input type="submit" value="Rate it!!!"> -->
+<!-- </form> -->
+<!-- <br> -->
+<!-- <form method="post" action=""> -->
+<!-- {% csrf_token %} -->
+<!-- <input type="hidden" name="favid" value={{video.id}}> -->
+<!-- <input type="hidden" name="favusr" value={{user.username}}> -->
+<!-- <input type="submit" value="Add to favourites"> -->
+<!-- </form><br> -->
+<!-- <hr width="100%" style="height:5px;" color="black"/> -->
+<!-- <br> -->
+</div>
 
-<br><br>
-<a href="http://www.facebook.com" target="_blank">Follow us on Facebook</a>
+{% endfor %}
+
+
+<br>
 {% else %}
  
 <h2 style="color: indigo;">Sorry you need to log in to see this content !</h2>
  
 {% endif %}
+<h2>
+{% paginate %}</h2>
+
 {% endblock %}
 
 {% block chart %}
-<br> <br><br><br><br><br><br><br><br><br><br><br><br><br>
-
-<br><br><br><br><br>
+<br> 
 
 <br>
 {% endblock %}

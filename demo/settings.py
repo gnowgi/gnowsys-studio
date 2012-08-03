@@ -34,11 +34,12 @@ MEDIA_URL = '/static'
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
 MEDIA_ROOTNEW2 = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
 MEDIA_ROOTNEW3 = os.path.join(os.path.dirname(__file__), '../gstudio/static/gstudio/documents')
-MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../media')
+MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../demo/media')
 #MEDIA_ROOT = '/static'
 #MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
 PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
 PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
+VIDEO_PANDORA_URL = os.getenv("HOME")+"/.ox/client.json"
 FILE_UPLOAD_MAX_MEMORY_SIZE= 524288000
 JPEG_ROOT = None
 
@@ -98,6 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'pagination.middleware.PaginationMiddleware',
     )
 
 ROOT_URLCONF = 'demo.urls'
@@ -148,6 +150,7 @@ INSTALLED_APPS = (
     'fourstore',
     'HTTP4Store',
     'html5lib',
+    'pagination',
     # Uncomment the south entry to activate south for database migrations
     # Please do install south before uncommenting
     # command: sudo pip install south 

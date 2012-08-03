@@ -27,12 +27,15 @@ def docu(request):
 	q=p.get_nbh['contains_members']
 	if request.method=="POST":
 		user = request.POST.get("user","")
+		content= request.POST.get("contenttext","")
 		sdoc = request.POST.get("sdoc","")
 		dn = request.POST.get("dn","")
 		sub3 = request.POST.get("mydropdown","")
 		rating = request.POST.get("star1","")
 		docid = request.POST.get("docid","")
 		delete = request.POST.get("delete","")
+		addtags = request.POST.get("addtags","")
+		texttags = request.POST.get("texttags","")
 		if rating :
         	 	rate_it(int(docid),request,int(rating))
 		if delete != "":
@@ -61,13 +64,20 @@ def docu(request):
 				variables = RequestContext(request,{'documents':vido,'val':sdoc})
 				template = "gstudio/docu.html"
 				return render_to_response(template, variables)
+	
+		if addtags != "":
+			i=Gbobject.objects.get(id=docid)
+			i.tags = i.tags+ ","+str(texttags)
+			i.save()
+
+
 		a=[]
 		for each in request.FILES.getlist("doc[]",""):
 			a.append(each)
 		if a != "":
 			for f in a:
 				save_file(f)
-				create_object(f,user)
+				create_object(f,user,content)
 			vars=RequestContext(request,{'documents':q})
 			template="gstudio/docu.html"
 			return render_to_response(template, vars)	
@@ -82,7 +92,7 @@ def save_file(file, path=""):
         	fd.write(chunk)
     		fd.close()
 
-def create_object(file,log):
+def create_object(file,log,content):
 	p=Gbobject()
 	p.title=file._get_name()
 	p.rurl=MEDIA_ROOTNEW2+"p.title"
@@ -95,7 +105,7 @@ def create_object(file,log):
 		else:
 			final = final+each1	
 	p.slug=final
-	p.content=' '
+	p.content=content
 	p.status=2
 	p.save()
 	p.sites.add(Site.objects.get_current())

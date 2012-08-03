@@ -1,4 +1,127 @@
-<html><body>
 {% load adminmedia grp_tags %}
-<img src="{% admin_media_prefix %}img/{{image.title}}" >
+{% load i18n comments gstudio_tags %} 
+{% load tagging_tags comments i18n %}
+
+<html>
+<head>
+<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
+<link rel="shortcut icon" href="{{ STATIC_URL }}gstudio/img/favicon.ico" />
+</head>
+<body>
+
+<img src="{% admin_media_prefix %}img/{{image.image}}" >
+<br/>
+<font color = 'black'>Name : </font><font color = 'teal'>{{image.title}}</font>
+<br/>
+<font color = 'black'>Posted By : </font>
+{% for author in image.authors.all %}
+  <font color = 'teal'>{{author}}</font>
+{% endfor %}
+<br>
+
+<font color = 'black'>Posted At : </font><font color = 'teal'>{{image.creation_date}}</font>
+<br/>
+<font color = 'black'>Description:</font><font color = 'teal'>{{ image.content }}</font>
+<br/>
+
+{% ifequal image.rating.get_rating 0 %}
+
+<font color = 'black'>Current rating is: &nbsp;<font color = 'teal'> No rating yet </font></font>
+{% else %}
+<font color = 'black'>Current rating is: &nbsp; <font color = 'teal'> {{ image.rating.get_rating }} </font></font>
+{% endifequal %}
+<br>
+<form method="post" action="">
+{% csrf_token %}
+<input name="star1" type="radio" value=1 class="star"/>
+<input name="star1" type="radio" value=2 class="star"/>
+<input name="star1" type="radio" value=3 class="star"/>
+<input name="star1" type="radio" value=4 class="star"/>
+<input name="star1" type="radio" value=5 class="star"/>
+</br>
+<input type="hidden" name="imgid" value={{image.id}}>
+<input type="submit" value="Rate it!!!">
+<script type="text/javascript">
+function myFunction()
+{
+     document.this_form.action = "/gstudio/resources/images/";
+}
+</script>
+<input type="submit" value="Back" onclick()="myFunction()">
+</form>
+<br/>
+
+<form method="post" action="">{% csrf_token %}
+<input type="hidden" name="imgid" value={{image.id}}>
+<input type="text" value="" name="texttags"  />
+<input type="submit" value="Add Tags" name="addtags" />
+</form>
+<br/>
+<div class="tags">
+    <p class="gbobject-tags span-16 last">
+      <strong>{% trans "Tags" %}</strong> :
+      {% tags_for_object image as tag_list %}
+      {% for tag in tag_list %}
+      <a href="{% url objectapp_tag_detail tag %}"
+         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+      {% empty %}
+      <span>{% trans "No tags" %}</span>
+      {% endfor %}
+    </p>
+</div>
+<br/><br/>
+{% block nodetype-comments %}
+<div id="comments" class="">
+  <h5>{% trans "Comments" %}</h5>
+  {% with image.comments as comment_list %}
+  {% if comment_list.count %}
+  <ol id="comment-list" class="span-15 last">
+    {% for comment in comment_list %}
+    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in image.authors.all %} post-author{% endif %} span-15 last">
+      <div class="span-2">
+	<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
+      </div>
+      <div class="comment-body span-13 last">
+	<div class="comment-author span-13 last">
+	  {% if comment.url %}
+	  <a href="{{ comment.url }}" class="fn url" title = "{{ comment.user_name }}">{{ comment.user_name }}</a>
+	  {% else %}
+	  {{ comment.user_name }}
+	  {% endif %}
+	  {% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+	</div>
+	<div class="span-13 last">
+	  {{ comment.comment|linebreaks }}
+	</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+    {% if not image.comments_are_open %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% else %}
+    {% if image.comments_are_open %}
+  <p>{% trans "No comments yet." %}</p>
+    {% else %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+
+
+<div class="commentForm span-16 last">
+  {% render_comment_form for image %}
+</div>
+
+
+
+
+<br>
+<hr width="100%" style="height:5px;" color="black"/>
+<br>
+
 </html></body>

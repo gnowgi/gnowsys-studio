@@ -28,6 +28,7 @@ def image(request):
 	q=p.get_nbh['contains_members']
 	if request.method=="POST":
 		title = request.POST.get("title1","")
+		content= request.POST.get("contenttext","")
 		simg = request.POST.get("simg","")
 		sub3 = request.POST.get("mydropdown","")
 		user = request.POST.get("user","")
@@ -36,7 +37,10 @@ def image(request):
 		imgid = request.POST.get("imgid","")
 		pict = request.POST.get("pict","")
 		fulid = request.POST.get("fulid","")
-		if fulid != "":
+		show = request.POST.get("Show","")
+		addtags = request.POST.get("addtags","")
+		texttags = request.POST.get("texttags","")
+		if show != "":
 			i=Gbobject.objects.get(id=fulid)
 			vars=RequestContext(request,{'image':i})
 			template="gstudio/fullscreen.html"
@@ -69,6 +73,14 @@ def image(request):
 				variables = RequestContext(request,{'images':vido,'val':simg})
 				template = "gstudio/image.html"
 				return render_to_response(template, variables)
+
+
+		if addtags != "":
+			i=Gbobject.objects.get(id=imgid)
+			i.tags = i.tags+ ","+str(texttags)
+			i.save()
+
+		
 		a=[]
 		for each in request.FILES.getlist("image[]",""):
 			a.append(each)
@@ -76,12 +88,12 @@ def image(request):
 			i=0
 			for f in a:
 				if i==0:
-					save_file(f,title)
-					create_object(f,user,title)
+					save_file(f,title,user)
+					create_object(f,user,title,content)
 					i=i+1
 				else:	
-					save_file(f,title+'_'+str(i))
-					create_object(f,user,title+'_'+str(i))
+					save_file(f,title+'_'+str(i),user)
+					create_object(f,user,title+'_'+str(i),content)
 					i=i+1
 			p=Objecttype.objects.get(title="Image")
 			q=p.get_nbh['contains_members']
@@ -92,25 +104,32 @@ def image(request):
 	template="gstudio/image.html"
 	return render_to_response(template, vars)
 
-def save_file(file,title, path=""):
+def save_file(file,title, user, path=""):
 	filename = title
-    	fd = open('%s/%s' % (MEDIA_ROOTNEW2, str(path) + str(filename)), 'wb')
+	os.system("mkdir -p "+ MEDIA_ROOTNEW2+"/"+user)
+    	fd = open('%s/%s/%s' % (MEDIA_ROOTNEW2, str(user),str(path) + str(file)), 'wb')
     	for chunk in file.chunks():
         	fd.write(chunk)
     		fd.close()
 
-def create_object(file,log,title):
+def create_object(f,log,title,content):
 	p=Gbobject()
+	filename = str(f)
 	p.title=title
-	p.image=p.title
+	p.image=log+"/"+filename
 	final = ''
-	for each1 in p.title:
+	for each1 in filename:
 		if each1==" ":
 			final=final+'-'
 		else:
 			final = final+each1	
-	p.slug=final
-	p.content=' '
+	i=0
+	dirname = ""
+	while final[i] != ".":
+		dirname = dirname + final[i]
+		i=i+1
+	p.slug=dirname
+	p.content=content
 	p.status=2
 	p.save()
 	p.sites.add(Site.objects.get_current())

@@ -1,29 +1,69 @@
 <html>
 <body>
 {% extends "gstudio/base.html" %}
+{% load pagination_tags %}
 {% load adminmedia grp_tags %}
 {% load i18n %}
 {% block content %}
+<script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "600px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ 
+ $("#graphcss").hide();   
+  });
+
+var i = 0;
+</script>
+<style type="text/css">
+#div2
+{
+background-color:#E8E8E8 ;
+}
+#div1
+{
+background-color:white
+}
+
+#divpost
+{
+position:relative;
+}
+#divsearch
+{
+position:absolute;
+margin-left:61%;
+margin-top:-35%;
+}
+</style>
 {% if user.is_authenticated %}
-<h1 style="color: teal;">Welcome to the ImageNation</h1>
-<p><img id="zoomable" src="{% admin_media_prefix %}img/imagenation.jpg" alt="{{ image.title }}" class="left" /></p>
-<h2>Logged in as: {{user.username}}</h2>
-<br>
+{% autopaginate images 10 %}
+
+<h2 style="color: teal;">Image Library</h2>
+<div id="divpost">
 <form enctype="multipart/form-data" method="post" action="">
 {% csrf_token %}
-<h4 style="color: black;">Post Image:</h4>
-<p>Title: <input type="text" name="title1"></p><br>
-<p><input type=file name="image[]" multiple="multiple" /></p>
-<input type="hidden" name="user" value={{user.username}}>
-<input type="submit" value="Post">
+
+<h1 style="color: black; margin-left: 0px;">Post Image:</h1>
+Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="title1"><br/><br/>
+Image:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type=file name="image[]" multiple="multiple" /><br/><br/>
+Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
+<input type="hidden" name="user" value={{user.username}}><br/><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="  Post  " size="900" name="post">
 </form>
-<br>
+</div>
+
+<div id="divsearch">
 <form method="post" action="">
 {% csrf_token %}
-<h4 style="color: black;">Search Image</h4>
+<h1 style="color: black; margin-left: 0px;">Search Image:</h1>
 <p><input type="text" name="simg" value={{val}}></p>
-<h4 style="color: black;">Sort images by:</h4>
-<p><div align="center">
+<br/>
+<p><div align="left">
 <select name="mydropdown">
 <option value="title">Title</option>
 <option value="creation_date">Creation Date</option>
@@ -31,40 +71,61 @@
 </div>
 <input type="submit" value="Search">
 </form>
+</div>
 <br>
+
+ <div>
 <h4 style="color: teal;">IMAGES</h4>
 {% for image in images %}
- <div class="gbobject-body span-16 last">
-    <div class="gbobject-image">
-      <p>
-<img src="{% admin_media_prefix %}img/{{image.title}}" width="300" height="225" alt="{{ image.title }}" >
+
+
+    <div class="gbobject-image" id = "divimage">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0){
+document.getElementById("divimage").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divimage").setAttribute("id","div2");
+}
+
+</script>
+      <h2>{{image.title}}</h2>
+       <form method="post" action="">{% csrf_token %}
+       <input type="hidden" name="fulid" value={{image.id}}>
+       <input type="submit" value="Show" name="Show">
+
+    <!--   <p> -->
+<!-- <img src="{% admin_media_prefix %}img/{{image.title}}" width="300" height="225" alt="{{ image.title }}" > -->
        
-      </p>
-    </div>
-    <div class="gbobject-content">
-     <!-- {{ object_content }}-->
-    </div>
-  </div>
-<h4>{{image.title}}
-<form method="post" action="">
-{% csrf_token %}
-<input type="hidden" name="fulid" value={{image.id}}>
-<input type="submit" value="View Fullscreen">
-</form>
-</h4>
-<font color = 'black'>Posted By : </font>
+<!--       </p> -->
+ 
+   <!--  <div class="gbobject-content"> -->
+<!--      <\!-- {{ object_content }}-\-> -->
+<!--     </div> -->
+<!--  </div>--> 
+<!-- <h4>{{image.title}} -->
+<!-- <form method="post" action=""> -->
+<!-- {% csrf_token %} -->
+<!-- <input type="hidden" name="fulid" value={{image.id}}> -->
+<!-- <input type="submit" value="View Fullscreen"> -->
+<!-- </form> -->
+<!-- </h4> -->
+<!-- <font color = 'black'>Posted By : </font> -->
+<!-- {% for author in image.authors.all %} -->
+<!--   <font color = 'teal'>{{author}}</font> -->
+<!-- {% endfor %} -->
+<!-- <br> -->
+<!-- <font color = 'black'>Posted At : </font><font color = 'teal'>{{image.creation_date}}</font> -->
+<!-- <font color = 'black'>Current rating is {{ image.rating.get_rating }} </font> -->
+ 
+
+
 {% for author in image.authors.all %}
-  <font color = 'teal'>{{author}}</font>
-{% endfor %}
-<br>
-<font color = 'black'>Posted At : </font><font color = 'teal'>{{image.creation_date}}</font>
-<br>
-{% for author in image.authors.all %}
-	{% ifequal author.username user.username %} 
-<form method="post" action="" onclick="return makesure();">
-{% csrf_token %}
+	{% ifequal author.username user.username %}
 <input type="hidden" name="pict" value={{image.id}}>
-<input type="submit" name="delete" value="Delete">
+<input type="submit" name="delete" value="Delete" onclick="return makesure();">
 <input type="hidden" name="user" value={{user.username}}>
 </form>
 <script type="text/javascript">
@@ -86,34 +147,38 @@
 		</script>
  
 		<input type="button" onclick="myFunction()" value="Delete" />
+		</form>
 	{% endifequal %}
 {% endfor %}
-<br>
-<font color = 'black'>Current rating is </font><h4>{{ image.rating.get_rating }}</h4>
-<br>
-<form method="post" action="">
-{% csrf_token %}
-<input name="star1" type="radio" value=1 class="star"/>
-<input name="star1" type="radio" value=2 class="star"/>
-<input name="star1" type="radio" value=3 class="star"/>
-<input name="star1" type="radio" value=4 class="star"/>
-<input name="star1" type="radio" value=5 class="star"/>
-</br>
-<input type="hidden" name="imgid" value={{image.id}}>
-<input type="submit" value="Rate it!!!">
-</form>
-<br>
-<hr width="100%" style="height:5px;" color="black"/>
-<br>
-{% endfor %}<br>
-<br><br>
+
+
+<!-- <br> -->
+<!-- <form method="post" action=""> -->
+<!-- {% csrf_token %} -->
+<!-- <input name="star1" type="radio" value=1 class="star"/> -->
+<!-- <input name="star1" type="radio" value=2 class="star"/> -->
+<!-- <input name="star1" type="radio" value=3 class="star"/> -->
+<!-- <input name="star1" type="radio" value=4 class="star"/> -->
+<!-- <input name="star1" type="radio" value=5 class="star"/> -->
+<!-- </br> -->
+<!-- <input type="hidden" name="imgid" value={{image.id}}> -->
+<!-- <input type="submit" value="Rate it!!!"> -->
+<!-- </form> -->
+<!-- <br> -->
+<!-- <hr width="100%" style="height:5px;" color="black"/> -->
+<!-- <br> -->
+</div>
+
+{% endfor %}
+</div>
 {% else %}
  
 <h2 style="color: indigo;">Sorry you need to log in to see this content !</h2>
  
 {% endif %}
- 
- 
+ <h2>
+{% paginate %}</h2>
+
 {% endblock %}
 </body>
 </html>

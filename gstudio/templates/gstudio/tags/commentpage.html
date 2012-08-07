@@ -1,0 +1,75 @@
+
+
+
+
+{% load gstudio_tags %}
+{% load i18n %}
+
+
+
+{% if comment.posterior_nodes.count %}
+<!--<ul style="display: none;">-->
+<ul>
+{% for child in comment.posterior_nodes.all %}
+       <!-- Flag1 outside {{flag}}-->
+        {% for each in child.authors.all %}
+        	{% ifequal idusr admin_id %}
+			<font style = "color:red;" size = 3><li>{{child.title}}</font></br> {{child.content}}
+			<form method="post" action=".">{% csrf_token %}
+			<!-- <textarea name = "replytosection" id="replytosection" rows="10" cols="50"></textarea> -->
+			<!-- <p>org -->
+			<!-- <textarea name = "orgreply" id="orgreplysection" rows="10" cols="50"></textarea> -->
+			<!-- </p> -->
+		  	<input type="hidden" value={{child.id}} name = "parentid">
+			<input type="hidden" value={{idusr}} name="idusr">
+			<!-- <input type="button"  id="createsubsection" value="Create Sub"> -->
+		    	<!-- <input type="submit" value="Create Subsection"> -->
+			<!-- <input type="button" value="Reply" id="reply"></br> -->
+			<!-- <input type="button" name="savereply" id="savereply" value="Save Reply"></p></br> -->
+			<input type="button" id="editsubsec" value="Edit"/>
+			<input type="button" id="savesubsec1" value="Save"/>
+			<input type="button" id="subsecorg" value="{{child.content_org}}" style="visibility:hidden;"/>
+			<input type="button" id="subsecid" value="{{child.id}}" style="visibility:hidden;"/>	
+			<input type="checkbox" name="del_comment" value="delete_comment">
+        		<input type="submit" value="Delete this Subsection">
+			</form>
+			{% show_commentpage child idusr flag admin_id attribute%}
+			</li>
+        	{% else %}
+			{% ifequal idusr each.id %}
+				<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
+				<form method="post" action=".">{% csrf_token %}
+				<input type="text" name = "replytosection">
+			  	<input type="hidden" value={{child.id}} name = "parentid">
+				<input type="hidden" value={{idusr}} name="idusr">
+			    	<input type="submit" value="Reply to section">
+				<input type="checkbox" name="del_comment" value="delete_comment">
+        			<input type="submit" value="delete this comment">
+				</form>
+				{% show_commentpage child idusr flag admin_id attribute%}
+				</li>
+			{% else %}
+				{% ifequal attribute "true" %}
+                                 
+				<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
+				<form method="post" action=".">{% csrf_token %}
+				<input type="text" name = "replytosection">
+			  	<input type="hidden" value={{child.id}} name = "parentid">
+				<input type="hidden" value={{idusr}} name="idusr">
+			    	<input type="submit" value="Reply to section">
+				<input type="checkbox" name="del_comment" value="delete_comment">
+        			<input type="submit" value="delete this comment">
+				</form>
+				{% show_commentpage child idusr flag admin_id attribute%}
+				</li>
+	       	 		{% endifequal %}
+                         {% endifequal %}
+               {% endifequal %}
+       {% endfor %}
+	
+	
+{% endfor %}
+</ul>
+{% endif %}
+
+

@@ -1,0 +1,178 @@
+{% extends "gstudio/base.html" %}
+{% load i18n comments gstudio_tags %} 
+{% load adminmedia grp_tags %}
+{% load gstudio_tags %}
+{% load pagination_tags %}
+<!-- {% load i18n %} -->
+{% block content %}
+<style>
+<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
+</style>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "500px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ 
+ $("#graphcss").hide();   
+  });
+
+</script>
+
+{% if user.is_authenticated %}
+{% autopaginate section 1 %}
+   <!-- <input type="button" value="Home" onClick="location.href='/gstudio/user/wikipage/{{user.username}}';"> -->
+   <h1>{{ page_ob.title }}</h1> 
+  Wikipage posted on : {{page_ob.creation_date}}
+		by {% for author in page_ob.authors.all %} 
+   			{{author}}
+   		{% endfor %}</br></br>
+
+   {% with page_ob.html_content|safe as page_ob_content %}
+	
+                  {{page_ob_content}}
+   {% endwith %}
+
+	<input type="button" id="editpagecontent" value="Edit"/>
+	<input type="button" id="savepagecontent" value="Save"/>
+	<input type="button" id="pageid" value="{{page_ob.id}}" style="visibility:hidden;"/>
+	<input type="button" id="pageorg" value="{{page_ob.content_org}}" style="visibility:hidden;"/>
+
+	<!-- <h3> This Discussion was initiated by {{admin_m.username}}</h3> -->
+
+   <!-- <h>You are logged in as <font color="blue">{{user.username}}</font></h> -->
+        
+   <!-- {%if flag %} -->
+   <!-- <div id="Release"> -->
+   <!-- <form method="post" action=".">{% csrf_token %} -->
+   <!-- <input type="submit" value="Release Replies"> -->
+   <!--     <input type="hidden" value="hits" name = "pagerelease"> -->
+   <!-- </form> -->
+   <!-- </div> -->
+   <!-- <div> -->
+   <!-- <form method="post" action=".">{% csrf_token %} -->
+   <!-- <input type="submit" value="Block Replies"> -->
+   <!--     <input type="hidden" value="hits" name = "block"> -->
+   <!-- </form> -->
+   <!-- </div> -->
+   <!-- {% endif %} -->
+   <!-- </br> -->
+
+
+	<form method="post" action=".">{% csrf_token %}
+<!--	<input type="hidden" value="{{page_ob.id}}" name = "pageid">-->
+	<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">
+	<input type="hidden" id="pageid1" value="{{page_ob.id}}"/>
+        </form>
+
+</br>   {% autoescape off %}
+
+   {% for each in section %}
+      	<h4><font size="5" color="red">{{each.title}}</h4></font></br>     
+	  Posted on : {{each.creation_date}}
+	  by {% for author in each.authors.all %} 
+	  {{author}}
+	  {% endfor %}</br>
+     	
+	{% ifequal each.rating.get_rating 0 %}
+	<h5> Not yet rated </h5>
+	{% else %}
+	Current rating is <h5>{{ each.rating.get_rating }}</h5>
+	{% endifequal %}
+   	{%autoescape on%}
+	 {% with each.html_content|safe as each_content %}
+		{{each_content}}
+	{% endwith %}
+	{% endautoescape%}
+	<input type="button" id="editseccontent" value="Edit"/>
+	<input type="button" id="saveseccontent" value="Save"/>
+	<input type="button" id="sectionorg" value="{{each.content_org}}" style="visibility:hidden;"/>
+	<input type="button" id="sectionid" value="{{each.id}}" style="visibility:hidden;"/>	
+	<form method="post" action=".">{% csrf_token %}
+        	 Create Subsection:
+	        <input type="text" name = "replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+    		<input type="hidden" value="{{each.id}}" name = "iden">
+	    	<input type="hidden" value="{{user.id}}" name = "idusr">
+		<input type="button" value="Create Subsection" id="createsubsection">
+		<input type="button" value="save" id="savesubsec">
+		<input type="submit" value="submit"></br>
+	       </br></br><input name="del_section" type="checkbox" value="delete_section"/>Delete section 
+  		<input type="submit" value="Delete the section"></br> 
+         	Do you wanna rate it ? </br>
+		<input name="star1" type="radio" value=1 class="star"/>
+		<input name="star1" type="radio" value=2 class="star"/>
+		<input name="star1" type="radio" value=3 class="star"/>
+		<input name="star1" type="radio" value=4 class="star"/>
+		<input name="star1" type="radio" value=5 class="star"/>
+		<!--topic id and user id hidden fields-->
+		</br>
+		<input type="submit" value="Rate it!!!">
+         </form>
+        <p>
+	 Subsections :
+	<!-- <div id="main"> -->
+	<!-- <div id="sidetree"> -->
+	<!-- <div class="treeheader">&nbsp;</div> -->
+ 	<!-- <a href="?#">Expand All</a> </div> -->
+	<!-- <ul class="treeview" id="tree"> -->
+ 	<!-- <li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li></ul></div> -->
+        {% show_commentpage each user.id flag1 admin_id attribute  %}
+     {% endfor %}
+{% endautoescape %}
+
+{% else %}
+  <h1> <p style = "color :red;">OOPS!!! Login Please!</p></h1>
+{% endif %}
+
+{% block nodetype-comments %}
+<div id="comments" class="">
+  <h5>{% trans "Comments" %}</h5>
+  {% with page_ob.comments as comment_list %}
+  {% if comment_list.count %}
+  <ol id="comment-list" class="span-15 last">
+    {% for comment in comment_list %}
+    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in page_ob.authors.all %} post-author{% endif %} span-15 last">
+      <div class="span-2">
+<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
+      </div>
+      <div class="comment-body span-13 last">
+<div class="comment-author span-13 last">
+{% if comment.url %}
+<a href="{{ comment.url }}" class="fn url" title = "{{ comment.user_name }}">{{ comment.user_name }}</a>
+{% else %}
+{{ comment.user_name }}
+{% endif %}
+{% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+</div>
+<div class="span-13 last">
+{{ comment.comment|linebreaks }}
+</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+    {% if not page_ob.comments_are_open %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% else %}
+    {% if page_ob.comments_are_open %}
+  <p>{% trans "No comments yet." %}</p>
+    {% else %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+<div class="commentForm span-16 last">
+  {% render_comment_form for page_ob %}
+</div>
+
+{% paginate %}
+
+{% endblock %}
+

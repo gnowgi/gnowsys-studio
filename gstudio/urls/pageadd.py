@@ -1,8 +1,3 @@
-# Copyright (c) 2011,  2012 Free Software Foundation
-
-#     This program is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU Affero General Public License as
-#     published by the Free Software Foundation, either version 3 of the
 #     License, or (at your option) any later version.
 
 #     This program is distributed in the hope that it will be useful,
@@ -14,14 +9,12 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 """Url for Gstudio User Dashboard"""
 from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
-urlpatterns = patterns('gstudio.views.user',
-                       url(r'^$', 'userdashboard',name='gstudio_user'),
-                       url(r'^wikipage/$', 'wikidashboard', name='gstudio_wiki'),
-                     
+urlpatterns = patterns('gstudio.views.pageadd',
+                       url(r'^$', 'pageadd',
+                           name='gstudio_page'),
 
                        )

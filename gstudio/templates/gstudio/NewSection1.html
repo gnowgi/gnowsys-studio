@@ -1,0 +1,26 @@
+
+{% extends "gstudio/base.html" %}
+{% block content %}
+<h1>Add a new Section</h1>
+{% if errors %}
+<ul>
+{% for error in errors %}
+<li><font color="red">{{ error }} </font></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<form action="" method="post">{% csrf_token %}
+<p>Title: <input type="text" name="subject"></p>
+<textarea name="page" id="pagecontent" rows="10" cols="50" style="display:none;"></textarea></p>
+<p><textarea name="org" id="orgpage" rows="10" cols="50" style="display:none;"></textarea></p>
+</br></br>
+
+<input type="button" id="addcontent" name="content" value="Add Content"/>
+<input type="button" name="savepage" id="save" value="Save Page"></p></br>
+<input type="hidden" value={{pageid}} id="sectionid">
+<input type="hidden" value={{user.id}} name = "idusr">
+<input type="submit" value="Submit">
+</form>
+
+{% endblock %}

@@ -2,6 +2,9 @@ from gstudio.models import *
 from objectapp.models import *
 from django.template.defaultfilters import slugify
 import datetime
+import os
+from demo.settings import PYSCRIPT_URL_GSTUDIO
+
 
 def delete(idnum):
  del_ob = Gbobject.objects.get(id=idnum)
@@ -32,6 +35,72 @@ def make_topic_object(title,auth_id,content):
  new_ob.sites.add(Site.objects.get_current())
  return new_ob
 
+def make_sectionreply_object(content_org,title,auth_id):
+ new_ob = Gbobject()
+ new_ob.title = title
+ new_ob.status = 2
+ new_ob.slug = slugify(title)
+ new_ob.content_org = content_org
+ myfile = open('/tmp/file.org', 'w')
+ myfile.write(new_ob.content_org)
+ myfile.close()
+ myfile = open('/tmp/file.org', 'r')
+ myfile.readline()
+ myfile = open('/tmp/file.org', 'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open('/tmp/file.org', 'r')
+ stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ output = stdout.read()
+ data = open("/tmp/file.html")
+ data1 = data.readlines()
+ data2 = data1[67:]
+ newdata=""
+ for line in data2:
+        newdata += line.lstrip()
+ new_ob.content = newdata
+ myfile = open('/tmp/file.org', 'w')
+ # myfile.write(new_ob.content_org)
+ # myfile.close()
+ new_ob.save()
+ new_ob.objecttypes.add(Objecttype.objects.get(title="Subsection"))
+ new_ob.authors.add(Author.objects.get(id=auth_id))
+ new_ob.sites.add(Site.objects.get_current())
+ return new_ob
+
+
+def make_section_object(title,auth_id,content_org):
+ new_ob = Gbobject()
+ new_ob.title = title
+ new_ob.status = 2
+ new_ob.slug = slugify(title)
+ #new_ob.content = content
+ new_ob.content_org = content_org
+ myfile = open('/tmp/file.org', 'w')
+ myfile.write(new_ob.content_org)
+ myfile.close()
+ myfile = open('/tmp/file.org', 'r')
+ myfile.readline()
+ myfile = open('/tmp/file.org', 'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open('/tmp/file.org', 'r')
+ stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ output = stdout.read()
+ data = open("/tmp/file.html")
+ data1 = data.readlines()
+ data2 = data1[67:]
+ newdata=""
+ for line in data2:
+        newdata += line.lstrip()
+ new_ob.content = newdata
+ new_ob.save()
+ new_ob.objecttypes.add(Objecttype.objects.get(title="Section"))
+ new_ob.authors.add(Author.objects.get(id=auth_id))
+ new_ob.sites.add(Site.objects.get_current())
+ return new_ob
+
+
 def make_relation(rep,id_no,idusr):
  r = make_rep_object(rep,idusr)
  t = Gbobject.objects.get(id=id_no)
@@ -39,10 +108,24 @@ def make_relation(rep,id_no,idusr):
  r.prior_nodes.add(t)
  return True
 
+def make_sectionrelation(rep,ptitle,id_no,idusr):
+ r = make_sectionreply_object(rep,ptitle,idusr)
+ t = Gbobject.objects.get(id=id_no)
+ t.posterior_nodes.add(r)
+ r.prior_nodes.add(t)
+ return True
+
+
 def rate_it(topic_id,request,rating):
  ob = Gbobject.objects.get(id=topic_id)
  ob.rating.add(score=rating ,user=request.user, ip_address=request.META['REMOTE_ADDR'])
  return True
+
+def rate_section(section_id,request,rating):
+ ob = Gbobject.objects.get(id=section_id)
+ ob.rating.add(score=rating ,user=request.user, ip_address=request.META['REMOTE_ADDR'])
+ return True
+
 
 
 def create_meeting(title,idusr,content):
@@ -76,12 +159,63 @@ def create_meeting(title,idusr,content):
  sys.sites.add(Site.objects.get_current())
  sys1.sites.add(Site.objects.get_current())
  return sys.id
+
+def create_wikipage(title,idusr,content_org):
+ sys = System()
+ sys.title = title
+ sys.status = 2
+ sys.content_org= content_org
+ myfile = open('/tmp/file.org', 'w')
+ myfile.write(sys.content_org)
+ myfile.close()
+ myfile = open('/tmp/file.org', 'r')
+ myfile.readline()
+ myfile = open('/tmp/file.org', 'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open('/tmp/file.org', 'r')
+ stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ output = stdout.read()
+ data = open("/tmp/file.html")
+ data1 = data.readlines()
+ data2 = data1[67:]
+ newdata=""
+ for line in data2:
+        newdata += line.lstrip()
+ sys.content = newdata
+ sys.slug = slugify(title)
+ sys.save()
+ sys.systemtypes.add(Systemtype.objects.get(title="Wikipage"))
+ sys.authors.add(Author.objects.get(id=idusr))
+ 
+ a = Attribute()
+ a.title = "released button of " + title
+ a.slug = slugify(a.title)
+ a.content = a.slug
+ a.status = 2
+ a.subject = sys
+ a.svalue = "False"
+ a.attributetype_id = Attributetype.objects.get(title="pagerelease").id
+ a.save()
+ sys1 = System()
+ sys1.title = "page box of " + title
+ sys1.status = 2
+ sys1.content = "contains pages of " + title
+ sys1.slug = slugify(title)
+ sys1.save()
+ sys1.systemtypes.add(Systemtype.objects.get(title="page_box"))
+ sys.system_set.add(sys1)
+ sys.member_set.add(Author.objects.get(id=idusr))
+ sys.sites.add(Site.objects.get_current())
+ sys1.sites.add(Site.objects.get_current())
+ return sys.id
+
 def make_att_true(meet_ob):
- for each in  meet_ob.subject_of.all():
-	if(each.attributetype.title=='release'):
-		each.svalue = "true"
- 	 	meet_ob.subject_of.add(each) 
-		break
+       for each in  meet_ob.subject_of.all():
+              if(each.attributetype.title=='release'):
+                     each.svalue = "true"
+                     meet_ob.subject_of.add(each) 
+                     break
 
 def make_att_false(meet_ob):
  for each in  meet_ob.subject_of.all():
@@ -89,6 +223,21 @@ def make_att_false(meet_ob):
  		each.svalue = ""
 		meet_ob.subject_of.add(each)
 		break
+
+def make_att1_true(page_ob):
+       for each in  page_ob.subject_of.all():
+              if(each.attributetype.title=='pagerelease'):
+                     each.svalue = "true"
+                     page_ob.subject_of.add(each) 
+                     break
+
+def make_att1_false(page_ob):
+       for each in  page_ob.subject_of.all():
+              if(each.attributetype.title=='pagerelease'):
+                     each.svalue = ""
+                     page_ob.subject_of.add(each)
+                     break
+
 def schedule_time(stTime, endTime, sys_id):
 	 sys=System.objects.get(id=sys_id)
 	 atty1=Attributetype.objects.get(title='timeofstart')
@@ -103,6 +252,12 @@ def schedule_time(stTime, endTime, sys_id):
 	 ats.save()
 	 sys.save()
 	 return  sys.id
+
+
+def make_title(id_no):
+ i = Gbobject.objects.get(id=id_no)
+ return "Subsection of:"+i.title
+
 def get_time(sys_id):
 	later = False
 	meetover = False
@@ -133,6 +288,13 @@ def del_comment(comment_id):
 
 def del_topic(topic_id):
  ob = Gbobject.objects.get(id=int(topic_id))
+ for each in ob.posterior_nodes.all():
+	del_comment(each.id)
+ ob.delete()
+ return True
+
+def del_section(section_id):
+ ob = Gbobject.objects.get(id=int(section_id))
  for each in ob.posterior_nodes.all():
 	del_comment(each.id)
  ob.delete()

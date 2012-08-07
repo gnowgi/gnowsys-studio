@@ -385,3 +385,7 @@ def get_tag_cloud(steps=6, template='gstudio/tags/tag_cloud.html'):
 @register.inclusion_tag('gstudio/tags/comment.html')
 def show_comment(comment,idusr,flag,admin_id,attob):
   return {'comment':comment , 'idusr' : idusr, "flag" : flag, "admin_id" : admin_id , "attribute" : attob}
+
+@register.inclusion_tag('gstudio/tags/commentpage.html')
+def show_commentpage(comment,idusr,flag,admin_id,attob):
+  return {'comment':comment , 'idusr' : idusr, "flag" : flag, "admin_id" : admin_id , "attribute" : attob}

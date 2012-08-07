@@ -32,6 +32,17 @@ def userdashboard(request,username):
          template = "metadashboard/logindashboard.html"
          return render_to_response(template,variables)
 
+def wikidashboard(request,username):
+    if request.user.username == username :
+    	pages = Systemtype.objects.get(title="Wikipage")
+        variables = RequestContext(request,{"pages" : pages })
+    	template = "metadashboard/wikidashboard.html"
+    	return render_to_response(template, variables)
+    else :
+         variables = RequestContext(request)
+         template = "metadashboard/logindashboard.html"
+         return render_to_response(template,variables)
+
     
 
 

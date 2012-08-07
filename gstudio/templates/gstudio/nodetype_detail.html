@@ -214,7 +214,7 @@
                             <b>
 					Content:<nbsp>
 				
-				          <input type="button" id="editdata" value="Edit Content"/><ndsp><nbsp> 
+				         <input type="button" id="editdata" value="Edit Content"/>					  	                     <input type="button" id="savecontent" value="Save Content"/><ndsp><nbsp>
 					  <input type="hidden" id="objectid" value="{{object.id}}"/>
 		         		  <input type="hidden" id="title" value="{{object.title}}"/>
 					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
@@ -223,8 +223,10 @@
 
 					{% else %}
 						<b>
-					Content:<nbsp> <input type="button"id="editdata" value="Edit Content"/><ndsp><nbsp>
-					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+					Content:<nbsp> 
+				         <input type="button"id="editdata" value="Edit Content"/>
+					 <input type="button" id="savecontent" value="Save Content"/><ndsp><nbsp>
+					 <input type="hidden" id="objectid" value="{{object.id}}"/>
 		
 					  <input type="hidden" id="title" value="{{object.title}}"/>
 					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>

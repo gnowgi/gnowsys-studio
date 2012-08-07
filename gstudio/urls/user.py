@@ -20,7 +20,8 @@ from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('gstudio.views.user',
-                       url(r'^$', 'userdashboard',
-                           name='gstudio_user'),
+                       url(r'^$', 'userdashboard',name='gstudio_user'),
+                       url(r'^wikipage/$', 'wikidashboard', name='gstudio_wiki'),
+                     
 
                        )

@@ -749,8 +749,8 @@ class Gbobject(Node):
             return textile(self.content)
         elif MARKUP_LANGUAGE == 'restructuredtext':
             return restructuredtext(self.content)
-        elif not '</p>' in self.content:
-            return linebreaks(self.content)
+        # elif not '</p>' in self.content:
+        #     return linebreaks(self.content)
         return self.content
 
 

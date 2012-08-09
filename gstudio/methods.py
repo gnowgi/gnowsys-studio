@@ -13,10 +13,28 @@ def delete(idnum):
 
 def make_rep_object(title,auth_id):
  new_ob = Gbobject()
- new_ob.title = title
+ new_ob.content_org=title
+ myfile = open('/tmp/file.org', 'w')
+ myfile.write(new_ob.content_org)
+ myfile.close()
+ myfile = open('/tmp/file.org', 'r')
+ myfile.readline()
+ myfile = open('/tmp/file.org', 'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open('/tmp/file.org', 'r')
+ stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ output = stdout.read()
+ data = open("/tmp/file.html")
+ data1 = data.readlines()
+ data2 = data1[67:]
+ newdata=""
+ for line in data2:
+        newdata += line.lstrip()
+ new_ob.content = newdata
+ new_ob.title = "Re: " +title
  new_ob.status = 2
  new_ob.slug = slugify(title)
- new_ob.content = ""
  new_ob.save()
  new_ob.objecttypes.add(Objecttype.objects.get(title="Reply"))
  new_ob.authors.add(Author.objects.get(id=auth_id))
@@ -24,11 +42,31 @@ def make_rep_object(title,auth_id):
  return new_ob
 
 def make_topic_object(title,auth_id,content):
+ print "save"
  new_ob = Gbobject()
- new_ob.title = title
+ new_ob.title = "Query: " + title
+ new_ob.content_org = content
+ myfile = open('/tmp/file.org', 'w')
+ myfile.write(new_ob.content_org)
+ myfile.close()
+ myfile = open('/tmp/file.org', 'r')
+ myfile.readline()
+ myfile = open('/tmp/file.org', 'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open('/tmp/file.org', 'r')
+ stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ output = stdout.read()
+ data = open("/tmp/file.html")
+ data1 = data.readlines()
+ data2 = data1[67:]
+ newdata=""
+ for line in data2:
+        newdata += line.lstrip()
+ new_ob.content = newdata
  new_ob.status = 2
  new_ob.slug = slugify(title)
- new_ob.content = content
+ 
  new_ob.save()
  new_ob.objecttypes.add(Objecttype.objects.get(title="Topic"))
  new_ob.authors.add(Author.objects.get(id=auth_id))

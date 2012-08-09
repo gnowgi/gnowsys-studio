@@ -1,7 +1,20 @@
 
 {% extends "gstudio/base.html" %}
 {% block content %}
-<h1>Add a new Topic</h1>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "1000px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+
+ $("#graphcss").hide();
+  });
+</script>
+
+<h1>Add a new Twist</h1>
 {% if errors %}
 <ul>
 {% for error in errors %}
@@ -12,9 +25,14 @@
 
 <form action="" method="post">{% csrf_token %}
 <p>Title: <input type="text" name="subject"></p>
-<p>Description: <textarea name="message" rows="10" cols="50"></textarea></p>
+<p>Description: <textarea name="message" id="contenttext" rows="10" cols="50" style="display:none" ></textarea></p>
+<!-- style="display:none;" -->
+
+<input type="button" id="topicaddcontent"  name="content" value="Add Description">
+<input type="button" id="topicaddsave" name="savecontent" value="Save">
+
 <input type="hidden" value={{user.id}} name = "idusr">
-<input type="submit" value="Submit">
+<input type="submit" id="topicsubmit" value="Submit" style="display:none">
 </form>
 
 {% endblock %}

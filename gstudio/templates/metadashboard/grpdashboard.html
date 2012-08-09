@@ -14,14 +14,25 @@ $(window).load(function() {
  
  $("#graphcss").hide();   
   });
+var i=0;
 </script>
+<style type="text/css">
+#div2
+{
+ background-color:#E8E8E8 ;
+}
+#div1
+{
+ background-color:#F4F4F4;
+}
+</style>
 
 {% if user.is_authenticated %}
-   <input type="button" value="Home" onClick="location.href='/gstudio/user/{{user.username}}';">
-   <h>Hello Welcome to the {{ meet_ob.title }}</h></br>
-	<h3> This Discussion was initiated by {{admin_m.username}}</h3>
+<!--   <input type="button" value="Home" onClick="location.href='/gstudio/user/{{user.username}}';">
+  <h>Hello Welcome to the {{ meet_ob.title }}</h></br> -->
+	<h3> {{admin_m.username}}'s initial twist to the thread</h3>
 
-   <h>You are logged in as <font color="blue">{{user.username}}</font></h>
+  <!--  <h>You are logged in as <font color="blue">{{user.username}}</font></h> -->
          </br>
    {%if flag %}
    <div id="Release">
@@ -42,55 +53,60 @@ $(window).load(function() {
 
 	<form method="post" action=".">{% csrf_token %}
       <!--  <input type="hidden" value="{{meet_ob.id}}" name = "meetid">-->
-	<input type="button" value="Add a new Topic" onClick="location.href='topicadd1/{{meet_ob.id}}';">
+	<input type="button" value="Add your twist" onClick="location.href='topicadd1/{{meet_ob.id}}';">
         </form>
-
-<!--direct link to identica-->
+<!-- direct link to identica
 <a href="http://www.addtoany.com/add_to/identi_ca?linkurl=ur url&linkname={{post}} via" ><img src="http://www.tildehash.com/identishare/share.png" ></img></a>
 
-<!-- Twitter syndicating button -->
+<!-- Twitter syndicating button 
 <a href="https://twitter.com/share" class="twitter-share-button"  data-url="https://127.0.0.1:8000/chat/" data-via="{{user.title}}" data-lang="en" data-text="{{post}}" data-related="anywhereTheJavascriptAPI" data-count="none">Tweet</a>
 
-<!-- Diaspora syndicating button -->
+<!-- Diaspora syndicating button 
 <script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
 <input id="diasporacontent" value="{{post}}" type="hidden" name="diaspora"></input>
 <div id="R-button" style="width:44px;height:44px;cursor:pointer;">
 <img id="asterisk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQ1JREFUeNpi/P//PwO9ACMJajuA2BiL+FkgriDGABYSLANZ5EKJz5gY6AhGLaO6ZaAEoERl85WQUzCyZeVAfBeIz0DZShRYUA41B2ReGjZF/7FgZIt341CzG80CdPl36BaF4jCIWjgUORhdaJw2UMx/R2OfgYOSGYgFgfgoED8HYikon1rgHhDPAuJOIH6PqwzEFdnEYFiiMiYnGc8k0pIOSkNFiYT4fEepZbtJDMJV5FpUTmaclZNqkTER8YMvOIlOHIIEUmIHET4/Q0pb4z+echAZrCLCUXiLFVJSmyC0ZMelh2AxGIojubuQEL/vYIUvsflrNwkprBxLlUNW8ic276wi5ChGeraIAQIMAFUG5PAQfeaJAAAAAElFTkSuQmCC" width="26" height="26">
 </div>
-
+-->
 </br>   {% autoescape off %}
    {% for each in topic %}
       	<h4><font size="5" color="red">{{each.title}}</font></h4>
       		Posted on : {{each.creation_date}}
-		Posted by : 
+		by : 
    		{% for author in each.authors.all %} 
    			{{author}}
    		{% endfor %}</br>
-     		Current rating is <h5>{{ each.rating.get_rating }}</h5>
+     		<!-- Current rating is <h5>{{ each.rating.get_rating }}</h5> -->
    	{%autoescape on%}
-		<font color="green">{{each.content}}</font>
+		{% with each.html_content|safe as each_content %}
+		<font color="green"> {{each_content}} </font>
+		{% endwith %}
 	{% endautoescape%}
 	<form method="post" action=".">{% csrf_token %}
-        	 Reply to the main thread :
-    		<input type="text" name = "reply">
+                
+    		<input type="text" class="reptext" name = "reply" style="display:none">
     		<input type="hidden" value="{{each.id}}" name = "iden">
 	    	<input type="hidden" value="{{user.id}}" name = "idusr">
-	        <input type="submit" value="Reply to Topic"></br>
-		<!--<input name="del_topic" type="checkbox" value="delete_topic"/>Delete topic
-  		<input type="submit" value="Delete the topic"></br>
--->
-         	Do you wanna rate it ? </br>
+<br/><br/><br/>
+		 <input type="button" class="editor" id="{{each.id}}"  value="Add a Fiber">
+                <input type="button" class="savecontent" id="{{each.id}}"  value="Save">
+
+	        <input type="submit" value="Submit"></br>
+		<input name="del_topic" type="checkbox" value="delete_topic"/>
+  		<input type="submit" value="Delete the twist"></br>
+
+         <!--	Rate this ? </br>
 		<input name="star1" type="radio" value=1 class="star"/>
 		<input name="star1" type="radio" value=2 class="star"/>
 		<input name="star1" type="radio" value=3 class="star"/>
 		<input name="star1" type="radio" value=4 class="star"/>
 		<input name="star1" type="radio" value=5 class="star"/>
-		<!--topic id and user id hidden fields-->
+		<!--topic id and user id hidden fields
 		</br>
-		<input type="submit" value="Rate it!!!">
+		<input type="submit" value="Rate it!!!">  -->
          </form>   
         <p>
-	 Replies :
+	 Fibers :
 	<!--	<div id="main">
 	<div id="sidetree">
 	<div class="treeheader">&nbsp;</div>

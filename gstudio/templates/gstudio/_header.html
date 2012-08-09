@@ -15,7 +15,7 @@
 
     {% if user.is_authenticated %}
 	{% if user.is_staff %}
-        | <a href="{{  get_absolute_url }}/gstudio/user/{{user.username}}" title="MyBoard">Gnowledge Studio</a>
+        | <a href="{{  get_absolute_url }}/gstudio/user/{{user.username}}" title="My Loom Studio">Loom Studio</a>
 	| <a href="{{  get_absolute_url }}/gstudio/resources/documents" title="My Documents">Documents</a>
         | <a href="{{  get_absolute_url }}/gstudio/user/wikipage/{{user.username}}" title="MyWiki">Wikipage</a>
         | <a href="{{  get_absolute_url }}/gstudio/resources/images" title="Images">Images</a>

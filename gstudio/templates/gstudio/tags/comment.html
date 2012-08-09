@@ -15,54 +15,166 @@
        <!-- Flag1 outside {{flag}}-->
         {% for each in child.authors.all %}
         	{% ifequal idusr admin_id %}
-			<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
-			<form method="post" action=".">{% csrf_token %}
-			<input type="text" name = "reply">
-		  	<input type="hidden" value={{child.id}} name = "parentid">
-			<input type="hidden" value={{idusr}} name="idusr">
-		    	<input type="submit" value="Post a Reply">
- 			<input type="checkbox" name="del_comment" value="delete_comment">
-        		<input type="submit" value="delete this comment">
-			</form>
-			{% show_comment child idusr flag admin_id attribute%}
-			</li>
-        	{% else %}
-			{% ifequal idusr each.id %}
-				<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
-				<form method="post" action=".">{% csrf_token %}
-				<input type="text" name = "reply">
-			  	<input type="hidden" value={{child.id}} name = "parentid">
-				<input type="hidden" value={{idusr}} name="idusr">
-			    	<input type="submit" value="Post a Reply">
-				<input type="checkbox" name="del_comment" value="delete_comment">
-        			<input type="submit" value="delete this comment">
-				</form>
-				{% show_comment child idusr flag admin_id attribute%}
-				</li>
-			{% else %}
-				{% ifequal attribute "true" %}
-                                 
-				<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
-				<form method="post" action=".">{% csrf_token %}
-				<input type="text" name = "reply">
-			  	<input type="hidden" value={{child.id}} name = "parentid">
-				<input type="hidden" value={{idusr}} name="idusr">
-			    	<input type="submit" value="Post a Reply">
-				<input type="checkbox" name="del_comment" value="delete_comment">
-        			<input type="submit" value="delete this comment">
-				</form>
-				{% show_comment child idusr flag admin_id attribute%}
-				</li>
-	       	 		{% endifequal %}
-                         {% endifequal %}
-               {% endifequal %}
-       {% endfor %}
-	
-	
-{% endfor %}
-</ul>
+<!-- If user is admin -->
+<div class="response_change" id="divchange">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0)
+{
+document.getElementById("divchange").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divchange").setAttribute("id","div2");
+}
+</script>
+
+
+			<li>{{each}}'s fabric 
+{% if child.rating.get_rating %}
+Current rating is {{ child.rating.get_rating }}<br/>
 {% endif %}
+<font style = "color:red;" size = 3>{{child.content}}</font>
+   <form method="post" action=".">{% csrf_token %}
+                                <input type="text" class="commentreptext"id="{{child.id}}" name = "reply" style="visibility:hidden">
+                                <input type="hidden" value={{child.id}} name = "parentid">
+                                <input type="hidden" value={{idusr}} name="idusr">
+       <!--      <input type="hidden" value="{{child.id}}" name = "iden"> -->
+ <!-- <input type="text" id="commentreptext" name = "reply" style="visibility:hidden"> -->
 
 
+                                 <br/><br/><br/><br/>
+
+                                  <input type="button" class="commenteditor" id="{{ child.id }}"  value="Reply">
+                                 <input type="button" class="commentsavecontent" id="{{child.id}}" value="Save">
+                                <input type="submit" id="postreply" value="Post a Reply">
+                                <input type="checkbox" id="chk" name="del_comment" value="delete_comment">
+                                <input type="submit" value="delete" onclick="setcheck()">
+<br/>
+     Do you wanna rate it ? </br>
+                                <input name="star1" type="radio" value=1 class="star"/>
+                <input name="star1" type="radio" value=2 class="star"/>
+                <input name="star1" type="radio" value=3 class="star"/>
+                <input name="star1" type="radio" value=4 class="star"/>
+                <input name="star1" type="radio" value=5 class="star"/>
+  <!--topic id and user id hidden fields-->
+                </br>
+                <input type="submit" value="Rate Response">
+
+                                </form>
+</div>
 
 
+                {% show_comment child idusr flag admin_id attribute%}
+
+
+                {% else %}
+                        {% ifequal idusr each.id %}
+
+<div class="response_change" id="divchange">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0)
+{
+document.getElementById("divchange").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divchange").setAttribute("id","div2");
+}
+</script>
+{{each}}'s Response <br/>
+{% if child.rating.get_rating %}
+Current rating is {{ child.rating.get_rating }}<br/>
+{% endif %}
+                        <font style = "color:red;" size ="3"></font>{{child.content}}
+
+			<form method="post" action="">{% csrf_token %}
+                                <input type="text" class="commentreptext" id="{{child.id}}" name="reply" style="visibility:hidden">
+                                <input type="hidden" class="parent" value="{{child.id}}" name="parentid">
+                                <input type="hidden" value="{{idusr}}" name="idusr">
+<!--            <input type="hidden" value="{{child.id}}" name="iden"> -->
+ <!-- <input type="text" id="commentreptext" name = "reply" style="visibility:hidden"> -->
+
+
+                                 <br/><br/><br/><br/>
+
+                                <input type="button" class="commenteditor" id="{{ child.id }}"  value="Reply">
+                                <input type="button" class="commentsavecontent" id="{{child.id}}" value="Save">
+                                <input type="submit" class="postreply" value="Post a Reply">
+                                <input type="checkbox" class="chk" name="del_comment" value="delete_comment">
+                                <input type="button" class="deleteresponse" value="delete" style="display:none">
+                                <input type="submit" class="deleteresp" value="delete">
+
+
+<br/>
+     Do you wanna rate it ? </br>
+                                <input name="star1" type="radio" value=1 class="star"/>
+<input name="star1" type="radio" value=2 class="star"/>
+                <input name="star1" type="radio" value=3 class="star"/>
+                <input name="star1" type="radio" value=4 class="star"/>
+                <input name="star1" type="radio" value=5 class="star"/>
+                <!--topic id and user id hidden fields-->
+                </br>
+                <input type="submit" value="Rate Response">
+
+                                </form>
+</div>
+                                {% show_comment child idusr flag admin_id attribute%}
+
+
+                        {% else %}
+                                {% ifequal attribute "true" %}
+
+<div class="response_change" id="divchange">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0)
+{
+document.getElementById("divchange").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divchange").setAttribute("id","div2");
+}
+</script>
+                                {{each}}'s Response <br/>
+{% if child.rating.get_rating %}
+Current rating is {{ child.rating.get_rating }}<br/>
+{% endif %}
+                        <font style = "color:red;" size = 3></font>{{child.content}}
+
+			<form method="post" action=".">{% csrf_token %}
+                                <input type="text" class="commentreptext"id="{{child.id}}" name = "reply" style="visibility:hidden">
+                                <input type="hidden" value="{{child.id}}" name = "parentid">
+                                <input type="hidden" value="{{idusr}}" name="idusr">
+            <input type="hidden" value="{{child.id}}" name = "iden">
+ <!-- <input type="text" id="commentreptext" name = "reply" style="visibility:hidden"> -->
+<br/><br/><br/><br/>
+
+                                  <input type="button" class="commenteditor" id="{{ child.id }}"  value="Reply">
+                                 <input type="button" class="commentsavecontent" id="{{child.id}}" value="Save">
+                                <input type="submit" id="postreply" value="Post a Reply" style="display:none">
+                                <input type="checkbox" id="chk" name="del_comment" value="delete_comment">
+                                <input type="submit" value="delete this comment"">                                                   <br/>                                                                                                                              
+     Rate this response </br>                                                                                                        
+                                <input name="star1" type="radio" value=1 class="star"/>                                              
+                <input name="star1" type="radio" value=2 class="star"/>                                                              
+                <input name="star1" type="radio" value=3 class="star"/>                                                              
+                <input name="star1" type="radio" value=4 class="star"/>                                                              
+                <input name="star1" type="radio" value=5 class="star"/>                                                              
+                <!--topic id and user id hidden fields-->                                                                            
+                </br>                                       
+ <input type="submit" value="Rate Response">                                                                          
+                                                                                                                                     
+      </form>                                                                          
+                    
+</div>                                                                                                                               
+                                                                                                                               
+               {% show_comment child idusr flag admin_id attribute%}                           {% endifequal %}                                                                                 
+                         {% endifequal %}                                                                                            
+               {% endifequal %}                                                                                                      
+       {% endfor %}                                                                                                                  
+ {% endfor %}                                                                                                                         
+</ul>                                                                                                                                
+{% endif %}             

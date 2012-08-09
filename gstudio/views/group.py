@@ -54,7 +54,8 @@ def groupdashboard(request,grpid):
     		rep = request.POST.get("reply",'')
     		id_no = request.POST.get("iden",'')
     		id_no1 = request.POST.get("parentid","")
-    		idusr = request.POST.get("idusr",'')
+    		print "topicid",id_no,"replyid",id_no1,"reply",rep
+		idusr = request.POST.get("idusr",'')
    		rating = request.POST.get("star1","")
    		flag1=request.POST.get("release","")
     		block = request.POST.get("block","")

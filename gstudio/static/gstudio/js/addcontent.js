@@ -19,6 +19,8 @@
 		var org_data = $("#gnoweditor").val();
 		document.getElementById("orgpage").value = org_data;
 		var encode_data = encodeURIComponent(org_data);
+		$('#submitsec').trigger('click');
+		
 		});
 
 	$("#pagecontent1").one("click",function() {
@@ -26,10 +28,12 @@
 	document.getElementById('gnoweditor').style.visibility="visible";
 	$("#gnoweditor").orgitdown(mySettings);
 	    });
-        $("#save").one("click",function() {
-		var org_data = $("#gnoweditor").val();
+        $("#save1").one("click",function() {
+	var org_data = $("#gnoweditor").val();
 	document.getElementById("orgpage1").value = org_data;
 	var encode_data = encodeURIComponent(org_data);
+	$('#submitpage').trigger('click');	
+
 	    });
 	       $("#editseccontent").one("click",function(){
 		    $("#chart").hide();
@@ -40,6 +44,9 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
+		    $("#savesubsec").hide();
+		    $("#savesubsec1").hide();
+		    $("#savepagecontent").hide();
 		  
 	   });
        $("#saveseccontent").one("click",function(){
@@ -86,6 +93,9 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
+		    $("#savesubsec").hide();
+		    $("#saveseccontent").hide();
+		    $("#savepagecontent").hide();
 		  
 	   });
        $("#savesubsec1").one("click",function(){
@@ -125,22 +135,19 @@
 	   });
       
 	$("#editpagecontent").one("click",function(){
-	       //var abc = document.getElementById('pageid1').value;
-	       //window.location.replace('sectionadd1/'+abc);
-		    $("#chart").hide();
-		    // var orgdata = document.getElementById('orgcontent').value;
+	      	    $("#chart").hide();
 		    document.getElementById('gnoweditor').style.visibility="visible";
 		    
 		    $("#gnoweditor").orgitdown(mySettings);
-		    
-		    // var org_data = $("#gnoweditor").val();
-		  
 		    var a =  document.getElementById('pageorg').value;
 		    $("#gnoweditor").val(a);
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
-		  
+		    $("#saveseccontent").hide();
+		    $("#savesubsec").hide();
+		    $("#savesubsec1").hide();
+
 		    
 	    });
       $("#savepagecontent").one("click",function(){
@@ -189,12 +196,15 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
+		    $("#savesubsec1").hide();
+		    $("#saveseccontent").hide();
+		    $("#savepagecontent").hide();
 	   });
        $("#savesubsec").one("click",function() {
 		var org_data = $("#gnoweditor").val();
 		document.getElementById("sectionreply").value = org_data;
 		var encode_data = encodeURIComponent(org_data);
-		alert(org_data);});
+		$('#submitsubsec').trigger('click');});
 
       $("#savecontent").one("click",function() {
 	      var org_data = $("#gnoweditor").val();

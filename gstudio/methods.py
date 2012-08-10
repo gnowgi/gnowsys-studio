@@ -319,8 +319,7 @@ def get_time(sys_id):
 def del_comment(comment_id):
  ob = Gbobject.objects.get(id=int(comment_id))
  for each in ob.posterior_nodes.all():
-	a= each.id
-	del_comment(a)
+	del_comment(each.id)
  ob.delete()
  return True
 

@@ -38,7 +38,7 @@ $(window).load(function() {
    {% endwith %}
 
 	<input type="button" id="editpagecontent" value="Edit"/>
-	<input type="button" id="savepagecontent" value="Save"/>
+	<input type="button" id="savepagecontent" value="Save"/></br>
 	<input type="button" id="pageid" value="{{page_ob.id}}" style="visibility:hidden;"/>
 	<input type="button" id="pageorg" value="{{page_ob.content_org}}" style="visibility:hidden;"/>
 
@@ -72,13 +72,12 @@ $(window).load(function() {
 </br>   {% autoescape off %}
 
    {% for each in section %}
-      	<h4><font size="5" color="red">{{each.title}}</h4></font></br>     
+      	<h4><font size="5" color="red">{{each.title}}</h4></font>   
 	  Posted on : {{each.creation_date}}
 	  by {% for author in each.authors.all %} 
 	  {{author}}
 	  {% endfor %}</br>
-     	
-	{% ifequal each.rating.get_rating 0 %}
+     	{% ifequal each.rating.get_rating 0 %}
 	<h5> Not yet rated </h5>
 	{% else %}
 	Current rating is <h5>{{ each.rating.get_rating }}</h5>
@@ -92,15 +91,16 @@ $(window).load(function() {
 	<input type="button" id="saveseccontent" value="Save"/>
 	<input type="button" id="sectionorg" value="{{each.content_org}}" style="visibility:hidden;"/>
 	<input type="button" id="sectionid" value="{{each.id}}" style="visibility:hidden;"/>	
-	<form method="post" action=".">{% csrf_token %}
+	<form method="post" action=".">{% csrf_token %}<br/>
         	 Create Subsection:
 	        <input type="text" name = "replytosection" id="sectionreply" style="visibility:hidden;"/></br>
     		<input type="hidden" value="{{each.id}}" name = "iden">
 	    	<input type="hidden" value="{{user.id}}" name = "idusr">
 		<input type="button" value="Create Subsection" id="createsubsection">
 		<input type="button" value="save" id="savesubsec">
-		<input type="submit" value="submit"></br>
-	       </br></br><input name="del_section" type="checkbox" value="delete_section"/>Delete section 
+		<input type="submit" id="submitsubsec" value="submit" style="visibility:hidden;"></br>
+
+	       </br></br><input name="del_section" type="checkbox" value="delete_section"/> 
   		<input type="submit" value="Delete the section"></br> 
          	Do you wanna rate it ? </br>
 		<input name="star1" type="radio" value=1 class="star"/>
@@ -169,7 +169,7 @@ $(window).load(function() {
 </div>
 {% endblock %}
 <div class="commentForm span-16 last">
-  {% render_comment_form for page_ob %}
+  {% render_comment_form for ot %}
 </div>
 
 {% paginate %}

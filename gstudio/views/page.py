@@ -32,6 +32,7 @@ def pagedashboard(request,pageid):
 #      content_org = request.POST.get("orgreply",'')
       id_no = request.POST.get("iden",'')
       id_no1 = request.POST.get("parentid","")
+      print"id",id_no1
       idusr = request.POST.get("idusr",'')
       rating = request.POST.get("star1","")
    # #    flag1=request.POST.get("pagerelease","")
@@ -73,7 +74,8 @@ def pagedashboard(request,pageid):
       post=latest_topic.get_absolute_url()
    else:
       post="no topic added yet!!"
+   ot=Gbobject.objects.get(id=pageid)
 
-   variables = RequestContext(request, {'section' : Section,'page_ob' : page_ob,'admin_m':admin_m,"flag" : flag,"admin_id" : admin_id,'post':post})
+   variables = RequestContext(request, {'ot' : ot,'section' : Section,'page_ob' : page_ob,'admin_m':admin_m,"flag" : flag,"admin_id" : admin_id,'post':post})
    template = "metadashboard/pgedashboard.html"
    return render_to_response(template, variables)

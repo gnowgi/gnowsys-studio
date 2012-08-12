@@ -47,6 +47,7 @@
 #    OF THE POSSIBILITY OF SUCH DAMAGE.
 """XML-RPC methods of Gstudio metaWeblog API"""
 import os
+import sys
 from datetime import datetime
 from xmlrpclib import Fault
 from xmlrpclib import DateTime
@@ -74,7 +75,10 @@ from django.utils.datastructures import SortedDict
 from gstudio.models import *
 from django.contrib.auth.models import User
 
-
+import inspect
+from gstudio import models as gstmodels
+from objectapp import models as objmodels
+from objectapp.models import ObjectDoesNotExist
 
 # http://docs.nucleuscms.org/blog/12#errorcodes
 LOGIN_ERROR = 801
@@ -833,15 +837,105 @@ def set_relation(d,obj1,obj2) :
     except Relationtype.DoesNotExist :
        return "Relationtype Does Not Exist"
 
-@xmlrpc_func(returns='list')
-def list_id():
-    """Get a list of Gbobjects' ids"""
-    return [id.id for id in Gbobject.objects.all()]
+# Previous version of the following methods
 
-@xmlrpc_func(returns='struct', args=['string'])
-def dict_id(id=None):
-    """Get a Gbobject as a dict or as a list of dicts"""
-    if id:
-        return Gbobject.objects.get(id="{0}".format(id))
+# @xmlrpc_func(returns='list')
+# def list_id():
+#     """Get a list of Gbobjects' ids"""
+#     return [id.id for id in Gbobject.objects.all()]
+
+# @xmlrpc_func(returns='struct', args=['string'])
+# def dict_id(id=None):
+#     """Get a Gbobject as a dict or as a list of dicts"""
+#     if id:
+#         return Gbobject.objects.get(id="{0}".format(id))
+#     else:
+#         return [dict_id(id) for id in list_id()]
+
+def class_checker(m):
+    """Returns a dict which contains all classes of the m module"""
+    res = {}
+    for name, obj in inspect.getmembers(m):
+        if inspect.isclass(obj) and obj.__module__ == m.__name__:
+            res[name] = obj
+    return res
+
+def instance_checker(m, instance, option, id=None):
+    cc = class_checker(m)
+    for i in cc.keys():
+        if i == instance:
+            if option == "get":
+                return cc[i].objects.get(id="{0}".format(id))
+
+            if option == "all":
+                return [id.id for id in cc[i].objects.all()]
     else:
-        return [dict_id(id) for id in list_id()]
+        # http://www.gnu.org/prep/standards/html_node/Errors.html#Errors
+        sys.stderr.write("metaweblog.py:line872: Wrong arguments\n")
+
+@xmlrpc_func(returns="struct", args=["string", "string"])
+def show_id(module=None, instance=None):
+    if (module == "objectapp.models" or module == objmodels) and instance:
+        return instance_checker(objmodels, instance, "all")
+
+    if (module == "gstudio.models" or module == gstmodels) and instance:
+        return instance_checker(gstmodels, instance, "all")
+
+    if module == None and instance == None:
+        def show_all(m):
+            res = {}
+            for i in class_checker(m).keys():
+                res[i] = show_id(m, i)
+            return res
+
+        gstres = show_all(gstmodels)
+        objres = show_all(objmodels)
+        return gstres, objres
+
+    else:
+        sys.stderr.write("metaweblog.py:line870: Wrong arguments\n")
+
+@xmlrpc_func(returns="struct", args=["string", "string", "string"])
+def show_instance(module=None, instance=None, id=None):
+    try:
+        if ((module == "objectapp.models" or module == objmodels) and
+            instance and id):
+            return instance_checker(objmodels, instance, "get", id)
+
+        if ((module == "gstudio.models" or module == gstmodels) and
+            instance and id):
+            return instance_checker(gstmodels, instance, "get", id)
+
+        if ((module == "objectapp.models" or module == objmodels) and
+            instance):
+            res = []
+            for i in show_id(objmodels, instance):
+                res.append(instance_checker(objmodels, instance, "get", i))
+            return res
+
+        if ((module == "gstudio.models" or module == gstmodels) and
+            instance):
+            res = []
+            for i in show_id(gstmodels, instance):
+                res.append(instance_checker(gstmodels, instance, "get", i))
+            return res
+
+        if module == None and instance == None and id == None:
+            def show_all(m, index):
+                res = []
+                for k in show_id()[index].keys():
+                    for v in show_id()[index][k]:
+                        res.append(show_instance(m, k, v))
+                return res
+
+            res = []
+            res.append(show_all(gstmodels, 0))
+            res.append(show_all(objmodels, 1))
+            return res
+
+        else:
+            sys.stderr.write("metaweblog.py:line898: Wrong arguments\n")
+
+    except ObjectDoesNotExist:
+        sys.stderr.write("metaweblog.py:line901: " +
+                         "Object matching query does not exist\n")

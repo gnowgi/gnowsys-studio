@@ -906,6 +906,20 @@ def show_instance(module=None, instance=None, id=None):
             instance and id):
             return instance_checker(gstmodels, instance, "get", id)
 
+        if ((module == "objectapp.models" or module == objmodels) and
+            instance):
+            res = []
+            for i in show_id(objmodels, instance):
+                res.append(instance_checker(objmodels, instance, "get", i))
+            return res
+
+        if ((module == "gstudio.models" or module == gstmodels) and
+            instance):
+            res = []
+            for i in show_id(gstmodels, instance):
+                res.append(instance_checker(gstmodels, instance, "get", i))
+            return res
+
         if module == None and instance == None and id == None:
             def show_all(m, index):
                 res = []

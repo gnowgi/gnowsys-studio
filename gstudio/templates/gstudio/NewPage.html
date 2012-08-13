@@ -1,6 +1,12 @@
 {%extends "gstudio/base.html"%}
 {%load i18n %}
 {% block content  %}
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#save1").hide();});
+</script>
+
 {%if user.is_authenticated%}
 {% if errors %}
 <ul>

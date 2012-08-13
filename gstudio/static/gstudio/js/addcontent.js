@@ -4,6 +4,7 @@
        $("#addcontent").one("click",function(){
 	       //var abc = document.getElementById('pageid1').value;
 	       //window.location.replace('sectionadd1/'+abc);
+	       $("#save").show();
 		    $("#chart").hide();
 		    // var orgdata = document.getElementById('orgcontent').value;
 		    document.getElementById('gnoweditor').style.visibility="visible";
@@ -27,6 +28,7 @@
 	$("#chart").hide();
 	document.getElementById('gnoweditor').style.visibility="visible";
 	$("#gnoweditor").orgitdown(mySettings);
+	$("#save1").show();
 	    });
         $("#save1").one("click",function() {
 	var org_data = $("#gnoweditor").val();
@@ -36,6 +38,8 @@
 
 	    });
 	       $("#editseccontent").one("click",function(){
+		     $("#saveseccontent").show();
+   
 		    $("#chart").hide();
 		    document.getElementById('gnoweditor').style.visibility="visible";
 		    $("#gnoweditor").orgitdown(mySettings);
@@ -44,10 +48,6 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
-		    $("#savesubsec").hide();
-		    $("#savesubsec1").hide();
-		    $("#savepagecontent").hide();
-		  
 	   });
        $("#saveseccontent").one("click",function(){
 	         var org_data = $("#gnoweditor").val();
@@ -85,6 +85,8 @@
 		
 	   });
        $("#editsubsec").one("click",function(){
+	         $("#savesubsec1").show();
+
 		    $("#chart").hide();
 		    document.getElementById('gnoweditor').style.visibility="visible";
 		    $("#gnoweditor").orgitdown(mySettings);
@@ -93,10 +95,7 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
-		    $("#savesubsec").hide();
-		    $("#saveseccontent").hide();
-		    $("#savepagecontent").hide();
-		  
+		    
 	   });
        $("#savesubsec1").one("click",function(){
 	         var org_data = $("#gnoweditor").val();
@@ -136,6 +135,7 @@
       
 	$("#editpagecontent").one("click",function(){
 	      	    $("#chart").hide();
+		    $("#savepagecontent").show();
 		    document.getElementById('gnoweditor').style.visibility="visible";
 		    
 		    $("#gnoweditor").orgitdown(mySettings);
@@ -144,10 +144,6 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
-		    $("#saveseccontent").hide();
-		    $("#savesubsec").hide();
-		    $("#savesubsec1").hide();
-
 		    
 	    });
       $("#savepagecontent").one("click",function(){
@@ -189,6 +185,8 @@
 
 
        $("#createsubsection").one("click",function(){
+	           $("#savesubsec").show();
+
 		    $("#chart").hide();
 		    document.getElementById('gnoweditor').style.visibility="visible";
 		    $("#gnoweditor").orgitdown(mySettings);
@@ -196,9 +194,7 @@
 		    var screenTop = $(document).scrollTop();
 		    $(".orgitdownContainer").css({
 			    "margin-top":screenTop,});
-		    $("#savesubsec1").hide();
-		    $("#saveseccontent").hide();
-		    $("#savepagecontent").hide();
+		    
 	   });
        $("#savesubsec").one("click",function() {
 		var org_data = $("#gnoweditor").val();

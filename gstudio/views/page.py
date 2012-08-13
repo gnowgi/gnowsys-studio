@@ -39,12 +39,20 @@ def pagedashboard(request,pageid):
    # #    block = request.POST.get("block","")
       section_del = request.POST.get("del_section", "")
       comment_del = request.POST.get("del_comment", "")
+      docid = request.POST.get("docid","")
+      addtags = request.POST.get("addtags","")
+      texttags = request.POST.get("texttags","")
       if section_del:
          del_section(int(id_no))
       if comment_del:
          del_comment(int(id_no1))
       if rating :
          rate_section(int(id_no),request,int(rating))
+      if addtags != "":
+         i=Gbobject.objects.get(id=docid)
+         i.tags = i.tags+ ","+str(texttags)
+         i.save()
+
       if rep :
          if not id_no :
             ptitle= make_title(int(id_no))      

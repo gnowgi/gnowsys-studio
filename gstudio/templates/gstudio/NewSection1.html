@@ -1,6 +1,11 @@
 
 {% extends "gstudio/base.html" %}
 {% block content %}
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#save").hide();});
+</script>
 <h1>Add a new Section</h1>
 {% if errors %}
 <ul>

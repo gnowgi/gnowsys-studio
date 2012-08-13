@@ -4,6 +4,8 @@
 
 {% load gstudio_tags %}
 {% load i18n %}
+{% load tagging_tags comments i18n %}
+
 
 
 
@@ -32,7 +34,26 @@
 			<input type="button" id="subsecorg" value="{{child.content_org}}" style="visibility:hidden;"/>
 			<input type="button" id="subsecid" value="{{child.id}}" style="visibility:hidden;"/>	
 			<input type="checkbox" name="del_comment" value="delete_comment">
-        		<input type="submit" value="Delete this Subsection">
+        		<input type="submit" value="Delete this Subsection"></br>
+			<form method="post" action="">{% csrf_token %}
+			  <input type="hidden" name="docid" value={{child.id}}>
+			  <input type="text" value="" name="texttags"  />
+			  <input type="submit" value="Add Tags" name="addtags" />
+			</form>
+			<br>
+			<div class="tags">
+			  <p class="gbobject-tags span-16 last">
+			    <strong>{% trans "Tags" %}</strong> :
+			    {% tags_for_object child as tag_list %}
+			    {% for tag in tag_list %}
+			    <a href="{% url objectapp_tag_detail tag %}"
+			       title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+			    {% empty %}
+			    <span>{% trans "No tags" %}</span>
+			    {% endfor %}
+			  </p>
+			</div>
+		
 			</form>
 			{% show_commentpage child idusr flag admin_id attribute%}
 			</li>

@@ -3,6 +3,9 @@
 {% load adminmedia grp_tags %}
 {% load gstudio_tags %}
 {% load pagination_tags %}
+{% load i18n objectapp_tags %}
+{% load tagging_tags comments i18n %}
+
 <!-- {% load i18n %} -->
 {% block content %}
 <style>
@@ -19,6 +22,14 @@ $(window).load(function() {
 $(window).load(function() {
  
  $("#graphcss").hide();   
+  });
+$(window).load(function() {
+ 
+ $("#savepagecontent").hide();
+ $("#saveseccontent").hide();
+ $("#savesubsec").hide();
+ $("#savesubsec1").hide();
+
   });
 
 </script>
@@ -39,32 +50,27 @@ $(window).load(function() {
 
 	<input type="button" id="editpagecontent" value="Edit"/>
 	<input type="button" id="savepagecontent" value="Save"/></br>
+       <form method="post" action="">{% csrf_token %}
+	 <input type="hidden" name="docid" value={{page_ob.id}}>
+	 <input type="text" value="" name="texttags"  />
+	 <input type="submit" value="Add Tags" name="addtags" />
+       </form>
+       <br>
+       <div class="tags">
+	 <p class="gbobject-tags span-16 last">
+	   <strong>{% trans "Tags" %}</strong> :
+	   {% tags_for_object ot as tag_list %}
+	   {% for tag in tag_list %}
+	   <a href="{% url objectapp_tag_detail tag %}"
+              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+	   {% empty %}
+	   <span>{% trans "No tags" %}</span>
+	   {% endfor %}
+	 </p>
+       </div>
 	<input type="button" id="pageid" value="{{page_ob.id}}" style="visibility:hidden;"/>
 	<input type="button" id="pageorg" value="{{page_ob.content_org}}" style="visibility:hidden;"/>
-
-	<!-- <h3> This Discussion was initiated by {{admin_m.username}}</h3> -->
-
-   <!-- <h>You are logged in as <font color="blue">{{user.username}}</font></h> -->
-        
-   <!-- {%if flag %} -->
-   <!-- <div id="Release"> -->
-   <!-- <form method="post" action=".">{% csrf_token %} -->
-   <!-- <input type="submit" value="Release Replies"> -->
-   <!--     <input type="hidden" value="hits" name = "pagerelease"> -->
-   <!-- </form> -->
-   <!-- </div> -->
-   <!-- <div> -->
-   <!-- <form method="post" action=".">{% csrf_token %} -->
-   <!-- <input type="submit" value="Block Replies"> -->
-   <!--     <input type="hidden" value="hits" name = "block"> -->
-   <!-- </form> -->
-   <!-- </div> -->
-   <!-- {% endif %} -->
-   <!-- </br> -->
-
-
 	<form method="post" action=".">{% csrf_token %}
-<!--	<input type="hidden" value="{{page_ob.id}}" name = "pageid">-->
 	<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">
 	<input type="hidden" id="pageid1" value="{{page_ob.id}}"/>
         </form>
@@ -89,6 +95,25 @@ $(window).load(function() {
 	{% endautoescape%}
 	<input type="button" id="editseccontent" value="Edit"/>
 	<input type="button" id="saveseccontent" value="Save"/>
+       <form method="post" action="">{% csrf_token %}
+	 <input type="hidden" name="docid" value={{each.id}}>
+	 <input type="text" value="" name="texttags"  />
+	 <input type="submit" value="Add Tags" name="addtags" />
+       </form>
+       <br>
+       <div class="tags">
+	 <p class="gbobject-tags span-16 last">
+	   <strong>{% trans "Tags" %}</strong> :
+	   {% tags_for_object each as tag_list %}
+	   {% for tag in tag_list %}
+	   <a href="{% url objectapp_tag_detail tag %}"
+              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+	   {% empty %}
+	   <span>{% trans "No tags" %}</span>
+	   {% endfor %}
+	 </p>
+       </div>
+
 	<input type="button" id="sectionorg" value="{{each.content_org}}" style="visibility:hidden;"/>
 	<input type="button" id="sectionid" value="{{each.id}}" style="visibility:hidden;"/>	
 	<form method="post" action=".">{% csrf_token %}<br/>

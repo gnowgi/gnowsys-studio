@@ -60,10 +60,9 @@ def video(request):
 		mapname = request.POST.get("mapname","")
 		wename = request.POST.get("wename","")
 		titlename = request.POST.get("titlename","")
-		password = request.POST.get("upload","")
 		addtags = request.POST.get("addtags","")
 		texttags = request.POST.get("texttags","")
-
+		password = request.POST.get("videopassword","")
 		if rate == '0':
 		   rate = 'No rating yet'
 		else :
@@ -120,7 +119,6 @@ def video(request):
 
 
 		if clip != "":
-			userauth = authenticate(username=user, password=password)
 			api.signup({'username':user,'password':password,'email':useremail})
 			save_file(clip,user)
 			clipname = clip._get_name()
@@ -131,7 +129,7 @@ def video(request):
 				i=i+1
 			y=str(dirname)
 			x=str(clipname[0]).upper()
-			CreateConfig(user)
+			CreateConfig(user,password)
 			# os.system("pandora_client config")
 			os.system("pandora_client add_volume "+ user+" "+MEDIA_ROOTNEW+"/"+user )
 			os.system("pandora_client scan")
@@ -145,6 +143,8 @@ def video(request):
 				m.slug=each['id']
 				m.content=content
 				m.status=2
+				m.save()
+				m.sites.add(Site.objects.get_current())
 				m.save()
 				m.objecttypes.add(Objecttype.objects.get(id=p.id))
 				m.save()
@@ -235,6 +235,8 @@ def video(request):
 			m.content=content
 			m.status=2
 			m.save()
+			m.sites.add(Site.objects.get_current())
+			m.save()
 			m.objecttypes.add(Objecttype.objects.get(id=p.id))
 			m.save()
 			a=Attribute()
@@ -322,10 +324,10 @@ def sort_video(video):
 
 
 
-def CreateConfig(user):
+def CreateConfig(user,password):
     myfile = open(VIDEO_PANDORA_URL,'w')
     myfile = open(VIDEO_PANDORA_URL,'a')
-    myfile.write('{ \n "username":"'+user+'", \n "url":"http://wetube.gnowledge.org/api/",\n"cache": "~/.ox/client.sqlite",\n"media-cache": "~/.ox/media",\n"volumes":{},\n"password":"wetube"\n }')
+    myfile.write('{ \n "username":"'+user+'", \n "url":"http://wetube.gnowledge.org/api/",\n"cache": "~/.ox/client.sqlite",\n"media-cache": "~/.ox/media",\n"volumes":{},\n"password":"'+password+'"\n }')
     myfile.close()
     
 

@@ -23,32 +23,26 @@ $(window).load(function() {
 var i = 0;
 </script>
 <style type="text/css">
-#divpost
-{
-position:relative;
-}
 #divsearch
 {
 position:absolute;
-margin-left:61%;
-margin-top:-26%;
+}
+#upperdiv
+{
+position:relative;
+margin-bottom:35%;
+}
+#divpost
+{
+position:absolute;
+margin-left:52%;
 }
 </style> 
 {% if user.is_authenticated %}
 {% autopaginate documents 8 %}
 <h2 style="color: teal;">Document Library</h2>
 <br>
-<div id="divpost">
-<form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
-<br/>
-Post File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type=file name="doc[]" multiple="multiple" /><br><br>
-Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
-<input type="hidden" name="user" value={{user.username}}><br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="submit" value="Post">
-</form>
-</div>
+<div id="upperdiv">
 
 <div id="divsearch">
 <form method="post" action="">
@@ -66,6 +60,20 @@ Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
 <br/>
 <input type="submit" value="Search">
 </form>
+</div>
+
+<div id="divpost">
+<form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+<br/>
+<h4 style="color: black;">Post File:</h4>&nbsp;
+file:&nbsp;<input type=file name="doc[]" multiple="multiple" /><br><br>
+Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
+<input type="hidden" name="user" value={{user.username}}><br><br>
+
+<input type="submit" value="Post">
+</form>
+</div>
+
 </div>
 <br>
 <br>

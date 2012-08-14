@@ -29,38 +29,34 @@ background-color:#E8E8E8 ;
 background-color:white
 }
 
-#divpost
-{
-position:relative;
-}
 #divsearch
 {
 position:absolute;
-margin-left:61%;
-margin-top:-35%;
 }
+#upperdiv
+{
+position:relative;
+margin-bottom:35%;
+}
+#divpost
+{
+position:absolute;
+margin-left:52%;
+}
+
 </style>
 {% if user.is_authenticated %}
 {% autopaginate images 10 %}
 
 <h2 style="color: teal;">Image Library</h2>
-<div id="divpost">
-<form enctype="multipart/form-data" method="post" action="">
-{% csrf_token %}
+<br/>
+<div id="upperdiv">
 
-<h1 style="color: black; margin-left: 0px;">Post Image:</h1>
-Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="title1"><br/><br/>
-Image:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type=file name="image[]" multiple="multiple" /><br/><br/>
-Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
-<input type="hidden" name="user" value={{user.username}}><br/><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="  Post  " size="900" name="post">
-</form>
-</div>
 
 <div id="divsearch">
 <form method="post" action="">
 {% csrf_token %}
-<h1 style="color: black; margin-left: 0px;">Search Image:</h1>
+<h4 style="color: black; margin-left: 0px;">Search Image:</h4>
 <p><input type="text" name="simg" value={{val}}></p>
 <br/>
 <p><div align="left">
@@ -72,8 +68,23 @@ Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
 <input type="submit" value="Search">
 </form>
 </div>
-<br>
 
+<div id="divpost">
+<form enctype="multipart/form-data" method="post" action="">
+{% csrf_token %}
+
+<h4 style="color: black; margin-left: 0px;">Post Image:</h4>
+Title:&nbsp; <input type="text" name="title1"><br/><br/>
+Image:&nbsp; <input type=file name="image[]" multiple="multiple" /><br/><br/>
+Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
+<input type="hidden" name="user" value={{user.username}}><br/><br/>
+<input type="submit" value="  Post  " size="900" name="post" onclick="return myupload();">
+
+
+</form>
+</div>
+</div>
+<br>
  <div>
 <h4 style="color: teal;">IMAGES</h4>
 {% for image in images %}

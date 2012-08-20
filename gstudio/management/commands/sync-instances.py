@@ -20,10 +20,6 @@ import re
 import sys
 from datetime import datetime
 
-from objectapp.models import Gbobject
-from objectapp.models import Objecttype
-from objectapp.models import Attributetype
-from objectapp.models import Relationtype
 from objectapp.models import ObjectDoesNotExist
 
 # from gstudio.xmlrpc.metaweblog import class_checker
@@ -40,7 +36,9 @@ class Command(BaseCommand):
     """Gets all Gbobjects from a specified server"""
     option_list = BaseCommand.option_list + (
         make_option("--server", action="store", type="string",
-                    dest="server", help="Specify an ip"),)
+                    dest="server", help="Specify IP address or URI"),
+        make_option("--instance", action="store", type="string",
+                    dest="instance", help="Specify an instance"),)
 
     def handle(self, *args, **options):
         def class_checker(m):
@@ -83,8 +81,9 @@ class Command(BaseCommand):
                     def str_to_int(string):
                         return [int(x) for x in string]
 
+                    # Weird check for DateTime objects
+
                     for key in i.keys():
-                        # Weird check for DateTime objects
                         if "make_comparable" in dir(i[key]):
                             dt = DateTime().make_comparable(i[key])[1]
                             dt = str_to_int(group(re.search(pattern, dt)))
@@ -94,19 +93,31 @@ class Command(BaseCommand):
                     class_checker(module)[instance](**i).save()
 
             except (ObjectDoesNotExist, IntegrityError):
-                sys.stderr.write("Object matching query does not exist\n")
+                sys.stderr.write("sync-instances.py:55: "
+                                 "Object matching query does not exist\n")
 
             except ValueError:
-                sys.stderr.write("Object already exists\n")
+                sys.stderr.write("sync-instances.py:93: "
+                                 "Object already exists\n")
 
         server = options["server"]
         srv = ServerProxy(server, allow_none=True)
 
+        instance = options["instance"]
+
         objcc = class_checker(objmodels)
         gstcc = class_checker(gstmodels)
 
-        for i in objcc.keys():
-            parse("objectapp.models", i)
+        if instance:
+            if instance in objkeys:
+                parse("objectapp.models", instance)
 
-        for i in gstcc.keys():
-            parse("gstudio.models", i)
+            if instance in gstkeys:
+                parse("gstudio.models", instance)
+
+        else:
+            for i in objkeys:
+                parse("objectapp.models", i)
+
+            for i in gstkeys:
+                parse("gstudio.models", i)

@@ -128,12 +128,6 @@ attr_counter = -1
 class Author(User):
     """Proxy Model around User"""
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Author",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     objects = models.Manager()
     published = AuthorPublishedManager()
 
@@ -160,12 +154,6 @@ class Gbobject(Node):
     prefix this with 'Gb', to suggest that it is an object of the gnowledge
     base.  System and Process classes also inherit this class.
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Gbobject",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     STATUS_CHOICES = ((DRAFT, _('draft')),
                       (HIDDEN, _('hidden')),
@@ -891,12 +879,6 @@ class Process(Gbobject):
     A store processes, events or changes described as changes in attributes and relations
     """
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Process",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     processtypes = models.ManyToManyField(Processtype, verbose_name=_('member of process type'),
                                           related_name='member_processes',
                                           blank=True, null=True)
@@ -948,12 +930,6 @@ class System(Gbobject):
     """
     instance of a Systemtype
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="System",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     systemtypes = models.ManyToManyField(Systemtype, verbose_name=_('member of systemtype'),
                                         related_name='member_systems',

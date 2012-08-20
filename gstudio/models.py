@@ -166,12 +166,6 @@ attr_counter = -1
 class Author(User):
     """Proxy Model around User"""
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Author",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     objects = models.Manager()
     published = AuthorPublishedManager()
 
@@ -197,12 +191,6 @@ class NID(models.Model):
     """the set of all nodes.  provides node ID (NID) to all nodes in
     the network, including edges.  Edges are also first class citizens
     in the gnowledge base. """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="NID",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     title = models.CharField(_('title'), help_text=_('give a name to the node'), max_length=255)
     last_update = models.DateTimeField(_('last update'), default=datetime.now)
@@ -433,12 +421,6 @@ class Node(NID):
     Super class
     """
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Node",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     altnames = TagField(_('alternate names'), help_text=_('alternate names if any'), blank=True, null=True)
     plural = models.CharField(_('plural name'), help_text=_('plural form of the node name if any'), max_length=255, blank=True, null=True)
     rating = RatingField(range=5, can_change_vote = True, help_text=_('your rating'), blank=True, null=True)
@@ -474,12 +456,6 @@ class Metatype(Node):
     """
     Metatype object for Nodetype
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Metatype",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     description = models.TextField(_('description'), blank=True, null=True)
     parent = models.ForeignKey('self', null=True, blank=True, verbose_name=_('parent metatype'), related_name='children')
@@ -682,12 +658,6 @@ class Metatype(Node):
 
 class Edge(NID):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Edge",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     metatypes = models.ManyToManyField(Metatype, verbose_name=_('member of metatypes'),
                                        related_name='member_edges',
                                        blank=True, null=True)
@@ -712,12 +682,6 @@ class Nodetype(Node):
     """
     Model design for publishing nodetypes.  Other nodetypes inherit this class.
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Nodetype",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     STATUS_CHOICES = ((DRAFT, _('draft')),
                       (HIDDEN, _('hidden')),
@@ -1368,12 +1332,6 @@ class Objecttype(Nodetype):
     Object class
     '''
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Objecttype",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     def __unicode__(self):
         displayname="OT: "+self.title
         return displayname
@@ -1703,12 +1661,6 @@ class Relationtype(Nodetype):
     Properties with left and right subjects (Binary relations) are defined in this class.
     '''
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Relationtype",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     inverse = models.CharField(_('inverse name'), help_text=_('when subjecttypes are interchanged, what should be the name of the relation type? This is mandatory field. If the relation is symmetric, same name will do.'), max_length=255,db_index=True )
     left_subjecttype = models.ForeignKey(NID,related_name="left_subjecttype_of", verbose_name='left role')
     left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for left role')
@@ -1928,12 +1880,6 @@ class Attributetype(Nodetype):
     field is selected for datatype.
     '''
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Attributetype",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     subjecttype = models.ForeignKey(NID, related_name="subjecttype_of", verbose_name='subject type name')
     applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='applicable nodetypes')
     dataType = models.CharField(max_length=2, choices=FIELD_TYPE_CHOICES,default='01', verbose_name='data type of value')
@@ -2134,12 +2080,6 @@ class Relation(Edge):
     Relations, instances of relationtypes
     '''
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Relation",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     left_subject_scope = models.CharField(max_length=50, verbose_name='subject scope or qualification', null=True, blank=True)
     left_subject = models.ForeignKey(NID, related_name="left_subject_of", verbose_name='subject name')
     relationtype_scope = models.CharField(max_length=50, verbose_name='relation scope or qualification', null=True, blank=True)
@@ -2250,12 +2190,6 @@ class Attribute(Edge):
     nodetypes.
     '''
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Attribute",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     subject_scope = models.CharField(max_length=50, verbose_name='subject scope or qualification', null=True, blank=True)
     subject = models.ForeignKey(NID, related_name="subject_of", verbose_name='subject name')
     attributetype_scope = models.CharField(max_length=50, verbose_name='property scope or qualification', null=True, blank=True)
@@ -2343,12 +2277,6 @@ class Attribute(Edge):
 
 class AttributeCharField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeCharField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.CharField(max_length=100, verbose_name='string')
 
     def __unicode__(self):
@@ -2371,12 +2299,6 @@ class AttributeCharField(Attribute):
 
 class AttributeTextField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeTextField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.TextField(verbose_name='text')
 
     def __unicode__(self):
@@ -2396,12 +2318,6 @@ class AttributeTextField(Attribute):
 
 
 class AttributeIntegerField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeIntegerField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value = models.IntegerField(max_length=100, verbose_name='Integer')
 
@@ -2424,13 +2340,6 @@ class AttributeIntegerField(Attribute):
 
 class AttributeCommaSeparatedIntegerField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeComma" +
-                                           "SeparatedIntegerField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.CommaSeparatedIntegerField(max_length=100, verbose_name='integers separated by comma')
 
     def __unicode__(self):
@@ -2450,12 +2359,6 @@ class AttributeCommaSeparatedIntegerField(Attribute):
         super(AttributeCommaSeparatedIntegerField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeBigIntegerField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeBigIntegerField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.BigIntegerField(max_length=100, verbose_name='big integer')
 
@@ -2478,13 +2381,6 @@ class AttributeBigIntegerField(Attribute):
 
 class AttributePositiveIntegerField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributePositive" +
-                                           "IntegerField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.PositiveIntegerField(max_length=100, verbose_name='positive integer')
 
     def __unicode__(self):
@@ -2506,12 +2402,6 @@ class AttributePositiveIntegerField(Attribute):
 
 class AttributeDecimalField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeDecimalField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.DecimalField(max_digits=3, decimal_places=2, verbose_name='decimal')
 
     def __unicode__(self):
@@ -2529,12 +2419,6 @@ class AttributeDecimalField(Attribute):
         super(AttributeDecimalField, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class AttributeFloatField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeFloatField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.FloatField(max_length=100, verbose_name='number as float')
 
@@ -2557,12 +2441,6 @@ class AttributeFloatField(Attribute):
 
 class AttributeBooleanField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeBooleanField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.BooleanField(verbose_name='boolean')
 
     def __unicode__(self):
@@ -2581,12 +2459,6 @@ class AttributeBooleanField(Attribute):
 
 
 class AttributeNullBooleanField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeNullBooleanField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.NullBooleanField(verbose_name='true false or unknown')
 
@@ -2609,12 +2481,6 @@ class AttributeNullBooleanField(Attribute):
 
 class AttributeDateField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeDateField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.DateField(max_length=100, verbose_name='date')
 
     def __unicode__(self):
@@ -2635,12 +2501,6 @@ class AttributeDateField(Attribute):
 
 
 class AttributeDateTimeField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeDateTimeField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.DateTimeField(max_length=100, verbose_name='date time')
 
@@ -2663,12 +2523,6 @@ class AttributeDateTimeField(Attribute):
 
 class AttributeTimeField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeTimeField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.TimeField(max_length=100, verbose_name='time')
 
     def __unicode__(self):
@@ -2689,12 +2543,6 @@ class AttributeTimeField(Attribute):
 
 
 class AttributeEmailField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeEmailField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.EmailField(max_length=100,verbose_name='value')
 
@@ -2717,12 +2565,6 @@ class AttributeEmailField(Attribute):
 
 class AttributeFileField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeFileField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.FileField(upload_to='media/'+UPLOAD_TO, verbose_name='file')
 
     def __unicode__(self):
@@ -2743,12 +2585,6 @@ class AttributeFileField(Attribute):
 
 
 class AttributeFilePathField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeFilePathField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.FilePathField(verbose_name='path of file')
 
@@ -2771,12 +2607,6 @@ class AttributeFilePathField(Attribute):
 
 class AttributeImageField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeImageField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.ImageField(upload_to = UPLOAD_TO, verbose_name='image')
 
     def __unicode__(self):
@@ -2798,12 +2628,6 @@ class AttributeImageField(Attribute):
 
 class AttributeURLField(Attribute):
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeURLField",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     value  = models.URLField(max_length=100, verbose_name='url')
 
     def __unicode__(self):
@@ -2824,12 +2648,6 @@ class AttributeURLField(Attribute):
 
 
 class AttributeIPAddressField(Attribute):
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeIPAddressField",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     value  = models.IPAddressField(max_length=100, verbose_name='ip address')
 
@@ -2857,12 +2675,6 @@ class Processtype(Nodetype):
     A kind of nodetype for defining processes or events or temporal
     objects involving change.
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Processtype",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     changing_attributetype_set = models.ManyToManyField(Attributetype, null=True, blank=True,
                                verbose_name=_('attribute set involved in the process'),
@@ -2902,12 +2714,6 @@ class Systemtype(Nodetype):
     """
     class to organize Systems
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Systemtype",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     nodetype_set = models.ManyToManyField(Nodetype, related_name="nodetype_set_of", verbose_name='Possible edges in the system',
                                            blank=True, null=False)
@@ -2953,12 +2759,6 @@ class AttributeSpecification(Node):
     proposition but a description, which can be used as a subject in
     another sentence.
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="AttributeSpecification",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     attributetype = models.ForeignKey(Attributetype, verbose_name='property name')
     subjects = models.ManyToManyField(NID, related_name="subjects_attrspec_of", verbose_name='subjects')
@@ -3006,12 +2806,6 @@ class RelationSpecification(Node):
     specifying a relation with a subject
     """
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="RelationSpecification",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     relationtype = models.ForeignKey(Relationtype, verbose_name='relation name')
     subjects = models.ManyToManyField(NID, related_name="subjects_in_relspec", verbose_name='subjects')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
@@ -3055,12 +2849,6 @@ class NodeSpecification(Node):
     """
     A node specified (described) by its relations or attributes or both.
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="NodeSpecification",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     subject = models.ForeignKey(Node, related_name="subject_nodespec", verbose_name='subject name')
     relations = models.ManyToManyField(Relation, related_name="relations_in_nodespec", verbose_name='relations used to specify the domain')
@@ -3110,12 +2898,6 @@ class Expression(Node):
     Expression constructor
     """
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Expression",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     left_term = models.ForeignKey(NID, related_name="left_term_of", verbose_name='left term name')
     relationtype = models.ForeignKey(Relationtype, verbose_name='relation name')
     right_term = models.ForeignKey(NID, related_name="right_term_of", verbose_name='right term name')
@@ -3159,12 +2941,6 @@ class Union(Node):
     union of two classes
     """
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Union",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'union_of', verbose_name='node types for union')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
                                      related_name='member_unions',
@@ -3198,12 +2974,6 @@ class Complement(Node):
     complement of a  class
     """
 
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Complement",
-                                           help_text=("class' id"),
-                                           max_length=255)
-
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'complement_of', verbose_name='complementary nodes')
     metatypes=models.ManyToManyField(Metatype,related_name='meta_complement',verbose_name=_('Metanodes'),
                                      blank=True, null= True)
@@ -3236,12 +3006,6 @@ class Intersection(Node):
     """
     Intersection of classes
     """
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Intersection",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'intersection_of', verbose_name='intersection of classes')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
@@ -3321,12 +3085,6 @@ post_save.connect(ping_external_urls_handler, sender=Nodetype,
 
 class Peer(User):
     """Subclass for non-human users"""
-
-    def __init__(self):
-        self.identifier = models.CharField(("identifier"),
-                                           default="Peer",
-                                           help_text=("class' id"),
-                                           max_length=255)
 
     def __unicode__(self):
         return self.ip

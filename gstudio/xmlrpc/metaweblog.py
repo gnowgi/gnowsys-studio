@@ -837,7 +837,7 @@ def set_relation(d,obj1,obj2) :
     except Relationtype.DoesNotExist :
        return "Relationtype Does Not Exist"
 
-# Previous version of the following methods
+# Previous version of ``show_id`` and ``show_instance``
 
 # @xmlrpc_func(returns='list')
 # def list_id():
@@ -870,8 +870,7 @@ def instance_checker(m, instance, option, id=None):
             if option == "all":
                 return [id.id for id in cc[i].objects.all()]
     else:
-        # http://www.gnu.org/prep/standards/html_node/Errors.html#Errors
-        sys.stderr.write("metaweblog.py:line872: Wrong arguments\n")
+        sys.stderr.write("metaweblog.py:865-871: Wrong arguments\n")
 
 @xmlrpc_func(returns="struct", args=["string", "string"])
 def show_id(module=None, instance=None):
@@ -893,7 +892,7 @@ def show_id(module=None, instance=None):
         return gstres, objres
 
     else:
-        sys.stderr.write("metaweblog.py:line870: Wrong arguments\n")
+        sys.stderr.write("metaweblog.py:877-892: Wrong arguments\n")
 
 @xmlrpc_func(returns="struct", args=["string", "string", "string"])
 def show_instance(module=None, instance=None, id=None):
@@ -934,8 +933,8 @@ def show_instance(module=None, instance=None, id=None):
             return res
 
         else:
-            sys.stderr.write("metaweblog.py:line898: Wrong arguments\n")
+            sys.stderr.write("metaweblog.py:900-933: Wrong arguments\n")
 
     except ObjectDoesNotExist:
-        sys.stderr.write("metaweblog.py:line901: " +
+        sys.stderr.write("metaweblog.py:900-933: "
                          "Object matching query does not exist\n")

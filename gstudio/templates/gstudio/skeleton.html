@@ -51,9 +51,9 @@
 				display: block;
 				position: absolute;
 			}
-.orgitdown .orgitdownButton1 a {
-	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/save.jpeg);
-}
+<!-- .orgitdown .orgitdownButton1 a { -->
+<!-- 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/save.jpeg); -->
+<!-- } -->
 .orgitdown .orgitdownButton2 a {
 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/bold.png);
 }
@@ -101,10 +101,10 @@
 }
 .orgitdownContainer  {
 	border:1px solid #3C769D;	
-	background:#FFF url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-container.png) repeat-x top left; 
+	<!-- background:#FFF url(/static/gstudio/js/orgitdown/orgitdown/skins/orgitdown/images/bg-container.png) repeat-x top left;  -->
 	padding:5px 5px 2px 5px;
 	font:11px Verdana, Arial, Helvetica, sans-serif;
-        margin-left:450px;
+        margin-left:640px;
         width:450px;
         margin-top:30px;
 }
@@ -283,8 +283,47 @@
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 	
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/replytotopic.js"></script>
+
+        <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/replycomment.js"></script>
+	 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
+	
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
+
+        <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/topiccomment.js"></script>
+
+ <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
+	
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
 	
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/savedata.js"></script>
+	 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
+	
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
+	
+	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/addcontent.js"></script>
+	<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> -->
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script> -->
+	
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script> -->
+	
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/updatepage.js"></script> -->
+
+	<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> -->
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script> -->
+	
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script> -->
+	
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/addcontent.js"></script> -->
+	<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> -->
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script> -->
+	
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script> -->
+	
+	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/updatesection.js"></script> -->
 
 	<!-- EXTRAHEAD -->
 	
@@ -341,7 +380,7 @@
 				<textarea id="gnoweditor" style="visibility:hidden;">
 				</textarea>
 				
-				
+				{% block graph %}
 				<div id="graphcss">
 				<div id="chart">
 					
@@ -773,6 +812,7 @@ return relations;
 </script>
 
 				</div>
+				{% endblock %}
 		</div>
 				
 				
@@ -792,3 +832,4 @@ return relations;
 	
 	</body>
 </html>
+

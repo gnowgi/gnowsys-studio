@@ -14,7 +14,7 @@
       } 
       #homebody{
 	height:100%;
-	background: #B3B3B3;
+	background: white;
 	
 	}
       #header {
@@ -77,6 +77,14 @@
       position:absolute;
       margin-left:47%;
       }
+	.tags .tag_1 { font-size: 1em; color: #001e2d; }
+	.tags .tag_2 { font-size: 1.125em; color: #00334c; }
+	.tags .tag_3 { font-size: 2em; color: #005b89; }
+	.tags .tag_4 { font-size: 2.25em; color: #0070a8; }
+	.tags .tag_5 { font-size: 3em; color: #0099e5; }
+	.tags .tag_6 { font-size: 3.20em; color: #00adff; }
+      }
+	#tag{ width: 50%; } 
       }
     </style>   
     
@@ -114,11 +122,11 @@
     <div id="header" >
       {% include "gstudio/_header.html" %}
     </div>
-   <div class="tags">
-	<h3>{% trans "Tags" %}</h3>
+    <div class="tags" align="center" id="tag">
+	<h2>{% trans "Tag Cloud" %}</h2>
   	{% get_tag_cloud %}
    </div>
-	
+   </center>
     <div id="main">
       <center><font size="23" color="#4d659e"><b>{{ site }}</b></font></center>
       <form action="{% url gstudio_nodetype_search %}" method="get">
@@ -129,16 +137,16 @@
       </form>
     </div><br/><br/><br/>
 <link rel="stylesheet" type="text/css" media="screen, projection" href="/static/gstudio/css/screen.css" />
-<center><p style = " font-size : 19px ; color : #4d659e"><b>Let us collaboratively construct semantic knowledge networks with a special focus on education.<a href="/more/"><font color="red">more</font></a></b></p></center>
+<center><p style = " font-size : 19px ; color : #4d659e"><b>The site provides a loom (place to exchange views from the members of the site on a topic, or seek responses from members); collaboratively construct wikipages; share electronic documents, images and videos and use them in your discussions or wikipages; and create semantic networks. We will soon provide a link on how to use the site prominently on the home page.  All resources are released under creative commons license. <a href="/more/"><font color="red">more</font></a></b></p></center>
     <div class="bottom">
       <div class="authors">
-	<h3>{% trans "Recents Authors" %}</h3>
+	<h3>{% trans "Recent Authors" %}</h3>
 	{% get_authors %}
       </div>
 	
 <div class="recentsnodetype">
-<h3>{% trans "Recent Nodes" %}</h3>
-{% get_recent_nodetypes %}
+<h3>{% trans "Recent Objects" %}</h3>
+{% get_recent_gbobjects %}
 </div>
 <div class="comments">
   <h3>{% trans "Recent Comments" %}</h3>

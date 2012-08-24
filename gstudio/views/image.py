@@ -22,6 +22,7 @@ from demo.settings import *
 from gstudio.models import *
 from objectapp.models import *
 import os
+from gstudio.methods import *
 
 def image(request):
 	p=Objecttype.objects.get(title="Image")
@@ -40,6 +41,7 @@ def image(request):
 		show = request.POST.get("Show","")
 		addtags = request.POST.get("addtags","")
 		texttags = request.POST.get("texttags","")
+		contenttext = request.POST.get("contenttext","")
 		if show != "":
 			i=Gbobject.objects.get(id=fulid)
 			vars=RequestContext(request,{'image':i})
@@ -129,7 +131,7 @@ def create_object(f,log,title,content):
 		dirname = dirname + final[i]
 		i=i+1
 	p.slug=dirname
-	p.content=content
+	p.content_org=content
 	p.status=2
 	p.save()
 	p.sites.add(Site.objects.get_current())
@@ -140,8 +142,74 @@ def create_object(f,log,title,content):
 	q=Objecttype.objects.get(title="Image")
 	p.objecttypes.add(Objecttype.objects.get(id=q.id))
 	p.save()
+	new_ob = content
+ 	myfile = open('/tmp/file.org', 'w')
+ 	myfile.write(new_ob)
+	myfile.close()
+	myfile = open('/tmp/file.org', 'r')
+	myfile.readline()
+	myfile = open('/tmp/file.org', 'a')
+	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+	myfile.write("\n#+TITLE: ")
+	myfile = open('/tmp/file.org', 'r')
+	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	output = stdout.read()
+	data = open("/tmp/file.html")
+ 	data1 = data.readlines()
+ 	data2 = data1[72:]
+ 	data3 = data2[:-3]
+ 	newdata=""
+ 	for line in data3:
+        	newdata += line.lstrip()
+ 	p.content = newdata
+ 	p.save()
 
 def rate_it(topic_id,request,rating):
 	ob = Gbobject.objects.get(id=topic_id)
 	ob.rating.add(score=rating ,user=request.user, ip_address=request.META['REMOTE_ADDR'])
+	return True
+
+def show(request,imageid):
+	if request.method=="POST":
+		rating = request.POST.get("star1","")
+		imgid = request.POST.get("imgid","")
+		addtags = request.POST.get("addtags","")
+		texttags = request.POST.get("texttags","")
+		contenttext = request.POST.get("contenttext","")
+		if rating :
+	       	 	rate_it(int(imgid),request,int(rating))
+		if addtags != "":
+			i=Gbobject.objects.get(id=imgid)
+			i.tags = i.tags+ ","+str(texttags)
+			i.save()
+		if contenttext !="":
+			 edit_description(imgid,contenttext)
+	gbobject = Gbobject.objects.get(id=imageid)
+	vars=RequestContext(request,{'image':gbobject})
+	template="gstudio/fullscreen.html"
+	return render_to_response(template,vars)
+
+def edit_description(sec_id,title):
+	new_ob = Gbobject.objects.get(id=int(sec_id))
+	new_ob.content_org = title
+	myfile = open('/tmp/file.org', 'w')
+	myfile.write(new_ob.content_org)
+	myfile.close()
+	myfile = open('/tmp/file.org', 'r')
+	myfile.readline()
+	myfile = open('/tmp/file.org', 'a')
+	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+	myfile.write("\n#+TITLE: ")
+	myfile = open('/tmp/file.org', 'r')
+	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	output = stdout.read()
+	data = open("/tmp/file.html")
+	data1 = data.readlines()
+	data2 = data1[72:]
+	data3 = data2[:-3]
+	newdata=""
+	for line in data3:
+		newdata += line.lstrip()
+	new_ob.content = newdata
+	new_ob.save()
 	return True

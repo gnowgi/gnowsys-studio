@@ -6,6 +6,8 @@
 
 {% block content %}
 <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
     <script type="text/javascript" >
       $(window).load(function() {
       $("#content").css({
@@ -17,6 +19,21 @@ $(window).load(function() {
  $("#graphcss").hide();   
   });
 var i = 0;
+jQuery(document).ready(function($) {
+    $("#commenteditor").click(function(){
+        document.getElementById('gnoweditor').style.visibility="visible";
+        $("#gnoweditor").orgitdown(mySettings);
+	document.getElementById('save').style.visibility="visible";
+	$("#commenteditor").hide();
+		
+	});
+     $("#save").click(function(){
+            var org_data = $("#gnoweditor").val();   
+	    var encode_data = encodeURIComponent(org_data);
+	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));    
+ 	    $("#commenttext").val(decode_data);	   
+	});
+});
 </script>
 <style type="text/css">
 #div2
@@ -92,13 +109,15 @@ background: green;
 <form enctype="multipart/form-data" method="post" action="">
 {% csrf_token %}
 <p><h4 style="color: black;">Submit Videos:</h4>Video:&nbsp;<input type="file" name="clip" multiple="multiple" /></p><br/>
-Description:&nbsp;&nbsp;<input type=textarea name="contenttext"/>
+Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Content" >
+<input type="button" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
+<input type=text name="contenttext" id="commenttext" style="visibility:hidden" />
 <input type="hidden" name="user" value={{user.username}}>
 <input type="hidden" name="userpassword" value={{user.password}}>
-<input type="hidden" name="useremail" value={{user.email}}><br/><br/>
+<input type="hidden" name="useremail" value={{user.email}}>
 <p><b> Enter the password of wetube.gnowledge.org</b> </p>
 <input type="password" name="videopassword" />
-<br/><br/>
+
 <input type="submit" value="Upload"  onclick="return myupload();" >
 <script type="text/javascript">
 function myupload()
@@ -165,8 +184,8 @@ document.getElementById("divvideo").setAttribute("id","div2");
 <form enctype="multipart/form-data" method="post" action="" target="_blank">
 {% csrf_token %}
 <input type="hidden" name = "full" value ={{video.slug}}>
-<input type="submit" value="Play">
-	
+<!--<input type="submit" value="Play">-->
+<a href="/gstudio/resources/videos/show/{{video.id}}/"><font size="4"><u>Show</u></font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href={{video.rurl}} target="_blank">Right click to download</a><br>
 <!-- <font color = 'black'>Posted By : </font> -->
 {% for author in video.get_nbh.posted_by %}

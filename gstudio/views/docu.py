@@ -21,6 +21,7 @@ from django.template import RequestContext
 from demo.settings import *
 from gstudio.models import *
 from objectapp.models import *
+from gstudio.methods import *
 
 def docu(request):
 	p=Objecttype.objects.get(title="Document")
@@ -36,6 +37,7 @@ def docu(request):
 		delete = request.POST.get("delete","")
 		addtags = request.POST.get("addtags","")
 		texttags = request.POST.get("texttags","")
+		contenttext = request.POST.get("commenttext","")
 		if rating :
         	 	rate_it(int(docid),request,int(rating))
 		if delete != "":
@@ -70,6 +72,9 @@ def docu(request):
 			i.tags = i.tags+ ","+str(texttags)
 			i.save()
 
+		if contenttext !="":
+	                edit_description(docid,contenttext)
+
 
 		a=[]
 		for each in request.FILES.getlist("doc[]",""):
@@ -81,7 +86,9 @@ def docu(request):
 			vars=RequestContext(request,{'documents':q})
 			template="gstudio/docu.html"
 			return render_to_response(template, vars)	
-	vars=RequestContext(request,{'documents':q})
+	s=Nodetype.objects.get(title="Document")
+#	t=s.get_nbh['contains_members']
+	vars=RequestContext(request,{'documents':q,'docomment':s})
 	template="gstudio/docu.html"
 	return render_to_response(template, vars)
 
@@ -105,7 +112,7 @@ def create_object(file,log,content):
 		else:
 			final = final+each1	
 	p.slug=final
-	p.content=content
+	p.content_org=content
 	p.status=2
 	p.save()
 	p.sites.add(Site.objects.get_current())
@@ -116,8 +123,55 @@ def create_object(file,log,content):
 	q=Objecttype.objects.get(title="Document")
 	p.objecttypes.add(Objecttype.objects.get(id=q.id))
 	p.save()
+	new_ob = content
+	myfile = open('/tmp/file.org', 'w')
+ 	myfile.write(new_ob)
+	myfile.close()
+	myfile = open('/tmp/file.org', 'r')
+	myfile.readline()
+	myfile = open('/tmp/file.org', 'a')
+	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+	myfile.write("\n#+TITLE: ")
+	myfile = open('/tmp/file.org', 'r')
+	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	output = stdout.read()
+	data = open("/tmp/file.html")
+ 	data1 = data.readlines()
+ 	data2 = data1[72:]
+	data3 = data2[:-3]	
+ 	newdata=""
+ 	for line in data3:
+        	newdata += line.lstrip()
+ 	p.content = newdata
+ 	p.save()	
 
 def rate_it(topic_id,request,rating):
 	ob = Gbobject.objects.get(id=topic_id)
 	ob.rating.add(score=rating ,user=request.user, ip_address=request.META['REMOTE_ADDR'])
+	return True
+
+
+def edit_description(sec_id,title):
+	new_ob = Gbobject.objects.get(id=int(sec_id))
+	new_ob.content_org = title
+	myfile = open('/tmp/file.org', 'w')
+	myfile.write(new_ob.content_org)
+	myfile.close()
+	myfile = open('/tmp/file.org', 'r')
+	myfile.readline()
+	myfile = open('/tmp/file.org', 'a')
+	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+	myfile.write("\n#+TITLE: ")
+	myfile = open('/tmp/file.org', 'r')
+	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	output = stdout.read()
+	data = open("/tmp/file.html")
+	data1 = data.readlines()
+	data2 = data1[72:]
+	data3 = data2[:-3]
+	newdata=""
+	for line in data3:
+		newdata += line.lstrip()
+	new_ob.content = newdata
+	new_ob.save()
 	return True

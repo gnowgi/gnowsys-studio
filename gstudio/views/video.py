@@ -141,7 +141,7 @@ def video(request):
 				m.title=each['title'].lower()
 				m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
 				m.slug=each['id']
-				m.content=content
+				m.content_org=content
 				m.status=2
 				m.save()
 				m.sites.add(Site.objects.get_current())
@@ -181,6 +181,27 @@ def video(request):
 				a4.svalue=final
 				a4.save()
 				m.save()
+				new_ob = content
+ 				myfile = open('/tmp/file.org', 'w')
+			 	myfile.write(new_ob)
+				myfile.close()
+				myfile = open('/tmp/file.org', 'r')
+				myfile.readline()
+				myfile = open('/tmp/file.org', 'a')
+				myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+				myfile.write("\n#+TITLE: ")
+				myfile = open('/tmp/file.org', 'r')
+				stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+				output = stdout.read()
+				data = open("/tmp/file.html")
+			 	data1 = data.readlines()
+			  	data2 = data1[72:]
+ 				data3 = data2[:-3]
+			 	newdata=""
+			 	for line in data3:
+			        	newdata += line.lstrip()
+			 	m.content = newdata
+			 	m.save()				
 			
 			
 					
@@ -332,4 +353,79 @@ def CreateConfig(user,password):
     
 
 
+def show(request,videoid):
+	if request.method == 'POST':
+		svid = request.POST.get("svid","")
+		rating = request.POST.get("star1","")
+		vidid = request.POST.get("vidid","")
+		user = request.POST.get("user","")
+		favid=request.POST.get("favid","")
+		favusr=request.POST.get("favusr","")
+		addtags = request.POST.get("addtags","")
+		texttags = request.POST.get("texttags","")
+		contenttext = request.POST.get("contenttext","")
+		if rating :
+        	 	rate_it(int(vidid),request,int(rating))
+		
+		if favid!="":
+                        e=0
+                        r = Objecttype.objects.get(title="user")
+                        for each in r.get_nbh['contains_members']:
+                                if favusr+"video" == each.title:
+                                    e=1
+                        if e==0 :
+				t=Gbobject()
+                                t.title=favusr+"video"
+                                t.slug=favusr+"video"
+                                t.content=' '
+                                t.status=2
+                                t.save()
+                                t.objecttypes.add(Objecttype.objects.get(title="user"))
+                                t.save()
+                        t=Gbobject.objects.get(title=favusr+"video")
+                        rel=Relation()
+                        rt=Relationtype.objects.get(title="has_favourite")
+                        rel.relationtype_id=rt.id
+                        f1=Gbobject.objects.get(id=favid)
+                        rel.left_subject_id=t.id
+                        rel.right_subject_id=f1.id
+                        rel.save()
+			t.save()
 
+		
+		if addtags != "":
+			i=Gbobject.objects.get(id=vidid)
+			i.tags = i.tags+ ","+str(texttags)
+			i.save()
+		if contenttext !="":
+			 edit_description(vidid,contenttext)		
+	gbobject = Gbobject.objects.get(id=videoid)
+	vars=RequestContext(request,{'video':gbobject})
+	template="gstudio/transcript.html"
+	return render_to_response(template,vars)
+
+
+def edit_description(sec_id,title):
+	new_ob = Gbobject.objects.get(id=int(sec_id))
+	new_ob.content_org = title
+	myfile = open('/tmp/file.org', 'w')
+	myfile.write(new_ob.content_org)
+	myfile.close()
+	myfile = open('/tmp/file.org', 'r')
+	myfile.readline()
+	myfile = open('/tmp/file.org', 'a')
+	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+	myfile.write("\n#+TITLE: ")
+	myfile = open('/tmp/file.org', 'r')
+	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	output = stdout.read()
+	data = open("/tmp/file.html")
+	data1 = data.readlines()
+	data2 = data1[72:]
+	data3 = data2[:-3]
+	newdata=""
+	for line in data3:
+		newdata += line.lstrip()
+	new_ob.content = newdata
+	new_ob.save()
+	return True

@@ -19,9 +19,9 @@ def sectionadd1(request,pageid):
         if not request.POST.get('org', ''):
              errors.append('Enter a page.')
         if not errors:
-  	     title=request.POST['subject']
+  	     title=unicode(request.POST['subject'])
  	    # content=request.POST['page']
-             content_org=request.POST['org']
+             content_org=unicode(request.POST['org'])
 	     idusr=request.POST['idusr']
              tp = make_section_object(title,int(idusr),content_org)
              System.objects.get(id=int(pageid)).system_set.all()[0].gbobject_set.add(tp)

@@ -29,9 +29,9 @@ def pageadd(request):
         # if not request.POST.get('org1', ''):
         #      errors.append('Enter a page.')
         if not errors:
-            title=request.POST['subject']
+            title=unicode(request.POST['subject'])
        #     content=request.POST['page']
-            content_org=request.POST['org1']
+            content_org=unicode(request.POST['org1'])
             idusr=request.POST['idusr']
             pageId = create_wikipage(title,int(idusr),content_org)
             if pageId :

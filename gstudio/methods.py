@@ -202,7 +202,9 @@ def create_wikipage(title,idusr,content_org):
  sys = System()
  sys.title = title
  sys.status = 2
- sys.content_org= content_org
+ contorg = unicode(content_org)
+ sys.content_org = contorg.encode('utf8')
+
  myfile = open('/tmp/file.org', 'w')
  myfile.write(sys.content_org)
  myfile.close()

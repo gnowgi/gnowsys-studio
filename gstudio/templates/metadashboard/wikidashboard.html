@@ -4,20 +4,20 @@
 {% block content %}
 
 
-{% if user.is_authenticated %}
+
   
 <p> Here is a list of all the pages:</p>
 </br>
     {% for each in pages.member_systems.all %}
     <a href="/gstudio/page/gnowsys-page/{{each.id}}/">{{each.title}}</a></br>
     {% endfor %}
+	{% if user.is_authenticated %}
     <input type="button" value="Create a new page" onClick="location.href='pageadd/';">
+	{% endif %}
     </p>
     <p>
     </br>
-{% else %}
-  <h1> <p style = "color :black;">OOPS!!! Login Please!</p></h1>
-{% endif %}
+
 
 
 

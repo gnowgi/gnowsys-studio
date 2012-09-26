@@ -22,26 +22,27 @@ from gstudio.methods import *
    
 def pagedashboard(request,pageid):
    pageid = int(pageid)
-   # boolean1 = False
    flag= False
    page_ob = System.objects.get(id=pageid)
    if request.method == "POST" :
       boolean = False
       rep = request.POST.get("replytosection",'')
-      print "rep" ,rep
-#      content_org = request.POST.get("orgreply",'')
       id_no = request.POST.get("iden",'')
       id_no1 = request.POST.get("parentid","")
-      print"id",id_no1
       idusr = request.POST.get("idusr",'')
+      usr = request.POST.get("usr",'')
       rating = request.POST.get("star1","")
-   # #    flag1=request.POST.get("pagerelease","")
-   # #    block = request.POST.get("block","")
       section_del = request.POST.get("del_section", "")
       comment_del = request.POST.get("del_comment", "")
       docid = request.POST.get("docid","")
       addtags = request.POST.get("addtags","")
-      texttags = request.POST.get("texttags","")
+      texttags = unicode(request.POST.get("texttags",""))
+      editable = request.POST.get("edit","")
+      if editable=="edited":
+          if id_no:
+             edit_section(id_no,rep,usr)
+          elif id_no1:
+             edit_section(id_no1,rep,str(request.user))
       if section_del:
          del_section(int(id_no))
       if comment_del:
@@ -50,19 +51,16 @@ def pagedashboard(request,pageid):
          rate_section(int(id_no),request,int(rating))
       if addtags != "":
          i=Gbobject.objects.get(id=docid)
-         i.tags = i.tags+ ","+str(texttags)
+         i.tags = i.tags+ ","+(texttags)
          i.save()
 
-      if rep :
+      if rep and editable!='edited':
          if not id_no :
-            ptitle= make_title(int(id_no))      
-            boolean = make_sectionrelation(rep,ptitle,int(id_no1),int(idusr))
-            
-           
+            ptitle= make_title(int(id_no1))      
+            boolean = make_sectionrelation(rep,ptitle,int(id_no1),int(idusr),usr)
          elif not id_no1 :
             ptitle= make_title(int(id_no))
-            boolean = make_sectionrelation(rep,ptitle,int(id_no),int(idusr))
-            
+            boolean = make_sectionrelation(rep,ptitle,int(id_no),int(idusr),usr)
       if boolean :
          return HttpResponseRedirect("/gstudio/page/gnowsys-page/"+str(pageid))
    pageid = int(pageid)
@@ -70,10 +68,6 @@ def pagedashboard(request,pageid):
       flag = True 
    Section = page_ob.system_set.all()[0].gbobject_set.all()
    admin_id = page_ob.authors.all()[0].id #a list of topics
-   #    #    for each in page_ob.subject_of.all():
-   #    #       if each.attributetype.title=='pagerelease':
-   #    #          attob = each.svalue
-   #    #       break
    admin_m = page_ob.authors.all()[0]
    
    topic_type_set=Objecttype.objects.get(title='Section')
@@ -83,7 +77,9 @@ def pagedashboard(request,pageid):
    else:
       post="no topic added yet!!"
    ot=Gbobject.objects.get(id=pageid)
-
+   page_ob = System.objects.get(id=pageid)
    variables = RequestContext(request, {'ot' : ot,'section' : Section,'page_ob' : page_ob,'admin_m':admin_m,"flag" : flag,"admin_id" : admin_id,'post':post})
+  
    template = "metadashboard/pgedashboard.html"
    return render_to_response(template, variables)
+ 			

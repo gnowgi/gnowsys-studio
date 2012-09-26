@@ -21,5 +21,5 @@ from django.conf.urls.defaults import patterns
 urlpatterns = patterns('gstudio.views.video',
                        url(r'^$', 'video',
                            name='video'),
-            	       url(r'show/(\d+)/$','show',name='showvideo'),
+		       url(r'show/(\d+)/$','show',name='showvideo'),
                        )

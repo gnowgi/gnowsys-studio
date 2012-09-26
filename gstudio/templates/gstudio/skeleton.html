@@ -51,9 +51,12 @@
 				display: block;
 				position: absolute;
 			}
-<!-- .orgitdown .orgitdownButton1 a { -->
-<!-- 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/save.jpeg); -->
-<!-- } -->
+.orgitdown .orgitdownButton1 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/save.jpeg);
+	margin-left:10px;
+	margin-top:1px;
+}
+
 .orgitdown .orgitdownButton2 a {
 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/bold.png);
 }
@@ -79,11 +82,12 @@
 }
 
 .orgitdown .orgitdownButton9 a {
-	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/clean.png);
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg);
 }
-.orgitdown .preview a {
+
+<!--.orgitdown .preview a {
 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/preview.png);
-}
+}-->
 
 .orgitdown * {
 	margin:0px; padding:0px;
@@ -108,6 +112,11 @@
         width:450px;
         margin-top:30px;
 }
+
+<!-- #content img { -->
+<!--  max-width:600px; -->
+<!-- } -->
+
 .orgitdownEditor {
 	font:12px 'Courier New', Courier, monospace;
 	padding:5px 5px 5px 35px;
@@ -240,7 +249,7 @@
 		{% block stylesheets %}
 		<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
 		{% if LANGUAGE_BIDI %}
-		<link href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" rel="stylesheet" type="text/css" />
+	<link href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" rel="stylesheet" type="text/css" />
 		{% endif %}
 		<link href="{% admin_media_prefix %}jquery/ui/css/custom-theme/jquery-ui-1.8.custom.css" rel="stylesheet" type="text/css" media="screen" title="no title" charset="utf-8" />
 		<link href="{% admin_media_prefix %}css/jquery-ui-grappelli-extensions.css" rel="stylesheet" type="text/css" />
@@ -249,7 +258,12 @@
 		{% block javascripts %}
 		<script type="text/javascript">
 			// GLOBALS
+			var isImage=false;
+			var editImage=false;
+			var objid;
 			var grappelli = {},
+			
+
 			// TODO: klemens: drop ADMIN_URL
 			ADMIN_URL = "{% url admin:index %}",
 			MODEL_URL_ARRAY = {% get_content_types %}, DATE_FORMAT = "{% get_date_format %}", TIME_FORMAT = "{% get_time_format %}", DATETIME_FORMAT = "{% get_datetime_format %}";
@@ -283,20 +297,13 @@
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 	
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
-	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/replytotopic.js"></script>
 
-        <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/replycomment.js"></script>
+        <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/loomscripts.js"></script>
 	 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 	
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
 
-        <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/topiccomment.js"></script>
-
- <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
-	
-	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
 	
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/savedata.js"></script>
 	 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
@@ -305,6 +312,7 @@
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
 	
 	<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/addcontent.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 	<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> -->
 	<!-- <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script> -->
 	
@@ -377,8 +385,7 @@
 					{% endblock %}
 				</div>
 
-				<textarea id="gnoweditor" style="visibility:hidden;">
-				</textarea>
+				<textarea id="gnoweditor" style="visibility:hidden;"></textarea>
 				
 				{% block graph %}
 				<div id="graphcss">
@@ -816,7 +823,12 @@ return relations;
 		</div>
 				
 				
-				<div id="footer">
+				<div id="footer" align="center">
+				<p>
+  
+    A project of  <a href="http://lab.gnowledge.org/" target="_blank">gnowledge lab</a>,<a href="http://www.hbcse.tifr.res.in" target="_blank">Homi Bhabha Centre for Science Education</a>, <a href="http://www.tifr.res.in" target="_blank">TIFR</a><br> 
+        
+</p>
 					<p> 
 
 						<a rel="license"
@@ -824,12 +836,13 @@ return relations;
 						Commons License" style="border-width:0"	src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a> All material is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" title = "http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> unless mentioned otherwise.
 						<br/>
 						Powered	by <a href="http://www.djangoproject.com" title="https://www.djangoproject.com/">Django</a>
-						and <a href="https://github.com/gnowgi/gnowsys-studio" title="https://github.com/gnowgi/gnowsys-studio">Gstudio
+						and <a href="https://gitorious.org/gnowsys-studio" title="https://gitorious.org/gnowsys-studio">Gstudio
 						{{ GSTUDIO_VERSION }}</a>.
 					</p>
+					<center>
+				      <a href="http://atlas.gnowledge.org/softwares"><img src="/static/gstudio/img/community.png"></a></center>
 				</div>
 		
 	
 	</body>
 </html>
-

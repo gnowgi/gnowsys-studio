@@ -27,19 +27,26 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from demo.settings import *
 from gstudio.methods import *
 from django.contrib.auth import authenticate
-
+from django.template.defaultfilters import slugify
+import hashlib
+report = "true"
+global md5_checksum
+md5_checksum = ""
 def video(request):
 	api=ox.api.API("http://wetube.gnowledge.org/api")
 	p=Objecttype.objects.get(title="Video")
 	q=p.get_nbh['contains_members']
 	sd = request.user
+	usr=str(request.user)
+	title = ""
 	message = ''
 	sd = str(sd)
 	password = request.POST.get("upload","")
 	content= request.POST.get("contenttext","")
 	if request.method == 'POST':
+		title = request.POST.get("title1","")
 		clip = request.FILES.get("clip","")
-		content= request.POST.get("contenttext","")
+		content= unicode(request.POST.get("contenttext",""))
 		svid = request.POST.get("svid","")
 		sub1 = request.POST.get("norm","")
 		sub2 = request.POST.get("spe","")
@@ -61,7 +68,7 @@ def video(request):
 		wename = request.POST.get("wename","")
 		titlename = request.POST.get("titlename","")
 		addtags = request.POST.get("addtags","")
-		texttags = request.POST.get("texttags","")
+		texttags = unicode(request.POST.get("texttags",""))
 		password = request.POST.get("videopassword","")
 		if rate == '0':
 		   rate = 'No rating yet'
@@ -114,95 +121,128 @@ def video(request):
 		
 		if addtags != "":
 			i=Gbobject.objects.get(id=vidid)
-			i.tags = i.tags+ ","+str(texttags)
+			i.tags = i.tags+ ","+(texttags)
 			i.save()
 
 
 		if clip != "":
 			api.signup({'username':user,'password':password,'email':useremail})
-			save_file(clip,user)
-			clipname = clip._get_name()
-			i=0
-			dirname = ""
-			while clipname[i] != ".":
-				dirname = dirname + clipname[i]
-				i=i+1
-			y=str(dirname)
-			x=str(clipname[0]).upper()
-			CreateConfig(user,password)
-			# os.system("pandora_client config")
-			os.system("pandora_client add_volume "+ user+" "+MEDIA_ROOTNEW+"/"+user )
-			os.system("pandora_client scan")
-			os.system("pandora_client sync")
-			os.system("pandora_client upload") 
+			report,imageeachid = save_file(clip,user)
+			if report == "false":
+				reportid = imageeachid
+				q=p.get_nbh['contains_members']
+				variables = RequestContext(request,{'vids':q,'reportid':reportid})
+				template = "gstudio/video.html"
+				return render_to_response(template, variables)
+			else:
+				clipname = clip._get_name()
+				i=0
+				dirname = ""
+				while clipname[i] != ".":
+					dirname = dirname + clipname[i]
+					i=i+1
+				y=str(dirname)
+				x=str(clipname[0]).upper()
+				CreateConfig(user,password)
+				# os.system("pandora_client config")
+				os.system("pandora_client add_volume "+ user+" "+MEDIA_ROOTNEW+"/"+user )
+				os.system("pandora_client scan")
+				os.system("pandora_client sync")
+				os.system("pandora_client upload") 
 			wclip= api.find({'sort': [{'key': 'title','operator': '+'}],'query': {'conditions': [{'key': 'title','value': y,'operator': '='}],'operator': '&'},'keys': ['id', 'title','user','duration','sourcedescription','created'],'range': [0,100]})
 			for each in wclip['data']['items']:
-      				m=Gbobject()
-				m.title=each['title'].lower()
-				m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
-				m.slug=each['id']
-				m.content_org=content
-				m.status=2
-				m.save()
-				m.sites.add(Site.objects.get_current())
-				m.save()
-				m.objecttypes.add(Objecttype.objects.get(id=p.id))
-				m.save()
-				a=Attribute()
-				a.attributetype=Attributetype.objects.get(title="posted_by")
-				a.subject=m
-				a.svalue=user
-				a.save()
-				a1=Attribute()
-				a1.attributetype=Attributetype.objects.get(title="time_limit")
-				a1.subject=m
-				a1.svalue=each['duration']
-				a1.save()
-				a2=Attribute()
-				a2.attributetype=Attributetype.objects.get(title="creation_day")
-				a2.subject=m
-				a2.svalue=each['created']
-				a2.save()
-				a3=Attribute()
-				a3.attributetype=Attributetype.objects.get(title="source")
-				a3.subject=m
-				a3.svalue=each['sourcedescription']
-				a3.save()
-				a4=Attribute()
-				a4.attributetype=Attributetype.objects.get(title="map_link")
-				a4.subject=m
-				l=each['sourcedescription']
-				final=''
-				for each in l:
-					if each==" ":
-						final=final+'+'
-					else:
-						final=final+each
-				a4.svalue=final
-				a4.save()
-				m.save()
-				new_ob = content
- 				myfile = open('/tmp/file.org', 'w')
-			 	myfile.write(new_ob)
-				myfile.close()
-				myfile = open('/tmp/file.org', 'r')
-				myfile.readline()
-				myfile = open('/tmp/file.org', 'a')
-				myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
-				myfile.write("\n#+TITLE: ")
-				myfile = open('/tmp/file.org', 'r')
-				stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
-				output = stdout.read()
-				data = open("/tmp/file.html")
-			 	data1 = data.readlines()
-			  	data2 = data1[72:]
- 				data3 = data2[:-3]
-			 	newdata=""
-			 	for line in data3:
-			        	newdata += line.lstrip()
-			 	m.content = newdata
-			 	m.save()				
-			
+				flag=0
+				for vid in q:
+					if vid.title==each['title'].lower():
+						flag=1
+					if vid.altnames==each['title'].lower():
+						flag=1
+				if flag==0:
+					print "in 1 for video"
+					m=Gbobject()
+					m.title = title
+					m.altnames=each['title'].lower()
+					fname=slugify(title)+"-"+usr
+					m.title=each['title'].lower()
+					m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
+					m.slug=each['id']
+					contorg=unicode(content)
+					m.content_org=contorg.encode('utf8')
+					m.status=2
+					m.save()
+					m.sites.add(Site.objects.get_current())
+					m.save()
+					m.objecttypes.add(Objecttype.objects.get(id=p.id))
+					m.save()
+					a=Attribute()
+					a.attributetype=Attributetype.objects.get(title="posted_by")
+					a.subject=m
+					a.svalue=user
+					a.save()
+					a1=Attribute()
+					a1.attributetype=Attributetype.objects.get(title="time_limit")
+					a1.subject=m
+					a1.svalue=each['duration']
+					a1.save()
+					a2=Attribute()
+					a2.attributetype=Attributetype.objects.get(title="creation_day")
+					a2.subject=m
+					a2.svalue=each['created']
+					a2.save()
+					a3=Attribute()
+					a3.attributetype=Attributetype.objects.get(title="source")
+					a3.subject=m
+					a3.svalue=each['sourcedescription']
+					a3.save()
+					a4=Attribute()
+					a4.attributetype=Attributetype.objects.get(title="map_link")
+					a4.subject=m
+					l=each['sourcedescription']
+					final=''
+					for each in l:
+						if each==" ":
+							final=final+'+'
+						else:
+							final=final+each
+					a4.svalue=final
+					a4.save()
+					m.save()
+					new_ob = content
+					usr=str(request.user)
+					ext='.org'
+					html='.html'
+					myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+					myfile.write(m.content_org)
+					myfile.close()
+					myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+					rfile=myfile.readlines()
+					scontent="".join(rfile)
+					newcontent=scontent.replace("\r","")
+					myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+					myfile.write(newcontent)
+					
+ 						#myfile.readline()
+					myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+					myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+					myfile.write("\n#+TITLE: ")
+					myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+					stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+					output = stdout.read()
+					data = open(os.path.join(FILE_URL,fname+html))
+					data1 = data.readlines()
+					data2 = data1[72:]
+					data3 = data2[:-3]
+					newdata=""
+					for line in data3:
+						newdata += line.lstrip()
+					m.content = newdata
+					m.save()				
+					a=Attribute()
+					a.attributetype=Attributetype.objects.get(title="md5_checksum_document")
+					a.subject=m
+					a.svalue=md5_checksum
+					a.save()
+					
 			
 					
 		if sub3 != "":
@@ -248,12 +288,20 @@ def video(request):
 		for vid in q:
 			if vid.title==each['title'].lower():
 				flag=1
+			if vid.altnames==each['title'].lower():
+				flag=1
 		if flag==0:
 			m=Gbobject()
-			m.title=each['title'].lower()
+			if title:
+	  			m.title = title
+			else:
+				m.title = each['title'].lower()
+			m.altnames=each['title'].lower()
+			fname=slugify(title)+"-"+str(usr)
 			m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
 			m.slug=each['id']
-			m.content=content
+			contorg=unicode(content)
+			m.content_org=contorg.encode('utf8')
 			m.status=2
 			m.save()
 			m.sites.add(Site.objects.get_current())
@@ -293,6 +341,42 @@ def video(request):
 			a4.svalue=final
 			a4.save()
 			m.save()
+			new_ob = content
+			usr=str(request.user)
+			ext='.org'
+			html='.html'
+			myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+			myfile.write(m.content_org)
+			myfile.close()
+			myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+			rfile=myfile.readlines()
+			scontent="".join(rfile)
+			newcontent=scontent.replace("\r","")
+			myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+			myfile.write(newcontent)
+			
+			#myfile.readline()
+			myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+			myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+			myfile.write("\n#+TITLE: ")
+			myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+			stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+			output = stdout.read()
+			data = open(os.path.join(FILE_URL,fname+html))
+		 	data1 = data.readlines()
+		  	data2 = data1[72:]
+			data3 = data2[:-3]
+		 	newdata=""
+		 	for line in data3:
+		        	newdata += line.lstrip()
+		 	m.content = newdata
+		 	m.save()
+		        a=Attribute()
+        		a.attributetype=Attributetype.objects.get(title="md5_checksum_document")
+        		a.subject=m
+        		a.svalue=md5_checksum
+			a.save()
+		
 	svid=""
 	q=p.get_nbh['contains_members']
 	variables = RequestContext(request,{'vids':q,'val':svid})
@@ -300,6 +384,8 @@ def video(request):
 	return render_to_response(template, variables)	
 
 def save_file(file, user,path=""):
+	report = "true"
+	imageeachid = ''
 	filename = file._get_name()
        	i=0
 	dirname = ""
@@ -320,7 +406,20 @@ def save_file(file, user,path=""):
     	for chunk in file.chunks():
         	fd.write(chunk)
     		fd.close()
-        return 
+		fd.close()
+	global md5_checksum
+	md5_checksum = md5Checksum(MEDIA_ROOTNEW+"/"+ str(fileuser)+"/"+str(filename[0]).upper()+"/"+str(dirname)+"/"+str(filename))
+	attype = Attributetype.objects.get(title="md5_checksum_document")
+	att = Attribute.objects.all()
+	flag = 0
+	for each in att:
+		if each.attributetype.id == attype.id:
+			if each.svalue == md5_checksum :
+				flag = 1
+				imageeachid = each.subject.id
+	if flag == 1:
+		report = "false"
+        return report,imageeachid
 		
 			
 			
@@ -362,8 +461,10 @@ def show(request,videoid):
 		favid=request.POST.get("favid","")
 		favusr=request.POST.get("favusr","")
 		addtags = request.POST.get("addtags","")
-		texttags = request.POST.get("texttags","")
+		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = request.POST.get("contenttext","")
+		contenttext = unicode(request.POST.get("contenttext",""))
+		titlecontenttext = request.POST.get("titlecontenttext")
 		if rating :
         	 	rate_it(int(vidid),request,int(rating))
 		
@@ -395,31 +496,46 @@ def show(request,videoid):
 		
 		if addtags != "":
 			i=Gbobject.objects.get(id=vidid)
-			i.tags = i.tags+ ","+str(texttags)
+			i.tags = i.tags+ ","+(texttags)
 			i.save()
 		if contenttext !="":
-			 edit_description(vidid,contenttext)		
+			 edit_description(vidid,contenttext,str(request.user))	
+		if titlecontenttext !="":
+			new_ob = Gbobject.objects.get(id=int(vidid))
+			new_ob.title = titlecontenttext
+			new_ob.save()	
 	gbobject = Gbobject.objects.get(id=videoid)
 	vars=RequestContext(request,{'video':gbobject})
 	template="gstudio/transcript.html"
 	return render_to_response(template,vars)
 
 
-def edit_description(sec_id,title):
+def edit_description(sec_id,title,usr):
 	new_ob = Gbobject.objects.get(id=int(sec_id))
-	new_ob.content_org = title
-	myfile = open('/tmp/file.org', 'w')
+	contorg=unicode(title)
+	ssid=new_ob.get_ssid.pop()
+	fname=str(ssid)+"-"+usr
+	new_ob.content_org=contorg.encode('utf8')
+	ext='.org'
+	html='.html'
+	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
 	myfile.write(new_ob.content_org)
 	myfile.close()
-	myfile = open('/tmp/file.org', 'r')
-	myfile.readline()
-	myfile = open('/tmp/file.org', 'a')
+	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	rfile=myfile.readlines()
+	scontent="".join(rfile)
+	newcontent=scontent.replace("\r","")
+	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	myfile.write(newcontent)
+				
+	#myfile.readline()
+	myfile = open(os.path.join(FILE_URL,fname+ext),'a')
 	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
 	myfile.write("\n#+TITLE: ")
-	myfile = open('/tmp/file.org', 'r')
-	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
 	output = stdout.read()
-	data = open("/tmp/file.html")
+	data = open(os.path.join(FILE_URL,fname+html))
 	data1 = data.readlines()
 	data2 = data1[72:]
 	data3 = data2[:-3]
@@ -429,3 +545,13 @@ def edit_description(sec_id,title):
 	new_ob.content = newdata
 	new_ob.save()
 	return True
+
+def md5Checksum(filePath):
+    fh = open(filePath, 'rb')
+    m = hashlib.md5()
+    while True:
+        data = fh.read(8192)
+        if not data:
+            break
+        m.update(data)
+    return m.hexdigest()

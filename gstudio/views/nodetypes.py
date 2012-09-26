@@ -58,6 +58,10 @@ from django.views.generic.date_based import archive_month
 from django.views.generic.date_based import archive_day
 from django.views.generic.date_based import object_detail
 
+from gstudio.methods import *
+from demo.settings import PYSCRIPT_URL_GSTUDIO
+from demo.settings import FILE_URL
+
 from gstudio.models import Nodetype
 from gstudio.views.decorators import protect_nodetype
 from gstudio.views.decorators import update_queryset
@@ -79,5 +83,17 @@ def nodetype_shortlink(request, object_id):
     Redirect to the 'get_absolute_url' of a nodetype,
     accordingly to 'object_id' argument
     """
+    if request.method == "POST" :
+      boolean = False
+      rep = request.POST.get("replytosection",'')
+      id_no = request.POST.get("iden",'')
+     # id_no1 = request.POST.get("parentid","")
+      idusr = request.POST.get("idusr",'')
+      usr = request.POST.get("usr",'')
+      editable = request.POST.get("edit","")
+      if editable=="edited":
+          edit_nodetype(id_no,rep,usr)
+      
+  
     nodetype = get_object_or_404(Nodetype, pk=object_id)
     return redirect(nodetype, permanent=True)

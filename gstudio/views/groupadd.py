@@ -30,6 +30,7 @@ def groupadd(request):
 	stDate =  (request.POST["stDate"]).split("/")
         endDate=(request.POST["endDate"]).split("/")
         hours1 = int(request.POST["hours1"])
+	usr = request.POST.get("usr",'')	
         minutes1 = int(request.POST["minutes1"])
         hours2 = int(request.POST["hours2"])
         minutes2 = int(request.POST["minutes2"])
@@ -38,9 +39,9 @@ def groupadd(request):
 	
         if not errors:
   	     title=request.POST['subject']
- 	     content=request.POST['message']
+ 	     content=unicode(request.POST['message'])
 	     idusr=request.POST['idusr']
-             meetId = create_meeting(title,int(idusr),content)
+             meetId = create_meeting(title,int(idusr),content,usr)
 	     schedule_time(time1, time2, meetId)
              if meetId :
                 return HttpResponseRedirect('/gstudio/group/gnowsys-grp/'+ str(meetId))

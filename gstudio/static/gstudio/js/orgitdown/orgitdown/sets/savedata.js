@@ -6,8 +6,12 @@
 	document.getElementById('gnoweditor').style.visibility="visible";
 	$("#gnoweditor").orgitdown(mySettings);
 	$("#gnoweditor").val(orgdata);
+	$("#editdata").hide();
+	$("#savecontent").show();
+
 
 	      });
        
+
   });
 

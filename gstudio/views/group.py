@@ -54,31 +54,50 @@ def groupdashboard(request,grpid):
     		rep = request.POST.get("reply",'')
     		id_no = request.POST.get("iden",'')
     		id_no1 = request.POST.get("parentid","")
-    		print "topicid",id_no,"replyid",id_no1,"reply",rep
 		idusr = request.POST.get("idusr",'')
-   		rating = request.POST.get("star1","")
+                usr = request.POST.get("usr",'')
+                rating = request.POST.get("star1","")
    		flag1=request.POST.get("release","")
     		block = request.POST.get("block","")
                 topic_del = request.POST.get("del_topic", "")
                 comment_del = request.POST.get("del_comment", "")
-
-                if topic_del:
+		editable=request.POST.get("edit","")
+	        editval=request.POST.get("editval","")
+		edittitle=request.POST.get("edittitle","")
+	        editcontent=request.POST.get("editcont","")
+	        editiden=request.POST.get("editiden","")
+                docid = request.POST.get("docid","")
+                addtags = request.POST.get("addtags","")
+                texttags = unicode(request.POST.get("texttags",""))
+	        if editval=='editthread':
+			edit_thread(editiden,editcontent,str(request.user))
+		if editable=='edited':
+			if id_no :
+				edit_topic(id_no,rep,usr)
+    			elif id_no1 :
+				edit_topic(id_no1,rep,str(request.user))
+		if topic_del:
                         del_topic(int(id_no))
                 if comment_del:
                         del_comment(int(id_no1))
 
+	     	if addtags != "":
+         		i=Gbobject.objects.get(id=int(docid))
+		        i.tags = i.tags+ ","+(texttags)
+		        i.save()
 		if flag1:
       			boolean1 = True
       			make_att_true(meeting_ob)
     		if block :
       			make_att_false(meeting_ob)
     		if rating :
-        		rate_it(int(id_no),request,int(rating))
-    		if rep :
+        		rate_it(int(id_no1),request,int(rating))
+		if rep and  editable!='edited':
     			if not id_no :
-			   	boolean = make_relation(rep,int(id_no1),int(idusr))
+                                
+			   	boolean = make_relation(rep,int(id_no1),int(idusr),str(request.user))
     			elif not id_no1 :
-				boolean = make_relation(rep,int(id_no),int(idusr))
+				boolean = make_relation(rep,int(id_no),int(idusr),usr)
         	if boolean :
 	     		return HttpResponseRedirect("/gstudio/group/gnowsys-grp/"+str(grpid))
    	grpid = int(grpid)
@@ -98,7 +117,9 @@ def groupdashboard(request,grpid):
 	       	post=latest_topic.get_absolute_url()
        	else:
 		post="no topic added yet!!"
-	variables = RequestContext(request,{'topic' : Topic , 'meet_ob' : meeting_ob, "flag" : flag, "flag1" : boolean1, "admin_id" : admin_id, "attribute" : attob, 'admin_m':admin_m, 'endtime':endtime, 'post':post})
+	ot=Gbobject.objects.get(id=grpid)
+        meeting_ob = System.objects.get(id=grpid)
+	variables = RequestContext(request,{'ot' : ot,'topic' : Topic , 'meet_ob' : meeting_ob, "flag" : flag, "flag1" : boolean1, "admin_id" : admin_id, "attribute" : attob, 'admin_m':admin_m, 'endtime':endtime, 'post':post})
    	template = "metadashboard/grpdashboard.html"
    	return render_to_response(template, variables)
 

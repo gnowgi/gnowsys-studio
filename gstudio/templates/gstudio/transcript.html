@@ -11,6 +11,7 @@
 <script type="text/javascript">
 			// GLOBALS
 			var grappelli = {},
+
 			// TODO: klemens: drop ADMIN_URL
 			ADMIN_URL = "{% url admin:index %}",
 			MODEL_URL_ARRAY = {% get_content_types %}, DATE_FORMAT = "{% get_date_format %}", TIME_FORMAT = "{% get_time_format %}", DATETIME_FORMAT = "{% get_datetime_format %}";
@@ -31,6 +32,22 @@
 
 
  <script type="text/javascript" >
+			var isWikipage=false;
+			var isSection=false;
+			var isSubsection=false;
+			var editSubsection=false;
+			var editSection=false;
+			var editWikipage=false;
+			var isTwist=false;
+			var isThread=false;
+			var isResponse=false;
+			var editTwist=false;
+			var editThread=false;
+			var editResponse=false;
+			var editImage=false;
+			var isImage=false;
+			var isVideotitle=false;
+			var isNode=false;
       $(window).load(function() {
       $("#content").css({
     "width": "600px"});});
@@ -44,19 +61,40 @@ $(window).load(function() {
 var i = 0;
 jQuery(document).ready(function($) {
     $("#editcontent").click(function(){
+        isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
 	 $("#gnoweditor").val($("#editortext").val());
         $("#gnoweditor").orgitdown(mySettings);
-	document.getElementById('save').style.visibility="visible";
+	$("#content img").css({"max-width":"600px",})
+	   
+        
+	<!--document.getElementById('save').style.visibility="visible";-->
 	$("#editcontent").hide();
+        
 		
 	});
+	
      $("#save").click(function(){
             var org_data = $("#gnoweditor").val();       
 	    var encode_data = encodeURIComponent(org_data);
 	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
  	    $("#commenttext").val(decode_data);	   
 	});
+    $("#titleeditcontent").click(function(){
+	isVideotitle=true;
+        document.getElementById('gnoweditor').style.visibility="visible";
+	 $("#gnoweditor").val($("#titleeditortext").val());
+        $("#gnoweditor").orgitdown(mySettings);
+	<!--document.getElementById('titlesave').style.visibility="visible";-->
+	$("#titleeditcontent").hide();
+		
+	});
+      $("#titlesave").click(function(){
+      var org_data = $("#gnoweditor").val();       
+      var encode_data = encodeURIComponent(org_data);
+      var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
+      $("#titlecommenttext").val(decode_data);	   
+      })
 });
 </script>
 <script type="text/javascript">
@@ -78,7 +116,15 @@ $('#pandoravideo').pandoravideo();
 <b>Download:</b>&nbsp;&nbsp;<a href={{video.rurl}} target="_blank">Right click to download</a><br/>
 <form method="post" action="">{% csrf_token %}
 <font color='black'>Name:</font>
-<font color='teal'>{{ video.title }}</font><br/>
+<font color='teal'>{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}</font>
+{% if user.is_authenticated %}
+<input type="hidden" name="vidid" value={{video.id}}>
+<input type="button" id="titleeditcontent" name="{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}" value="Edit a title"/>
+<input type="submit" class="titlecommentsavecontent" id="titlesave" value="Save" style="visibility:hidden" />
+<input type="hidden" name="titlecontenttext" id="titlecommenttext" style="visibility:hidden" />
+<input type="hidden" id="titleeditortext" style="visibility:hidden" value="{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}">
+{% endif %}
+<br/>
 <font color = 'black'>Posted By : </font>
 {% for author in video.get_nbh.posted_by %}
   <font color = 'teal'>{{ author }}</font>
@@ -106,22 +152,20 @@ $('#pandoravideo').pandoravideo();
 <br>
  <input type="hidden" name="contentname" value="{{ video.content }}" />
  <input type="hidden" name="ratename" value="{{ video.rating.get_rating }}" />
-<font color = 'black'>Description:</font><font color = 'teal'>
+<font color = 'black'>Description:</font>
 {%autoescape on%}
 {% with video.html_content|safe as video_content %}
      {{video_content}}
 {% endwith %}
-{% endautoescape%}</font>
+{% endautoescape%}
 
-{% for author in video.get_nbh.posted_by %}
-	{% ifequal author user.username %}
+{% if user.is_authenticated %}
 <input type="hidden" name="vidid" value={{video.id}}>
 <input type="button" id="editcontent" name="{{video.content}}" value="Edit"/>
 <input type="submit" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
 <input type="hidden" name="contenttext" id="commenttext" style="visibility:hidden" />
 <input type="hidden" id="editortext" style="visibility:hidden" value="{{video.content_org}}">
-	{% endifequal %}
-{% endfor %}
+{% endif %}
 </form>
 <br/>
 
@@ -133,6 +177,7 @@ $('#pandoravideo').pandoravideo();
 <font color = 'black'>Total Number of votes is:  &nbsp;<font color='teal'><b>{{ video.rating_votes }}</b></font> </font>
 {% endifequal %}
 <br>
+{% if user.is_authenticated %}
 <form method="post" action="">
 {% csrf_token %}
 <input name="star1" type="radio" value=1 class="star"/>
@@ -156,6 +201,7 @@ $('#pandoravideo').pandoravideo();
 <input type="text" value="" name="texttags"  />
 <input type="submit" value="Add Tags" name="addtags" />
 </form>
+{% endif %}
 <br/>
 <br/>
 <div class="tags">

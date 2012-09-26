@@ -4,22 +4,21 @@
 {% block content %}
 
 
-{% if user.is_authenticated %}
+
 <!--    <h> Welcome to the  GnowledgeStudio</h></br>
    <h>You are logged in as <font color="blue">{{user.username}}</font></h>
     <p></br> -->
-<p> On the loom now:</p>
+<p><font size ="3" > On the loom now:</font></p>
 </br>
     {% for each in meetings.member_systems.all %}
-    <a href="/gstudio/group/gnowsys-grp/{{each.id}}/">{{each.title}}</a></br>
+    <font size ="3" ><a href="/gstudio/group/gnowsys-grp/{{each.id}}/">{{each.title}}</a> </font></br>
     {% endfor %}
+{% if user.is_authenticated %}
     <input type="button" value="Want to weave a thread?" onClick="location.href='groupadd/';">
-    </p>
-    <p>
-    </br>
-{% else %}
-  <h1> <p style = "color :black;">Please Login</p></h1>
 {% endif %}
+ 
+    </br>
+
 
 
 

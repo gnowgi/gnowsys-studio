@@ -4,17 +4,18 @@
 {% load pagination_tags %}
 {% load adminmedia grp_tags %}
 {% load i18n %}
+ {% block title %}Images{% endblock %}
 {% block content %}
 <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
 <script type="text/javascript" >
 $(window).load(function(){ 
+var isImage=false;
 $("#content").css({"width": "600px"});});
 $(window).load(function() {
  $("#chart").hide();});
 $(window).load(function() {
- 
  $("#graphcss").hide();   
   });
 
@@ -22,9 +23,10 @@ var i = 0;
 
 jQuery(document).ready(function($) {
     $("#commenteditor").click(function(){
+        isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
-	document.getElementById('save').style.visibility="visible";
+	<!--document.getElementById('save').style.visibility="visible";-->
 	$("#commenteditor").hide();
 		
 	});
@@ -63,7 +65,7 @@ margin-left:52%;
 }
 
 </style>
-{% if user.is_authenticated %}
+
 {% autopaginate images 10 %}
 
 <h2 style="color: teal;">Image Library</h2>
@@ -86,7 +88,7 @@ margin-left:52%;
 <input type="submit" value="Search">
 </form>
 </div>
-
+{% if user.is_authenticated %}
 <div id="divpost">
 <form enctype="multipart/form-data" method="post" action="">
 {% csrf_token %}
@@ -103,8 +105,13 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 
 </form>
 </div>
+{% endif %}
 </div>
 <br>
+{% if reportid %}
+<h2><font color="red">this image is already uploaded on this site</font></h2>
+<a href="/gstudio/resources/images/show/{{ reportid }}/"> <font size="4">to see this image click here</font></a><br/><br/><br/>
+{% endif %}
  <div>
 <h4 style="color: teal;">IMAGES</h4>
 {% for image in images %}
@@ -129,8 +136,13 @@ document.getElementById("divimage").setAttribute("id","div2");
        <input type="hidden" name="fulid" value={{image.id}}>
      <!--  <input type="submit" value="Show" name="Show">-->
 
-	<a href="/gstudio/resources/images/show/{{image.id}}/"><font size="4"><u>Show</u></font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="/gstudio/resources/images/show/{{image.id}}/">&nbsp;
+{% for author in image.authors.all %}
 
+	<img src="{% admin_media_prefix %}img/{{image.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}-thumbnail">
+
+{% endfor %}
+</a>
     <!--   <p> -->
 <!-- <img src="{% admin_media_prefix %}img/{{image.title}}" width="300" height="225" alt="{{ image.title }}" > -->
        
@@ -206,11 +218,7 @@ document.getElementById("divimage").setAttribute("id","div2");
 
 {% endfor %}
 </div>
-{% else %}
- 
-<h2 style="color: indigo;">Sorry you need to log in to see this content !</h2>
- 
-{% endif %}
+
  <h2>
 {% paginate %}</h2>
 

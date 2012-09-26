@@ -16,7 +16,7 @@
     <script type="text/javascript" >
       $(window).load(function() {
       $("#content").css({
-    "width": "500px",});});
+    "width": "1000px",});});
 $(window).load(function() {
  $("#chart").hide();});
 $(window).load(function() {
@@ -25,16 +25,22 @@ $(window).load(function() {
   });
 $(window).load(function() {
  
- $("#savepagecontent").hide();
+ $(".savepagecontent").hide();
  $("#saveseccontent").hide();
  $("#savesubsec").hide();
  $("#savesubsec1").hide();
-
+ $(".submitresponse").hide();
+ $(".saveseccontent").hide();
+ $(".savesubsec").hide();
+ $(".submitsubsec").hide();
+ $(".pagedit").hide()
+$(".savesubsec1").hide();
+ $(".submitsubsec1").hide();
   });
 
 </script>
 
-{% if user.is_authenticated %}
+
 {% autopaginate section 1 %}
    <!-- <input type="button" value="Home" onClick="location.href='/gstudio/user/wikipage/{{user.username}}';"> -->
    <h1>{{ page_ob.title }}</h1> 
@@ -44,41 +50,51 @@ $(window).load(function() {
    		{% endfor %}</br></br>
 
    {% with page_ob.html_content|safe as page_ob_content %}
-	
-                  {{page_ob_content}}
+   <font size="3"> 
+                {{page_ob_content}}</font>
    {% endwith %}
-
-	<input type="button" id="editpagecontent" value="Edit"/>
-	<input type="button" id="savepagecontent" value="Save"/></br>
-       <form method="post" action="">{% csrf_token %}
-	 <input type="hidden" name="docid" value={{page_ob.id}}>
-	 <input type="text" value="" name="texttags"  />
-	 <input type="submit" value="Add Tags" name="addtags" />
+	{% if user.is_authenticated %}
+	<form method="post" action="">{% csrf_token %}
+	<input type="hidden" class="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+	<input type="hidden" class="editval" name="edit" value="empty"/>
+	<input type="hidden" value="{{page_ob.id}}" name = "iden">
+	<input type="hidden" value="{{user.username}}" name ="usr">
+	<input type="hidden" value="{{user.id}}" name = "idusr">
+	<input type="button" class="editpagecontent" name="{{page_ob.content_org}}" value="Edit"/>
+	<input type="button" class="savepagecontent" name="{{page_ob.id}}" value="Save"/></br>
+	<input type="submit" class="pagedit" value="Submit"/>
        </form>
+	
+       <form method="post" action="">{% csrf_token %}
+       	 <input type="hidden" name="docid" value={{page_ob.id}}>
+       	 <input type="text" class="tagtext" value="" name="texttags"  />
+       	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
+       </form>
+	{% endif %}
        <br>
        <div class="tags">
-	 <p class="gbobject-tags span-16 last">
-	   <strong>{% trans "Tags" %}</strong> :
-	   {% tags_for_object ot as tag_list %}
-	   {% for tag in tag_list %}
-	   <a href="{% url objectapp_tag_detail tag %}"
+       	 <p class="gbobject-tags span-16 last">
+       	   <strong>{% trans "Tags" %}</strong> :
+       	   {% tags_for_object ot as tag_list %}
+       	   {% for tag in tag_list %}
+       	   <a href="{% url objectapp_tag_detail tag %}"
               title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-	   {% empty %}
-	   <span>{% trans "No tags" %}</span>
-	   {% endfor %}
-	 </p>
+       	   {% empty %}
+       	   <span>{% trans "No tags" %}</span>
+       	   {% endfor %}
+       	 </p>
        </div>
-	<input type="button" id="pageid" value="{{page_ob.id}}" style="visibility:hidden;"/>
-	<input type="button" id="pageorg" value="{{page_ob.content_org}}" style="visibility:hidden;"/>
+	</br>
+		{% if user.is_authenticated %}
 	<form method="post" action=".">{% csrf_token %}
 	<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">
 	<input type="hidden" id="pageid1" value="{{page_ob.id}}"/>
         </form>
-
+	{% endif %}
 </br>   {% autoescape off %}
 
    {% for each in section %}
-      	<h4><font size="5" color="red">{{each.title}}</h4></font>   
+      	<h4><font size="6">{{each.title}}</h4></font>
 	  Posted on : {{each.creation_date}}
 	  by {% for author in each.authors.all %} 
 	  {{author}}
@@ -90,16 +106,27 @@ $(window).load(function() {
 	{% endifequal %}
    	{%autoescape on%}
 	 {% with each.html_content|safe as each_content %}
-		{{each_content}}
+	<font size="3"> 
+		{{each_content}}</font>
 	{% endwith %}
 	{% endautoescape%}
-	<input type="button" id="editseccontent" value="Edit"/>
-	<input type="button" id="saveseccontent" value="Save"/>
+		{% if user.is_authenticated %}
+	<form method="post" action="">{% csrf_token %}
+	<input type="hidden" class="reptext" name = "replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+	<input type="hidden" value="{{each.id}}" name = "iden">
+	<input type="hidden" value="{{user.username}}" name ="usr">
+	<input type="hidden" value="{{user.id}}" name = "idusr">
+	<input type="hidden" class="editval" name="edit" value="empty"/>
+	<input type="button" class="editseccontent" name="{{each.content_org}}" value="Edit"/>
+	<input type="button" class="saveseccontent" name="{{each.id}}" value="Save"/>
+	<input type="submit" class="submitresponse" value="Submit"/>
+       </form>
        <form method="post" action="">{% csrf_token %}
 	 <input type="hidden" name="docid" value={{each.id}}>
-	 <input type="text" value="" name="texttags"  />
-	 <input type="submit" value="Add Tags" name="addtags" />
+	 <input type="text" class="tagtext" value="" name="texttags"  />
+	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
        </form>
+	{% endif %}
        <br>
        <div class="tags">
 	 <p class="gbobject-tags span-16 last">
@@ -113,20 +140,22 @@ $(window).load(function() {
 	   {% endfor %}
 	 </p>
        </div>
-
-	<input type="button" id="sectionorg" value="{{each.content_org}}" style="visibility:hidden;"/>
-	<input type="button" id="sectionid" value="{{each.id}}" style="visibility:hidden;"/>	
+		{% if user.is_authenticated %}
 	<form method="post" action=".">{% csrf_token %}<br/>
         	 Create Subsection:
-	        <input type="text" name = "replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+	        <input type="hidden" name = "replytosection" class="reptext" style="visibility:hidden;"/></br>
     		<input type="hidden" value="{{each.id}}" name = "iden">
+		<input type="hidden" value="{{user.username}}" name ="usr">
 	    	<input type="hidden" value="{{user.id}}" name = "idusr">
-		<input type="button" value="Create Subsection" id="createsubsection">
-		<input type="button" value="save" id="savesubsec">
-		<input type="submit" id="submitsubsec" value="submit" style="visibility:hidden;"></br>
+		<input type="button" value="Create Subsection" class="createsubsection">
+ 		<input type="hidden" value="empty" name = "edit" class="editval"/>
 
-	       </br></br><input name="del_section" type="checkbox" value="delete_section"/> 
-  		<input type="submit" value="Delete the section"></br> 
+		<input type="button" value="save" class="savesubsec" name="{{each.id}}">
+		<input type="submit" class="submitsubsec" value="Submit" ></br>
+
+	       </br></br><input name="del_section" class="chkbox" type="checkbox" value="delete_section"/> 
+  		<input type="submit" class="deletesec" value="Delete the section"></br>
+		<div id="rating">
          	Do you wanna rate it ? </br>
 		<input name="star1" type="radio" value=1 class="star"/>
 		<input name="star1" type="radio" value=2 class="star"/>
@@ -134,9 +163,12 @@ $(window).load(function() {
 		<input name="star1" type="radio" value=4 class="star"/>
 		<input name="star1" type="radio" value=5 class="star"/>
 		<!--topic id and user id hidden fields-->
-		</br>
+		
 		<input type="submit" value="Rate it!!!">
+		</div>
          </form>
+	{% endif %}
+	</br>
         <p>
 	 Subsections :
 	<!-- <div id="main"> -->
@@ -149,9 +181,6 @@ $(window).load(function() {
      {% endfor %}
 {% endautoescape %}
 
-{% else %}
-  <h1> <p style = "color :red;">OOPS!!! Login Please!</p></h1>
-{% endif %}
 
 {% block nodetype-comments %}
 <div id="comments" class="">

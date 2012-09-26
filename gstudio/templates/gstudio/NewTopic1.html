@@ -12,6 +12,8 @@ $(window).load(function() {
 
  $("#graphcss").hide();
   });
+$("#topicaddsave").hide();
+$("#topicsubmit").hide();
 </script>
 
 <h1>Add a new Twist</h1>
@@ -24,14 +26,15 @@ $(window).load(function() {
 {% endif %}
 
 <form action="" method="post">{% csrf_token %}
-<p>Title: <input type="text" name="subject"></p>
-<p>Description: <textarea name="message" id="contenttext" rows="10" cols="50" style="display:none" ></textarea></p>
+<p>Name : <input type="text" name="subject"></p>
+<p>Substance: <textarea name="message" id="contenttext" rows="10" cols="50" style="display:none" ></textarea></p>
 <!-- style="display:none;" -->
 
-<input type="button" id="topicaddcontent"  name="content" value="Add Description">
-<input type="button" id="topicaddsave" name="savecontent" value="Save">
+<input type="button" id="topicaddcontent"  name="content" value="Add Substance">
+<input type="button" id="topicaddsave" name="savecontent" value="Save" style="display:none">
 
 <input type="hidden" value={{user.id}} name = "idusr">
+<input type="hidden" value={{user.username}} name = "usr">
 <input type="submit" id="topicsubmit" value="Submit" style="display:none">
 </form>
 

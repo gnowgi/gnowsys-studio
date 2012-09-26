@@ -13,14 +13,17 @@
   -->
 <!--    | <a href="{{ get_absolute_url }}/objects" title="Objects">Objects</a>-->
 
-    {% if user.is_authenticated %}
-	{% if user.is_staff %}
-        | <a href="{{  get_absolute_url }}/gstudio/user/{{user.username}}" title="My Loom Studio">Loom Studio</a>
+        | <a href="{{  get_absolute_url }}/gstudio/user" title="Loom Studio">Loom</a>
+        | <a href="{{  get_absolute_url }}/gstudio/user/wikipage" title="Wikipages">Wikipages</a>
 	| <a href="{{  get_absolute_url }}/gstudio/resources/documents" title="My Documents">Documents</a>
-        | <a href="{{  get_absolute_url }}/gstudio/user/wikipage/{{user.username}}" title="MyWiki">Wikipage</a>
         | <a href="{{  get_absolute_url }}/gstudio/resources/images" title="Images">Images</a>
         | <a href="{{  get_absolute_url }}/gstudio/resources/videos" title="My Videos">Videos</a>
-        | <a href="{{  get_absolute_url }}/admin" title="Admin Dashboard">Admin Dashboard</a>
+        | <a href="{{  get_absolute_url }}/nodetypes" title="Nodes">Node Types</a>
+        | <a href="{{  get_absolute_url }}/objects" title="Objects">Node Objects</a>
+   {% if user.is_authenticated %}
+	{% if user.is_staff %}
+ 
+        | <a href="{{  get_absolute_url }}/admin" title="Admin Dashboard">Dashboard</a>
 
        {% endif %}
     {% endif %}
@@ -58,9 +61,9 @@
                 <!-- Documentation -->
                 {% url django-admindocs-docroot as docsroot %}
                 {% if docsroot %}
-                    <li><a href="{{ docsroot }}" title="Documentation">{% trans 'Documentation' %}</a></li>
+                 <!--   <li><a href="{{ docsroot }}" title="Documentation">{% trans 'Documentation' %}</a></li>-->
                 {% endif %}
-                <li><a href="http://github.com/gnowgi/django-gstudio" title="Code">Code</a></li>
+                <li><a href="https://gitorious.org/gnowsys-studio" title="Code">Code</a></li>
             {% endblock %}
         </ul>
     {% else %}

@@ -22,13 +22,18 @@ from demo.settings import *
 from gstudio.models import *
 from objectapp.models import *
 from gstudio.methods import *
+import hashlib
+from django.template.defaultfilters import slugify
+import os
 
+report = "true"
 def docu(request):
 	p=Objecttype.objects.get(title="Document")
 	q=p.get_nbh['contains_members']
 	if request.method=="POST":
+		title = request.POST.get("title1","")
 		user = request.POST.get("user","")
-		content= request.POST.get("contenttext","")
+		content= unicode(request.POST.get("contenttext",""))
 		sdoc = request.POST.get("sdoc","")
 		dn = request.POST.get("dn","")
 		sub3 = request.POST.get("mydropdown","")
@@ -36,7 +41,7 @@ def docu(request):
 		docid = request.POST.get("docid","")
 		delete = request.POST.get("delete","")
 		addtags = request.POST.get("addtags","")
-		texttags = request.POST.get("texttags","")
+		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = request.POST.get("commenttext","")
 		if rating :
         	 	rate_it(int(docid),request,int(rating))
@@ -69,21 +74,25 @@ def docu(request):
 	
 		if addtags != "":
 			i=Gbobject.objects.get(id=docid)
-			i.tags = i.tags+ ","+str(texttags)
+			i.tags = i.tags+ ","+(texttags)
 			i.save()
 
 		if contenttext !="":
-	                edit_description(docid,contenttext)
+	                edit_description(docid,contenttext,str(request.user))
 
 
 		a=[]
+		reportid=''
 		for each in request.FILES.getlist("doc[]",""):
 			a.append(each)
 		if a != "":
 			for f in a:
-				save_file(f)
-				create_object(f,user,content)
-			vars=RequestContext(request,{'documents':q})
+				report,imageeachid = save_file(f)
+				if report == "false":
+					reportid = imageeachid
+				else:
+					create_object(f,user,content,str(request.user),title)
+			vars=RequestContext(request,{'documents':q,'reportid':reportid})
 			template="gstudio/docu.html"
 			return render_to_response(template, vars)	
 	s=Nodetype.objects.get(title="Document")
@@ -93,17 +102,41 @@ def docu(request):
 	return render_to_response(template, vars)
 
 def save_file(file, path=""):
+	report = "true"
+	imageeachid = ''
 	filename = file._get_name()
-    	fd = open('%s/%s' % (MEDIA_ROOTNEW2, str(path) + str(filename)), 'wb')
+	slugfile = str(filename)
+	slugfile=slugfile.replace(' ','_')
+	fd = open('%s/%s' % (MEDIA_ROOTNEW2, str(path) + str(slugfile)), 'wb')
     	for chunk in file.chunks():
         	fd.write(chunk)
     		fd.close()
+	global md5_checksum
+	md5_checksum = md5Checksum(MEDIA_ROOTNEW2+"/"+str(slugfile))
+	attype = Attributetype.objects.get(title="md5_checksum_document")
+	att = Attribute.objects.all()
+	flag = 0
+	for each in att:
+		if each.attributetype.id == attype.id:
+			if each.svalue == md5_checksum :
+				flag = 1
+				imageeachid = each.subject.id
+	if flag == 1:
+		report = "false"
+		
+        return report,imageeachid
 
-def create_object(file,log,content):
+
+def create_object(file,log,content,usr,title):
 	p=Gbobject()
-	p.title=file._get_name()
-	p.rurl=MEDIA_ROOTNEW2+"p.title"
+	filename=file._get_name()
+	slugfile = str(filename)
+	slugfile=slugfile.replace(' ','_')
+	p.title = title
+	p.altnames = slugfile
+	#p.rurl= #MEDIA_ROOTNEW2+"p.title"
 	final = ''
+	fname=slugify(p.title)+"-"+usr
 	for each1 in p.title:
 		if each1==".":
 			final=final+'-'
@@ -112,7 +145,8 @@ def create_object(file,log,content):
 		else:
 			final = final+each1	
 	p.slug=final
-	p.content_org=content
+	contorg=unicode(content)
+	p.content_org=contorg.encode('utf8')
 	p.status=2
 	p.save()
 	p.sites.add(Site.objects.get_current())
@@ -124,18 +158,24 @@ def create_object(file,log,content):
 	p.objecttypes.add(Objecttype.objects.get(id=q.id))
 	p.save()
 	new_ob = content
-	myfile = open('/tmp/file.org', 'w')
- 	myfile.write(new_ob)
-	myfile.close()
-	myfile = open('/tmp/file.org', 'r')
-	myfile.readline()
-	myfile = open('/tmp/file.org', 'a')
-	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
-	myfile.write("\n#+TITLE: ")
-	myfile = open('/tmp/file.org', 'r')
-	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
-	output = stdout.read()
-	data = open("/tmp/file.html")
+	ext='.org'
+ 	html='.html'
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ 	myfile.write(p.content_org)
+ 	myfile.close()
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+        rfile=myfile.readlines()
+	scontent="".join(rfile)
+	newcontent=scontent.replace("\r","")
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	myfile.write(newcontent)
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ 	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ 	myfile.write("\n#+TITLE: ")
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ 	stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ 	output = stdout.read()
+ 	data = open(os.path.join(FILE_URL,fname+html))
  	data1 = data.readlines()
  	data2 = data1[72:]
 	data3 = data2[:-3]	
@@ -144,28 +184,65 @@ def create_object(file,log,content):
         	newdata += line.lstrip()
  	p.content = newdata
  	p.save()	
+	a=Attribute()
+	a.attributetype=Attributetype.objects.get(title="md5_checksum_document")
+	a.subject=p
+	a.svalue=md5_checksum  
+	a.save()
 
 def rate_it(topic_id,request,rating):
 	ob = Gbobject.objects.get(id=topic_id)
 	ob.rating.add(score=rating ,user=request.user, ip_address=request.META['REMOTE_ADDR'])
 	return True
 
+def show(request,documentid):
+	if request.method=="POST":
+		rating = request.POST.get("star1","")
+		docid = request.POST.get("docid","")
+		addtags = request.POST.get("addtags","")
+		texttags = unicode(request.POST.get("texttags",""))
+		contenttext = unicode(request.POST.get("contenttext",""))
+		if rating :
+	       	 	rate_it(int(docid),request,int(rating))
+		if addtags != "":
+			i=Gbobject.objects.get(id=docid)
+			i.tags = i.tags+ ","+(texttags)
+			i.save()
+		if contenttext !="":
+			 edit_description(docid,contenttext,str(request.user))
+	gbobject = Gbobject.objects.get(id=documentid)
+	vars=RequestContext(request,{'doc':gbobject})
+	template="gstudio/fulldocument.html"
+	return render_to_response(template,vars)
 
-def edit_description(sec_id,title):
+
+
+def edit_description(sec_id,title,usr):
 	new_ob = Gbobject.objects.get(id=int(sec_id))
-	new_ob.content_org = title
-	myfile = open('/tmp/file.org', 'w')
-	myfile.write(new_ob.content_org)
-	myfile.close()
-	myfile = open('/tmp/file.org', 'r')
-	myfile.readline()
-	myfile = open('/tmp/file.org', 'a')
-	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
-	myfile.write("\n#+TITLE: ")
-	myfile = open('/tmp/file.org', 'r')
-	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
-	output = stdout.read()
-	data = open("/tmp/file.html")
+	contorg=unicode(title)
+	new_ob.content_org=contorg.encode('utf8')
+	ssid=new_ob.get_ssid.pop()
+	fname=str(ssid)+"-"+usr
+	ext='.org'
+	html='.html'
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ 	myfile.write(new_ob.content_org)
+ 	myfile.close()
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	rfile=myfile.readlines()
+	scontent="".join(rfile)
+	newcontent=scontent.replace("\r","")
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	myfile.write(newcontent)
+
+ 	#myfile.readline()
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ 	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ 	myfile.write("\n#+TITLE: ")
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ 	stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ 	output = stdout.read()
+ 	data = open(os.path.join(FILE_URL,fname+html))
 	data1 = data.readlines()
 	data2 = data1[72:]
 	data3 = data2[:-3]
@@ -175,3 +252,13 @@ def edit_description(sec_id,title):
 	new_ob.content = newdata
 	new_ob.save()
 	return True
+
+def md5Checksum(filePath):
+    fh = open(filePath, 'rb')
+    m = hashlib.md5()
+    while True:
+        data = fh.read(8192)
+        if not data:
+            break
+        m.update(data)
+    return m.hexdigest()

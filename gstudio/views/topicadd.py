@@ -32,7 +32,7 @@ def topicadd(request):
         if not request.POST.get('message', ''):
             errors.append('Enter a message.')
         if not errors:
-  	     title=unicode(request.POST['subject'])
+  	     title=request.POST['subject']
  	     content=unicode(request.POST['message'])
 	     idusr=request.POST['idusr']
              boolean = make_topic_object(title,int(idusr),content)

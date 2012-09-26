@@ -6,7 +6,7 @@ import commands
 
 def main(argv):
     #f_name =sys.argv[1]
-    f_name = "/tmp/file.org"
+    f_name = sys.argv[2]+sys.argv[1]
     s1='commands.getoutput("emacs --batch '
     s2=" --eval '"
     s3="(org-export-as-html nil)'"

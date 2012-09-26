@@ -67,6 +67,7 @@ from gstudio.models import Nodetype
 from gstudio.models import Metatype
 from gstudio.models import NID
 from objectapp.models import Gbobject
+from objectapp.models import Gbobject, System, Process
 from gstudio.settings import PROTOCOL
 from gstudio.settings import UPLOAD_TO
 from gstudio.managers import DRAFT, PUBLISHED

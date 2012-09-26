@@ -1,9 +1,102 @@
 {% load i18n %}
+{% load i18n gstudio_tags %}
 <ul>
-  {% for gbobject in gbobjects %}
+  {% for object in gbobjects %}
+	{% ifequal object.title|truncatewords:"3" 'page box of ...' %}
+	{% else %}
+	{% ifequal object.title|truncatewords:"3" 'message box of ...' %}
+	{% else %}
+	{% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-video'  %}
+        {% else %}
   <li>
-    <a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>
+
+    {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-document'  %}
+      <a href="/gstudio/resources/documents/show/{{object.id}}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Document</font>
+
+      {% else %}
+      {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-image'  %}
+      <a href="/gstudio/resources/images/show/{{object.id}}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is an Image</font>
+
+      {% else %}
+
+      {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-topic'  %}
+	  <a href="/gstudio/{% show_nodesystem  object.id  %}">{{object.title}}</a>&nbsp; <font size="2" color="black">is a Topic of a Loom-thread</font>
+	 {% else %}
+     {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-section'  %}
+	 <a href="/gstudio/{% show_nodesystem  object.id  %}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Section of a wiki-page</font>
+	{% else %}
+    {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-reply'  %}
+
+	{% for eachobject in object.ref.prior_nodes.all %}
+		{% if eachobject.ref.prior_nodes.all %}
+			{% for eachobject1 in eachobject.ref.prior_nodes.all %}
+				{% if eachobject1.ref.prior_nodes.all %}
+					{% for eachobject2 in eachobject1.ref.prior_nodes.all %}
+						 <a href="/gstudio/{% show_nodesystem  eachobject2.id  %}">{{object.title}}</a>&nbsp; <font size="2" color="black">is a Reply</font>
+					{% endfor %}
+				{% else %}
+					 <a href="/gstudio/{% show_nodesystem  eachobject1.id  %}">{{object.title}}</a>&nbsp; <font size="2" color="black">is a Reply </font>
+				{% endif %}
+			{% endfor %}
+		{% else %}
+		 <a href="/gstudio/{% show_nodesystem  eachobject.id  %}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Reply </font>
+		{% endif %}
+
+	{% endfor %}
+	{% else %}
+     {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-subsection'  %}
+	{% for eachobject in object.ref.prior_nodes.all %}
+	 <a href="/gstudio/{% show_nodesystem  eachobject.id  %}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Subsection of a Section wiki-page</font>
+	{% endfor %}
+	{% else %}
+<a href="{{ object.get_absolute_url }}" title="{{ object.title }}" rel="bookmark" id = "{{object.id}}awikiloom"> {{ object.title }} </a><font size="2" color="black">
+<script type="text/javascript" >
+var a = "{% show_nodesystem  object.id %}"
+if (a != "")
+{
+document.getElementById("{{object.id}}awikiloom").setAttribute("href","/gstudio/"+a);
+space = a.replace( "/", " " );
+b = space.match("group")
+c = space.match("page")
+if(b == "group"){
+document.write("is a Loom thread" );
+}
+if(c == "page"){
+document.write("is a Wiki page" );
+}
+
+}
+else
+{
+var e;
+e = "{{ object.nodemodel}}";
+if(e == "Gbobject")
+{document.write("is an Object");
+}
+else
+{
+document.write("is a {{object.nodemodel}}");
+}
+}
+</script>
+</font>
+	
+      
+
+
+{% endifequal %}
+{% endifequal %}
+	{% endifequal %}
+       {% endifequal %}
+       {% endifequal %}
+       {% endifequal %}
+
+
+   <!-- <a href="{{ gbobject.get_absolute_url }}" title="{{ gbobject.title }}" rel="bookmark">{{ gbobject.title }}</a>-->
   </li>
+  {% endifequal %}
+{% endifequal %}
+{% endifequal %}
   {% empty %}
   <li>
     {% trans "No gbobjects yet." %}

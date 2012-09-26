@@ -3,12 +3,14 @@
 {% load adminmedia grp_tags %}
 {% load i18n comments gstudio_tags %}
 {% load i18n objectapp_tags %}
+ {% block title %}Documents{% endblock %}
 {% block content %}
 {% load tagging_tags comments i18n %}
 <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
     <script type="text/javascript" >
+      var isVideotitle=false;
       $(window).load(function() {
       $("#content").css({
     "width": "600px",});});
@@ -20,10 +22,11 @@ $(window).load(function() {
   });
 var i = 0;
 jQuery(document).ready(function($) {
+      isImage=true;
     $("#commenteditor").click(function(){
         document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
-	document.getElementById('descriptionsave').style.visibility="visible";
+	<!--document.getElementById('descriptionsave').style.visibility="visible";-->
 	$("#commenteditor").hide();
 		
 	});
@@ -36,14 +39,17 @@ jQuery(document).ready(function($) {
 	});
 });
 jQuery(document).ready(function($) {
-    $(".editcontent").click(function(){
+    $(".doceditcontent").click(function(){
+	isImage=true;
+	
 	var a = $(this).attr("id");
+	objid=a;
         document.getElementById('gnoweditor').style.visibility="visible";
 	 $("#gnoweditor").val($("#editortext"+a).val());
         $("#gnoweditor").orgitdown(mySettings);
         var screentop=$(document).scrollTop();
         $(".orgitdownContainer").css({"margin-top":screentop,});
-	document.getElementById('save'+a).style.visibility="visible";
+<!--	document.getElementById('save'+a).style.visibility="visible";-->
 	$("#"+a).hide();
 	});
      $(".commentsavecontent").click(function(){
@@ -71,7 +77,7 @@ position:absolute;
 margin-left:52%;
 }
 </style> 
-{% if user.is_authenticated %}
+
 {% autopaginate documents 8 %}
 <h2 style="color: teal;">Document Library</h2>
 <br>
@@ -94,12 +100,13 @@ margin-left:52%;
 <input type="submit" value="Search">
 </form>
 </div>
-
+{% if user.is_authenticated %}
 <div id="divpost">
 <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
 <br/>
 <h4 style="color: black;">Post File:</h4>
-<font size="3">File:</font>&nbsp;<input type=file name="doc[]" multiple="multiple" /><br><br>
+<font size="2">Title:</font>&nbsp; <input type="text" name="title1"><br/>
+<font size="2">File:</font>&nbsp;&nbsp;&nbsp;<input type=file name="doc[]" multiple="multiple" /><br><br>
 Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Content" >
 <input type="button" class="commentsavecontent" id="descriptionsave" value="Save" style="visibility:hidden" />
 <input type=text name="contenttext" id="descriptioncommenttext" style="visibility:hidden" />
@@ -108,13 +115,17 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 <input type="submit" value="Post">
 </form>
 </div>
-
+{% endif %}
 </div>
 <br>
 <br>
 <br>
 <br>
 <h4 style="color: teal;">Documents Listing</h4>
+{% if reportid %}
+<h2><font color="red">this document is already uploaded on this site</font></h2>
+<a href="/gstudio/resources/documents/show/{{ reportid }}/"> <font size="4">to see this image click here</font></a><br/><br/><br/>
+{% endif %}
 
 {% for document in documents %}
 
@@ -136,18 +147,16 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
      {{document_content}}
 {% endwith %}
 {% endautoescape%}</font>
-{% for author in image.authors.all %}
-	{% ifequal author.username user.username %}
+{% if user.is_authenticated %}
 <input type="hidden" name="docid" value={{document.id}}>
-<input type="button" class="editcontent" id="{{document.id}}"  value="Edit"/>
+<input type="button" class="doceditcontent" id="{{document.id}}"  value="Edit"/>
 <input type="submit" class="commentsavecontent" id="save{{document.id}}" value="Save" style="visibility:hidden" />
 <input type="hidden" name="commenttext" class="commenttext" id="commenttext{{document.id}}" style="visibility:hidden" />
 <input type="hidden" id="editortext{{document.id}}" style="visibility:hidden" value="{{document.content_org}}">
-	{% endifequal %}
-{% endfor %}
+{% endif %}
 </form>
 <br>
-<font color = 'black'>Download: </font><a href="{% admin_media_prefix %}img/{{document.title}}">Click to download!!</a>
+<font color = 'black'>Download: </font><a href="{% admin_media_prefix %}img/{{document.altnames}}">Click to download!!</a>
 <br>
 {% for author in document.authors.all %}
 	{% ifequal author.username user.username %} 
@@ -177,6 +186,7 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 <font color = 'black'>Total Number of votes is:  &nbsp;<font color='teal'><b>{{ document.rating_votes }}</b></font> </font>
 {% endifequal %}
 <br>
+{% if user.is_authenticated %}
 <form method="post" action="">
 {% csrf_token %}
 <input name="star1" type="radio" value=1 class="star"/>
@@ -193,6 +203,7 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 <input type="text" value="" name="texttags"  />
 <input type="submit" value="Add Tags" name="addtags" />
 </form>
+{% endif %}
 <br>
 <div class="tags">
     <p class="gbobject-tags span-16 last">
@@ -212,11 +223,7 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 {% endfor %}<br>
 
 
-{% else %}
- 
-<h2 style="color: indigo;">Sorry you need to log in to see this content !</h2>
- 
-{% endif %}
+
  
  <h2>
 {% paginate %}</h2>

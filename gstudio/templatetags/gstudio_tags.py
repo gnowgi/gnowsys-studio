@@ -48,7 +48,10 @@ from gstudio.templatetags.zbreadcrumbs import retrieve_breadcrumbs
 from django.http import HttpResponseRedirect
 
 from gstudio.CNL import *
-
+from gstudio.methods import check_release_or_not
+import os
+from settings import STATIC_URL
+from gstudio.methods import *
 register = Library()
 
 VECTORS = None
@@ -389,3 +392,45 @@ def show_comment(comment,idusr,flag,admin_id,attob):
 @register.inclusion_tag('gstudio/tags/commentpage.html')
 def show_commentpage(comment,idusr,flag,admin_id,attob):
   return {'comment':comment , 'idusr' : idusr, "flag" : flag, "admin_id" : admin_id , "attribute" : attob}
+
+
+@register.simple_tag
+def show_nodesystem(object_id):
+    search=object_id    
+    nbh=""
+    url=""
+    for each in System.objects.all():
+        sysid=each.id
+        for eachsys in each.systemtypes.all():
+            if eachsys.title=="Meeting":
+                url="group/gnowsys-grp/"
+		objecttitle = "TWIST"
+            elif eachsys.title=="Wikipage":
+                url="page/gnowsys-page/"
+		objecttitle = "WIKIPAGE"
+        for eachob in each.system_set.all():
+            if eachob.gbobject_set.all():
+                for eachgbob in eachob.gbobject_set.all():
+                    if search==eachgbob.id:
+                        nbh=url+str(sysid)
+            	
+        if search==sysid:
+            nbh=url+str(sysid)
+    		   
+    return nbh
+
+@register.assignment_tag
+def check_release(meeting):
+  var = check_release_or_not(meeting)
+  return var
+
+@register.assignment_tag
+def get_static_url():
+   var = os.path.join(os.path.dirname(__file__),STATIC_URL)
+   return var
+
+@register.assignment_tag
+def get_factory_looms():
+   fs = []
+   fs = get_factory_loom_OTs()
+   return fs

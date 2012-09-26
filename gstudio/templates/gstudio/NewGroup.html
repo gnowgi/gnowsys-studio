@@ -1,4 +1,5 @@
 {%extends "gstudio/base.html"%}
+{% load gstudio_tags %}
 {%load i18n %}
 {%block extrahead%}
         <script type="text/javascript">
@@ -7,9 +8,51 @@
         $('#id_value_1').datepicker();
         $('#id_value_2').datepicker();
         });
+	function slnchange()
+	{
+	   var a= document.getElementById("opt");
+	   var b=a.options[a.selectedIndex].value;
+           var currentDate = new Date();
+           var endd=new Date();
+           var dat=parseInt(currentDate.getMonth(),10)+1
+           var d=dat+"/"+currentDate.getDate()+"/"+currentDate.getFullYear()
+	   $('#id_value_1').datepicker().val(d);
+	   $('#id_hr1').val('0');
+	   $('#id_hr2').val('0');
+	   $('#id_min1').val('0');
+	   $('#id_min2').val('0');
+	if (b=='Quiz'){
+	   endd.setDate(currentDate.getDate()+5);
+           var d=dat+"/"+endd.getDate()+"/"+endd.getFullYear();
+	   $('#id_value_2').datepicker().val(d);
+        }
+	else if(b=='Online Meeting')
+	{
+           endd.setHours(currentDate.getHours()+6);
+	   var d=dat+"/"+endd.getDate()+"/"+endd.getFullYear()
+	   $('#id_value_2').datepicker().val(d);
+	}
+	else if(b=='Discussion Forum')
+	{
+	   var y=parseInt(currentDate.getFullYear(),10)+100;
+           var d =dat+"/"+endd.getDate()+"/"+y;
+	   $('#id_value_2').datepicker().val(d)
+	}
+	else
+	{
+       	   obj = document.getElementById('opt');
+	   obj.value ="";
+	}
+	}
         </script>
 {%endblock%}
 {% block content  %}
+<style type="text/css">
+#content
+{
+ width:1000px;
+}
+</style>
 {%if user.is_authenticated%}
 {% if errors %}
 <ul>
@@ -20,32 +63,47 @@
 {% endif %}
 <form action="" method="post">
 {% csrf_token %}
-<p>Name of the Group: <input type="text" name="subject"></p>
-<p>Brief Description: <textarea name="message" rows="10" cols="50"></textarea></p>
+<p><font size ="3" >Name of the Thread:</font> <input type="text" name="subject"></p>
+<p><font size ="3" >Substance:</font> </p> 
+<textarea id="threadcontent" name="message" rows="10" cols="50" style="display:none"></textarea>
+
+<input type="button" id="addthreadcontent"  name="content" value="Add Description">
+<input type="button" id="threadsave" name="savecontent" value="Save" style="display:none">
 </br>
-<p>If you want to leave any instructions for the participants you may mention them above as well </p>
-Please Set the time 
+
+{% get_factory_looms as abc %}
+
+<p><font size ="3" >Type:</font></p>
+<select id="opt" onchange="slnchange()" >
+ {% for each in abc %}
+ <option value="{{each}}" >{{each}}</option> 
+{% endfor %}
+</select>
+<br/>
+
+<font size ="3" >Please Set the time 
+<p>Creating a thread will require to schedule it for an indefinite period of time. So in this case, please enter end time of say 50 years from now</p></font>
 </br>
-Starts at time:
+<font size ="3" >Start time:</font>
 </br>
         <span class="datetimeshortcuts">
         	<a href="javascript:DateTimeShortcuts.openCalendar(0);"id = "calendarlink0"></a>
         </span>
-        Date: <input id="id_value_1" type="text" class="vTimeField hasTimepicker" name="stDate" size ="8">
-        Hours:<input type = "text" name = "hours1">
-        Minutes:<input type = "text" name = "minutes1">  <hr>
-	<p><b>Note</b>The group will be accessible to members (except the creator)only after the scheduled start time</p>
-        Ends at time:   </br>
-        Date: <input id="id_value_2" type="text" class="vTimeField hasTimepicker" name="endDate" size ="8">
-        Hours:<input type = "text" name = "hours2">
-        Minutes:<input type = "text" name = "minutes2">
-<p>After this time the group posts remain but the activity is frozen<p>
+       <font size ="2" > Date:</font> <input id="id_value_1" type="text" class="vTimeField hasTimepicker" name="stDate" size ="8">
+        <font size ="2" >Hours:</font><input id = "id_hr1" type = "text" name = "hours1">
+        <font size ="2" >Minutes:</font><input id = "id_min1" type = "text" name = "minutes1"><br/>
+	<font size ="3" ><p><b>Note</b>&nbsp;The thread will be accessible to members (except the creator)only after the scheduled start time</p></font>
+       <font size ="3" > End time:  </font> </br>
+        <font size ="2" >Date: </font><input id="id_value_2" type="text" class="vTimeField hasTimepicker" name="endDate" size ="8">
+        <font size ="2" >Hours:</font><input id = "id_hr2"  type = "text" name = "hours2">
+        <font size ="2" >Minutes:</font><input id = "id_min2"  type = "text" name = "minutes2">
+<font size ="3" ><p>After this time the threads remain but it will be inactive<p></font>
 <input type="hidden" value={{user.id}} name = "idusr">
+<input type="hidden" value={{user.username}} name = "usr">
 <input type="submit" value="Submit">
 </form>
-<p>Creating a group will require to schedule it for an indefinite period of time. So in this case, please enter end time of say 50 years from now</p>
 {%else%}
-<p> Sorry! Login To proceed </p>
+<font size ="3" ><p> Please Login </p></font>
 
 {%endif%}
 {% endblock %}

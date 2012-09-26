@@ -44,7 +44,7 @@
       margin-left: 75%;
       }
       
-      .bottom h3 {
+      .homebottom h3 {
       background-color: #C4EBF4;
       padding: 0.5em;
       font-size: 1em;
@@ -55,28 +55,29 @@
       font-weight: normal;
       }
       
-      .bottom{
+      .homebottom{
       margin-top:9%;
       margin-left:11%;
+      height: 212px;
       }
+
       .authors {
-      width: 20%;
-      position:absolute;
-      margin-left: 3%;
-      }	
-      
-      .recentsnodetype{
-      width:22%;
-      position:absolute;
-      margin-left:24%;
+      margin-left: 0;
+      position: absolute;
+      width: 300px;
       }
-      
-      
-      .comments{
-      width:22%;
-      position:absolute;
-      margin-left:47%;
+      .recentsnodetype {
+      margin-left: 314px;
+      position: absolute;
+      width: 400px;
       }
+      .comments {
+      margin-left: 729px;
+      position: absolute;
+      width: 300px;
+      }
+
+
 	.tags .tag_1 { font-size: 1em; color: #001e2d; }
 	.tags .tag_2 { font-size: 1.125em; color: #00334c; }
 	.tags .tag_3 { font-size: 2em; color: #005b89; }
@@ -123,12 +124,12 @@
       {% include "gstudio/_header.html" %}
     </div>
     <div class="tags" align="center" id="tag">
-	<h2>{% trans "Tag Cloud" %}</h2>
+	<!--<h2>{% trans "Tag Cloud" %}</h2>-->
   	{% get_tag_cloud %}
    </div>
    </center>
     <div id="main">
-      <center><font size="23" color="#4d659e"><b>{{ site }}</b></font></center>
+      <center><font size="23" color="#4d659e"><b>{{ site }}</b></font><br/><span id="tagline">a project of <a href="http://lab.gnowledge.org/" target="_blank">gnowledge lab</a>, <a href="http://www.hbcse.tifr.res.in" target="_blank">Homi Bhabha Centre for Science Education</a>, <a href="http://www.tifr.res.in" target="_blank"> TIFR</a></span></center>
       <form action="{% url gstudio_nodetype_search %}" method="get">
 	<input id="searchtext" class="classtext" type="text" value="{{ pattern }}" name="pattern"  onfocus="this.value=''"   style="border: 5; padding: 0pt; margin: 0pt; height: 30px; width: 40%; margin-left:30%; margin-bottom:18px; margin-top:4%" />
 	<input class="searchbutton" type="submit" value="Search" title="Search" />
@@ -138,21 +139,42 @@
     </div><br/><br/><br/>
 <link rel="stylesheet" type="text/css" media="screen, projection" href="/static/gstudio/css/screen.css" />
 <center><p style = " font-size : 19px ; color : #4d659e"><b>The site provides a loom (place to exchange views from the members of the site on a topic, or seek responses from members); collaboratively construct wikipages; share electronic documents, images and videos and use them in your discussions or wikipages; and create semantic networks. We will soon provide a link on how to use the site prominently on the home page.  All resources are released under creative commons license. <a href="/more/"><font color="red">more</font></a></b></p></center>
-    <div class="bottom">
+    <div class="homebottom">
       <div class="authors">
-	<h3>{% trans "Recent Authors" %}</h3>
-	{% get_authors %}
+	<h3>{% trans "Recents Authors" %}</h3>
+	{% get_authors 12 %}
       </div>
 	
 <div class="recentsnodetype">
 <h3>{% trans "Recent Objects" %}</h3>
-{% get_recent_gbobjects %}
+{% get_recent_gbobjects 12%}
 </div>
 <div class="comments">
   <h3>{% trans "Recent Comments" %}</h3>
-  {% get_recent_comments 5 %}
+  {% get_recent_comments 12 %}
 </div>
     </div>
+
+	<div id="footer" align="center" style="margin-top:100px">
+				<p>
+  
+    a project of <a href="http://lab.gnowledge.org/" target="_blank">gnowledge lab</a>,<a href="http://www.hbcse.tifr.res.in" target="_blank">Homi Bhabha Centre for Science Education</a>, <a href="http://www.tifr.res.in" target="_blank">TIFR</a><br> 
+        
+</p>
+					<p> 
+
+						<a rel="license"
+						href="http://creativecommons.org/licenses/by-sa/3.0/" title="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative
+						Commons License" style="border-width:0"	src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a> All material is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" title = "http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> unless mentioned otherwise.
+						<br/>
+						Powered	by <a href="http://www.djangoproject.com" title="https://www.djangoproject.com/">Django</a>
+						and <a href="https://gitorious.org/gnowsys-studio" title="https://gitorious.org/gnowsys-studio">Gstudio
+						{{ GSTUDIO_VERSION }}</a>.
+					</p>
+					<center>
+				      <a href="http://atlas.gnowledge.org/softwares"><img src="/static/gstudio/img/community.png"></a></center>
+				</div>
+		
 
   </body>
 </html>

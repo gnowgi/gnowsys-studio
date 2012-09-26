@@ -19,6 +19,10 @@
 from django.conf.urls.defaults import url
 from django.conf.urls.defaults import include
 from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import *
+from registration.views import register
+
+from gstudio.forms import RecaptchaRegistrationForm
 
 urlpatterns = patterns(
     '',
@@ -41,8 +45,8 @@ urlpatterns = patterns(
     url(r'topicadd1/', include('gstudio.urls.topicadd1')), 
     url(r'sectionadd1/', include('gstudio.urls.sectionadd1')),
     url(r'^login', include('gstudio.urls.login')),
-    url(r'user/(\w+)/$','gstudio.views.user.userdashboard'),
-    url(r'user/wikipage/(\w+)/$','gstudio.views.user.wikidashboard'),
+    url(r'user/$','gstudio.views.user.userdashboard'),#/(\w+)
+    url(r'user/wikipage/$','gstudio.views.user.wikidashboard'),#/(\w+)
     url(r'groupadd/', include('gstudio.urls.groupadd')),
     url(r'pageadd/', include('gstudio.urls.pageadd')),
     url(r'group/',include('gstudio.urls.group')), 
@@ -53,3 +57,10 @@ urlpatterns = patterns(
 
 
     )
+
+urlpatterns += patterns('',
+    url(r'^register/$', register,
+        {'form_class': RecaptchaRegistrationForm},
+        name='registration.views.register'),
+    (r'', include('registration.urls')),
+)

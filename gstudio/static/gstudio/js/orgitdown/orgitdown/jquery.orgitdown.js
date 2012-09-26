@@ -438,7 +438,7 @@
 				} 
 				return selection;
 			}
-	                function save() {
+	                function save1() {
 			         var org_data = $("#gnoweditor").val();
 			         var id =  document.getElementById("objectid").value
 			         document.getElementById("orgcontent").value = org_data;
@@ -466,6 +466,48 @@
 			    
                     }
                  });}
+		    function close() {
+                        $(".orgitdownContainer").hide();
+		        location.reload();}
+                    function save() {
+			if (isWikipage){
+			 $("#save1").trigger('click');}
+			if (isNode){
+			 $("#savenodecontent").trigger('click');}
+			
+                        if (editWikipage){
+			    $(".savepagecontent").trigger('click');}
+			if (isSection){
+			    $("#save").trigger('click');}
+			if (editSection){
+			    $(".saveseccontent").trigger('click');}
+			if (editSubsection){
+			    subsecsave(objid);}
+			if (isSubsection){
+			    $(".savesubsec").trigger('click');}
+                        
+                        if (isThread){
+			    $("#threadsave").trigger('click');}
+                        if (editThread){
+			    $("#editthreadsave").trigger('click');}
+	                if (isTwist){
+			    $("#topicaddsave").trigger('click');}
+			if (editTwist){
+			    topicsaveclick(twistid);}
+			if (isResponse){
+			    topicsaveclick(responseid);}
+
+			if (editImage){
+			   $("#save").trigger('click');}
+			if (isImage){
+			    $("#save").trigger('click');
+			     $("#descriptionsave").trigger('click');
+			    $("#save"+objid).trigger('click');}
+			if (isVideotitle){
+			   $("#titlesave").trigger('click');}
+	
+		    }
+
 			// open preview window
 			function preview() {
 				if (typeof options.previewHandler === 'function') {

@@ -6,6 +6,7 @@
       $(window).load(function() {
       $("#save").hide();});
 </script>
+
 <h1>Add a new Section</h1>
 {% if errors %}
 <ul>
@@ -25,6 +26,7 @@
 <input type="button" name="savepage" id="save" value="Save Page"></p></br>
 <input type="hidden" value={{pageid}} id="sectionid">
 <input type="hidden" value={{user.id}} name = "idusr">
+<input type="hidden" value={{user.username}} name = "usr">
 <input type="submit" id="submitsec" value="Submit" style="display:none;"/>
 </form>
 

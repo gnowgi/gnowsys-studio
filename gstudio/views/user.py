@@ -21,27 +21,27 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from gstudio.methods import *
 
-def userdashboard(request,username):
-    if request.user.username == username :
+def userdashboard(request):#,username):
+   # if request.user.username == username :
     	meetings = Systemtype.objects.get(title="Meeting")
         variables = RequestContext(request,{"meetings" : meetings })
     	template = "metadashboard/userdashboard.html"
     	return render_to_response(template, variables)
-    else :
-         variables = RequestContext(request)
-         template = "metadashboard/logindashboard.html"
-         return render_to_response(template,variables)
+    #else :
+     #    variables = RequestContext(request)
+      #   template = "metadashboard/logindashboard.html"
+       #  return render_to_response(template,variables)
 
-def wikidashboard(request,username):
-    if request.user.username == username :
+def wikidashboard(request):#,username):
+    #if request.user.username == username :
     	pages = Systemtype.objects.get(title="Wikipage")
         variables = RequestContext(request,{"pages" : pages })
     	template = "metadashboard/wikidashboard.html"
     	return render_to_response(template, variables)
-    else :
-         variables = RequestContext(request)
-         template = "metadashboard/logindashboard.html"
-         return render_to_response(template,variables)
+    #else :
+     #    variables = RequestContext(request)
+      #   template = "metadashboard/logindashboard.html"
+       #  return render_to_response(template,variables)
 
     
 

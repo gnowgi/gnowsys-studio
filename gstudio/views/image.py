@@ -23,13 +23,20 @@ from gstudio.models import *
 from objectapp.models import *
 import os
 from gstudio.methods import *
+from PIL import Image
+import glob, os
+import hashlib
+from django.template.defaultfilters import slugify
 
+size = 128, 128
+report = "true"
+md5_checksum = ""
 def image(request):
 	p=Objecttype.objects.get(title="Image")
 	q=p.get_nbh['contains_members']
 	if request.method=="POST":
 		title = request.POST.get("title1","")
-		content= request.POST.get("contenttext","")
+		content= unicode(request.POST.get("contenttext",""))
 		simg = request.POST.get("simg","")
 		sub3 = request.POST.get("mydropdown","")
 		user = request.POST.get("user","")
@@ -40,7 +47,7 @@ def image(request):
 		fulid = request.POST.get("fulid","")
 		show = request.POST.get("Show","")
 		addtags = request.POST.get("addtags","")
-		texttags = request.POST.get("texttags","")
+		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = request.POST.get("contenttext","")
 		if show != "":
 			i=Gbobject.objects.get(id=fulid)
@@ -79,27 +86,34 @@ def image(request):
 
 		if addtags != "":
 			i=Gbobject.objects.get(id=imgid)
-			i.tags = i.tags+ ","+str(texttags)
+			i.tags = i.tags+ ","+(texttags)
 			i.save()
 
 		
 		a=[]
+		reportid=''
 		for each in request.FILES.getlist("image[]",""):
 			a.append(each)
 		if a != "":
 			i=0
 			for f in a:
 				if i==0:
-					save_file(f,title,user)
-					create_object(f,user,title,content)
-					i=i+1
+					report,imageeachid = save_file(f,title,user)
+					if report == "false":
+						reportid = imageeachid
+					else:
+						create_object(f,user,title,content,str(request.user))
+						i=i+1
 				else:	
-					save_file(f,title+'_'+str(i),user)
-					create_object(f,user,title+'_'+str(i),content)
-					i=i+1
+					report,imageeachid = save_file(f,title+'_'+str(i),user)
+					if report == "false":
+						reportid = imageeachid
+					else:
+						create_object(f,user,title+'_'+str(i),content,str(request.user))
+						i=i+1
 			p=Objecttype.objects.get(title="Image")
 			q=p.get_nbh['contains_members']
-			vars=RequestContext(request,{'images':q})
+			vars=RequestContext(request,{'images':q,'reportid':reportid,'report':report})
 			template="gstudio/image.html"
 			return render_to_response(template, vars)	
 	vars=RequestContext(request,{'images':q,'val':""})
@@ -107,31 +121,67 @@ def image(request):
 	return render_to_response(template, vars)
 
 def save_file(file,title, user, path=""):
+        report = "true"
+	imageeachid = ''
 	filename = title
+	slugfile = str(file)
+	slugfile=slugfile.replace(' ','_')
 	os.system("mkdir -p "+ MEDIA_ROOTNEW2+"/"+user)
-    	fd = open('%s/%s/%s' % (MEDIA_ROOTNEW2, str(user),str(path) + str(file)), 'wb')
+    	fd = open('%s/%s/%s' % (MEDIA_ROOTNEW2, str(user),str(path) + str(slugfile)), 'wb')
     	for chunk in file.chunks():
         	fd.write(chunk)
     		fd.close()
+	global md5_checksum
+	md5_checksum = md5Checksum(MEDIA_ROOTNEW2+"/"+ str(user)+"/"+slugfile)
+	attype = Attributetype.objects.get(title="md5_checksum_image")
+	att = Attribute.objects.all()
+	flag = 0
+	for each in att:
+		if each.attributetype.id == attype.id:
+			if each.svalue == md5_checksum :
+				flag = 1
+				imageeachid = each.subject.id
+	if flag == 1:
+		report = "false"
+	else:	
+		for infile in glob.glob(MEDIA_ROOTNEW2+"/"+str(user)+"/"+str(slugfile)):
+			file, ext = os.path.splitext(infile)
+			im = Image.open(infile)
+			imm = Image.open(infile)
+			im.thumbnail(size, Image.ANTIALIAS)
+			im.save(file + "-thumbnail", "JPEG")
+			width, height = imm.size
+			sizem = 1024,height
+			if int(width) > 1024:
+				imm.thumbnail(sizem, Image.ANTIALIAS)
+				imm.save(file + "_display_1024","JPEG")
+			else:
+				imm.thumbnail(imm.size,Image.ANTIALIAS)
+				imm.save(file + "_display_1024","JPEG")
+    	return report,imageeachid	
 
-def create_object(f,log,title,content):
+
+def create_object(f,log,title,content,usr):
 	p=Gbobject()
 	filename = str(f)
+	filename=filename.replace(' ','_')
 	p.title=title
+        fname=slugify(title)+"-"+usr
 	p.image=log+"/"+filename
-	final = ''
-	for each1 in filename:
-		if each1==" ":
-			final=final+'-'
-		else:
-			final = final+each1	
-	i=0
-	dirname = ""
-	while final[i] != ".":
-		dirname = dirname + final[i]
-		i=i+1
-	p.slug=dirname
-	p.content_org=content
+	#final = ''
+	#for each1 in filename:
+	#	if each1==" ":
+	#		final=final+'-'
+	#	else:
+	#		final = final+each1	
+	#i=0
+	#dirname = ""
+	#while final[i] != ".":
+	#	dirname = dirname + final[i]
+	#	i=i+1
+	p.slug=slugify(filename)
+	contorg=unicode(content)
+	p.content_org=contorg.encode('utf8')
 	p.status=2
 	p.save()
 	p.sites.add(Site.objects.get_current())
@@ -143,18 +193,25 @@ def create_object(f,log,title,content):
 	p.objecttypes.add(Objecttype.objects.get(id=q.id))
 	p.save()
 	new_ob = content
- 	myfile = open('/tmp/file.org', 'w')
- 	myfile.write(new_ob)
+ 	ext='.org'
+        html='.html'
+ 	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	myfile.write(p.content_org)
 	myfile.close()
-	myfile = open('/tmp/file.org', 'r')
-	myfile.readline()
-	myfile = open('/tmp/file.org', 'a')
+	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+        rfile=myfile.readlines()
+	scontent="".join(rfile)
+	newcontent=scontent.replace("\r","")
+	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	myfile.write(newcontent)
+	#myfile.readline()
+	myfile = open(os.path.join(FILE_URL,fname+ext),'a')
 	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
 	myfile.write("\n#+TITLE: ")
-	myfile = open('/tmp/file.org', 'r')
-	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
 	output = stdout.read()
-	data = open("/tmp/file.html")
+	data = open(os.path.join(FILE_URL,fname+html))
  	data1 = data.readlines()
  	data2 = data1[72:]
  	data3 = data2[:-3]
@@ -163,6 +220,12 @@ def create_object(f,log,title,content):
         	newdata += line.lstrip()
  	p.content = newdata
  	p.save()
+        a=Attribute()
+        a.attributetype=Attributetype.objects.get(title="md5_checksum_image")
+        a.subject=p
+        a.svalue=md5_checksum
+        a.save()
+
 
 def rate_it(topic_id,request,rating):
 	ob = Gbobject.objects.get(id=topic_id)
@@ -174,36 +237,47 @@ def show(request,imageid):
 		rating = request.POST.get("star1","")
 		imgid = request.POST.get("imgid","")
 		addtags = request.POST.get("addtags","")
-		texttags = request.POST.get("texttags","")
-		contenttext = request.POST.get("contenttext","")
+		texttags = unicode(request.POST.get("texttags",""))
+		contenttext = unicode(request.POST.get("contenttext",""))
 		if rating :
 	       	 	rate_it(int(imgid),request,int(rating))
 		if addtags != "":
 			i=Gbobject.objects.get(id=imgid)
-			i.tags = i.tags+ ","+str(texttags)
+			i.tags = i.tags+ ","+(texttags)
 			i.save()
 		if contenttext !="":
-			 edit_description(imgid,contenttext)
+			 edit_description(imgid,contenttext,str(request.user))
 	gbobject = Gbobject.objects.get(id=imageid)
 	vars=RequestContext(request,{'image':gbobject})
 	template="gstudio/fullscreen.html"
 	return render_to_response(template,vars)
 
-def edit_description(sec_id,title):
+def edit_description(sec_id,title,usr):
 	new_ob = Gbobject.objects.get(id=int(sec_id))
-	new_ob.content_org = title
-	myfile = open('/tmp/file.org', 'w')
+	contorg=unicode(title)
+	ssid=new_ob.get_ssid.pop()
+	fname=str(ssid)+"-"+usr
+	new_ob.content_org=contorg.encode('utf8')
+	ext='.org'
+	html='.html'
+	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
 	myfile.write(new_ob.content_org)
 	myfile.close()
-	myfile = open('/tmp/file.org', 'r')
-	myfile.readline()
-	myfile = open('/tmp/file.org', 'a')
+	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	rfile=myfile.readlines()
+	scontent="".join(rfile)
+	newcontent=scontent.replace("\r","")
+	myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	myfile.write(newcontent)
+	#myfile.readline()
+	myfile = open(os.path.join(FILE_URL,fname+ext),'a')
 	myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
 	myfile.write("\n#+TITLE: ")
-	myfile = open('/tmp/file.org', 'r')
-	stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+	myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+	
 	output = stdout.read()
-	data = open("/tmp/file.html")
+	data = open(os.path.join(FILE_URL,fname+html))
 	data1 = data.readlines()
 	data2 = data1[72:]
 	data3 = data2[:-3]
@@ -213,3 +287,14 @@ def edit_description(sec_id,title):
 	new_ob.content = newdata
 	new_ob.save()
 	return True
+
+def md5Checksum(filePath):
+    fh = open(filePath, 'rb')
+    m = hashlib.md5()
+    while True:
+        data = fh.read(8192)
+        if not data:
+            break
+        m.update(data)
+    return m.hexdigest()
+

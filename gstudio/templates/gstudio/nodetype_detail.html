@@ -28,6 +28,15 @@
   <link rel="alternate" type="application/rss+xml" title="{% trans "RSS Feed of trackbacks on" %} '{{ object.title }}'"
         href="{% url gstudio_nodetype_trackback_feed year month day object.slug %}" />
   {% endwith %}
+<script type="text/javascript" >
+$(window).load(function() {
+ 
+ $("#savenodecontent").hide();
+ $("#nodedit").hide();
+
+});
+</script>
+
 {% endblock %}
 
 
@@ -38,14 +47,14 @@
       <a href="{{ object.get_absolute_url }}" title="{{ object.title }}" rel="bookmark">
         {{ object.title }}
 	 </a>
-	<a href="{{ object.ref.get_edit_url }}" target="_blank"  title = "edit">[edit]</a>     
+<!--	<a href="{{ object.ref.get_edit_url }}" target="_blank"  title = "edit">[edit]</a>     -->
 
     </h2>
 <div class="History">
      
       					 
        					 <table border="1" cellspacing="0">
-						
+						<b>Versions:&nbsp;</b>
         					{% for sid in object.ref.get_ssid  %}
 	   
 	      
@@ -212,25 +221,39 @@
 <!-- <\!-- Content -\->                            -->
 			    {% if object.content %}
                             <b>
-					Content:<nbsp>
+					Content:<nbsp></b>
+				      <div id="nodetype">
+					<form method="post" action="/gstudio/{{object.id}}/">{% csrf_token %}
+					  <input type="hidden" id="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+					  <input type="hidden" id="editval" name="edit" value="edited"/>
+					  <input type="hidden" value="{{object.id}}" name = "iden">
+					  <input type="hidden" value="{{user.username}}" name ="usr">
+					  <input type="hidden" value="{{user.id}}" name = "idusr">
+					  <input type="button" id="editnodecontent" name="{{object.content_org}}" value="Edit"/>
+					  <input type="button" id="savenodecontent" name="{{object.id}}" value="Save"/></br>
+					  <input type="submit" id="nodedit" value="Submit"/>
+					</form>
+					</div>
 				
-				         <input type="button" id="editdata" value="Edit Content"/>					  	                     <input type="button" id="savecontent" value="Save Content"/><ndsp><nbsp>
-					  <input type="hidden" id="objectid" value="{{object.id}}"/>
-		         		  <input type="hidden" id="title" value="{{object.title}}"/>
-					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
-					</b>
+				        
 				   	{{object_content}}<br/>
 
 					{% else %}
 						<b>
-					Content:<nbsp> 
-				         <input type="button"id="editdata" value="Edit Content"/>
-					 <input type="button" id="savecontent" value="Save Content"/><ndsp><nbsp>
-					 <input type="hidden" id="objectid" value="{{object.id}}"/>
-		
-					  <input type="hidden" id="title" value="{{object.title}}"/>
-					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
-					 </b>
+					Content:<nbsp> </b>
+					<div id="nodetype">
+					<form method="post" action="/gstudio/{{object.id}}/">{% csrf_token %}
+					  <input type="hidden" id="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+					  <input type="hidden" id="editval" name="edit" value="edited"/>
+					  <input type="hidden" value="{{object.id}}" name = "iden">
+					  <input type="hidden" value="{{user.username}}" name ="usr">
+					  <input type="hidden" value="{{user.id}}" name = "idusr">
+					  <input type="button" id="editnodecontent" name="{{object.content_org}}" value="Edit"/>
+					  <input type="button" id="savenodecontent" name="{{object.id}}" value="Save"/></br>
+					  <input type="submit" id="nodedit" value="Submit"/>
+					</form>
+					</div>
+				         
 				   	{{object_content}}<br/>
 					
                           {% endif %}

@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 import datetime
 import os
 from demo.settings import PYSCRIPT_URL_GSTUDIO
+from demo.settings import FILE_URL
 
 
 def delete(idnum):
@@ -11,28 +12,42 @@ def delete(idnum):
  del_ob.delete()
  return True
 
-def make_rep_object(title,auth_id):
+def make_rep_object(title,auth_id,usr):
  new_ob = Gbobject()
- new_ob.content_org=title
- myfile = open('/tmp/file.org', 'w')
+ new_ob.title = "Re: "
+ new_ob.slug=slugify(new_ob.title)
+ new_ob.save()
+ titleid = "Re:"+str(new_ob.id)
+ contorg = unicode(title)
+ fname=slugify(titleid)+"-"+usr 
+ new_ob.content_org=contorg.encode('utf8')
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
  myfile.write(new_ob.content_org)
  myfile.close()
- myfile = open('/tmp/file.org', 'r')
- myfile.readline()
- myfile = open('/tmp/file.org', 'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
- myfile = open('/tmp/file.org', 'r')
- stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
  output = stdout.read()
- data = open("/tmp/file.html")
+
+ data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[67:]
+ data2 = data1[72:]
+ data3 = data2[:-3]
  newdata=""
- for line in data2:
+ for line in data3:
         newdata += line.lstrip()
  new_ob.content = newdata
- new_ob.title = "Re: " +title
+ new_ob.title = "Re: "
  new_ob.status = 2
  new_ob.slug = slugify(title)
  new_ob.save()
@@ -41,27 +56,73 @@ def make_rep_object(title,auth_id):
  new_ob.sites.add(Site.objects.get_current())
  return new_ob
 
-def make_topic_object(title,auth_id,content):
- print "save"
- new_ob = Gbobject()
- new_ob.title = "Query: " + title
- new_ob.content_org = content
- myfile = open('/tmp/file.org', 'w')
+def edit_section(sec_id,title,usr):
+ new_ob = Gbobject.objects.get(id=int(sec_id))
+ contorg = unicode(title)
+ new_ob.content_org=contorg.encode('utf8')
+ ssid=new_ob.get_ssid.pop()
+ fname=str(ssid)+"-"+usr
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
  myfile.write(new_ob.content_org)
  myfile.close()
- myfile = open('/tmp/file.org', 'r')
- myfile.readline()
- myfile = open('/tmp/file.org', 'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
- myfile = open('/tmp/file.org', 'r')
- stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ 
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
  output = stdout.read()
- data = open("/tmp/file.html")
+ data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[67:]
+ data2 = data1[72:]
+ data3 = data2[:-3]
  newdata=""
- for line in data2:
+ for line in data3:
+        newdata += line.lstrip()
+ new_ob.content = newdata
+ new_ob.save()
+ return True
+
+
+def make_topic_object(title,auth_id,content,usr):
+ new_ob = Gbobject()
+ new_ob.title = "Twist: " + title
+ contorg = unicode(content)
+ fname=slugify(title)+"-"+usr
+ new_ob.content_org=contorg.encode('utf8') 
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(new_ob.content_org)
+ myfile.close()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ output = stdout.read()
+ data = open(os.path.join(FILE_URL,fname+html))
+ data1 = data.readlines()
+ data2 = data1[72:]
+ data3 = data2[:-3]
+ newdata=""
+ for line in data3:
         newdata += line.lstrip()
  new_ob.content = newdata
  new_ob.status = 2
@@ -73,28 +134,39 @@ def make_topic_object(title,auth_id,content):
  new_ob.sites.add(Site.objects.get_current())
  return new_ob
 
-def make_sectionreply_object(content_org,title,auth_id):
+def make_sectionreply_object(content_org,title,auth_id,usr):
  new_ob = Gbobject()
  new_ob.title = title
  new_ob.status = 2
  new_ob.slug = slugify(title)
- new_ob.content_org = content_org
- myfile = open('/tmp/file.org', 'w')
+ contorg = unicode(content_org)
+ fname=slugify(title)+"-"+usr
+
+ new_ob.content_org=contorg.encode('utf8')
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
  myfile.write(new_ob.content_org)
  myfile.close()
- myfile = open('/tmp/file.org', 'r')
- myfile.readline()
- myfile = open('/tmp/file.org', 'a')
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
  myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
- myfile = open('/tmp/file.org', 'r')
- stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
  output = stdout.read()
- data = open("/tmp/file.html")
+ data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[67:]
+ data2 = data1[72:]
+ data3 = data2[:-3]
  newdata=""
- for line in data2:
+ for line in data3:
         newdata += line.lstrip()
  new_ob.content = newdata
  myfile = open('/tmp/file.org', 'w')
@@ -107,29 +179,39 @@ def make_sectionreply_object(content_org,title,auth_id):
  return new_ob
 
 
-def make_section_object(title,auth_id,content_org):
+def make_section_object(title,auth_id,content_org,usr):
  new_ob = Gbobject()
  new_ob.title = title
  new_ob.status = 2
  new_ob.slug = slugify(title)
+ fname=slugify(title)+"-"+usr
  #new_ob.content = content
- new_ob.content_org = content_org
- myfile = open('/tmp/file.org', 'w')
+ contorg = unicode(content_org)
+ new_ob.content_org=contorg.encode('utf8')
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
  myfile.write(new_ob.content_org)
  myfile.close()
- myfile = open('/tmp/file.org', 'r')
- myfile.readline()
- myfile = open('/tmp/file.org', 'a')
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
  myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
- myfile = open('/tmp/file.org', 'r')
- stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
  output = stdout.read()
- data = open("/tmp/file.html")
+ data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[67:]
+ data2 = data1[72:]
+ data3 = data2[:-3]
  newdata=""
- for line in data2:
+ for line in data3:
         newdata += line.lstrip()
  new_ob.content = newdata
  new_ob.save()
@@ -139,15 +221,18 @@ def make_section_object(title,auth_id,content_org):
  return new_ob
 
 
-def make_relation(rep,id_no,idusr):
- r = make_rep_object(rep,idusr)
+def make_relation(rep,id_no,idusr,usr):
+ r = make_rep_object(rep,idusr,usr)
  t = Gbobject.objects.get(id=id_no)
  t.posterior_nodes.add(r)
  r.prior_nodes.add(t)
+ r.title="Re:"+str(r.id)+t.title
+ r.slug=slugify(r.title)
+ r.save()
  return True
 
-def make_sectionrelation(rep,ptitle,id_no,idusr):
- r = make_sectionreply_object(rep,ptitle,idusr)
+def make_sectionrelation(rep,ptitle,id_no,idusr,usr):
+ r = make_sectionreply_object(rep,ptitle,idusr,usr)
  t = Gbobject.objects.get(id=id_no)
  t.posterior_nodes.add(r)
  r.prior_nodes.add(t)
@@ -166,11 +251,39 @@ def rate_section(section_id,request,rating):
 
 
 
-def create_meeting(title,idusr,content):
+def create_meeting(title,idusr,content,usr):
  sys = System()
  sys.title = title
  sys.status = 2
- sys.content = content
+ contorg = unicode(content)
+ sys.content_org=contorg.encode('utf8')
+ fname=slugify(title)+"-"+usr
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(sys.content_org)
+ myfile.close()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+# myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ output = stdout.read()
+ data = open(os.path.join(FILE_URL,fname+html))
+ data1 = data.readlines()
+ data2 = data1[72:]
+ data3 = data2[:-3]
+ newdata=""
+ for line in data3:
+        newdata += line.lstrip()
+ sys.content = newdata
  sys.slug = slugify(title)
  sys.save()
  sys.systemtypes.add(Systemtype.objects.get(title="Meeting"))
@@ -189,38 +302,48 @@ def create_meeting(title,idusr,content):
  sys1.title = "message box of " + title
  sys1.status = 2
  sys1.content = "contains messages of " + title
- sys1.slug = slugify(title)
+ sys1.slug = "message_box_of_" + slugify(title)
  sys1.save()
  sys1.systemtypes.add(Systemtype.objects.get(title="message_box"))
  sys.system_set.add(sys1)
  sys.member_set.add(Author.objects.get(id=idusr))
  sys.sites.add(Site.objects.get_current())
  sys1.sites.add(Site.objects.get_current())
- return sys.id
+ return sys.id 
 
-def create_wikipage(title,idusr,content_org):
+
+
+def create_wikipage(title,idusr,content_org,usr):
  sys = System()
  sys.title = title
  sys.status = 2
  contorg = unicode(content_org)
- sys.content_org = contorg.encode('utf8')
-
- myfile = open('/tmp/file.org', 'w')
+ sys.content_org=contorg.encode('utf8')
+ ext='.org'
+ html='.html'
+ fname=slugify(title)+"-"+usr
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
  myfile.write(sys.content_org)
  myfile.close()
- myfile = open('/tmp/file.org', 'r')
- myfile.readline()
- myfile = open('/tmp/file.org', 'a')
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
  myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
- myfile = open('/tmp/file.org', 'r')
- stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
  output = stdout.read()
- data = open("/tmp/file.html")
+ data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[67:]
+ data2 = data1[72:]
+ data3 = data2[:-3]
  newdata=""
- for line in data2:
+ for line in data3:
         newdata += line.lstrip()
  sys.content = newdata
  sys.slug = slugify(title)
@@ -241,7 +364,7 @@ def create_wikipage(title,idusr,content_org):
  sys1.title = "page box of " + title
  sys1.status = 2
  sys1.content = "contains pages of " + title
- sys1.slug = slugify(title)
+ sys1.slug = "page_box_of_" + slugify(title)
  sys1.save()
  sys1.systemtypes.add(Systemtype.objects.get(title="page_box"))
  sys.system_set.add(sys1)
@@ -338,3 +461,126 @@ def del_section(section_id):
 	del_comment(each.id)
  ob.delete()
  return True
+
+def edit_topic(topic_id,title,usr):
+ ob=Gbobject.objects.get(id=int(topic_id))
+ contorg = unicode(title)
+ ob.content_org=contorg.encode('utf8')
+ ssid=ob.get_ssid.pop()
+ fname=str(ssid)+"-"+usr
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(ob.content_org)
+ myfile.close()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ output = stdout.read()
+ data = open(os.path.join(FILE_URL,fname+html))
+ data1 = data.readlines()
+ data2 = data1[72:]
+ data3 = data2[:-3]
+ newdata=""
+ for line in data3:
+        newdata += line.lstrip()
+ ob.content = newdata
+ ob.save()
+ return True
+
+def edit_thread(thread_id,title,usr):
+ ob=System.objects.get(id=int(thread_id))
+ contorg = unicode(title)
+ ssid=ob.get_ssid.pop()
+ fname=str(ssid)+"-"+usr
+ ob.content_org=contorg.encode('utf8')
+ ext='.org'
+ html='.html'
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(ob.content_org)
+ myfile.close()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+ #myfile.readline()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ output = stdout.read()
+ data = open(os.path.join(FILE_URL,fname+html))
+ data1 = data.readlines()
+ data2 = data1[72:]
+ data3 = data2[:-3]
+ newdata=""
+ for line in data3:
+        newdata += line.lstrip()
+ ob.content = newdata
+ ob.save()
+
+ return True
+
+def edit_nodetype(iden,rep,usr):
+ nid = NID.objects.get(id = iden)
+ ssid=nid.get_ssid.pop()
+ fname=str(ssid)+"-"+usr
+ refobj = nid.ref
+ refobj.content_org = rep
+ #orgcontent = request.GET["content_org"]
+ ext='.org'
+ html='.html'
+ #usr=str(request.user)
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(refobj.content_org)
+ myfile.close()
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ rfile=myfile.readlines()
+ scontent="".join(rfile)
+ newcontent=scontent.replace("\r","")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+ myfile.write(newcontent)
+
+ myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+TITLE: ")
+ myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+ stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ output = stdout.read()
+ data = open(os.path.join(FILE_URL,fname+html))
+ data1 = data.readlines()
+ data2 = data1[72:]
+ data3 = data2[:-3]
+ newdata=""
+ for line in data3:
+        newdata += line.lstrip()
+ refobj.content= newdata
+ refobj.save()
+ return True
+
+def check_release_or_not(meet_ob):
+ fl = 0
+ for each in meet_ob.subject_of.all():
+ 	if (each.attributetype.title=='release' and each.svalue=='true'):
+          	fl=1
+ return fl
+
+def get_factory_loom_OTs():
+ retlist=[]
+ for each in Objecttype.objects.all():
+	if each.parent:
+		if ((each.parent.title=='Factory_Object') and (str(each.slug)[0:4]=='loom')):
+			retlist.append(each.title)
+ return retlist

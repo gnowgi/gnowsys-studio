@@ -1,0 +1,177 @@
+{% extends "gstudio/base.html" %}
+{% load adminmedia grp_tags %}
+{% load i18n comments gstudio_tags %} 
+{% load tagging_tags comments i18n %}
+ {% block title %}{{ doc.title }}{% endblock %}
+{% block content %}
+<script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "600px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ 
+ $("#graphcss").hide();   
+  });
+jQuery(document).ready(function($) {
+    $("#editcontent").click(function(){
+        isImage=true;
+        document.getElementById('gnoweditor').style.visibility="visible";
+	 $("#gnoweditor").val($("#editortext").val());
+	$("#content img").css({"max-width":"600px",})
+	   
+        
+        $("#gnoweditor").orgitdown(mySettings);
+	<!--document.getElementById('save').style.visibility="visible";-->
+	$("#editcontent").hide();
+		
+	});
+     $("#save").click(function(){
+            var org_data = $("#gnoweditor").val();       
+	    var encode_data = encodeURIComponent(org_data);
+	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
+ 	    $("#commenttext").val(decode_data);
+			   
+	});
+});
+</script>
+</script>
+<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
+<link rel="shortcut icon" href="{{ STATIC_URL }}gstudio/img/favicon.ico" />
+
+
+<br/>
+<form method="post" action="">{% csrf_token %}
+<h2><font color = 'teal'>{{doc.title}}</font></h2>
+<br/>
+<font color = 'black'>Posted By : </font>
+{% for author in doc.authors.all %}
+  <font color = 'teal'>{{author}}</font>
+{% endfor %}
+<br>
+
+<font color = 'black'>Posted At : </font><font color = 'teal'>{{doc.creation_date}}</font>
+<br/>
+<font color = 'black'>Download: </font><a href="{% admin_media_prefix %}img/{{doc.title}}">Click to download!!</a>
+<br>
+<font color = 'black'>Description:</font>
+{%autoescape on%}
+{% with doc.html_content|safe as doc_content %}
+     {{doc_content}}
+{% endwith %}
+{% endautoescape%}
+
+
+
+{% if user.is_authenticated %}
+<input type="hidden" name="docid" value={{doc.id}}>
+<input type="button" id="editcontent" value="Edit"/>
+
+<input type="submit" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
+<input type="hidden" name="contenttext" id="commenttext" style="visibility:hidden" />
+<input type="hidden" id="editortext" style="visibility:hidden" value="{{doc.content_org}}">
+{% endif %}
+</form>
+
+<br/>
+{% ifequal doc.rating.get_rating 0 %}
+
+<font color = 'black'>Current rating is: &nbsp;<font color = 'teal'> No rating yet </font></font>
+{% else %}
+<font color = 'black'>Average Current rating is: &nbsp; <font color = 'teal'> {{ doc.rating.get_rating }} </font></font><br/>
+<font color = 'black'>Total Number of votes is:  &nbsp;<font color='teal'><b>{{ doc.rating_votes }}</b></font> </font>
+{% endifequal %}
+<br>
+{% if user.is_authenticated %}
+<form method="post" action="">
+{% csrf_token %}
+<input name="star1" type="radio" value=1 class="star"/>
+<input name="star1" type="radio" value=2 class="star"/>
+<input name="star1" type="radio" value=3 class="star"/>
+<input name="star1" type="radio" value=4 class="star"/>
+<input name="star1" type="radio" value=5 class="star"/>
+</br>
+<input type="hidden" name="docid" value={{doc.id}}>
+<input type="submit" value="Rate it!!!">
+</form>
+<br/>
+
+<form method="post" action="">{% csrf_token %}
+<input type="hidden" name="docid" value={{doc.id}}>
+<input type="text" value="" name="texttags"  />
+<input type="submit" value="Add Tags" name="addtags" />
+</form>
+{% endif %}
+<br/>
+<div class="tags">
+    <p class="gbobject-tags span-16 last">
+      <strong>{% trans "Tags" %}</strong> :
+      {% tags_for_object doc as tag_list %}
+      {% for tag in tag_list %}
+      <a href="{% url objectapp_tag_detail tag %}"
+         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+      {% empty %}
+      <span>{% trans "No tags" %}</span>
+      {% endfor %}
+    </p>
+</div>
+<br/><br/>
+{% block nodetype-comments %}
+<div id="comments" class="">
+  <h5>{% trans "Comments" %}</h5>
+  {% with doc.comments as comment_list %}
+  {% if comment_list.count %}
+  <ol id="comment-list" class="span-15 last">
+    {% for comment in comment_list %}
+    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in doc.authors.all %} post-author{% endif %} span-15 last">
+      <div class="span-2">
+	<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
+      </div>
+      <div class="comment-body span-13 last">
+	<div class="comment-author span-13 last">
+	  {% if comment.url %}
+	  <a href="{{ comment.url }}" class="fn url" title = "{{ comment.user_name }}">{{ comment.user_name }}</a>
+	  {% else %}
+	  {{ comment.user_name }}
+	  {% endif %}
+	  {% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+	</div>
+	<div class="span-13 last">
+	  {{ comment.comment|linebreaks }}
+	</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+    {% if not doc.comments_are_open %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% else %}
+    {% if doc.comments_are_open %}
+  <p>{% trans "No comments yet." %}</p>
+    {% else %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+
+
+<div class="commentForm span-16 last">
+  {% render_comment_form for doc %}
+</div>
+
+
+
+
+<br>
+<hr width="100%" style="height:5px;" color="black"/>
+<br>
+
+{% endblock %}

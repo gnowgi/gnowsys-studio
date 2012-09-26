@@ -24,9 +24,18 @@
 {% endif %}
 
 {% for object in object_list %}
+	{% ifequal object.title|truncatewords:"3" 'page box of ...' %}
+	
+	{% else %}
+	{% ifequal object.title|truncatewords:"3" 'message box of ...' %}
+	{% else %}
+	
   {% with object.html_content|truncatewords_html:100|safe as object_content %}
   {% include "gstudio/_nodetype_detail.html" %}
   {% endwith %}
+{% endifequal %}
+{% endifequal %}
+
 {% empty %}
 <p class="notice">{% trans "Nothing found." %}</p>
 {% endfor %}

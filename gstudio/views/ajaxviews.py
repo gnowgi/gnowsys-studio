@@ -351,33 +351,41 @@ def AjaxAddContentOrg(request):
 
 
 def AjaxCreateFile(request):
+    usr=str(request.user)
     iden = request.GET["id"]
     orgcontent = request.GET["content_org"]
-    myfile = open('/tmp/file.org', 'w')
-    myfile.write(orgcontent)
+    ext='.org'
+    html='.html'
+    myfile = open(os.path.join('/tmp/',usr+ext),'w')
+    myfile.write(new_ob.content_org)
     myfile.close()
-    myfile = open('/tmp/file.org', 'r')
+    myfile = open(os.path.join('/tmp/',usr+ext),'r')
     myfile.readline()
-    myfile = open('/tmp/file.org', 'a')
+    myfile = open(os.path.join('/tmp/',usr+ext),'a')
     myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
     myfile.write("\n#+TITLE: ")
-    myfile = open('/tmp/file.org', 'r')
+    myfile = open(os.path.join('/tmp/',usr+ext),'r')
     return HttpResponse("test sucess")
 
 def AjaxCreateHtml(request):
-    stdout = os.popen(PYSCRIPT_URL_GSTUDIO)
+    usr=str(request.user)
+    ext='.org'
+    stdout = os.popen("%s %s"%(PYSCRIPT_URL_GSTUDIO,usr+ext))
     output = stdout.read()
     return HttpResponse("sucess")
 
 def AjaxAddContent(request):
+    usr=str(request.user)
+    html='.html'
     iden = request.GET["id"]
     nid = NID.objects.get(id = iden)
     refobj = nid.ref
-    data = open("/tmp/file.html")
+    data = open(os.path.join('/tmp/',usr+html))
     data1 = data.readlines()
-    data2 = data1[67:]
+    data2 = data1[72:]
+    data3 = data2[:-3]
     newdata=""
-    for line in data2:
+    for line in data3:
         newdata += line.lstrip()
     refobj.content= newdata
     refobj.save()

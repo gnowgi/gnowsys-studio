@@ -33,9 +33,10 @@ def topicadd1(request,grpid):
             errors.append('Enter a message.')
         if not errors:
   	     title=request.POST['subject']
- 	     content=request.POST['message']
+ 	     content=unicode(request.POST['message'])
 	     idusr=request.POST['idusr']
-             tp = make_topic_object(title,int(idusr),content)
+             usr=request.POST['usr']
+             tp = make_topic_object(title,int(idusr),content,usr)
              System.objects.get(id=int(grpid)).system_set.all()[0].gbobject_set.add(tp)
              if  tp:
               return HttpResponseRedirect('/gstudio/group/gnowsys-grp/'+grpid)

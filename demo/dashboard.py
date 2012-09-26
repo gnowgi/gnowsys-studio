@@ -96,10 +96,12 @@ class CustomIndexDashboard(Dashboard):
                         column=1,
                         collapsible=False,
                         models=(
-                                'gstudio.models.Objecttype',
-                                'gstudio.models.Attributetype',
-                                'gstudio.models.Relationtype',
                                 'objectapp.models.Gbobject',
+				'objectapp.models.System',
+                            	'gstudio.models.Relation',
+                            	'gstudio.models.Attribute',
+                                
+
                             ),
                         ),
 
@@ -111,10 +113,10 @@ class CustomIndexDashboard(Dashboard):
                         column=1,
                         collapsible=True,
                         models=(
-
+			    'gstudio.models.Objecttype',	
+                            'gstudio.models.Attributetype',
+                            'gstudio.models.Relationtype',
                             'gstudio.models.Metatype',
-                            'gstudio.models.Relation',
-                            'gstudio.models.Attribute',
                             'gstudio.models.Systemtype',
                             'gstudio.models.Processtype',
                             'gstudio.models.AttributeSpecification',
@@ -135,7 +137,7 @@ class CustomIndexDashboard(Dashboard):
                         collapsible=True,
                         models=(
                             'objectapp.models.Process',
-                            'objectapp.models.System',
+                           
                             ),
                         ),
 

@@ -29,11 +29,23 @@ def pageadd(request):
         # if not request.POST.get('org1', ''):
         #      errors.append('Enter a page.')
         if not errors:
-            title=unicode(request.POST['subject'])
+            title=request.POST['subject']
        #     content=request.POST['page']
             content_org=unicode(request.POST['org1'])
             idusr=request.POST['idusr']
-            pageId = create_wikipage(title,int(idusr),content_org)
+            usr = request.POST.get("usr",'')
+            editable= request.POST.get("edit","")
+           # print content_org,"content"
+            
+            if editable=='edited':
+                
+                #if id_no:
+                edit_section(idusr,content_org,usr)
+               # elif id_no1:
+                #    edit_section(id_no1,rep)
+
+
+            pageId = create_wikipage(title,int(idusr),content_org,usr)
             if pageId :
                 return HttpResponseRedirect('/gstudio/page/gnowsys-page/'+ str(pageId))
     variables = RequestContext(request,{'errors' : errors, 'pageId' : pageId})

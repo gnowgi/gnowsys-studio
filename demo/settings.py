@@ -29,6 +29,8 @@ DATABASES = {'default':
              }
 
 STATIC_URL = '/static/'
+RECAPTCHA_PUBLIC_KEY = '6LcBr9USAAAAAJNHxpA5_2nQK9JnKQCU3kTUstEK'
+RECAPTCHA_PRIVATE_KEY = '6LcBr9USAAAAABYW6VgsQeupDHy2R42G4aGsHxXr'
 
 MEDIA_URL = '/static'
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
@@ -40,6 +42,7 @@ MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../demo/media')
 PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
 PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
 VIDEO_PANDORA_URL = os.getenv("HOME")+"/.ox/client.json"
+FILE_URL = os.path.join(os.path.dirname(__file__), '/tmp/beta/')
 FILE_UPLOAD_MAX_MEMORY_SIZE= 524288000
 JPEG_ROOT = None
 
@@ -57,7 +60,7 @@ SITE_ID = 1
 
 LANGUAGE_CODE = 'en'
 
-GRAPPELLI_ADMIN_TITLE = '<a href="/nodetypes/" title="Gnowledge Studio">Gnowledge Studio</a>'
+GRAPPELLI_ADMIN_TITLE = '<a href="/" title="Gnowledge Studio">Gnowledge Studio</a>'
 
 GRAPPELLI_INDEX_DASHBOARD = "demo.dashboard.CustomIndexDashboard"
 
@@ -158,10 +161,10 @@ INSTALLED_APPS = (
     )
 
 
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+#if DEBUG:
+#    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 
-from gstudio.xmlrpc import GSTUDIO_XMLRPC_METHODS
-XMLRPC_METHODS = GSTUDIO_XMLRPC_METHODS
+#from gstudio.xmlrpc import GSTUDIO_XMLRPC_METHODS
+#XMLRPC_METHODS = GSTUDIO_XMLRPC_METHODS
 

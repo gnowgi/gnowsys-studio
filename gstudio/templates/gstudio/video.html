@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load adminmedia grp_tags %}
 {% load i18n comments gstudio_tags %}
-
+ {% block title %}Videos{% endblock %}
 {% block content %}
 <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
@@ -21,9 +21,10 @@ $(window).load(function() {
 var i = 0;
 jQuery(document).ready(function($) {
     $("#commenteditor").click(function(){
+        isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
-	document.getElementById('save').style.visibility="visible";
+	<!--document.getElementById('save').style.visibility="visible";-->
 	$("#commenteditor").hide();
 		
 	});
@@ -74,7 +75,7 @@ background: green;
 }
 </style>
 
-{% if user.is_authenticated %}
+
 
 {% autopaginate vids 10 %}
 
@@ -99,16 +100,22 @@ background: green;
 <input type="submit" name="spe" value="Search by User">
 </form>
 <br>
+{% if user.is_authenticated %}
 <form method="post" action="/gstudio/resources/videos/">
 {% csrf_token %}
 <input type="hidden" name="user" value={{user.username}}>
 <input type="submit" name="fav" value="View Favourites">
 </form>
+{% endif %}
 </div>
+
+{% if user.is_authenticated %}
 <div id="divpost">
 <form enctype="multipart/form-data" method="post" action="">
 {% csrf_token %}
-<p><h4 style="color: black;">Submit Videos:</h4>Video:&nbsp;<input type="file" name="clip" multiple="multiple" /></p><br/>
+<p><h4 style="color: black;">Submit Videos:</h4>
+Title:&nbsp; <input type="text" name="title1"><br/><br/>
+Video:&nbsp;<input type="file" name="clip" multiple="multiple" /></p><br/>
 Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Content" >
 <input type="button" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
 <input type=text name="contenttext" id="commenttext" style="visibility:hidden" />
@@ -144,7 +151,9 @@ document.getElementById('headvideo').style.visibility="visible";
 </script>
 </form>
 </div>
+{% endif %}
 </div>
+
 
 <br/>
 <br/>
@@ -152,11 +161,17 @@ document.getElementById('headvideo').style.visibility="visible";
 <br/>
 <br/>
 <br/>
+{% if reportid %}
+<h2><font color="red">this image is already uploaded on this site</font></h2>
+<a href="/gstudio/resources/images/show/{{ reportid }}/"> <font size="4">to see this image click here</font></a><br/><br/><br/>
+{% endif %}
 <h2 id="headvideo" style="visibility:hidden;">Processing And Uploading Video</h2>
 <div id="showingprocess" style="visibility:hidden;">
 <div id="inner">
 </div>
 </div>
+
+
 {% if fav %}
 <h2 style="color: teal;">Favourite Videos</h2><br/>
 {% else %}
@@ -180,7 +195,7 @@ document.getElementById("divvideo").setAttribute("id","div2");
 }
 
 </script>
-<font size="4">{{video.title}}</font>
+<font size="4">{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}</font>
 <form enctype="multipart/form-data" method="post" action="" target="_blank">
 {% csrf_token %}
 <input type="hidden" name = "full" value ={{video.slug}}>
@@ -243,11 +258,7 @@ document.getElementById("divvideo").setAttribute("id","div2");
 
 </div>
 <br>
-{% else %}
- 
-<h2 style="color: indigo;">Sorry you need to log in to see this content !</h2>
- 
-{% endif %}
+
 <h2>
 {% paginate %}</h2>
 

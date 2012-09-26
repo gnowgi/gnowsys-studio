@@ -20,5 +20,5 @@ from django.conf.urls.defaults import patterns
 urlpatterns = patterns('gstudio.views.docu',
                        url(r'^$', 'docu',
                            name='docu'),
-
+		       url(r'show/(\d+)/$','show',name='showdocument'),
                        )

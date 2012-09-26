@@ -1,18 +1,24 @@
 {% extends "gstudio/base.html" %}
 {% load gstudio_tags %}
-{% load i18n %}
-{% block content %}
+{% load pagination_tags %}
+{% load adminmedia grp_tags %}
+{% load i18n comments gstudio_tags %} 
+{% load tagging_tags comments i18n %}
 
+{% block content %}
 <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" >
       $(window).load(function() {
       $("#content").css({
-    "width": "1000px",});});
+    "width": "620px",});});
 $(window).load(function() {
  $("#chart").hide();});
 $(window).load(function() {
  
- $("#graphcss").hide();   
+ $("#graphcss").hide();
+$(".savecontent").hide();   
+$(".submitresponse").hide();
+$("#editthreadsave").hide();
   });
 var i=0;
 </script>
@@ -27,40 +33,83 @@ var i=0;
 }
 </style>
 
-{% if user.is_authenticated %}
+
 <!--   <input type="button" value="Home" onClick="location.href='/gstudio/user/{{user.username}}';">
   <h>Hello Welcome to the {{ meet_ob.title }}</h></br> -->
-	<h3> {{admin_m.username}}'s initial twist to the thread</h3>
+	<font size ="3" > {{admin_m.username}}'s initial twist to the thread</font>
 
   <!--  <h>You are logged in as <font color="blue">{{user.username}}</font></h> -->
          </br>
-   {%if flag %}
-   <div id="Release">
+  
+<h2>{{meet_ob.title}}</h2>
+{% with meet_ob.html_content|safe as meet_ob_content %}
+<font size ="3" >{{meet_ob_content}} </font>
+{% endwith %}
+{% if user.is_authenticated %}
+<form method="post" action=".">{% csrf_token %}
+<input type="hidden" id="threadid" value={{meet_ob.id}} style="visibility:hidden;" name="editiden">
+<input type="hidden" id="threadedit{{meet_ob.id}}" style="visibility:hidden;" name="editval">
+<input type="hidden" id="threadcontent{{meet_ob.id}}" value="{{meet_ob.content_org}}" style="visibility:hidden;" name="editcont">
+<input type="button" id="threadorg" value={{meet_ob.title}} style="visibility:hidden;" name="edittitle">
+<br/>
+<input type="button" id="threadedit" value="Edit">
+<input type="button" id="editthreadsave" value="Save">
+<input type="submit" id="subeditresp" value=Submit" style="visibility:hidden;"></br>
+</form>
+
+
+{% if flag %}
+{% check_release meet_ob as release %}
+{% if not release %}
+   <div id="Release"> 
    <form method="post" action=".">{% csrf_token %}
-   <input type="submit" value="Release Replies">
+   <input type="submit" value="Release responses">
        <input type="hidden" value="hits" name = "release">
    </form>
    </div>
+{% else %}
    <div>
    <form method="post" action=".">{% csrf_token %}
-   <input type="submit" value="Block Replies">
+   <input type="submit" value="Block responses">
        <input type="hidden" value="hits" name = "block">
    </form>
    </div>
    {% endif %}
    </br>
+{% endif %}
 
+ <form method="post" action="">{% csrf_token %}
+       	 <input type="hidden" name="docid" value={{meet_ob.id}}>
+       	 <input type="text" class="tagtext" value="" name="texttags"  />
+       	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
+       </form>
+	
+       <br>
+       <div class="tags">
+       	 <p class="gbobject-tags span-16 last">
+       	   <strong>{% trans "Tags" %}</strong> :
+       	   {% tags_for_object ot as tag_list %}
+       	   {% for tag in tag_list %}
+       	   <a href="{% url objectapp_tag_detail tag %}"
+              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+       	   {% empty %}
+       	   <span>{% trans "No tags" %}</span>
+       	   {% endfor %}
+       	 </p>
+       </div>
 
+	<br/>
 	<form method="post" action=".">{% csrf_token %}
       <!--  <input type="hidden" value="{{meet_ob.id}}" name = "meetid">-->
-	<input type="button" value="Add your twist" onClick="location.href='topicadd1/{{meet_ob.id}}';">
+	<input type="button" id="twistaddbtn" value="Add your twist" onClick="location.href='topicadd1/{{meet_ob.id}}';">
         </form>
-<!-- direct link to identica
+{% endif %}
+<!-- direct link to identica 
 <a href="http://www.addtoany.com/add_to/identi_ca?linkurl=ur url&linkname={{post}} via" ><img src="http://www.tildehash.com/identishare/share.png" ></img></a>
-
+-->
 <!-- Twitter syndicating button 
 <a href="https://twitter.com/share" class="twitter-share-button"  data-url="https://127.0.0.1:8000/chat/" data-via="{{user.title}}" data-lang="en" data-text="{{post}}" data-related="anywhereTheJavascriptAPI" data-count="none">Tweet</a>
-
+-->
 <!-- Diaspora syndicating button 
 <script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
 <input id="diasporacontent" value="{{post}}" type="hidden" name="diaspora"></input>
@@ -70,7 +119,7 @@ var i=0;
 -->
 </br>   {% autoescape off %}
    {% for each in topic %}
-      	<h4><font size="5" color="red">{{each.title}}</font></h4>
+      	<h4><font size="5" >{{each.title}}</font></h4>
       		Posted on : {{each.creation_date}}
 		by : 
    		{% for author in each.authors.all %} 
@@ -79,22 +128,38 @@ var i=0;
      		<!-- Current rating is <h5>{{ each.rating.get_rating }}</h5> -->
    	{%autoescape on%}
 		{% with each.html_content|safe as each_content %}
-		<font color="green"> {{each_content}} </font>
+		<font size ="3" > {{each_content}} </font>
 		{% endwith %}
 	{% endautoescape%}
+	<div>
 	<form method="post" action=".">{% csrf_token %}
                 
-    		<input type="text" class="reptext" name = "reply" style="display:none">
+    		<input type="hidden" class="reptext" id="topictext{{ each.id }}" name = "reply" style="display:none">
+	<input type="hidden" id="hidden{{ each.id }}" value="{{ each.id }}" name ="hiddenid">
+		 <input type="hidden" id="commentdata{{each.id}}" value="{{each.content_org}}">
+	        <input type="hidden" value={{user.username}} name = "usr">
     		<input type="hidden" value="{{each.id}}" name = "iden">
 	    	<input type="hidden" value="{{user.id}}" name = "idusr">
-<br/><br/><br/>
-		 <input type="button" class="editor" id="{{each.id}}"  value="Add a Fiber">
-                <input type="button" class="savecontent" id="{{each.id}}"  value="Save">
+<br/>			{% if user.is_authenticated %}
+		 <input type="button" class="editor" id="{{ each.id }}" value="Add Response"/>
+		 <input type="hidden" class="editval" id="edit{{each.id}}" name="edit" value="empty">
+                <input type="button" class="savecontent" id="save{{ each.id }}" value="Save" onclick="topicsaveclick(document.getElementById('hidden{{ each.id }}').value)"><br/>
+               <input type="button" class="editcontent" name="{{each.content_org}}"  id="{{each.id}}" value="Edit">
+	        <input type="submit" class="submitresponse" id="topicsubmit{{ each.id }}" value="Submit"></br>
+			{% endif %}
+		{% ifequal user.id admin_id %}		
+		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
+		{% else %}
+   		{% for author in each.authors.all %} 
+   			{% ifequal user.id author.id %}
+		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
+			{% endifequal %}
+   		{% endfor %}
 
-	        <input type="submit" value="Submit"></br>
-		<input name="del_topic" type="checkbox" value="delete_topic"/>
-  		<input type="submit" value="Delete the twist"></br>
-
+		{% endifequal %}
+  
          <!--	Rate this ? </br>
 		<input name="star1" type="radio" value=1 class="star"/>
 		<input name="star1" type="radio" value=2 class="star"/>
@@ -104,9 +169,32 @@ var i=0;
 		<!--topic id and user id hidden fields
 		</br>
 		<input type="submit" value="Rate it!!!">  -->
-         </form>   
+         </form>
+	</div>   
+	{% if user.is_authenticated %}
+ <form method="post" action="">{% csrf_token %}
+       	 <input type="hidden" name="docid" value={{each.id}}>
+       	 <input type="text" class="tagtext" value="" name="texttags"  />
+       	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
+       </form>
+	
+       <br>
+       <div class="tags">
+       	 <p class="gbobject-tags span-16 last">
+       	   <strong>{% trans "Tags" %}</strong> :
+       	   {% tags_for_object each as tag_list %}
+       	   {% for tag in tag_list %}
+       	   <a href="{% url objectapp_tag_detail tag %}"
+              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+       	   {% empty %}
+       	   <span>{% trans "No tags" %}</span>
+       	   {% endfor %}
+       	 </p>
+       </div>
+	{% endif %}
+	<br/>
         <p>
-	 Fibers :
+	 Responses :
 	<!--	<div id="main">
 	<div id="sidetree">
 	<div class="treeheader">&nbsp;</div>
@@ -118,8 +206,6 @@ var i=0;
 	The discussion freezes at {{endtime}}
 {% endautoescape %}
 
-{% else %}
-  <h1> <p style = "color :red;">OOPS!!! Login Please!</p></h1>
-{% endif %}
+
 {% endblock %}
 

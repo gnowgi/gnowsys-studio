@@ -96,17 +96,36 @@ def get_this_nodes_uri(name):
 
 
 @register.inclusion_tag('objectapp/tags/dummy.html')
-def get_authors(template='objectapp/tags/authors.html'):
+def get_authors(number=5, template='objectapp/tags/authors.html'):
     """Return the published authors"""
     return {'template': template,
-            'authors': Author.published.all()}
+            'authors': Author.published.all()[:number]}
 
 
 @register.inclusion_tag('objectapp/tags/dummy.html')
 def get_recent_gbobjects(number=5, template='objectapp/tags/recent_gbobjects.html'):
+    i = 0
+    j = 0
+    a = 12
+    gb =  Gbobject.published.all()[:60]
+    for objects in gb:
+        varobj = str(objects.ref.get_nbh['member_of'])
+        if 'page box of' in objects.title:
+            i = i + 1
+        elif 'message box of' in objects.title:
+             i = i + 1
+        elif "[<Nodetype: OT: Video>]" == varobj:
+             i = i + 1
+	else:
+	     j = j + 1 
+        
+        if j == 12:
+	   break 	 
+    
+  
     """Return the most recent gbobjects"""
     return {'template': template,
-            'gbobjects': Gbobject.published.all()[:number]}
+            'gbobjects': Gbobject.published.all()[:a + i]}
 
 
 @register.inclusion_tag('objectapp/tags/dummy.html')

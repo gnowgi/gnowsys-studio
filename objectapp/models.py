@@ -155,6 +155,7 @@ class Gbobject(Node):
     base.  System and Process classes also inherit this class.
     """
 
+
     STATUS_CHOICES = ((DRAFT, _('draft')),
                       (HIDDEN, _('hidden')),
                       (PUBLISHED, _('published')))
@@ -208,6 +209,54 @@ class Gbobject(Node):
     rurl=models.URLField(_('rurl'),verify_exists=True,null=True, blank=True)
     objects = models.Manager()
     published = GbobjectPublishedManager()
+
+    @property
+    def getthread_of_response(self):
+        """                                                                                                                          
+        Returns the thread corresponding to a reply(response)"                                                                       
+        """
+        obj=self
+        try:
+            loop=True
+            while loop:
+                obj=obj.prior_nodes.all()[0]
+            if not obj.prior_nodes.all():
+                    loop=False
+            return obj.getthread_of_twist
+        except:
+            return None
+
+    @property
+    def gettwist_of_response(self):
+        """                                                                                                                          
+        Returns twist of a response(reply)                                                                                           
+        """
+        obj=self
+        try:
+            loop=True
+            while loop:
+                obj=obj.prior_nodes.all()[0]
+                if not obj.prior_nodes.all():
+                    loop=False
+            return obj
+        except:
+            return None
+    @property
+    def getthread_of_twist(self):
+        """                                                                                                                          
+        Returns thread of a twist                                                                                                    
+        """
+        try:
+            obj=self
+            for each in System.objects.all():
+                if each.system_set.all():
+                    sys_set=each.system_set.all()[0]
+                    for eachsys in sys_set.gbobject_set.all():
+                        if eachsys==self:
+                            return each
+        except:
+            pass
+
 
         
     @property
@@ -319,7 +368,7 @@ class Gbobject(Node):
             if relation.relationtype.title not in rel_dict['left-subjecttypes'].keys():
                 # create a new list field and add to it
                 rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = []
-            # add 
+            # add
             rel_dict['left-subjecttypes'][str(relation.relationtype.title)].append(relation) 
 
         for relation in right_relset:
@@ -328,7 +377,49 @@ class Gbobject(Node):
                 # create a new list key field and add to it
                 rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = []
                 # add to the existing key
+            
             rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].append(relation)
+
+        relation_set.update(rel_dict['left-subjecttypes'])
+        relation_set.update(rel_dict['right_subjecttypes'])
+        
+        return relation_set
+    def get_relations_for_view(self):
+        relation_set = {}
+        # ALGO to find the relations and their left-subjecttypes and right_subjecttypes
+        # 1. Get the relations containing a reference to the object. Retrieve where it occurs (left or right)
+        # 2. Find out which RT they come from.
+        # 3. For each RT, create a dict key and a value as a dict. And add the relation as a new key-value pair (rid:subject).
+        # 4. If self is in right value, then add inverse relation as RT and add the relation as a new key-value pair (rid:subject).
+
+        left_relset = Relation.objects.filter(left_subject=self.id) 
+        right_relset = Relation.objects.filter(right_subject=self.id) 
+        
+        #return left_relset + right_relset
+
+        # RT dictionary to store a single relation
+        rel_dict ={}
+        rel_dict['left-subjecttypes'] = {}
+        rel_dict['right_subjecttypes'] ={}
+
+               
+        for relation in left_relset:
+            # check if relation already exists
+            if relation.relationtype.title not in rel_dict['left-subjecttypes'].keys():
+                # create a new list field and add to it
+                rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = []
+            # add
+            obj=Gbobject.objects.get(id=relation.right_subject_id)
+            rel_dict['left-subjecttypes'][str(relation.relationtype.title)].append(obj.title) 
+
+        for relation in right_relset:
+            # check if relation exists
+            if relation.relationtype.inverse not in rel_dict['right_subjecttypes'].keys():
+                # create a new list key field and add to it
+                rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = []
+                # add to the existing key
+            obj=Gbobject.objects.get(id=relation.left_subject_id)
+            rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].append(obj.title)
 
         relation_set.update(rel_dict['left-subjecttypes'])
         relation_set.update(rel_dict['right_subjecttypes'])
@@ -341,6 +432,8 @@ class Gbobject(Node):
         attributes_dict =  {}
         all_attributes=self.subject_of.all()
         for attributes in all_attributes:
+            atype=attributes.attributetype.subtypeof()
+            if not (atype=='Factory_Object' or atype=='factory_object') :
                 val=[]
         	atr_key=attributes.attributetype.title
                 val.append(attributes.svalue)
@@ -439,7 +532,10 @@ class Gbobject(Node):
         nbh['content'] = self.content
         #return  all OTs the object is linked to
         nbh['member_of'] = self.objecttypes.all()
-        
+        nbh['prior_nodes'] = self.prior_nodes.all()
+
+        nbh['posterior_nodes'] = self.posterior_nodes.all()
+
         # get all the relations of the object    
         nbh.update(self.get_relations())
         nbh.update(self.get_attributes())
@@ -481,7 +577,7 @@ class Gbobject(Node):
                         
                         g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 
-                        if not isinstance(nbh[key],basestring) and len(nbh[key])<=2:
+                        if not isinstance(nbh[key],basestring) and len(nbh[key])<=10:
                             for item in nbh[key]:
                                 if isinstance(item,unicode):
                                     g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":str(item)})
@@ -861,7 +957,61 @@ class Gbobject(Node):
     def save_revert_or_merge(self, *args, **kwargs):
         if OBJECTAPP_VERSIONING:
             with reversion.create_revision():
-                super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.        
+                super(Gbobject, self).save(*args, **kwargs) # Call the "real" save() method.     
+
+    @property
+    def get_view_object_url(self, *args, **kwargs):
+	def show_systemobjecturl(object_id):
+    		search=object_id    
+    		nbh=""
+	    	url=""
+    		for each in System.objects.all():
+    		    sysid=each.id
+    		    for eachsys in each.systemtypes.all():
+    		        if eachsys.title=="Meeting":
+    		            url="group/gnowsys-grp/"
+			    objecttitle = "TWIST"
+    		        elif eachsys.title=="Wikipage":
+    		            url="page/gnowsys-page/"
+			    objecttitle = "WIKIPAGE"
+    		    for eachob in each.system_set.all():
+    		        if eachob.gbobject_set.all():
+    		            for eachgbob in eachob.gbobject_set.all():
+    		                if search==eachgbob.id:
+    		                    nbh=url+str(sysid)
+            	
+    		    if search==sysid:
+    		        nbh=url+str(sysid)
+    			   
+    		return nbh
+
+	objmem = self.get_nbh['member_of']
+	objectname = ""
+	objstr = str(objmem)
+	if objstr != '[]':
+	   objectname = objmem[0].title
+	if objectname == "Image":
+	    return '/gstudio/resources/images/show/'+ str(self.id)
+	elif objectname == "Document":
+	    return '/gstudio/resources/documents/show/'+str(self.id)
+	elif objectname == "Video":
+	    return '/gstudio/resources/videos/show/'+str(self.id)
+	elif objectname == "Topic":
+	    return '/gstudio/'+show_systemobjecturl(self.id)
+	elif objectname == "Section":
+	    return '/gstudio/'+show_systemobjecturl(self.id)
+	elif objectname == "Subsection":
+	    return '/gstudio/'+show_systemobjecturl(self.id)
+	elif objectname == "Reply":
+	    tes = self.gettwist_of_response
+	    systes = tes.getthread_of_twist
+	    return '/'+systes.get_view_url
+	else:
+	    show=show_systemobjecturl(self.id)
+	    if show != "":
+		return '/gstudio/'+show
+	    else:
+		return self.get_absolute_url   
 
     class Meta:
         """Gbobject's Meta"""
@@ -878,7 +1028,6 @@ class Process(Gbobject):
     """
     A store processes, events or changes described as changes in attributes and relations
     """
-
     processtypes = models.ManyToManyField(Processtype, verbose_name=_('member of process type'),
                                           related_name='member_processes',
                                           blank=True, null=True)
@@ -973,7 +1122,13 @@ class System(Gbobject):
 		super(System, self).save(*args, **kwargs) # Call the "real" save() method.
 
         
-
+    @property
+    def get_view_url(self, *args, **kwargs):
+	stype = self.systemtypes.all()[0]
+	if stype.title == 'Meeting':
+	    return 'gstudio/group/gnowsys-grp/' + str(self.id)
+	else:
+	    return 'gstudio/page/gnowsys-page/' + str(self.id)
 
     def __unicode__(self):
         return self.title

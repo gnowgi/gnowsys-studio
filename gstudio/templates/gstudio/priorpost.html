@@ -1,0 +1,68 @@
+{% load gstudio_tags %}
+{% load i18n %}
+<script type="text/javascript" >
+
+var availableObjects = [];
+$.merge(availableObjects, {% get_pri_post_page %})
+
+jQuery(document).ready(function($) { 
+$("#addpriorpost").click(function(){
+     
+var data 
+data = $("#priorpage").attr('value');
+$.ajax({
+url: '/gstudio/resources/images/addpriorpost/',
+//type:"POST",
+data: {title:data,titleid:{{objectid}}},
+success: function(data){
+$('#priorpostpages').html(data);
+
+}
+});  
+$("#priorpage").val("");
+});
+});
+
+$(document).ready(function(){
+$( "#priorpage" ).autocomplete({
+source: availableObjects
+});
+});
+
+</script>
+
+<div id = "priorpostpages">
+<br/>
+<strong>Prior Pages:</strong>
+{% for each in priorgbobject %}
+<a href="{{each.get_view_object_url}}">{{each}}</a>
+{% if not forloop.last %},{% endif %}
+{% empty %}
+ <span>No prior page</span>
+{% endfor %}
+<br/>
+<strong>Posterior Pages:</strong>
+{% for each in posteriorgbobject %}
+<a href="{{each.get_view_object_url}}">{{each}}</a>
+{% if not forloop.last %},{% endif %}
+{% empty %}
+ <span>No Posterior Page</span>
+{% endfor %}
+<br/>
+</div>
+
+{% if user.is_authenticated %}
+<!-- <form method="get" action=""> -->{% csrf_token %}
+
+<input type="hidden" name="docid" value={{objectid}}>
+<input id="priorpage"  class="tagpriorpage" name="textpriorpage">
+<input type="button" class="priorpost" id="addpriorpost" value="Add Prior Page" name="addtags" />
+<br/><br/>
+<!-- <input type="button" id="titleeditcontent" name="" value="Edit a title"/>
+<input type="text" value="" name="texttags" id="texttagtitle" style="visibility:hidden" /> 
+<input type="button" class="titlecommentsavecontent" id="titlesave" value="Save" style="visibility:hidden" />
+<input type="hidden" name="titlecontenttext" id="titlecommenttext" style="visibility:hidden" />
+<input type="hidden" id="titleeditortext" style="visibility:hidden" value="{{ objecttitle }}">
+<!-- </form> -->
+{% endif %}
+

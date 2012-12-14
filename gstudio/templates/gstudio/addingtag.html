@@ -1,0 +1,82 @@
+{% load gstudio_tags %}
+{% load tagging_tags comments i18n %}
+
+<script type="text/javascript" >
+var availableTags = [];
+$.merge(availableTags, {% get_add_tag %})
+
+
+jQuery(document).ready(function($) { 
+$(".tag{{objectid}}").click(function(){
+data = $("#tags{{objectid}}").attr('value');
+$.ajax({
+url: '/gstudio/resources/images/addtag/',
+//type: 'POST',
+data: {objectid:{{objectid}},data:data},
+success: function(data){
+$('.tags{{objectid}}').html(data);
+
+}
+});  
+$("#tags{{objectid}}").val("");
+});
+
+/*$(".deletetags").click(function(){
+tagname = $(this).attr('value');
+
+$.ajax({
+url: '/gstudio/resources/images/deletetag/',
+//type: 'POST',
+data: {objectid:{{objectid}},data:tagname},
+success: function(data){
+$('.tags{{objectid}}').html(data);
+}
+});  
+
+});*/
+});
+function tagfunction(arr,id){
+tagname = arr;
+$.ajax({
+url: '/gstudio/resources/images/deletetag/',
+//type: 'POST',
+data: {objectid:id,data:tagname},
+success: function(data){
+$('.tags'+id).html(data);
+}
+});  
+
+}
+</script>	
+
+<div class="tags{{objectid}}">
+       	 <!-- <p class="gbobject-tags span-16 last"> -->
+       	   <strong>{% trans "Tags" %}</strong> :
+       	   {% tags_for_object viewtag as tag_list %}
+       	   {% for tag in tag_list %}
+       	   <a href="{% url objectapp_tag_detail tag %}"
+              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+{% if user.is_authenticated %}
+	   <a class="deletetags" value="{{tag}}" title="delete {{tag}}" onclick='tagfunction("{{tag}}","{{objectid}}");' ><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/></a>
+{% endif %}
+   	   {% if not forloop.last %},{% endif %}
+       	   {% empty %}
+       	   <span>{% trans "No tags" %}</span>
+       	   {% endfor %}
+<!--       	 </p> -->
+       </div>
+	{% if user.is_authenticated %}
+	<script type="text/javascript" >
+	$(document).ready(function(){
+        $( "#tags{{objectid}}" ).autocomplete({
+            source: availableTags
+        });
+ 	});
+	</script>
+{% csrf_token %}
+       	 <input type="hidden" name="docid" value={{objectid}}>
+       	<!-- <input type="text" class="tagtext" value="" name="texttags"  />-->
+	<input id="tags{{objectid}}"  class="tagtext" name="texttags">
+       	 <input type="button" class="tag{{objectid}}" value="Add Tags" name="addtags" />
+	 <br>
+	{% endif %}

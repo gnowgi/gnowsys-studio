@@ -1,0 +1,76 @@
+{% load gstudio_tags %}
+<script type="text/javascript">
+var availableobjs = [];
+$.merge(availableobjs, {% get_available_objects %})
+var availablerts=[]
+$.merge(availablerts, {% get_available_rts %})
+$(document).ready(function(){
+        $("#res_relation").autocomplete({
+            source: availablerts
+        });
+        $("#res_object").autocomplete({
+            source: availableobjs
+        });
+$("#addreln").click(function(){
+alert("Please wait till the relation is shown in the existing relations...");
+var ajurl ="/gstudio/resources/addreln/thread/"+{{meetingob.id}}
+
+var res_reln = $("#res_relation").val()
+var res_obj= $("#res_object").val()
+if (res_reln == "" || res_obj == "" )
+{  alert("Please select relation and right object");
+}
+else
+{
+$.ajax({
+       url: ajurl,
+       data: {relnobj:res_reln,obobject:res_obj},
+       success: function(data){
+
+                $('#res_relation').val("");
+                $('#res_object').val("");
+                alert("Added relation");
+	        $('#relndiv').html(data);
+
+			   }
+});
+}
+});
+});
+function target_popup(form) {
+    window.open('', 'formpopup', 'left=360,width=500,height=300,resizeable,scro\
+llbars');
+    form.target = 'formpopup';
+
+
+           }
+
+</script>
+<div id="relndiv">
+<br/>
+
+<b>Existing Relations for this page: </b>
+        {% if not meetingob.get_relations_for_view.items %}
+            No relations
+        {% endif %}
+        {% for key,value in meetingob.get_relations_for_view.items %}
+        {{key}} -
+        {% for rel in value %}
+        {{rel}};
+        {% endfor %}
+        {% endfor %}
+
+</div>
+<form method="post" action=""> {% csrf_token %}
+Select/Add a Relationtype: <nbsp>
+<input value="" name="textreln" id="res_relation">
+<!--
+<a href="/admin/gstudio/relationtype/add" class="add-another" id="add_id_{{ field }}" onclick="return showAddAnotherPopup(this);">
+-->
+<a href="/gstudio/resources/addreln/form/{{meetingob.id}}" class="add-another" id="addrel" onclick="target_popup(this)">
+<img width="10" height="10" alt="Add Another" src="/static/grappelli/img/admin/icon_addlink.gif">
+</a>
+Select an object: <nbsp>
+<input value="" name="textobj" id="res_object">
+<input type="button" id="addreln" name="" value="Add Relation">
+</form>

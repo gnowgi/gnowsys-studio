@@ -1,0 +1,34 @@
+{% load tagging_tags comments i18n %}
+{% ifequal optionpriorpost "priorpost" %}
+<br/>
+<strong>Prior Pages:</strong>
+{% for each in priorgbobject %}
+<a href="{{each.get_view_object_url}}">{{each}}</a>
+{% if not forloop.last %},{% endif %}
+{% empty %}
+ <span>No prior page</span>
+{% endfor %}
+<br/>
+<strong>Posterior Pages:</strong>
+{% for each in posteriorgbobject %}
+<a href="{{each.get_view_object_url}}">{{each}}</a>
+{% if not forloop.last %},{% endif %}
+{% empty %}
+ <span>No Posterior Pages</span>
+{% endfor %}
+<br/>
+{% endifequal %}
+{% ifequal optiontag "tag" %}
+	<strong>{% trans "Tags" %}</strong> :
+	{% tags_for_object viewtag as tag_list %}
+	{% for tag in tag_list %}
+	<a href="{% url objectapp_tag_detail tag %}"
+	   title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+	<a  class="deletetags" value="{{tag}}" title="delete {{tag}}" onclick='tagfunction("{{tag}}","{{objectid}}");'><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/></a>
+	{% if not forloop.last %},{% endif %}
+	{% empty %}
+	<span>{% trans "No tags" %}</span>
+	{% endfor %}
+	
+{% endifequal %}
+

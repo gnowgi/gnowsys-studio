@@ -5,7 +5,7 @@
 {% load pagination_tags %}
 {% load i18n objectapp_tags %}
 {% load tagging_tags comments i18n %}
-
+{% block title %}{{ page_ob.title }}{% endblock %}
 <!-- {% load i18n %} -->
 {% block content %}
 <style>
@@ -14,6 +14,8 @@
 </style>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" >
+var availableTags = [];
+$.merge(availableTags, {% get_add_tag %})
       $(window).load(function() {
       $("#content").css({
     "width": "1000px",});});
@@ -43,11 +45,11 @@ $(".savesubsec1").hide();
 
 {% autopaginate section 1 %}
    <!-- <input type="button" value="Home" onClick="location.href='/gstudio/user/wikipage/{{user.username}}';"> -->
-   <h1>{{ page_ob.title }}</h1> 
+   <h1 style="line-height:0.5">{{ page_ob.title }}  {% if user.is_authenticated %} {% edit_title page_ob.id page_ob.title %} {% endif %}</h1> 
   Wikipage posted on : {{page_ob.creation_date}}
 		by {% for author in page_ob.authors.all %} 
    			{{author}}
-   		{% endfor %}</br></br>
+   		{% endfor %} &nbsp;[ <a href="{{ page_ob.get_absolute_url }}" title="{{ page_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;</br></br>
 
    {% with page_ob.html_content|safe as page_ob_content %}
    <font size="3"> 
@@ -64,37 +66,51 @@ $(".savesubsec1").hide();
 	<input type="button" class="savepagecontent" name="{{page_ob.id}}" value="Save"/></br>
 	<input type="submit" class="pagedit" value="Submit"/>
        </form>
+        {% endif %}
+	<!-- Add relations for a page -->
+        
+	{% add_res_relation page_ob %}
+	<br/>
 	
-       <form method="post" action="">{% csrf_token %}
-       	 <input type="hidden" name="docid" value={{page_ob.id}}>
-       	 <input type="text" class="tagtext" value="" name="texttags"  />
-       	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
-       </form>
-	{% endif %}
-       <br>
-       <div class="tags">
-       	 <p class="gbobject-tags span-16 last">
-       	   <strong>{% trans "Tags" %}</strong> :
-       	   {% tags_for_object ot as tag_list %}
-       	   {% for tag in tag_list %}
-       	   <a href="{% url objectapp_tag_detail tag %}"
-              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-       	   {% empty %}
-       	   <span>{% trans "No tags" %}</span>
-       	   {% endfor %}
-       	 </p>
-       </div>
-	</br>
+
+	<!--ADDING PRIOR PAGE-->
+	{% addpriorpost page_ob.id user %}
+	<!--ADDING AND DISPLAY TAG-->
+	{% addtag ot page_ob.id user %}
+
+	 {% ifequal document.rating.get_rating 0 %}
+
+	 <font color = 'black'>Current rating is: &nbsp;<font > No rating yet </font></font>
+	 {% else %}
+	 <font color = 'black'>Average Current rating is: </font><h4>{{ page_ob.rating.get_rating }}</h4>
+	 <font color = 'black'>Total Number of votes is:  &nbsp;<font ><b>{{ page_ob.rating_votes }}</b></font> </font>
+	 {% endifequal %}
+	 <br>
+	 {% if user.is_authenticated %}
+	 <form method="post" action="">
+	   {% csrf_token %}
+	   <input name="star1" type="radio" value=1 class="star"/>
+	   <input name="star1" type="radio" value=2 class="star"/>
+	   <input name="star1" type="radio" value=3 class="star"/>
+	   <input name="star1" type="radio" value=4 class="star"/>
+	   <input name="star1" type="radio" value=5 class="star"/>
+     </br>
+     <input type="hidden" name="iden" value={{page_ob.id}}>
+     <input type="submit" value="Rate it!!!">
+	 </form><br>
+	 {% endif %}
+      
+
 		{% if user.is_authenticated %}
 	<form method="post" action=".">{% csrf_token %}
-	<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">
+	<!--<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">-->
 	<input type="hidden" id="pageid1" value="{{page_ob.id}}"/>
         </form>
 	{% endif %}
 </br>   {% autoescape off %}
 
    {% for each in section %}
-      	<h4><font size="6">{{each.title}}</h4></font>
+      	<h4><font size="6">{{each.title}} &nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]</h4></font>
 	  Posted on : {{each.creation_date}}
 	  by {% for author in each.authors.all %} 
 	  {{author}}
@@ -121,33 +137,21 @@ $(".savesubsec1").hide();
 	<input type="button" class="saveseccontent" name="{{each.id}}" value="Save"/>
 	<input type="submit" class="submitresponse" value="Submit"/>
        </form>
-       <form method="post" action="">{% csrf_token %}
-	 <input type="hidden" name="docid" value={{each.id}}>
-	 <input type="text" class="tagtext" value="" name="texttags"  />
-	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
-       </form>
 	{% endif %}
-       <br>
-       <div class="tags">
-	 <p class="gbobject-tags span-16 last">
-	   <strong>{% trans "Tags" %}</strong> :
-	   {% tags_for_object each as tag_list %}
-	   {% for tag in tag_list %}
-	   <a href="{% url objectapp_tag_detail tag %}"
-              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-	   {% empty %}
-	   <span>{% trans "No tags" %}</span>
-	   {% endfor %}
-	 </p>
-       </div>
+	  <br>
+	
+	<!--ADDING AND DISPLAY TAG-->
+	{% addtag each each.id user %}
+     
+
 		{% if user.is_authenticated %}
 	<form method="post" action=".">{% csrf_token %}<br/>
-        	 Create Subsection:
+        	<!-- Create Subsection:-->
 	        <input type="hidden" name = "replytosection" class="reptext" style="visibility:hidden;"/></br>
     		<input type="hidden" value="{{each.id}}" name = "iden">
 		<input type="hidden" value="{{user.username}}" name ="usr">
 	    	<input type="hidden" value="{{user.id}}" name = "idusr">
-		<input type="button" value="Create Subsection" class="createsubsection">
+		<!--<input type="button" value="Create Subsection" class="createsubsection">-->
  		<input type="hidden" value="empty" name = "edit" class="editval"/>
 
 		<input type="button" value="save" class="savesubsec" name="{{each.id}}">

@@ -16,6 +16,7 @@
 
 
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from demo.settings import *
@@ -27,6 +28,8 @@ from PIL import Image
 import glob, os
 import hashlib
 from django.template.defaultfilters import slugify
+from django.template.loader import get_template
+from django.template import Context
 
 size = 128, 128
 report = "true"
@@ -49,11 +52,25 @@ def image(request):
 		addtags = request.POST.get("addtags","")
 		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = request.POST.get("contenttext","")
+                fav=request.POST.get("fav","")
 		if show != "":
 			i=Gbobject.objects.get(id=fulid)
 			vars=RequestContext(request,{'image':i})
 			template="gstudio/fullscreen.html"
 			return render_to_response(template, vars)
+                if fav != "" :
+			list1=[]
+			t=Gbobject.objects.filter(title=user+"image")
+			if t:
+                            t=Gbobject.objects.get(title=user+"image")
+                            if t.get_relations():
+                                    for each in t.get_nbh['has_favourite']:
+                                            d=each.right_subject_id
+                                            x=Gbobject.objects.get(id=d)
+                                            list1.append(x)
+                            variables = RequestContext(request,{'images':list1,'fav':fav})
+                            template = "gstudio/image.html"
+                            return render_to_response(template, variables)
 		if rating :
         	 	rate_it(int(imgid),request,int(rating))
 		if delete != "":
@@ -213,8 +230,9 @@ def create_object(f,log,title,content,usr):
 	output = stdout.read()
 	data = open(os.path.join(FILE_URL,fname+html))
  	data1 = data.readlines()
- 	data2 = data1[72:]
- 	data3 = data2[:-3]
+ 	data2 = data1[107:]
+        dataa = data2[data2.index('div id="content">\n')]='<div id=" "\n'
+ 	data3 = data2[:-6]
  	newdata=""
  	for line in data3:
         	newdata += line.lstrip()
@@ -239,6 +257,10 @@ def show(request,imageid):
 		addtags = request.POST.get("addtags","")
 		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = unicode(request.POST.get("contenttext",""))
+                favid=request.POST.get("favid","")
+                favusr=request.POST.get("favusr","")
+                removefavid=request.POST.get("removefavid", "")
+                titlecontenttext=request.POST.get("titlecontenttext", "")
 		if rating :
 	       	 	rate_it(int(imgid),request,int(rating))
 		if addtags != "":
@@ -247,6 +269,37 @@ def show(request,imageid):
 			i.save()
 		if contenttext !="":
 			 edit_description(imgid,contenttext,str(request.user))
+                if favid !="":
+                         e=0
+                         r = Objecttype.objects.get(title="user")
+                         for each in r.get_nbh['contatins_members']:
+                                 if favusr+"image" == each.title:
+                                     e=1
+                         if e ==0 :
+                                  t=Gbobject()
+                                  t.title=favusr+"image"
+                                  t.slug=favusr+"image"
+                                  t.content=' '
+                                  t.satus=2
+                                  t.save()
+                                  t.objecttypes.add(Objecttype.objects.get(title="user"))
+				  t.save()
+                         t=Gbobject.objects.get(title=favusr+"image")
+                         rel=Relation()
+			 rt=Relationtype.objects.get(title="has_favourite")
+                         rel.relationtype_id=rt.id
+                         f1=Gbobject.objects.get(id=favid)
+                         rel.left_subject_id=t.id
+                         rel.right_subject_id=f1.id
+                         rel.save()
+                         t.save()
+                if removefavid !="":
+                         objects = Gbobject.objects.get(id=removefavid)
+                         objects.get_relations()['is_favourite_of'][0].delete()
+                if titlecontenttext !="":
+                         new_ob = Gbobject.objects.get(id=int(imgid))
+                         new_ob.title = titlecontenttext
+                         new_ob.save()
 	gbobject = Gbobject.objects.get(id=imageid)
 	vars=RequestContext(request,{'image':gbobject})
 	template="gstudio/fullscreen.html"
@@ -279,8 +332,9 @@ def edit_description(sec_id,title,usr):
 	output = stdout.read()
 	data = open(os.path.join(FILE_URL,fname+html))
 	data1 = data.readlines()
-	data2 = data1[72:]
-	data3 = data2[:-3]
+	data2 = data1[107:]
+        dataa = data2[data2.index('div id="content">\n')]='<div id=" "\n'
+	data3 = data2[:-6]
 	newdata=""
 	for line in data3:
 		newdata += line.lstrip()
@@ -297,4 +351,67 @@ def md5Checksum(filePath):
             break
         m.update(data)
     return m.hexdigest()
+
+def edit_title(request):
+	print "post"
+	if request.method == "GET":
+		print "iin get"
+		title=request.GET['title']
+		titleid=request.GET['titleid']
+		nid=NID.objects.get(id=titleid)
+		nid.title=title
+		nid.save()
+	return HttpResponseRedirect("/gstudio/resources/images/")
+
+def addpriorpost(request):
+	titleid=""
+	gbid1=""
+	if request.method == "GET":
+		print "in get"
+		title=request.GET['title']
+		titleid=request.GET['titleid']
+		gbid1=Gbobject.objects.get(id=titleid)
+		gbid2=Gbobject.objects.get(title=title)
+		gbid1.prior_nodes.add(gbid2)
+                gbid1.save()
+                gbid2.posterior_nodes.add(gbid1)
+                gbid2.save()
+                gbid1=Gbobject.objects.get(id=titleid)
+	priorgbobject = gbid1.prior_nodes.all()
+	posteriorgbobject = gbid1.posterior_nodes.all()
+	t = get_template('gstudio/repriorpost.html')
+	html = t.render(Context({'priorgbobject':priorgbobject,'posteriorgbobject':posteriorgbobject,'objectid':titleid,'optionpriorpost':"priorpost"}))
+        return HttpResponse(html)
+        #return HttpResponseRedirect("gstudio/resources/image/")
+def addtag(request):
+	i=""
+	if request.method == "GET":
+		objectid=request.GET['objectid']
+		data=request.GET['data']
+		i=Gbobject.objects.get(id=objectid)
+		i.tags=i.tags+ ","+(data)
+		i.save()
+		i=Gbobject.objects.get(id=objectid)
+		print i,"in addtag"
+	t=get_template('gstudio/repriorpost.html')
+	html = t.render(RequestContext(request,{'viewtag':i,'optiontag':"tag","objectid":objectid}))
+	return HttpResponse(html)
+
+def deletetag(request):
+	i=""
+	objectid=""
+	if request.method =="GET":
+		objectid=request.GET['objectid']
+		data=request.GET['data']
+		i=Gbobject.objects.get(id=objectid)
+		delval=i.tags.replace(data+",","")
+		delval1=delval.replace(data,"")
+		i.tags=delval1
+		i.save()
+		i=Gbobject.objects.get(id=objectid)
+	t=get_template('gstudio/repriorpost.html')
+	html=t.render(RequestContext(request,{'viewtag':i,'optiontag':"tag","objectid":objectid}))
+	return HttpResponse(html)
+
+
 

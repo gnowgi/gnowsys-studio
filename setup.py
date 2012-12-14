@@ -73,4 +73,5 @@ setup(name='gnowsys-studio',
                         'pandora_client>=0.2.94',
 			'django-pagination>=1.0.7',
                         'inflect>=0.2.3',
-                        ])
+                        'django-fixture-magic>=0.0.3',
+                       ])

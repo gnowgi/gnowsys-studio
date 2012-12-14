@@ -4,7 +4,7 @@
 {% load adminmedia grp_tags %}
 {% load i18n comments gstudio_tags %} 
 {% load tagging_tags comments i18n %}
-
+ {% block title %}{{meet_ob.title}}{% endblock %}
 {% block content %}
 <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" >
@@ -21,6 +21,120 @@ $(".submitresponse").hide();
 $("#editthreadsave").hide();
   });
 var i=0;
+var availableTags = [];
+$.merge(availableTags, {% get_add_tag %})
+
+function notifedtdel()
+{
+
+
+urlnot="/gstudio/group/notify/"+activity+"/"+not_obj+"/{{user.id}}"
+
+subactivity(urlnot,activity);
+}
+
+function subactivity(urlnot,activity)
+{
+      if(activity=='added_response')
+      {
+        submitform(activity);
+      }
+
+      if (activity != 'undefined')
+      {
+
+      $.ajax({
+       url: urlnot,
+       type:'GET',
+       success: function(){
+
+            submitform(activity);
+       }
+     });
+      }
+      else
+      {
+      submitform(activity);
+      }
+}
+
+function submitform(activity)
+{
+
+
+if (activity=='edited_thread')
+{
+
+document.forms["threadform"].submit();
+}
+if(activity=='edited_twist')
+{
+
+
+$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='added_response')
+{
+
+$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='deleted_response')
+{
+
+ document.forms["response"].submit();
+}
+}
+
+
+
+
+
+
+
+
+function Subscribeuser()
+{
+if (confirm("{{user.username}},Do you want to Subscribe to get all alerts in  your mail for this page"))
+{
+
+url = "/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub2").val("UnSubscribe");
+$("#sub2").attr("onclick","UnSubscribeuser()");
+}
+}
+
+
+
+
+
+function UnSubscribeuser()
+{
+url = "/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub1").val("Subscribe");
+$("#sub1").attr("onclick","Subscribeuser()");
+}
 </script>
 <style type="text/css">
 #div2
@@ -36,17 +150,25 @@ var i=0;
 
 <!--   <input type="button" value="Home" onClick="location.href='/gstudio/user/{{user.username}}';">
   <h>Hello Welcome to the {{ meet_ob.title }}</h></br> -->
-	<font size ="3" > {{admin_m.username}}'s initial twist to the thread</font>
 
-  <!--  <h>You are logged in as <font color="blue">{{user.username}}</font></h> -->
-         </br>
   
-<h2>{{meet_ob.title}}</h2>
+<h2 style="line-height:1">{{meet_ob.title}}{% if user.is_authenticated %} {% edit_title meet_ob.id meet_ob.title %} {% endif %}</h2>
+<font size ="3" > {{admin_m.username}}'s initial twist to the thread  &nbsp;[ <a href="{{ meet_ob.get_absolute_url }}" title="{{ meet_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;</font>
+</br>
+{% if user.is_authenticated %}
+
+{% check_subscribe meet_ob user as subscribe %}
+{%if subscribe %}
+<input type="button" id="sub1" value="UnSubscribe" name="edittitle" onclick="UnSubscribeuser()">
+{% else %}
+<input type="button" id="sub2" value="Subscribe" name="edittitle" onclick="Subscribeuser()">
+{% endif %}
+{% endif %}
 {% with meet_ob.html_content|safe as meet_ob_content %}
 <font size ="3" >{{meet_ob_content}} </font>
 {% endwith %}
 {% if user.is_authenticated %}
-<form method="post" action=".">{% csrf_token %}
+<form method="post" name="threadform" action=".">{% csrf_token %}
 <input type="hidden" id="threadid" value={{meet_ob.id}} style="visibility:hidden;" name="editiden">
 <input type="hidden" id="threadedit{{meet_ob.id}}" style="visibility:hidden;" name="editval">
 <input type="hidden" id="threadcontent{{meet_ob.id}}" value="{{meet_ob.content_org}}" style="visibility:hidden;" name="editcont">
@@ -54,7 +176,8 @@ var i=0;
 <br/>
 <input type="button" id="threadedit" value="Edit">
 <input type="button" id="editthreadsave" value="Save">
-<input type="submit" id="subeditresp" value=Submit" style="visibility:hidden;"></br>
+<input type="button" id="subeditresp" value="Submit" style="visibility:hidden;">
+
 </form>
 
 
@@ -77,28 +200,13 @@ var i=0;
    {% endif %}
    </br>
 {% endif %}
+{% endif %}
 
- <form method="post" action="">{% csrf_token %}
-       	 <input type="hidden" name="docid" value={{meet_ob.id}}>
-       	 <input type="text" class="tagtext" value="" name="texttags"  />
-       	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
-       </form>
-	
-       <br>
-       <div class="tags">
-       	 <p class="gbobject-tags span-16 last">
-       	   <strong>{% trans "Tags" %}</strong> :
-       	   {% tags_for_object ot as tag_list %}
-       	   {% for tag in tag_list %}
-       	   <a href="{% url objectapp_tag_detail tag %}"
-              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-       	   {% empty %}
-       	   <span>{% trans "No tags" %}</span>
-       	   {% endfor %}
-       	 </p>
-       </div>
+<!--ADDING AND DISPLAY TAG-->
+{% addtag ot meet_ob.id user %}
 
 	<br/>
+{% if user.is_authenticated %}
 	<form method="post" action=".">{% csrf_token %}
       <!--  <input type="hidden" value="{{meet_ob.id}}" name = "meetid">-->
 	<input type="button" id="twistaddbtn" value="Add your twist" onClick="location.href='topicadd1/{{meet_ob.id}}';">
@@ -119,7 +227,7 @@ var i=0;
 -->
 </br>   {% autoescape off %}
    {% for each in topic %}
-      	<h4><font size="5" >{{each.title}}</font></h4>
+      	<h4><font size="5" >{{each.title}}</font>&nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]</h4>
       		Posted on : {{each.creation_date}}
 		by : 
    		{% for author in each.authors.all %} 
@@ -141,10 +249,11 @@ var i=0;
     		<input type="hidden" value="{{each.id}}" name = "iden">
 	    	<input type="hidden" value="{{user.id}}" name = "idusr">
 <br/>			{% if user.is_authenticated %}
+		 <input type="button" class="editcontent" name="{{each.content_org}}"  id="{{each.id}}" value="Edit">
 		 <input type="button" class="editor" id="{{ each.id }}" value="Add Response"/>
 		 <input type="hidden" class="editval" id="edit{{each.id}}" name="edit" value="empty">
                 <input type="button" class="savecontent" id="save{{ each.id }}" value="Save" onclick="topicsaveclick(document.getElementById('hidden{{ each.id }}').value)"><br/>
-               <input type="button" class="editcontent" name="{{each.content_org}}"  id="{{each.id}}" value="Edit">
+              
 	        <input type="submit" class="submitresponse" id="topicsubmit{{ each.id }}" value="Submit"></br>
 			{% endif %}
 		{% ifequal user.id admin_id %}		
@@ -171,27 +280,10 @@ var i=0;
 		<input type="submit" value="Rate it!!!">  -->
          </form>
 	</div>   
-	{% if user.is_authenticated %}
- <form method="post" action="">{% csrf_token %}
-       	 <input type="hidden" name="docid" value={{each.id}}>
-       	 <input type="text" class="tagtext" value="" name="texttags"  />
-       	 <input type="submit" class="tag" value="Add Tags" name="addtags" />
-       </form>
-	
-       <br>
-       <div class="tags">
-       	 <p class="gbobject-tags span-16 last">
-       	   <strong>{% trans "Tags" %}</strong> :
-       	   {% tags_for_object each as tag_list %}
-       	   {% for tag in tag_list %}
-       	   <a href="{% url objectapp_tag_detail tag %}"
-              title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-       	   {% empty %}
-       	   <span>{% trans "No tags" %}</span>
-       	   {% endfor %}
-       	 </p>
-       </div>
-	{% endif %}
+
+<!--ADDING AND DISPLAY TAG-->
+{% addtag each each.id user %}
+
 	<br/>
         <p>
 	 Responses :

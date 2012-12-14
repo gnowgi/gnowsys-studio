@@ -952,7 +952,7 @@ class Nodetype(Node):
                         
                         g_json["relations"].append({"from":self.id ,"type":str(key),"value":1,"to":predicate_id[key] })
 
-                        if not isinstance(nbh[key],basestring) and len(nbh[key])<=2:
+                        if not isinstance(nbh[key],basestring) and len(nbh[key])<=10:
                             for item in nbh[key]:
                                 if isinstance(item,unicode):
                                     g_json["node_metadata"].append({"_id":(str(attr_counter)+"b"),"screen_name":str(item)})

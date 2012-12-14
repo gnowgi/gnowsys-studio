@@ -26,6 +26,7 @@ var mySettings = {
 		{name:'Picture', key:'P', replaceWith:'\n#+CAPTION: \n#+ATTR_HTML: width="600" \n[[http:fileName.jpg]]\n' },
 		{name:'Link', key:'L', openWith:'[[http://your.address.com here/][Your visible link text here]]', closeWith:'', placeHolder:'' },
 	        {separator:'---------------' },
+            {name:'Insert Embed Html',replaceWith:'\n#+BEGIN_HTML \n#+END_HTML\n' },
                 {name:'Close',call:'close' }
 
 		//{name:'Clean', className:'clean', replaceWith:function(orgitdown) { return orgitdown.selection.replace(/<(.*?)>/g, "") } }		

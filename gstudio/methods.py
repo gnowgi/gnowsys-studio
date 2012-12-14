@@ -6,6 +6,16 @@ import os
 from demo.settings import PYSCRIPT_URL_GSTUDIO
 from demo.settings import FILE_URL
 
+def get_threadbox_of_twist(twistid):
+ thid=""
+ for each in System.objects.all():
+        sys_set=each.system_set.all()
+        if sys_set:
+               sys_set=each.system_set.all()[0]
+               for eachsys in sys_set.gbobject_set.all():
+                      if eachsys.id==twistid:
+                             return sys_set
+ return thid
 
 def delete(idnum):
  del_ob = Gbobject.objects.get(id=idnum)
@@ -41,8 +51,9 @@ def make_rep_object(title,auth_id,usr):
 
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -83,8 +94,9 @@ def edit_section(sec_id,title,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -119,8 +131,9 @@ def make_topic_object(title,auth_id,content,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -163,8 +176,9 @@ def make_sectionreply_object(content_org,title,auth_id,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -208,8 +222,9 @@ def make_section_object(title,auth_id,content_org,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -278,8 +293,9 @@ def create_meeting(title,idusr,content,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -340,8 +356,9 @@ def create_wikipage(title,idusr,content_org,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -351,15 +368,15 @@ def create_wikipage(title,idusr,content_org,usr):
  sys.systemtypes.add(Systemtype.objects.get(title="Wikipage"))
  sys.authors.add(Author.objects.get(id=idusr))
  
- a = Attribute()
- a.title = "released button of " + title
- a.slug = slugify(a.title)
- a.content = a.slug
- a.status = 2
- a.subject = sys
- a.svalue = "False"
- a.attributetype_id = Attributetype.objects.get(title="pagerelease").id
- a.save()
+ #a = Attribute()
+ #a.title = "released button of " + title
+ #a.slug = slugify(a.title)
+ #a.content = a.slug
+ #a.status = 2
+ #a.subject = sys
+ #a.svalue = "False"
+ #a.attributetype_id = Attributetype.objects.get(title="pagerelease").id
+ #a.save()
  sys1 = System()
  sys1.title = "page box of " + title
  sys1.status = 2
@@ -387,19 +404,19 @@ def make_att_false(meet_ob):
 		meet_ob.subject_of.add(each)
 		break
 
-def make_att1_true(page_ob):
-       for each in  page_ob.subject_of.all():
-              if(each.attributetype.title=='pagerelease'):
-                     each.svalue = "true"
-                     page_ob.subject_of.add(each) 
-                     break
+#def make_att1_true(page_ob):
+ #      for each in  page_ob.subject_of.all():
+  #            if(each.attributetype.title=='pagerelease'):
+   #                  each.svalue = "true"
+    #                 page_ob.subject_of.add(each) 
+     #                break
 
-def make_att1_false(page_ob):
-       for each in  page_ob.subject_of.all():
-              if(each.attributetype.title=='pagerelease'):
-                     each.svalue = ""
-                     page_ob.subject_of.add(each)
-                     break
+#def make_att1_false(page_ob):
+ #      for each in  page_ob.subject_of.all():
+  #            if(each.attributetype.title=='pagerelease'):
+   #                  each.svalue = ""
+    #               page_ob.subject_of.add(each)
+     #                break
 
 def schedule_time(stTime, endTime, sys_id):
 	 sys=System.objects.get(id=sys_id)
@@ -413,7 +430,7 @@ def schedule_time(stTime, endTime, sys_id):
          ate.subject=sys; ate.value=endTime; ate.attributetype=atty2;
 	 ate.save()
 	 ats.save()
-	 sys.save()
+	 #sys.save()
 	 return  sys.id
 
 
@@ -440,7 +457,7 @@ def get_time(sys_id):
 		                meetover=True
         		else:
                 		meetover=False
-	return (later, meetover, starttime, endtime)
+        return (later, meetover, starttime, endtime)
 def del_comment(comment_id):
  ob = Gbobject.objects.get(id=int(comment_id))
  for each in ob.posterior_nodes.all():
@@ -488,8 +505,9 @@ def edit_topic(topic_id,title,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -523,8 +541,9 @@ def edit_thread(thread_id,title,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -561,8 +580,9 @@ def edit_nodetype(iden,rep,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[72:]
- data3 = data2[:-3]
+ data2 = data1[107:]
+ dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ data3 = data2[:-6]
  newdata=""
  for line in data3:
         newdata += line.lstrip()
@@ -576,6 +596,28 @@ def check_release_or_not(meet_ob):
  	if (each.attributetype.title=='release' and each.svalue=='true'):
           	fl=1
  return fl
+def check_subscribe_or_not(meet_ob,user):
+  fl=0
+  box=meet_ob.system_set.all()[0]
+  ch=Author.objects.filter(id=user.id)
+  if ch:
+  	ch=Author.objects.get(id=user.id)
+  else:
+    	ch=""
+  for each in box.member_set.all():
+	if each == ch:
+        	fl=1
+  return fl
+
+def check_usr_admin(userid):
+  fl=0
+  aut=Author.objects.filter(id=userid)
+  if aut:
+         aut=Author.objects.get(id=userid)
+         if aut.is_superuser:
+                fl=1
+  return fl
+
 
 def get_factory_loom_OTs():
  retlist=[]
@@ -584,3 +626,24 @@ def get_factory_loom_OTs():
 		if ((each.parent.title=='Factory_Object') and (str(each.slug)[0:4]=='loom')):
 			retlist.append(each.title)
  return retlist
+
+def get_home_content():
+  homeobj=Gbobject.objects.filter(title="home_specific_detail")
+  if homeobj:
+         homeobj=Gbobject.objects.get(title="home_specific_detail")
+  return homeobj.content
+
+def get_more_content():
+  moreobj=Gbobject.objects.filter(title="more_specific_detail")
+  if moreobj:
+         moreobj=Gbobject.objects.get(title="more_specific_detail")
+  return moreobj.content
+
+def get_home_title():
+  homeobj=Gbobject.objects.filter(title="home_title")
+  content = ""
+  if homeobj:
+         homeobj=Gbobject.objects.get(title="home_title")
+  	 content = homeobj.content
+  return content
+

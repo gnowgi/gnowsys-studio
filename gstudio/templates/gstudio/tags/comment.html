@@ -6,6 +6,12 @@ $(window).load(function() {
 $(".commentsavecontent").hide();
 $(".postreply").hide();
 });
+function deleteclick(delobj)
+{
+ activity ='deleted_response'
+ not_obj=delobj
+notifedtdel();
+}
 </script>
 {% if comment.posterior_nodes.count %}
 <!--<ul style="display: none;">-->
@@ -26,7 +32,12 @@ else
 {
 document.getElementById("divchange").setAttribute("id","div2");
 }
+function submtfrm()
+{
+alert("form to post");
+document.forms["response"].submit();
 
+}
 </script>
 
 
@@ -35,7 +46,7 @@ document.getElementById("divchange").setAttribute("id","div2");
 <h5>Current rating is {{ child.rating.get_rating }}<h5/>
 {% endif %}
 <font style = "color:red;" size = 3>{{child.content}}</font>
-   <form method="post" action=".">{% csrf_token %}
+   <form method="post" name="response" action=".">{% csrf_token %}
                                 <input type="hidden" class="commentreptext" id="text{{child.id}}" name="reply" style="visibility:hidden">
                                 <input type="hidden" id="hidden{{child.id}}" value={{child.id}} name="parentid">
                                 <input type="hidden" value={{idusr}} name="idusr">
@@ -45,8 +56,10 @@ document.getElementById("divchange").setAttribute("id","div2");
 				 <input type="button" class="commenteditor" id="{{ child.id }}"  value="Add a Response">
                                  <input type="button" class="commentsavecontent" id="save{{child.id}}" value="Save" onclick="saveclick(document.getElementById('hidden{{child.id}}').value)">
                                 <input type="submit" class="postreply" id="submit{{child.id}}" value="Submit">
+
                                 <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
                                 <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">
+
 <br/>
 <div class="rating">
      Rate the response </br>
@@ -87,7 +100,7 @@ Current rating is {{ child.rating.get_rating }}<br/>
 {% endif %}
                         <font style = "color:red;" size ="3">{{child.content}}</font>
 
-			<form method="post" action="">{% csrf_token %}
+			<form method="post" name="response" action="">{% csrf_token %}
                                 <input type="hidden" class="commentreptext" id="text{{child.id}}" name="reply" style="visibility:hidden">
                                 <input type="hidden" id="hidden{{child.id}}" value={{child.id}} name="parentid">
                                 <input type="hidden" value={{idusr}} name="idusr">
@@ -97,6 +110,9 @@ Current rating is {{ child.rating.get_rating }}<br/>
 				 <input type="button" class="commenteditor" id="{{ child.id }}"  value="Add a Response">
                                  <input type="button" class="commentsavecontent" id="save{{child.id}}" value="Save" onclick="saveclick(document.getElementById('hidden{{child.id}}').value)">
                                 <input type="submit" class="postreply" id="submit{{child.id}}" value="Submit">
+
+
+
                                 <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
                                 <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">
 
@@ -138,7 +154,7 @@ Current rating is {{ child.rating.get_rating }}<br/>
 {% endif %}
                         <font style = "color:red;" size = 3>{{child.content}}</font>
 
-			<form method="post" action=".">{% csrf_token %}
+			<form method="post" name="response" action=".">{% csrf_token %}
                               <input type="hidden" class="commentreptext" id="text{{child.id}}" name="reply" style="visibility:hidden">
                                <input type="hidden" id="hidden{{child.id}}" value={{child.id}} name="parentid">
                                <input type="hidden" value={{idusr}} name="idusr">
@@ -148,8 +164,25 @@ Current rating is {{ child.rating.get_rating }}<br/>
 			     <input type="button" class="commenteditor" id="{{ child.id }}"  value="Add a Response">
                                  <input type="button" class="commentsavecontent" id="save{{child.id}}" value="Save" onclick="saveclick(document.getElementById('hidden{{child.id}}').value)">
                                 <input type="submit" class="postreply" id="submit{{child.id}}" value="Submit">
+
+{% check_user_admin idusr as admin_usercheck %}
+{% if admin_usercheck %}
+
                                 <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
-                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">                                                <br/>       
+                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">                                                
+
+<br/>
+{% endif %}
+{% for author in child.authors.all %}
+{% ifequal author.id idusr  %}
+
+                                <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
+                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">                                                
+
+<br/>
+{% endifequal %}
+{% endfor %}
+
 <div class="rating">                                                                                                                       
      Rate this response </br>                                                                                                        
                                 <input name="star1" type="radio" value=1 class="star"/>                                              

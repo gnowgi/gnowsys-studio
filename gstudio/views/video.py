@@ -82,11 +82,14 @@ def video(request):
 			return render_to_response(template,variables)
 		if fav != "" :
 			list1=[]
-			t=Gbobject.objects.get(title=user+"video")
-			for each in t.get_nbh['has_favourite']:
-				d=each.right_subject_id
-				x=Gbobject.objects.get(id=d)
-				list1.append(x)
+                        t=Gbobject.objects.filter(title=user+"video")
+			if t:
+				t=Gbobject.objects.get(title=user+"video")
+				if t.get_relations():
+					for each in t.get_nbh['has_favourite']:
+						d=each.right_subject_id
+						x=Gbobject.objects.get(id=d)
+						list1.append(x)
 			variables = RequestContext(request,{'vids':list1,'val':svid,'fav':fav})
 			template = "gstudio/video.html"
 			return render_to_response(template, variables)	
@@ -230,8 +233,9 @@ def video(request):
 					output = stdout.read()
 					data = open(os.path.join(FILE_URL,fname+html))
 					data1 = data.readlines()
-					data2 = data1[72:]
-					data3 = data2[:-3]
+					data2 = data1[107:]
+                                        dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+					data3 = data2[:-6]
 					newdata=""
 					for line in data3:
 						newdata += line.lstrip()
@@ -364,8 +368,9 @@ def video(request):
 			output = stdout.read()
 			data = open(os.path.join(FILE_URL,fname+html))
 		 	data1 = data.readlines()
-		  	data2 = data1[72:]
-			data3 = data2[:-3]
+		  	data2 = data1[107:]
+			dataa = data2[data2.index('div id="content">\n')]='<div id=" "\n'
+			data3 = data2[:-6]
 		 	newdata=""
 		 	for line in data3:
 		        	newdata += line.lstrip()
@@ -465,6 +470,7 @@ def show(request,videoid):
 		contenttext = request.POST.get("contenttext","")
 		contenttext = unicode(request.POST.get("contenttext",""))
 		titlecontenttext = request.POST.get("titlecontenttext")
+		removefavid = request.POST.get("removefavid","")
 		if rating :
         	 	rate_it(int(vidid),request,int(rating))
 		
@@ -492,7 +498,9 @@ def show(request,videoid):
                         rel.right_subject_id=f1.id
                         rel.save()
 			t.save()
-
+		if removefavid !="":
+			objects = Gbobject.objects.get(id=removefavid)
+			objects.get_relations()['is_favourite_of'][0].delete()
 		
 		if addtags != "":
 			i=Gbobject.objects.get(id=vidid)
@@ -500,12 +508,18 @@ def show(request,videoid):
 			i.save()
 		if contenttext !="":
 			 edit_description(vidid,contenttext,str(request.user))	
-		if titlecontenttext !="":
-			new_ob = Gbobject.objects.get(id=int(vidid))
-			new_ob.title = titlecontenttext
-			new_ob.save()	
+			
 	gbobject = Gbobject.objects.get(id=videoid)
-	vars=RequestContext(request,{'video':gbobject})
+        relation = ""
+	if gbobject.get_relations():
+		if gbobject.get_relations()['is_favourite_of']:
+			rel= gbobject.get_relations()['is_favourite_of'][0]
+			print rel
+			reluser = rel._left_subjecy_cache.title
+			if str(reluser) == str(request.user)+str("video"):
+				relation = "rel"
+		
+	vars=RequestContext(request,{'video':gbobject,'relation':relation})
 	template="gstudio/transcript.html"
 	return render_to_response(template,vars)
 
@@ -537,8 +551,9 @@ def edit_description(sec_id,title,usr):
 	output = stdout.read()
 	data = open(os.path.join(FILE_URL,fname+html))
 	data1 = data.readlines()
-	data2 = data1[72:]
-	data3 = data2[:-3]
+	data2 = data1[107:]
+        dataa = data2[data2.index('<div id="content">\n')]='<idv id=" "\n'
+	data3 = data2[:-6]
 	newdata=""
 	for line in data3:
 		newdata += line.lstrip()

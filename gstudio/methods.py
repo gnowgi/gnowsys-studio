@@ -356,7 +356,7 @@ def create_wikipage(title,idusr,content_org,usr):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[107:]
+ data2 = data1[86:]
  dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
  data3 = data2[:-6]
  newdata=""

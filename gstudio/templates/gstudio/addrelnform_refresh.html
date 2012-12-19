@@ -1,0 +1,15 @@
+{% load gstudio_tags %}
+
+<div id="relndiv">
+<br/>
+<b>Existing Relations for this page: </b>
+        {% if not meetobj.get_relations_for_view.items %}
+            No relations
+        {% endif %}
+        {% for key,value in meetobj.get_relations_for_view.items %}
+        {{key}} -
+        {% for rel in value %}
+        {{rel}};
+        {% endfor %}
+        {% endfor %}
+</div>

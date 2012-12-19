@@ -1,0 +1,37 @@
+<script type="text/javascript" >
+jQuery(document).ready(function($) { 
+$("#titleeditcontent").click(function(){
+document.getElementById('texttagtitle').style.visibility="visible";
+$("#texttagtitle").val($("#titleeditortext").val());
+document.getElementById('titlesave').style.visibility="visible";
+$("#titleeditcontent").hide();
+});
+$("#titlesave").click(function(){
+var org_data = $("#texttagtitle").val();       
+var encode_data = encodeURIComponent(org_data);
+var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
+$("#titlecommenttext").val(decode_data);	 
+
+$.ajax({
+url: '/gstudio/resources/images/edittitle/',
+<!-- type:"POST", -->
+data: {title:decode_data,titleid:{{objectid}}},
+success: function(){
+document.location.reload(true)
+}
+});  
+
+});
+});
+</script>
+
+
+<!-- <form method="get" action=""> -->{% csrf_token %}
+<input type="hidden" name="imgid" value={{objectid}}>
+<input type="button" id="titleeditcontent" name="" value="Edit title"/>
+<input type="text" value="" name="texttags" id="texttagtitle" style="visibility:hidden" /> 
+<input type="button" class="titlecommentsavecontent" id="titlesave" value="Save" style="visibility:hidden" />
+<input type="hidden" name="titlecontenttext" id="titlecommenttext" style="visibility:hidden" />
+<input type="hidden" id="titleeditortext" style="visibility:hidden" value="{{ objecttitle }}">
+<!-- </form> -->
+

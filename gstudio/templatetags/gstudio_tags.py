@@ -60,6 +60,9 @@ VECTORS_FACTORY = lambda: VectorBuilder(Nodetype.published.all(),
 CACHE_NODETYPES_RELATED = {}
 
 
+
+
+
 @register.inclusion_tag('gstudio/tags/dummy.html')
 def get_metatypes(template='gstudio/tags/metatypes.html'):
     """Return the metatypes"""
@@ -425,6 +428,17 @@ def check_release(meeting):
   return var
 
 @register.assignment_tag
+def check_subscribe(meeting,user):
+  var = check_subscribe_or_not(meeting,user)
+  return var
+
+@register.assignment_tag
+def check_user_admin(userid):
+  var=check_usr_admin(userid)
+  return var
+
+
+@register.assignment_tag
 def get_static_url():
    var = os.path.join(os.path.dirname(__file__),STATIC_URL)
    return var
@@ -434,3 +448,82 @@ def get_factory_looms():
    fs = []
    fs = get_factory_loom_OTs()
    return fs
+
+@register.assignment_tag
+def put_home_content():
+   var = get_home_content()
+   return var
+
+@register.assignment_tag
+def put_more_content():
+   var = get_more_content()
+   return var
+
+@register.assignment_tag
+def put_home_title():
+   var = get_home_title()
+   return var
+
+@register.inclusion_tag('gstudio/addreln.html')
+def add_res_relation(meetingob):
+  template='gstudio/addreln.html'
+  print "meetob=",meetingob
+  return {'template':template,'meetingob':meetingob}
+
+@register.simple_tag
+def get_available_rts():
+    listrts=[]
+    for each in Relationtype.objects.all():
+        s=each.title
+        listrts.append(str(s))
+    return str(listrts)
+
+@register.simple_tag
+def get_available_objects():
+    listsubjs=[]
+    for each in Gbobject.objects.all():
+        s=each.title
+        listsubjs.append(str(s))
+    return str(listsubjs)
+
+
+@register.inclusion_tag('gstudio/edittitle.html')
+def edit_title(objectid,objecttitle):
+  template='gstudio/edititle.html'
+  return {'template':template,'objectid':objectid,'objecttitle':objecttitle}
+
+@register.simple_tag
+def get_add_tag():
+    listtag = []
+    tag = Tag.objects.all()
+    for each in tag:
+	listtag.append(each.__str__())	
+    return str(listtag)
+
+
+@register.inclusion_tag('gstudio/priorpost.html')
+def addpriorpost(objectid,user):
+  template='gstudio/priorpost.html'
+  gbobject = Gbobject.objects.get(id=objectid)
+  priorgbobject = gbobject.prior_nodes.all()
+  posteriorgbobject = gbobject.posterior_nodes.all()
+  return {'template':template,'objectid':objectid,'priorgbobject':priorgbobject,'posteriorgbobject':posteriorgbobject,'user':user}
+
+@register.inclusion_tag('gstudio/addingtag.html')
+def addtag(viewtag,objectid,user):
+  template='gstudio/addingtag.html'
+  return {'viewtag':viewtag,'objectid':objectid,'user':user}
+
+@register.simple_tag
+def get_pri_post_page():
+    listobject = []
+    gbobject = Gbobject.objects.all()
+    for each in gbobject:
+        listobject.append(each.__str__())
+    return str(listobject)
+
+@register.inclusion_tag("gstudio/templatetags/comment_security_hash.html")
+def comment_security_hash(blogentry,opts):
+    targ='%s:%s'%(ContentType.objects.get_for_model(blogentry).id,blogentry.id)
+    return {"hash":Comment.objects.get_security_hash(opts,'','',targ)}
+

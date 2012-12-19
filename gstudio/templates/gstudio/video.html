@@ -80,7 +80,7 @@ background: green;
 {% autopaginate vids 10 %}
 
 
-<h2 style="color: teal;">Video Library</h2>
+<h2 style="">Video Library</h2>
 <br/>
 <div id="upperdiv">
 
@@ -173,9 +173,9 @@ document.getElementById('headvideo').style.visibility="visible";
 
 
 {% if fav %}
-<h2 style="color: teal;">Favourite Videos</h2><br/>
+<h2 style="">Favourite Videos</h2><br/>
 {% else %}
-<h2 style="color: teal;">List of Videos in the library </h2><br/>
+<h2 style="">List of Videos in the library </h2><br/>
 {% endif %}
 
 <div id="listvideo">
@@ -195,7 +195,7 @@ document.getElementById("divvideo").setAttribute("id","div2");
 }
 
 </script>
-<font size="4">{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}</font>
+<font size="4">{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}[ <a href="{{ video.get_absolute_url }}" title="{{ video.title }}" rel="bookmark">Show Graph</a> ]</font>
 <form enctype="multipart/form-data" method="post" action="" target="_blank">
 {% csrf_token %}
 <input type="hidden" name = "full" value ={{video.slug}}>

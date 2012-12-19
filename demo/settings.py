@@ -19,24 +19,25 @@
 import os
 TIME_ZONE = None
 gettext = lambda s: s
-
+os.system("mkdir /tmp/beta/")
 DEBUG = True
 TEMPLATE_DEBUG78 = True
-
+#INTERNAL_IPS = ('127.0.0.1','158.144.44.212','158.144.42.67')
+#DEBUG_TOOLBAR_CONFIG = { 'INTERCEPT-REDIRECTS':False,}
 DATABASES = {'default':
              {'ENGINE': 'django.db.backends.sqlite3',
               'NAME': os.path.join(os.path.dirname(__file__), 'demo.db')}
              }
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/static'
 RECAPTCHA_PUBLIC_KEY = '6LcBr9USAAAAAJNHxpA5_2nQK9JnKQCU3kTUstEK'
 RECAPTCHA_PRIVATE_KEY = '6LcBr9USAAAAABYW6VgsQeupDHy2R42G4aGsHxXr'
-
 MEDIA_URL = '/static'
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
-MEDIA_ROOTNEW2 = os.path.join(os.path.dirname(__file__), '../demo/grappelli/static/grappelli/img')
-MEDIA_ROOTNEW3 = os.path.join(os.path.dirname(__file__), '../gstudio/static/gstudio/documents')
-MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../demo/media')
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'static/img')
+MEDIA_ROOTNEW2 = os.path.join(os.path.dirname(__file__), 'static/img')
+MEDIA_ROOTNEW3 = os.path.join(os.path.dirname(__file__), 'static/img')
+MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), 'static/img')
 #MEDIA_ROOT = '/static'
 #MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
 PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
@@ -45,11 +46,13 @@ VIDEO_PANDORA_URL = os.getenv("HOME")+"/.ox/client.json"
 FILE_URL = os.path.join(os.path.dirname(__file__), '/tmp/beta/')
 FILE_UPLOAD_MAX_MEMORY_SIZE= 524288000
 JPEG_ROOT = None
+STATICFILES_DIRS = (
+    os.path.join(os.path.dirname(__file__),'grappelli/static'),
+)
 
+GSTUDIO_UPLOAD_TO = 'static/img/'
 
-GSTUDIO_UPLOAD_TO = 'img/'
-
-ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
+ADMIN_MEDIA_PREFIX = STATIC_URL+ "grappelli/" 
 
 SECRET_KEY = 'jo-1rzm(%sf)3#n+fb7h955yu$3(pt63abhi12_t7e^^5q8dyw'
 
@@ -154,6 +157,8 @@ INSTALLED_APPS = (
     'HTTP4Store',
     'html5lib',
     'pagination',
+    'notification',
+    'fixture_magic',
     # Uncomment the south entry to activate south for database migrations
     # Please do install south before uncommenting
     # command: sudo pip install south 
@@ -165,6 +170,11 @@ INSTALLED_APPS = (
 #    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 
-#from gstudio.xmlrpc import GSTUDIO_XMLRPC_METHODS
-#XMLRPC_METHODS = GSTUDIO_XMLRPC_METHODS
-
+from gstudio.xmlrpc import GSTUDIO_XMLRPC_METHODS
+XMLRPC_METHODS = GSTUDIO_XMLRPC_METHODS
+try:
+    from local_settings import *
+    #print "Local settings applied"
+except:
+    #print "Default settings applied"
+    pass

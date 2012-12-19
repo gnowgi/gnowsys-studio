@@ -8,6 +8,7 @@
    var isSubsection=false;
    var editSubsection=false;
    var isNode=false;
+   var isObject=false;
    function subsecsave(objid){
        var org_data = $("#gnoweditor").val();
        var encode_data = encodeURIComponent(org_data);
@@ -40,13 +41,15 @@
 		});
 
 	$("#pagecontent1").one("click",function() {
+            $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    isWikipage=true;
-	$("#chart").hide();
-	document.getElementById('gnoweditor').style.visibility="visible";
-	$("#gnoweditor").orgitdown(mySettings);
+	    $("#chart").hide();
+	    document.getElementById('gnoweditor').style.visibility="visible";
+	    $("#gnoweditor").orgitdown(mySettings);
+	    $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
 	//$("#save1").show();
-	$("#pagecontent1").hide();
-	     $("#content").css({"width":"300px",})
+	    $("#pagecontent1").hide();
+	    $("#content").css({"width":"300px",})
 	    });
         $("#save1").one("click",function() {
 	var org_data = $("#gnoweditor").val();
@@ -125,6 +128,7 @@
 	   $(".deletesec").hide();
        });
        $(".editpagecontent").one("click",function(){
+	   $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    editWikipage=true;
       	    $("#chart").hide();
 	    $(".editpagecontent").hide();
@@ -139,11 +143,11 @@
 	    var elmts = document.getElementsByClassName("editval");
 	    for (var i = 0; i < elmts.length; i++){
 		elmts[i].setAttribute("value","edited");}
-	   var screenTop = $(document).scrollTop();
+	   // var screenTop = $(document).scrollTop();
       	    $(".orgitdownContainer").css({
-      		"margin-top":screenTop,});
-	   $(".tag").hide();
-	   $(".tagtext").hide();
+      		"margin-top":"0px","margin-left":"10px"});
+	   //$(".tag").hide();
+	   //$(".tagtext").hide();
 	   $("#newsection1").hide();
 	   $(".createsubsection").hide();
 	   $("#rating").hide();
@@ -163,6 +167,7 @@
 	       elmts[i].setAttribute("value",decode_data);}
            $(".pagedit").trigger('click');
 	   $(".savepagecontent").hide();
+	   $(".orgitdownContainer").hide();
       	  
        });
       $("#editnodecontent").one("click",function(){
@@ -194,6 +199,37 @@
 	   $("#nodedit").hide();
 	   
        });
+ 
+      $("#editobjectcontent").one("click",function(){
+          isObject=true;
+          $("#chart").hide();
+          $("#content img").css({"max-width":"600px",})
+
+          $("#content").css({"width":"600px",})
+          document.getElementById('gnoweditor').style.visibility="visible";
+          $("#gnoweditor").orgitdown(mySettings);
+          var a = this.name;
+
+          $("#gnoweditor").val(a);
+          var screenTop = $(document).scrollTop();
+          $(".orgitdownContainer").css({
+              "margin-top":screenTop,});
+          $("#editnodecontent").hide();
+           //$("#savenodecontent").show();                                                                                                   
+          $("#objectedit").hide();
+
+      });
+      $("#saveobjectcontent").one("click",function(){
+          var org_data = $("#gnoweditor").val();
+          var encode_data = encodeURIComponent(org_data);
+
+          var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
+          $("#reptext").val(decode_data);
+          $("#objectedit").trigger('click');
+          $("#objectedit").hide();
+
+      });
+       
 
        $(".createsubsection").one("click",function(){
 	           isSubsection=true;

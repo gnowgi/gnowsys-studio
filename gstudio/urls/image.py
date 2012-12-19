@@ -21,5 +21,9 @@ from django.conf.urls.defaults import patterns
 urlpatterns = patterns('gstudio.views.image',
                        url(r'^$', 'image',
                            name='image'),
-		       url(r'show/(\d+)/$','show',name='showimage'),
+                       url(r'show/(\d+)/$','show',name='showimage'),
+                       url(r'edittitle/$','edit_title',name='edittitle'),
+                       url(r'addpriorpost/$','addpriorpost',name='addpriorpost'),
+                       url(r'addtag/$','addtag',name='addtag'),
+                       url(r'deletetag/$','deletetag',name='deletetag'),
                        )

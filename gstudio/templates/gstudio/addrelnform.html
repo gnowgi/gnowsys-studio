@@ -1,0 +1,51 @@
+{% load gstudio_tags %}
+{% load adminmedia grp_tags %}
+<script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript">
+
+</script>
+<script>
+function close_window()
+{ window.close()
+}
+
+
+function saverelnform()
+{
+var reln=$("#res_relation").val();
+var obj=$("#res_object").val();
+var slug=$("#res_slug").val();
+
+$.ajax({
+       method:'POST',
+       url: '/gstudio/resources/addreln/form/{{meetob}}',
+       data: {reln:reln,obj:obj,slug:slug},
+       success: function(){
+             window.close()
+       }
+     });
+}
+
+</script>
+<html> <body bgcolor="#E6E6FA">
+<form method="post" name="addrelnfrm" action="."> {% csrf_token %}
+<h1>Add Relation(link) name</h1>
+<h2>Title: &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<input value="" name="reln" id="res_relation">
+<br/></h2>
+<h2>Inverse Name:  &nbsp
+<input value="" name="obj" id="res_object">
+<br/></h2>
+<h2>Slug:  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<input value="" name="slug" id="res_slug">
+<br/></h2>
+<br/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp
+<!--                                                                            
+<input type="submit" id="addsavereln" name="" value="Save" ><nbsp>              
+-->
+&nbsp &nbsp &nbsp  &nbsp
+<input type="button" id="addrel" value="Save" onclick="saverelnform()">
+
+<input type="submit" id="addcancelreln" name="" value="Cancel" onclick="close_window()">
+</form>
+</body>
+</html>

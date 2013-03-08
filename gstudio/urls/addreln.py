@@ -17,6 +17,8 @@ from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('gstudio.views.addreln',
+                       url(r'^refreshrts/$','getrefreshrts',name='refats'),
                        url(r'^form/(\d+)/$','addrelnform',name = 'addrelfrm'),
                        url(r'^thread/(\d+)/$', 'addreln',name='addreln'),
+                       url(r'^deleteRelation/(\d+)/$', 'deleteRelation',name='deleteRelation'),
                        )

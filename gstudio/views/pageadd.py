@@ -22,7 +22,9 @@ from gstudio.methods import *
 import datetime
 def pageadd(request):
     errors = []
+    collection= None
     pageId = ""
+    test1=get_pdrawer()
     if request.method == 'POST':
         if not request.POST.get('subject', ''):
             errors.append('Enter a title.')
@@ -33,9 +35,17 @@ def pageadd(request):
        #     content=request.POST['page']
             content_org=unicode(request.POST['org1'])
             idusr=request.POST['idusr']
+            list1=request.POST['list1']
+            collection = request.POST.get("collection",'')
+            orgcontent=request.POST['orgcontent']
             usr = request.POST.get("usr",'')
             editable= request.POST.get("edit","")
            # print content_org,"content"
+            if collection:
+                collection=True
+                
+            else:
+                collection=False
             
             if editable=='edited':
                 
@@ -44,10 +54,10 @@ def pageadd(request):
                # elif id_no1:
                 #    edit_section(id_no1,rep)
 
-
-            pageId = create_wikipage(title,int(idusr),content_org,usr)
+	    pageId = create_wikipage(title,int(idusr),orgcontent,usr,collection,list1)
+            
             if pageId :
                 return HttpResponseRedirect('/gstudio/page/gnowsys-page/'+ str(pageId))
-    variables = RequestContext(request,{'errors' : errors, 'pageId' : pageId})
+    variables = RequestContext(request,{'errors' : errors, 'pageId' : pageId,'test1': test1})
     template = "gstudio/NewPage.html"
     return render_to_response(template, variables)

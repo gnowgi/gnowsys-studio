@@ -27,15 +27,25 @@ def groupadd(request):
             errors.append('Enter a title.')
         if not request.POST.get('message', ''):
             errors.append('Enter a message.')
-	stDate =  (request.POST["stDate"]).split("/")
-        endDate=(request.POST["endDate"]).split("/")
-        hours1 = int(request.POST["hours1"])
+	stDate1 =  (request.POST["stDate"])
+	stDate = stDate1.split("/")
+        endDate1=(request.POST["endDate"])
+	endDate = endDate1.split("/")
+        hours1 = request.POST["hours1"]
 	usr = request.POST.get("usr",'')	
-        minutes1 = int(request.POST["minutes1"])
-        hours2 = int(request.POST["hours2"])
-        minutes2 = int(request.POST["minutes2"])
-        time1 = datetime.datetime(int(stDate[2]),int(stDate[0]),int(stDate[1]),hours1,minutes1)
-        time2 = datetime.datetime(int(endDate[2]),int(endDate[0]),int(endDate[1]),hours2,minutes2)
+        minutes1 = request.POST["minutes1"]
+        hours2 = request.POST["hours2"]
+        minutes2 = request.POST["minutes2"]
+	if not (str(stDate1.encode('utf8')) and str(endDate1.encode('utf8'))):
+		print "in fi dat4e"
+		stDate = (str(date.today().strftime("%m/%d/%y"))).decode('utf8').split("/")
+		endDate = (str(date.today().strftime("%m/%d/%y"))).decode('utf8').split("/")
+		hours1 = 0
+		minutes1 = 0
+		hours2 = 0
+		minutes2 = 0
+	time1 = datetime.datetime(int(stDate[2]),int(stDate[0]),int(stDate[1]),int(hours1),int(minutes1))
+        time2 = datetime.datetime(int(endDate[2]),int(endDate[0]),int(endDate[1]),int(hours2),int(minutes2))
 	
         if not errors:
   	     title=request.POST['subject']

@@ -1,28 +1,80 @@
 {% load gstudio_tags %}
 {% load i18n %}
-<script type="text/javascript" >
 
-var availableObjects = [];
-$.merge(availableObjects, {% get_pri_post_page %})
+<script  type="text/javascript">
+   jQuery.noConflict();
+  
+   var availableObjects = [];
+   $.merge(availableObjects, {% get_pri_post_page %})
 
-jQuery(document).ready(function($) { 
-$("#addpriorpost").click(function(){
+   jQuery(document).ready(function($) { 
+      $("#addpriorpost").click(function(){
      
-var data 
-data = $("#priorpage").attr('value');
-$.ajax({
-url: '/gstudio/resources/images/addpriorpost/',
-//type:"POST",
-data: {title:data,titleid:{{objectid}}},
-success: function(data){
-$('#priorpostpages').html(data);
+        var data 
+        data = $("#priorpage").val();//attr('value');
+        var pdat=data
 
-}
-});  
-$("#priorpage").val("");
-});
-});
+        $.ajax({
+              url: '/gstudio/resources/images/checkpageexist/',
+              data: {title:data},
+              success: function(data){
+                           $.each(data, function(index) {
+                           as=data[index]
+                           if (as ==0)
+                           {
+                                r=confirm("Page doesn't exist! , Create the page?")
+                                if (r==true)
+                                {
+                                    $.ajax({
+                                         url: '/gstudio/resources/images/createwikinew/',
+                                         data: {title:pdat,titleid:{{objectid}}},
+                                         success: function(data)
+                                         {
+                                              $("#priorpage").val("");
+                                              ajurl="/gstudio/resources/images/refpriorpost/"
+                                              $.ajax({
+                                                     url: ajurl,
+                                                     success: function(data)
+                                                     {
+                                                          $.each(data, function(index) {
+                                                               avpriorpost=data[index]
+                                                               jQuery("#priorpage").autocomplete({
+                                                                   source: avpriorpost
+                                                               });
+                                                          })
+                                                     }
+                                             });
 
+                                         }
+                                         });
+                               } <!-- if closes -->
+                          } <!-- outer if closes -->
+                         else
+                         {
+                               $.ajax({
+	                          url: '/gstudio/resources/images/addpriorpost/',
+	                          //type:"POST",
+	                          data: {title:pdat,titleid:{{objectid}}},
+                                  beforeSend: function() {
+                                      $("#ajax_load_image").show();
+                                      $("#content").css({"opacity":"0.1",})
+                                  },
+	                          success: function(data){
+		                      $('#priorpostpages').html(data);
+			          },
+                                  complete: function(){
+                                      $("#ajax_load_image").hide();
+		                      $("#content").css({"opacity":"",})
+		                  }
+
+                               });
+                         }<!-- else closed-->
+
+ }); <!-- closed each -->
+ } <!-- closed success -->
+}) <!-- ajax closed -->
+}) <!-- addpriorpost closed -->
+})<!-- document ready closed -->
 $(document).ready(function(){
 $( "#priorpage" ).autocomplete({
 source: availableObjects
@@ -32,10 +84,50 @@ source: availableObjects
 </script>
 
 <div id = "priorpostpages">
+<script type="text/javascript" >
+jQuery(document).ready(function($) { 
+$(".deletepriorpage").click(function(){
+var id1 = {{objectid}},
+    id2 = this.id;
+r = confirm("Please confirm delete ")
+if (r==true)
+  {
+tagname = arr;
+$.ajax({
+	url: '/gstudio/ajax/deletepriorpage/',
+	type: 'POST',
+	data: {objectid1:id1,objectid2:id2,csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#priorpostpages').html(data);
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+		  }
+});  
+       			      
+  }
+else
+  {
+  
+  }
+});
+
+});
+</script>
+
 <br/>
 <strong>Prior Pages:</strong>
 {% for each in priorgbobject %}
 <a href="{{each.get_view_object_url}}">{{each}}</a>
+<a class="deletepriorpage" id="{{each.id}}" value="{{each}}" title="delete {{each}}"> 
+<img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/>
+</a>
 {% if not forloop.last %},{% endif %}
 {% empty %}
  <span>No prior page</span>
@@ -55,7 +147,11 @@ source: availableObjects
 <!-- <form method="get" action=""> -->{% csrf_token %}
 
 <input type="hidden" name="docid" value={{objectid}}>
+
+<!-- <input class="priorpage"  name="textpriorpage"> -->
+
 <input id="priorpage"  class="tagpriorpage" name="textpriorpage">
+
 <input type="button" class="priorpost" id="addpriorpost" value="Add Prior Page" name="addtags" />
 <br/><br/>
 <!-- <input type="button" id="titleeditcontent" name="" value="Edit a title"/>

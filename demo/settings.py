@@ -19,7 +19,9 @@
 import os
 TIME_ZONE = None
 gettext = lambda s: s
-os.system("mkdir /tmp/beta/")
+direxist=os.path.isdir("/tmp/beta/")
+if not direxist:
+    os.system("mkdir /tmp/beta/")
 DEBUG = True
 TEMPLATE_DEBUG78 = True
 #INTERNAL_IPS = ('127.0.0.1','158.144.44.212','158.144.42.67')
@@ -37,11 +39,13 @@ MEDIA_URL = '/static'
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'static/img')
 MEDIA_ROOTNEW2 = os.path.join(os.path.dirname(__file__), 'static/img')
 MEDIA_ROOTNEW3 = os.path.join(os.path.dirname(__file__), 'static/img')
-MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), 'static/img')
+#MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), 'static/img')
+MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../demo/media')
 #MEDIA_ROOT = '/static'
 #MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
 PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
 PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
+HTML_FILE_URL=os.path.join(os.path.dirname(__file__),'../demo/static/grappelli/file/')
 VIDEO_PANDORA_URL = os.getenv("HOME")+"/.ox/client.json"
 FILE_URL = os.path.join(os.path.dirname(__file__), '/tmp/beta/')
 FILE_UPLOAD_MAX_MEMORY_SIZE= 524288000
@@ -52,7 +56,7 @@ STATICFILES_DIRS = (
 
 GSTUDIO_UPLOAD_TO = 'static/img/'
 
-ADMIN_MEDIA_PREFIX = STATIC_URL+ "grappelli/" 
+ADMIN_MEDIA_PREFIX = STATIC_URL 
 
 SECRET_KEY = 'jo-1rzm(%sf)3#n+fb7h955yu$3(pt63abhi12_t7e^^5q8dyw'
 
@@ -72,7 +76,7 @@ GSTUDIO_RDF_FILEPATH = os.path.join(os.path.dirname(__file__), 'rdffiles.rdf')
 # Authentication related
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+DEFAULT_FROM_EMAIL = 'webmaster@beta.metastudio.org'
 LOGIN_REDIRECT_URL = '/'
 
 # fourstore related

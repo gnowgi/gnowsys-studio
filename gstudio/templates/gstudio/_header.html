@@ -18,8 +18,7 @@
 	| <a href="{{  get_absolute_url }}/gstudio/resources/documents" title="My Documents">Documents</a>
         | <a href="{{  get_absolute_url }}/gstudio/resources/images" title="Images">Images</a>
         | <a href="{{  get_absolute_url }}/gstudio/resources/videos" title="My Videos">Videos</a>
-<!--
-        | <a href="{{  get_absolute_url }}/nodetypes" title="Nodes">Node Types</a>
+<!--        | <a href="{{  get_absolute_url }}/nodetypes" title="Nodes">Node Types</a>
         | <a href="{{  get_absolute_url }}/objects" title="Objects">Node Objects</a>
 -->
    {% if user.is_authenticated %}
@@ -47,6 +46,9 @@
                         <li><a href="{{ root_path }}password_change/">
                     {% endif %}
                     {% trans 'Change password' %}</a></li>
+		<!--Loom Preference !-->
+		    <li><a href="/gstudio/userpreference/" title="Loom Preference" >
+		    {% trans 'Loom Preference'%}</a></li>
                     <!-- Logout -->
 		    <li><a href="{{get_absoulute_url}}/accounts/logout/" title="Log out">
                     {% trans 'Log out' %}</a></li>

@@ -1,9 +1,45 @@
 {% load tagging_tags comments i18n %}
 {% ifequal optionpriorpost "priorpost" %}
+<script type="text/javascript" >
+$(".deletepriorpage").click(function(){
+var id1 = {{objectid}},
+    id2 = this.id;
+r = confirm("Please confirm delete ")
+if (r==true)
+  {
+tagname = arr;
+$.ajax({
+	url: '/gstudio/ajax/deletepriorpage/',
+	type: 'POST',
+	data: {objectid1:id1,objectid2:id2,csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#priorpostpages').html(data);
+
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+		  }
+});  
+       			      
+  }
+else
+  {
+  
+  }
+});
+
+</script>
 <br/>
 <strong>Prior Pages:</strong>
 {% for each in priorgbobject %}
 <a href="{{each.get_view_object_url}}">{{each}}</a>
+<a class="deletepriorpage" id="{{each.id}}" value="{{each}}" title="delete {{each}}"> 
+<img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/></a>
 {% if not forloop.last %},{% endif %}
 {% empty %}
  <span>No prior page</span>

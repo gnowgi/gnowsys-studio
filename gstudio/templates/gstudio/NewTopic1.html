@@ -1,4 +1,4 @@
-
+1;3201;0c
 {% extends "gstudio/base.html" %}
 {% block content %}
 <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -27,10 +27,10 @@ $("#topicsubmit").hide();
 
 <form action="" method="post">{% csrf_token %}
 <p>Name : <input type="text" name="subject"></p>
-<p>Substance: <textarea name="message" id="contenttext" rows="10" cols="50" style="display:none" ></textarea></p>
+<p>Description: <textarea name="message" id="contenttext" rows="10" cols="50" style="display:none" ></textarea></p>
 <!-- style="display:none;" -->
 
-<input type="button" id="topicaddcontent"  name="content" value="Add Substance">
+<input type="button" id="topicaddcontent"  name="content" value="Add Description">
 <input type="button" id="topicaddsave" name="savecontent" value="Save" style="display:none">
 
 <input type="hidden" value={{user.id}} name = "idusr">

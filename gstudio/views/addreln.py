@@ -20,6 +20,17 @@ from objectapp.models import System,Gbobject
 from gstudio.models import NID
 from django.template.loader import get_template
 from django.template import Context
+import json
+
+def getrefreshrts(request):
+    retrt={}
+    listrts=[]
+    for each in Relationtype.objects.all():
+        s=each.title
+        listrts.append(str(s))
+    retrt['relns']=listrts
+    jsonobject = json.dumps(retrt)
+    return HttpResponse(jsonobject, "application/json")
 
 
 def addrelnform(request,meetob):
@@ -76,9 +87,22 @@ def addreln(request,meetob):
                 return HttpResponseRedirect(p)
         else:
                 t = get_template('gstudio/addrelnform_refresh.html')
-                html = t.render(Context({'meetobj':j}))
+                html = t.render(Context({'meetingob':j}))
                 return HttpResponse(html)
     except:
         t = get_template('gstudio/addrelnform_refresh.html')
-        html = t.render(Context({'meetingobj':j}))
+        html = t.render(Context({'meetingob':j}))
         return HttpResponse(html)
+
+
+def deleteRelation(request,meetingob):
+    if request.method == 'GET' :
+        relation_ajax_id=request.GET['relation_ajax_id']
+   
+    relation = Relation.objects.filter(id=relation_ajax_id)
+    if relation:
+	relation.delete()
+    j=System.objects.get(id=meetingob);
+    t = get_template('gstudio/addrelnform_refresh.html')
+    html = t.render(Context({'meetingob':j}))
+    return HttpResponse(html)

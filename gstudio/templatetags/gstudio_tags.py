@@ -467,7 +467,7 @@ def put_home_title():
 @register.inclusion_tag('gstudio/addreln.html')
 def add_res_relation(meetingob):
   template='gstudio/addreln.html'
-  print "meetob=",meetingob
+ 
   return {'template':template,'meetingob':meetingob}
 
 @register.simple_tag
@@ -483,7 +483,7 @@ def get_available_objects():
     listsubjs=[]
     for each in Gbobject.objects.all():
         s=each.title
-        listsubjs.append(str(s))
+        listsubjs.append(each.__str__())
     return str(listsubjs)
 
 
@@ -499,6 +499,16 @@ def get_add_tag():
     for each in tag:
 	listtag.append(each.__str__())	
     return str(listtag)
+
+@register.simple_tag
+def get_page_drawer():
+    pagedrawer = []
+    #wikiset = Systemtype.objects.all()
+    drawerset = Systemtype.objects.get(title="Wikipage")
+    drawer= drawerset.member_systems.all()
+    for each in drawer:
+	pagedrawer.append(each.__str__())
+    return str(pagedrawer)
 
 
 @register.inclusion_tag('gstudio/priorpost.html')
@@ -521,9 +531,3 @@ def get_pri_post_page():
     for each in gbobject:
         listobject.append(each.__str__())
     return str(listobject)
-
-@register.inclusion_tag("gstudio/templatetags/comment_security_hash.html")
-def comment_security_hash(blogentry,opts):
-    targ='%s:%s'%(ContentType.objects.get_for_model(blogentry).id,blogentry.id)
-    return {"hash":Comment.objects.get_security_hash(opts,'','',targ)}
-

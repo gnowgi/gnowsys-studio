@@ -1,7 +1,15 @@
 {% extends "gstudio/base.html" %}
 {% load gstudio_tags %}
 {% load i18n %}
+ {% block title %}Loom{% endblock %}
 {% block content %}
+ <script type="text/javascript" >
+$(window).load(function() {
+ 
+ $("#graphcss").hide();
+});
+
+</script>
 
 
 
@@ -10,6 +18,11 @@
     <p></br> -->
 <p><font size ="3" > On the loom now:</font></p>
 </br>
+{% if user.is_authenticated %}
+    <input type="button" value="Want to weave a thread?" onClick="location.href='groupadd/';">
+<br/>
+{% endif %}
+
     {% for each in meetings.member_systems.all %}
     <font size ="3" ><a href="/gstudio/group/gnowsys-grp/{{each.id}}/">{{each.title}}</a> </font></br>
     {% endfor %}

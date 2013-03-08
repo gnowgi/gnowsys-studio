@@ -21,6 +21,7 @@ $.ajax({
        data: {reln:reln,obj:obj,slug:slug},
        success: function(){
              window.close()
+             window.opener.refreshdiv();
        }
      });
 }

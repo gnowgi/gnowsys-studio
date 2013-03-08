@@ -1,0 +1,83 @@
+{% extends "gstudio/base.html" %}
+{% block title %}Loom Preference{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/gstudio/js/jscolor/jscolor.js"></script>
+<script type="text/javascript">
+   $(window).load(function() {
+	{% if show %}
+	$("#save").show();
+	$("#Edit").hide();
+	{% else %}
+	document.getElementById('bgcolor').value='{{bgcolor}}';
+	document.getElementById('fontcolor').value='{{fontcolor}}';
+	document.getElementById('bgcolor').style.background = '#'+'{{bgcolor}}';
+	document.getElementById('fontcolor').style.background = '#'+'{{fontcolor}}';
+	document.getElementById('id').style.background = '#'+'{{bgcolor}}';
+	document.getElementById('id').style.color = '#'+'{{fontcolor}}';
+	$("#save").hide();
+	$("#Edit").show();
+	{% endif %}
+        $("#content").css({"width": "400px",});});
+
+/*jQuery(document).ready(function($) {
+    $("#editbgcolor").click(function(){
+        $(this).replaceWith('<input type="submit" value="save" name ="editcolorsave" '+'/'+'> <input  id="bgcolor" class="color" onchange="getColor();" name = "bgcolor" '+'/'+ '>');
+	
+	});
+    $("#editfontcolor").click(function(){
+        $(this).replaceWith('<input type="submit" value="save" name = "editcolorsave" '+'/'+'> <input  id="fontcolor" class="color" onchange="getColor();" name = "fontcolor" '+'/'+ '>');
+	});
+});*/
+
+function getColor()
+{
+//alert("function called");
+var bgColor=document.getElementById('bgcolor').value;
+var fontColor=document.getElementById('fontcolor').value;
+//document.getElementById('bgcolor').value="";
+//document.getElementById('fontcolor').value="";
+//alert('#'+color1);
+document.getElementById('id').style.background = '#'+bgColor;
+document.getElementById('id').style.color = '#'+fontColor;
+}
+</script>
+
+<form action="" method="post">{% csrf_token %}
+<div>
+<h2>Choose color for Loom Responses:</h2>
+<b>For Font color:</b><br/>
+<input  id="fontcolor" class="color" onchange="getColor();" name = "fontcolor" size="8" /><br/>
+<b>For BackGround color:</b><br/>
+<input  id="bgcolor" class="color" onchange="getColor();" name = "bgcolor" size="8"/>
+</div>
+<br/>
+<b>Preview:</b>
+<div id="id" style="border:1px solid black;widh:100px">
+<p>
+<i>Response:</i><br/>
+Choose light color for Background<br>
+Choose Dark color for Font.<br/>
+These color will reflects on your Loom Resoponses
+</p></div><br/>
+<input type="submit" id="save" value="save" name = "colorsave" />
+<input type="submit" id="Edit" value="Update" name = "editcolorsave" />
+
+<!--
+{% if edit %}
+<form action="" method="post">{% csrf_token %}
+{% if bgcolor %}
+<b> Background-color :</b>{{bgcolor}} <input id="editbgcolor" type="button" value="Edit" />
+{% else %}
+<b> chose your background : </b><input  id="bgcolor" class="color" onchange="getColor();" name = "bgcolor" />
+<input type="submit" value="save" name = "colorsave" />
+{% endif %}
+
+{% if fontcolor %}
+<b> Font-color :</b>{{fontcolor}} <input id="editfontcolor" type="button" value="Edit" />
+
+{% else %}
+<b> chose your font color : </b><input  id="fontcolor" class="color" onchange="getColor();" name = "fontcolor" />
+<input type="submit" value="save" name = "colorsave" />
+{% endif %}
+{% endif %}
+{% endblock %}!-->

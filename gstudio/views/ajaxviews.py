@@ -1,4 +1,5 @@
 
+
 # Copyright (c) 2011,  2012 Free Software Foundation
 
 #     This program is free software: you can redistribute it and/or modify
@@ -16,12 +17,21 @@
 
 
 from django.http import HttpResponse
+from django.utils.encoding import smart_str,smart_unicode
+from django.template import RequestContext
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
+from gstudio.methods import *
 import json
+import shutil
+import codecs
 from gstudio.models import *
 from objectapp.models import *
 rlist={}
 import os
 from settings import PYSCRIPT_URL_GSTUDIO
+from demo.settings import FILE_URL,PYSCRIPT_URL_GSTUDIO,HTML_FILE_URL
+
 
 def AjaxAttribute(request):
     iden = request.GET["id"]
@@ -390,6 +400,207 @@ def AjaxAddContent(request):
     refobj.content= newdata
     refobj.save()
     return HttpResponse(refobj.content)
+
+def AjaxAddDrawer(request):
+    list1=request.GET["title"]
+    wtitle=request.GET["wtitle"]
+    sys=System.objects.get(id=wtitle)
+
+    if list1 == "null":
+	sys=System.objects.get(id=wtitle)
+       
+        sys.gbobject_set.clear()
+            
+	n_set=[]
+        varobset=[]
+        
+    else:
+        list1=list1+","
+        list2=eval(list1)
+        sys=System.objects.get(id=wtitle)
+        sys.gbobject_set.clear()
+        i=0
+        n_set=[]
+    
+        while i<len(list2):
+            objs=Gbobject.objects.get(id=list2[i])
+            sys.gbobject_set.add(objs)
+            n_set.append(list2[i])
+            i=i+1
+        var=sys.in_gbobject_set_of.__dict__['through']
+        varobset=[]
+        for each in var.objects.all():
+            print sys.id,sys.title,each.system_id
+            if each.system_id == sys.id:
+                s=Gbobject.objects.get(id=each.gbobject_id)
+                s1=s.title
+                varobset.append(s)
+    variables = RequestContext(request, {'sys':sys,'list':n_set,'objset':varobset})
+    template = "metadashboard/newcollection.html"
+    
+    return render_to_response(template, variables)
+
+def HtmlExport(request):
+    ptitle=request.GET["ptitle"]
+    set1=request.GET["title"]
+    if set1 == "null":
+        
+        ptitle=System.objects.get(id=ptitle)
+        s=ptitle.get_ssid.pop()	
+        contorg=ptitle.content_org    #ptitle=eval(ptitle)
+        content_org="* "+ptitle.title+"\n"+contorg+"\n"
+
+    else:
+	ptitle1=System.objects.get(id=ptitle)
+	s=ptitle1.get_ssid.pop()
+        
+        set1=set1+","
+        set2=eval(set1)
+        
+        s1=str(ptitle.title)
+        varobset=get_gbobjects(ptitle)
+        contorg=ptitle1.content_org    #ptitle=eval(ptitle)
+        content_org="* "+ptitle1.title+"\n"+str(contorg)+"\n"
+        set2=[]
+        set2=ptitle1.gbobject_set.all()
+        l=len(set2)
+        i=0
+        if l>0:
+            while i<len(varobset):
+                st=System.objects.get(id=varobset[i].id)
+                stcontorg=st.content_org
+                content_org += "** "+varobset[i].title+"\n"+stcontorg+"\n"
+                if st.gbobject_set.exists():
+                    gbset=get_gbobjects(st.id)
+                    
+                    
+                    for each in gbset:
+                        subst=System.objects.get(title=each.title)
+                        substcontorg=subst.content_org
+                        content_org += "*** "+"\n"+substcontorg+"\n"
+                i+=1                
+                  
+                            
+                
+                #          if subst.gbobject_set.exists():
+                #              subgbset=get_gbobjects(subst.id)
+                #              for each in subgbset:
+                #                  subtwost=System.objects.get(id=each.id)
+                            
+                #                  content_org += "**** "+str(each)+"\n"+each.content_org+"\n"
+                            
+                #                  if subtwost.gbobject_set.exists():
+                #                      subtwogbset=get_gbobjects(subtwost.id)
+                #                      for each in subtwogbset:
+                #                          subthreest=System.objects.get(id=each.id)
+                #                          content_org += "***** "+str(each)+"\n"+each.content_org+"\n"
+                
+
+                #                          if subthreest.gbobject_set.exists():
+                #                              subthreegbset=get_gbobjects(subthreest.id)
+                #                              for each in subthreegbset:
+                #                                  subfourst=System.objects.get(id=each.id)
+                #                                  content_org += "****** "+str(each)+"\n"+each.content_org+"\n"
+                                            
+                #                                  if subfourst.gbobject_set.exists():
+                #                                      subfourgbset=get_gbobjects(subfourst.id)
+                #                                      for each in subfourgbset:
+                #                                          subfivest=System.objects.get(id=each.id)
+                #                                          content_org += "******* "+str(each)+"\n"+each.content_org+"\n"
+                                                    
+                #                                          if subfivest.gbobject_set.exists():
+                #                                              subfivegbset=get_gbobjects(subfivest.id)
+                #                                              for each in subfivegbset:
+                #                                                  subsixst=System.objects.get(id=each.id)
+                #                                                  content_org += "******** "+str(each)+"\n"+each.content_org+"\n"
+                                                            
+                    
+                # i+=1 
+		
+   
+    fname=str(s)+"-download"
+    ext=".org"
+    myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+    content_org=content_org.encode("utf-8")
+    myfile.write(content_org)
+    myfile.close()
+
+    myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+    rfile=myfile.readlines()
+    scontent="".join(rfile)
+    newcontent=scontent.replace("\r","")
+    myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+    myfile.write(newcontent)
+
+    myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+    myfile.write("\n  /All material is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License unless mentioned otherwise./ ")
+    myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+    myfile.write("\n#+TITLE: ")
+    myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+    stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+    output = stdout.read()
+    file1= fname+".html"
+    a=open(os.path.join(FILE_URL,file1),'r')
+    r=a.readlines()
+    r1=r[:-6]
+    ap=open(os.path.join(FILE_URL,file1),'w')
+    s=""
+    s=r1
+    n=""
+    for line in s:
+        n += line.lstrip()
+    print r1
+    ap.write(n)
+    ap.close()
+    src=FILE_URL+fname+".html"
+    des=HTML_FILE_URL
+    file_relocate=shutil.copy(src,des)
+    fname1=fname+".html"
+    variables = RequestContext(request, {'fname':fname1,'newfname':"test"})
+    template = "metadashboard/newdownload.html"
+    return render_to_response(template, variables)
+
+
+    
+
+def AjaxAddCollection(request):
+    title1=request.GET["title"]
+    collection=request.GET["collection"]
+    uid=request.GET["uid"]
+    usr=request.GET["usr"]
+    orgcontent=request.GET["orgcontent"]
+    list1=request.GET["list"]
+    list1=list1.split(",");
+    create_wikipage(title1,uid,orgcontent,usr,collection,list1)
+    return HttpResponseRedirect("/gstudio/page/gnowsys-page/1815")
+
+def IsWiki(request):
+    ptitle=request.GET["title"]
+    iswiki=Gbobject.objects.filter(title=ptitle)
+    if iswiki:
+        return HttpResponse("sucess")
+
+def ajaxDeletePriorpage(request):
+	print "in ajax"
+	objectid1 = ""
+	gbid1=""
+	if request.is_ajax() and request.method =="POST":
+		print "in get"
+		objectid1=request.POST['objectid1']
+		objectid2=request.POST['objectid2']
+		print objectid1,objectid2,"objectsid"
+		gbid1=Gbobject.objects.get(id=objectid1)
+		gbid2 = Gbobject.objects.get(id=objectid2)
+		gbid1.prior_nodes.remove(gbid2)
+		gbid2.posterior_nodes.remove(gbid1)
+		gbid1=Gbobject.objects.get(id=objectid1)
+	priorgbobject = gbid1.prior_nodes.all()
+	posteriorgbobject = gbid1.posterior_nodes.all()
+	variables = RequestContext(request, {'priorgbobject':priorgbobject,'posteriorgbobject':posteriorgbobject,'objectid':objectid1,'optionpriorpost':"priorpost"})
+        template = "gstudio/repriorpost.html"
+        return render_to_response(template, variables)
+
+	
                     
                 
                 

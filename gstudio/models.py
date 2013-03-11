@@ -457,6 +457,7 @@ class Metatype(Node):
     Metatype object for Nodetype
     """
 
+
     description = models.TextField(_('description'), blank=True, null=True)
     parent = models.ForeignKey('self', null=True, blank=True, verbose_name=_('parent metatype'), related_name='children')
 
@@ -657,7 +658,7 @@ class Metatype(Node):
                 super(Metatype, self).save(*args, **kwargs) # Call the "real" save() method.
 
 class Edge(NID):
-
+    
     metatypes = models.ManyToManyField(Metatype, verbose_name=_('member of metatypes'),
                                        related_name='member_edges',
                                        blank=True, null=True)
@@ -682,6 +683,8 @@ class Nodetype(Node):
     """
     Model design for publishing nodetypes.  Other nodetypes inherit this class.
     """
+
+
 
     STATUS_CHOICES = ((DRAFT, _('draft')),
                       (HIDDEN, _('hidden')),
@@ -1057,8 +1060,8 @@ class Nodetype(Node):
             return textile(self.content)
         elif MARKUP_LANGUAGE == 'restructuredtext':
             return restructuredtext(self.content)
-        elif not '</p>' in self.content:
-            return linebreaks(self.content)
+        # elif not '</p>' in self.content:
+        #     return linebreaks(self.content)
         return self.content
     @property
     def get_relations(self):
@@ -1660,7 +1663,6 @@ class Relationtype(Nodetype):
     '''
     Properties with left and right subjects (Binary relations) are defined in this class.
     '''
-
     inverse = models.CharField(_('inverse name'), help_text=_('when subjecttypes are interchanged, what should be the name of the relation type? This is mandatory field. If the relation is symmetric, same name will do.'), max_length=255,db_index=True )
     left_subjecttype = models.ForeignKey(NID,related_name="left_subjecttype_of", verbose_name='left role')
     left_applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='Applicable node types for left role')
@@ -1879,7 +1881,6 @@ class Attributetype(Nodetype):
     The rest of the fields may be required depending on what type of
     field is selected for datatype.
     '''
-
     subjecttype = models.ForeignKey(NID, related_name="subjecttype_of", verbose_name='subject type name')
     applicable_nodetypes = models.CharField(max_length=2,choices=NODETYPE_CHOICES,default='OT', verbose_name='applicable nodetypes')
     dataType = models.CharField(max_length=2, choices=FIELD_TYPE_CHOICES,default='01', verbose_name='data type of value')
@@ -2318,7 +2319,6 @@ class AttributeTextField(Attribute):
 
 
 class AttributeIntegerField(Attribute):
-
     value = models.IntegerField(max_length=100, verbose_name='Integer')
 
     def __unicode__(self):
@@ -2675,7 +2675,6 @@ class Processtype(Nodetype):
     A kind of nodetype for defining processes or events or temporal
     objects involving change.
     """
-
     changing_attributetype_set = models.ManyToManyField(Attributetype, null=True, blank=True,
                                verbose_name=_('attribute set involved in the process'),
                                related_name=' changing_attributetype_set_of')
@@ -2714,6 +2713,7 @@ class Systemtype(Nodetype):
     """
     class to organize Systems
     """
+
 
     nodetype_set = models.ManyToManyField(Nodetype, related_name="nodetype_set_of", verbose_name='Possible edges in the system',
                                            blank=True, null=False)
@@ -2759,7 +2759,6 @@ class AttributeSpecification(Node):
     proposition but a description, which can be used as a subject in
     another sentence.
     """
-
     attributetype = models.ForeignKey(Attributetype, verbose_name='property name')
     subjects = models.ManyToManyField(NID, related_name="subjects_attrspec_of", verbose_name='subjects')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
@@ -2805,7 +2804,6 @@ class RelationSpecification(Node):
     """
     specifying a relation with a subject
     """
-
     relationtype = models.ForeignKey(Relationtype, verbose_name='relation name')
     subjects = models.ManyToManyField(NID, related_name="subjects_in_relspec", verbose_name='subjects')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
@@ -2849,7 +2847,6 @@ class NodeSpecification(Node):
     """
     A node specified (described) by its relations or attributes or both.
     """
-
     subject = models.ForeignKey(Node, related_name="subject_nodespec", verbose_name='subject name')
     relations = models.ManyToManyField(Relation, related_name="relations_in_nodespec", verbose_name='relations used to specify the domain')
     attributes = models.ManyToManyField(Attribute, related_name="attributes_in_nodespec", verbose_name='attributes used to specify the domain')
@@ -2940,7 +2937,6 @@ class Union(Node):
     """
     union of two classes
     """
-
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'union_of', verbose_name='node types for union')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
                                      related_name='member_unions',
@@ -2973,7 +2969,6 @@ class Complement(Node):
     """
     complement of a  class
     """
-
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'complement_of', verbose_name='complementary nodes')
     metatypes=models.ManyToManyField(Metatype,related_name='meta_complement',verbose_name=_('Metanodes'),
                                      blank=True, null= True)
@@ -3006,7 +3001,6 @@ class Intersection(Node):
     """
     Intersection of classes
     """
-
     nodetypes = models.ManyToManyField(Nodetype, related_name = 'intersection_of', verbose_name='intersection of classes')
     metatypes=models.ManyToManyField(Metatype,verbose_name=_('member of metatypes'),
                                      related_name='member_intersectn',
@@ -3085,7 +3079,6 @@ post_save.connect(ping_external_urls_handler, sender=Nodetype,
 
 class Peer(User):
     """Subclass for non-human users"""
-
     def __unicode__(self):
         return self.ip
 

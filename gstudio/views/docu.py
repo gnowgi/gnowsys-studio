@@ -43,8 +43,24 @@ def docu(request):
 		addtags = request.POST.get("addtags","")
 		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = request.POST.get("commenttext","")
+		fav=request.POST.get("fav","")
 		if rating :
         	 	rate_it(int(docid),request,int(rating))
+
+		if fav != "" :
+			list1=[]
+			t=Gbobject.objects.filter(title=user+"document")
+			if t:
+			    t=Gbobject.objects.get(title=user+"document")
+			    if t.get_relations():
+				    for each in t.get_nbh['has_favourite']:
+					    d=each.right_subject_id
+					    x=Gbobject.objects.get(id=d)
+					    list1.append(x)
+			variables = RequestContext(request,{'documents':list1,'fav':fav})
+			template = "gstudio/docu.html"
+			return render_to_response(template, variables)	
+
 		if delete != "":
 			each=q.get(id=dn)
 			each.delete()
@@ -78,6 +94,7 @@ def docu(request):
 			i.save()
 
 		if contenttext !="":
+			print contenttext,"content"
 	                edit_description(docid,contenttext,str(request.user))
 
 
@@ -149,6 +166,7 @@ def create_object(file,log,content,usr,title):
 	p.content_org=contorg.encode('utf8')
 	p.status=2
 	p.save()
+	p.slug = p.slug + "-" + str(p.id)
 	p.sites.add(Site.objects.get_current())
 	p.save()
 	s=Author.objects.get(username=log)
@@ -177,8 +195,11 @@ def create_object(file,log,content,usr,title):
  	output = stdout.read()
  	data = open(os.path.join(FILE_URL,fname+html))
  	data1 = data.readlines()
- 	data2 = data1[72:]
-	data3 = data2[:-3]	
+        
+ 	data2 = data1[107:]
+        dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+
+	data3 = data2[:-6]	
  	newdata=""
  	for line in data3:
         	newdata += line.lstrip()
@@ -202,6 +223,10 @@ def show(request,documentid):
 		addtags = request.POST.get("addtags","")
 		texttags = unicode(request.POST.get("texttags",""))
 		contenttext = unicode(request.POST.get("contenttext",""))
+		favid=request.POST.get("favid","")
+		favusr=request.POST.get("favusr","")
+		removefavid = request.POST.get("removefavid","")
+		titlecontenttext = request.POST.get("titlecontenttext","")
 		if rating :
 	       	 	rate_it(int(docid),request,int(rating))
 		if addtags != "":
@@ -210,8 +235,45 @@ def show(request,documentid):
 			i.save()
 		if contenttext !="":
 			 edit_description(docid,contenttext,str(request.user))
+
+		if favid!="":
+                        e=0
+                        r = Objecttype.objects.get(title="user")
+                        for each in r.get_nbh['contains_members']:
+                                if favusr+"document" == each.title:
+                                    e=1
+                        if e==0 :
+				t=Gbobject()
+                                t.title=favusr+"document"
+                                t.slug=favusr+"document"
+                                t.content=' '
+                                t.status=2
+                                t.save()
+                                t.objecttypes.add(Objecttype.objects.get(title="user"))
+                                t.save()
+                        t=Gbobject.objects.get(title=favusr+"document")
+                        rel=Relation()
+                        rt=Relationtype.objects.get(title="has_favourite")
+                        rel.relationtype_id=rt.id
+                        f1=Gbobject.objects.get(id=favid)
+                        rel.left_subject_id=t.id
+                        rel.right_subject_id=f1.id
+                        rel.save()
+			t.save()
+		if removefavid !="":
+			objects = Gbobject.objects.get(id=removefavid)
+			objects.get_relations()['is_favourite_of'][0].delete()
+
 	gbobject = Gbobject.objects.get(id=documentid)
-	vars=RequestContext(request,{'doc':gbobject})
+	relation = ""
+	if gbobject.get_relations():
+		if gbobject.get_relations()['is_favourite_of']:
+			rel = gbobject.get_relations()['is_favourite_of'][0]
+			print rel
+			reluser = rel._left_subject_cache.title
+			if str(reluser) == str(request.user)+str("document"):
+				relation = "rel"
+	vars=RequestContext(request,{'doc':gbobject,'relation':relation})
 	template="gstudio/fulldocument.html"
 	return render_to_response(template,vars)
 
@@ -244,8 +306,10 @@ def edit_description(sec_id,title,usr):
  	output = stdout.read()
  	data = open(os.path.join(FILE_URL,fname+html))
 	data1 = data.readlines()
-	data2 = data1[72:]
-	data3 = data2[:-3]
+	data2 = data1[107:]
+        dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+
+	data3 = data2[:-6]
 	newdata=""
 	for line in data3:
 		newdata += line.lstrip()

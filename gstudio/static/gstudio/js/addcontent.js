@@ -7,8 +7,19 @@
    var editSection=false;
    var isSubsection=false;
    var editSubsection=false;
-   var isNode=false;
+   var isNode=false; 
    var isObject=false;
+   var isTwist=false;
+   var isThread=false;
+   var isResponse=false;
+   var editTwist=false;
+   var editThread=false;
+   var editResponse=false;
+   var editImage=false;
+   var isImage=false;
+   var isVideotitle=false;
+   var isEditdoc = false;
+
    function subsecsave(objid){
        var org_data = $("#gnoweditor").val();
        var encode_data = encodeURIComponent(org_data);
@@ -18,10 +29,39 @@
        $(".savesubsec1").hide();
        
    }
+function moveUp() {
+    
+        $('#lstBox1 :selected').each(function (i, selected) {
+            $(this).insertBefore($(this).prev());
+	    $("#lstbox2").options.att("selected",false);
+        });
+        $('#lstBox1 select').focus().blur();
+      $('#lstBox2 :selected').each(function (i, selected) {
+            $(this).insertBefore($(this).prev());
+	  $("#lstbox1").options.att("selected",false);
+        });
+        $('#lstBox2 select').focus().blur();
+}
+
+function moveDown() {
+    $('#lstBox1 :selected').each(function (i, selected) {
+        $(this).insertAfter($(this).next());
+	$("#lstbox2").options.att("selected",false);	
+    });
+    $('#lstBox1 select').focus().blur();
+       $('#lstBox2 :selected').each(function (i, selected) {
+            $(this).insertAfter($(this).next());
+	   $("#lstbox1").options.att("selected",false);
+        });
+        $('#lstBox2 select').focus().blur();
+    }
 
     
   jQuery(document).ready(function($) {
-       $("#addcontent").one("click",function(){
+        $('#btnUp').click(moveUp);
+     	 $('#btnDown').click(moveDown);
+        $("#addcontent").one("click",function(){
+ 	
 	   isSection=true;
 	          $("#addcontent").hide();
 	          //$("#save").show();
@@ -39,14 +79,16 @@
 		$('#submitsec').trigger('click');
 	    $("#save").hide();
 		});
-
+	$("#cancel").one("click",function() {
+	    $("#collection").hide();
+	    });
 	$("#pagecontent1").one("click",function() {
-            $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
+ 	    $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    isWikipage=true;
 	    $("#chart").hide();
 	    document.getElementById('gnoweditor').style.visibility="visible";
 	    $("#gnoweditor").orgitdown(mySettings);
-	    $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
+            $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
 	//$("#save1").show();
 	    $("#pagecontent1").hide();
 	    $("#content").css({"width":"300px",})
@@ -55,7 +97,14 @@
 	var org_data = $("#gnoweditor").val();
 	document.getElementById("orgpage1").value = org_data;
 	var encode_data = encodeURIComponent(org_data);
-	$('#submitpage').trigger('click');	
+
+	$(".orgitdownContainer").hide();
+	$("#pagedata").val(encode_data);
+	if ($("#coll").is(":checked")) {
+		}
+	    else {
+		 $('#submitpage').trigger('click');}
+
 
 	});
       $(".editseccontent").one("click",function(){
@@ -128,7 +177,7 @@
 	   $(".deletesec").hide();
        });
        $(".editpagecontent").one("click",function(){
-	   $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
+	    $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    editWikipage=true;
       	    $("#chart").hide();
 	    $(".editpagecontent").hide();
@@ -143,7 +192,7 @@
 	    var elmts = document.getElementsByClassName("editval");
 	    for (var i = 0; i < elmts.length; i++){
 		elmts[i].setAttribute("value","edited");}
-	   // var screenTop = $(document).scrollTop();
+	   //var screenTop = $(document).scrollTop();
       	    $(".orgitdownContainer").css({
       		"margin-top":"0px","margin-left":"10px"});
 	   //$(".tag").hide();
@@ -158,6 +207,46 @@
 	  
 		    
        });
+	$(".addtodrawer").click(function(){
+	alert("test");
+	  
+	  // var ptitle=document.getElementById("ptitle").value;
+	  $(".addtodrawer").hide();
+	  var getdrawer=$(".getdrawer").val();
+	  $("#collection").show();
+	  
+       });
+
+
+      $("#resetdrawer").click(function(){
+	  $('#lstBox2').empty();
+      });
+
+     
+        $('#btnRight').click(function(e) {
+        var selectedOpts = $('#lstBox1 option:selected');
+        if (selectedOpts.length == 0) {
+            alert("Nothing to move.");
+            e.preventDefault();
+        }
+
+        $('#lstBox2').append($(selectedOpts).clone());
+        $(selectedOpts).remove();
+        e.preventDefault();
+    });
+      $('#btnLeft').click(function(e) {
+        var selectedOpts = $('#lstBox2 option:selected');
+        if (selectedOpts.length == 0) {
+            alert("Nothing to move.");
+            e.preventDefault();
+        }
+
+        $('#lstBox1').append($(selectedOpts).clone());
+        $(selectedOpts).remove();
+        e.preventDefault();
+    });
+
+   	
        $(".savepagecontent").one("click",function(){
 	   var org_data = $("#gnoweditor").val();
 	   var elmts = document.getElementsByClassName("reptext");
@@ -199,38 +288,37 @@
 	   $("#nodedit").hide();
 	   
        });
- 
+
+
       $("#editobjectcontent").one("click",function(){
-          isObject=true;
-          $("#chart").hide();
-          $("#content img").css({"max-width":"600px",})
-
-          $("#content").css({"width":"600px",})
-          document.getElementById('gnoweditor').style.visibility="visible";
-          $("#gnoweditor").orgitdown(mySettings);
-          var a = this.name;
-
-          $("#gnoweditor").val(a);
-          var screenTop = $(document).scrollTop();
-          $(".orgitdownContainer").css({
-              "margin-top":screenTop,});
-          $("#editnodecontent").hide();
-           //$("#savenodecontent").show();                                                                                                   
-          $("#objectedit").hide();
-
-      });
-      $("#saveobjectcontent").one("click",function(){
-          var org_data = $("#gnoweditor").val();
-          var encode_data = encodeURIComponent(org_data);
-
-          var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
-          $("#reptext").val(decode_data);
-          $("#objectedit").trigger('click');
-          $("#objectedit").hide();
-
-      });
-       
-
+	  isObject=true;
+      	    $("#chart").hide();
+	    $("#content img").css({"max-width":"600px",})
+	   
+	    $("#content").css({"width":"600px",})
+	    document.getElementById('gnoweditor').style.visibility="visible";
+	    $("#gnoweditor").orgitdown(mySettings);
+            var a = this.name;
+	 
+	    $("#gnoweditor").val(a);
+	   var screenTop = $(document).scrollTop();
+      	    $(".orgitdownContainer").css({
+      		"margin-top":screenTop,});
+	   $("#editnodecontent").hide();
+	   //$("#savenodecontent").show();
+           $("#objectedit").hide();
+		    
+       });
+       $("#saveobjectcontent").one("click",function(){
+	   var org_data = $("#gnoweditor").val();
+	   var encode_data = encodeURIComponent(org_data);
+	  
+	   var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
+	   $("#reptext").val(decode_data);
+	   $("#objectedit").trigger('click');
+	   $("#objectedit").hide();
+	   
+       });
        $(".createsubsection").one("click",function(){
 	           isSubsection=true;
 	           //$(".savesubsec").show();

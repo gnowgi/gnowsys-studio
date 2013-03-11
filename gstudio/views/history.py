@@ -36,10 +36,11 @@ def history(request,ssid,version_no):
     ver_dict=nt.version_info(ssid)
     ver_nbh=ver_dict['nbhood']
     ver_nbh_dict=ast.literal_eval(ver_nbh) 
+    content = ""
     content=ver_dict['content']
-    content=content[3:-4]
-    ver_nbh_dict['content']=content
-	
+    if content:
+    	content=content[3:-4]
+    ver_nbh_dict['content']=content	
     variables = RequestContext(request,{'ver_nbh_dict':ver_nbh_dict ,'nt':nt,'ssid':ssid,'version_no':version_no})
     template="gstudio/display.html"
     return render_to_response(template,variables)
@@ -81,13 +82,19 @@ def compare_history(request,ssid):
     pp=pprint.PrettyPrinter(indent=4)
     
     ver_new_dict=ot.version_info(ssid1)
+    content = ""	
     content=str(ver_new_dict['content'])
-    content=content[3:-4]
+    if content:
+    	content=content[3:-4]
+    
     ver_new_dict['content']=content
 
     ver_old_dict=ot.version_info(ssid2)
+    content = ""
     content=str(ver_old_dict['content'])
-    content=content[3:-4]
+    if content:
+    	content=content[3:-4]
+
     ver_old_dict['content']=content
     
     ver_new_nbh=ver_new_dict['nbhood']
@@ -422,8 +429,10 @@ def get_merge_dict(ssid1,ssid2,direction):
      
      
      obj.save_revert_or_merge()	
+     content = ""	
      content=ver_merge['content']
-     content=content[3:-4]
+     if content:
+        content=content[3:-4]
      ver_merge['content']= content 
      return ver_merge
      
@@ -487,8 +496,10 @@ def revert(ssid):
      obj.save_revert_or_merge()	
      
      # formatting content field
+     content = ""
      content=ver_revert['content']
-     content=content[3:-4]
+     if content:
+     	content=content[3:-4]
      ver_revert['content']= content 			
       
      return ver_revert

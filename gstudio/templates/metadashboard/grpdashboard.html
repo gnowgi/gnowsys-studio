@@ -89,8 +89,8 @@ $("#topicsubmit"+submtobj).trigger('click');
 }
 if(activity=='added_response')
 {
-
-$("#topicsubmit"+submtobj).trigger('click');
+add_response_ajax();
+//$("#topicsubmit"+submtobj).trigger('click');
 }
 if(activity=='deleted_response')
 {
@@ -101,7 +101,75 @@ if(activity=='deleted_response')
 
 
 
+function add_response_ajax()
+{
 
+var response_content = $("#response_to_"+submtobj+" input[name=reply]").val();
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:submtobj,userid:{{user.id}},username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+submtobj).html(data);
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+		isResponse=false;
+		  }
+}); 
+}
+
+function add_sub_response_ajax(responseid)
+{
+
+var response_content = $("#sub_response_to_"+responseid+" input[name=reply]").val();
+
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:responseid,userid:"{{user.id}}",username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+responseid).html(data);
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+                isSubResponse=false;
+		$('#response'+responseid).focus();
+		window.scroll($('#response'+responseid).offset().left,$('#response'+responseid).offset().top-250);
+
+		  }
+});  
+}  
 
 
 
@@ -159,6 +227,7 @@ $("#sub1").attr("onclick","Subscribeuser()");
 {
  background-color:#F4F4F4;
 }
+
 </style>
 
 
@@ -264,7 +333,7 @@ $("#sub1").attr("onclick","Subscribeuser()");
 		{% endwith %}
 	{% endautoescape%}
 	<div>
-	<form method="post" action=".">{% csrf_token %}
+	<form  name="response_to_{{each.id}}" id="response_to_{{each.id}}" method="post" action=".">{% csrf_token %}
                 
     		<input type="hidden" class="reptext" id="topictext{{ each.id }}" name = "reply" style="display:none">
 	<input type="hidden" id="hidden{{ each.id }}" value="{{ each.id }}" name ="hiddenid">
@@ -317,7 +386,9 @@ $("#sub1").attr("onclick","Subscribeuser()");
  	<a href="?#">Expand All</a> </div>-->
 	<!--<ul class="treeview" id="tree">
  	<li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li>-->
+<div id="response{{each.id}}">
          {% show_comment each user.id flag1 admin_id attribute  %}
+</div>
 </div>
      {% endfor %}
 	The discussion freezes at {{endtime}}

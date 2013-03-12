@@ -601,7 +601,24 @@ def ajaxDeletePriorpage(request):
         return render_to_response(template, variables)
 
 	
-                    
+def ajaxAddResponsesToTwist(request):
+    print "ajax view"
+    userid = ''
+    admin_id = ''
+    if request.is_ajax() and request.method =="POST":
+        response_content=request.POST['response_content']
+        twistid=request.POST['twistid']
+        userid=request.POST['userid']
+        username=request.POST['username']
+	admin_id =request.POST['admin_id'] 
+	
+        
+    boolean = make_relation(response_content,int(twistid),int(userid),username)
+    twistobject = Gbobject.objects.get(id=int(twistid))
+     
+    variables = RequestContext(request, {'comment':twistobject , 'idusr' : int(userid), 'flag' : "True", 'admin_id' : admin_id , 'attribute' : "true"})
+    template = "gstudio/tags/comment.html"
+    return render_to_response(template,variables)                   
                 
                 
 

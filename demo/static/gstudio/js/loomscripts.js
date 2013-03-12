@@ -1,18 +1,27 @@
  $.noConflict();
-var isThread=false;
-var editThread=false;
-var isTwist=false;
-var editTwist=false;
-var isResponse=false;
-var isSubResponse=false;
-var isVideotitle=false;
-var objid;
-var twistid;
-var responseid;
-var activity;
-var not_obj;
-var submtobj;
-
+   var isWikipage=false;
+   var editWikipage=false;
+   var objid;
+   var twistid;
+   var responseid;
+   var isSection=false;
+   var editSection=false;
+   var isSubsection=false;
+   var editSubsection=false;
+   var isNode=false;
+   var isObject=false;
+   var isTwist=false;
+   var isThread=false;
+   var isResponse=false;
+   var editTwist=false;
+   var editThread=false;
+   var editResponse=false;
+   var editImage=false;
+   var isImage=false;
+   var isVideotitle=false;
+   var isEditdoc = false;
+   var isSubResponse=false;
+   var checkeditor = 0;
 
 
 
@@ -22,17 +31,18 @@ function saveclick(objid){
     var encode_data = encodeURIComponent(org_data);
     var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));       
     $("#text"+objid).val(decode_data);
-    $("#submit"+objid).trigger('click');
-    $(".commenteditor").hide();
-    $(".editcontent").hide();
+    add_sub_response_ajax(objid)
+    //$("#submit"+objid).trigger('click');
+    $(".commenteditor").show();
+    $(".editcontent").show();
+    $(".orgitdown").hide();
 }//closing saveclick                                                                                                             
 
 
-
-
 jQuery(document).ready(function($) {
-    $(".commenteditor").one("click",function() {
-        $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
+    $(document).on('click',".commenteditor",function(){
+	if(checkeditor==0){
+        $(this).after('<textarea id="gnoweditor" style="visibility:hidden;width:450px;height:60px;"></textarea>');
         isSubResponse=true;
         var a=$(this).attr("id");
 	objid=a;
@@ -41,9 +51,7 @@ jQuery(document).ready(function($) {
         $("#content").css({"width": "600px",})
                 document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
-//        var screentop=$(document).scrollTop();
-//        $(".orgitdownContainer").css({"margin-top":screentop,});
-        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px","background":"white"});
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
         $("#save"+a).show();
         $(".commenteditor").hide();
         $(".chkdel").hide();
@@ -54,6 +62,32 @@ jQuery(document).ready(function($) {
 	$(".topicdelete").hide();
 	$(".editcontent").hide();
 	$(".commentsavecontent").hide();
+	$('#gnoweditor').focus();
+	window.scroll($(this).offset().left,($(this).offset().top-250));
+	checkeditor = 1;
+	}
+	else{
+	        $(this).after($('.orgitdown'));
+    		$(".orgitdown").show();
+                isSubResponse=true;
+                var a=$(this).attr("id");
+         	objid=a;
+                $("#chart").hide();
+                document.getElementById('gnoweditor').value="";	
+                $("#save"+a).show();
+                $(".commenteditor").hide();
+	        $(".chkdel").hide();
+	        $(".submitdelete").hide();
+	        $(".rating").hide();
+	        $(".editor").hide();
+		$(".topicchk").hide();
+		$(".topicdelete").hide();
+		$(".editcontent").hide();
+		$(".commentsavecontent").hide();
+		$('#gnoweditor').focus();
+		window.scroll($(this).offset().left,($(this).offset().top-250));
+	
+	}
 
     });
 
@@ -69,16 +103,15 @@ function topicsaveclick(objid){
 //    not_obj=objid
 
 
-    //notifedtdel();
-    $(".editor").hide();
-    $("#topicsubmit"+objid).trigger('click');
-    $(".editcontent").hide();
-    $(".orgitdownContainer").hide();
-
+    notifedtdel();
+    $(".editor").show();
+   // $(".editcontent").hide();
+    $(".orgitdown").hide();
 }//closing saveclick      
   jQuery(document).ready(function($) {
-       	$(".editor").one("click",function() {
-            $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
+	$(document).on('click',".editor",function(){
+       	//$(".editor").on("click",function() {
+            $(this).after('<textarea id="gnoweditor" style="visibility:hidden;width:450px;height:60px;"></textarea>');
             isResponse=true;
             activity="added_response"
 	    var a=$(this).attr("id");
@@ -89,8 +122,8 @@ function topicsaveclick(objid){
 	    $("#content").css({"width": "600px",})
 	    document.getElementById('gnoweditor').style.visibility="visible";
 	    $("#gnoweditor").orgitdown(mySettings);
-	   // var screentop=$(document).scrollTop();
-	    //$(".orgitdownContainer").css({"margin-top":screentop,});
+	//    var screentop=$(document).scrollTop();
+	  //  $(".orgitdownContainer").css({"margin-top":screentop,});
             $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
 	    responseid=a;
 	    //$("#save"+a).show();
@@ -102,6 +135,7 @@ function topicsaveclick(objid){
             $(".chkdel").hide();
             $(".submitdelete").hide();
             $(".rating").hide();
+	    checkeditor = 1;
 	});
 
 });
@@ -145,7 +179,6 @@ jQuery(document).ready(function($) {
  $.noConflict();
   jQuery(document).ready(function($) {
       $("#topicaddcontent").one("click",function() {
-	  $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	  isTwist=true;
           $("#chart").hide();
 	  $("#content img").css({"max-width": "600px",})
@@ -153,9 +186,8 @@ jQuery(document).ready(function($) {
           $("#content").css({"width": "600px",})
           document.getElementById('gnoweditor').style.visibility="visible";
           $("#gnoweditor").orgitdown(mySettings);
-//          var screentop=$(document).scrollTop();
-  //        $(".orgitdownContainer").css({"margin-top":screentop,});
-          $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
+          var screentop=$(document).scrollTop();
+          $(".orgitdownContainer").css({"margin-top":screentop,});
   //        $("#topicaddsave").show();
       });
       

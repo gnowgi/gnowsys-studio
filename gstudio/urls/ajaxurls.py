@@ -34,4 +34,5 @@ urlpatterns = patterns('gstudio.views.ajaxviews',
                        url(r'^collectionadd/$', 'AjaxAddCollection', name='ajax_view_collectionadd'),
                        url(r'^iswiki/$', 'IsWiki', name='ajax_view_iswiki'),
                        url(r'^deletepriorpage/$', 'ajaxDeletePriorpage', name='ajax_delete_priorpage'),
+                       url(r'^addresponsestotwist/$', 'ajaxAddResponsesToTwist', name='ajax_addresponsestotwist'),
                        )

@@ -19,7 +19,81 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from gstudio.models import *
 from gstudio.methods import *
+from notification import models as notification
+from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
+from gstudio.templatetags.gstudio_tags import show_nodesystem
 
+def notifyactivity(request,activ,sys_id,userid):
+        print "activity =",activ
+        sys=""
+        box=""
+        if activ=='edited_thread':
+                print 'edited thread'
+                ss=System.objects.filter(id=sys_id)
+                if ss:
+                        sys=System.objects.get(id=sys_id)
+                        box=sys.system_set.all()[0]
+                        sysurl=str(sys.get_view_url)
+
+        else:
+                print 'edited deleted',sys_id
+                ss=Gbobject.objects.filter(id=sys_id)
+                if ss:
+                        print 'inside ss'
+                        ss=Gbobject.objects.get(id=int(sys_id))
+                        if activ=='edited_twist':
+                                sys=ss.getthread_of_twist
+                                sysurl='gstudio/'+str(show_nodesystem(sys.id))
+                                box=get_threadbox_of_twist(int(sys_id))
+                                
+                        elif activ=='deleted_response'or 'added_response':
+                                print 'ss=',ss
+                                systhd=ss.getthread_of_response
+                                sys=systhd
+                                if systhd:
+                                        box=systhd.system_set.all()[0]
+                                        sysurl=str(systhd.get_view_url)
+                                        sys_id=str(sys.id)
+                        
+                        print box,"box"
+        if sys:
+                site=Site.objects.get_current()
+                render = render_to_string("/gstudio/notification/label.html",{'sender':request.user,'activity':activ,'conjunction':'\
+-','object':sys.title,'url':sysurl,'site':site})
+                if box:
+                        for bx in box.member_set.all():
+                                notification.create_notice_type(render, "Invitation Received", "you have received an invitation")
+                                notification.send([bx], render, {"from_user": request.user})
+        if activ=='edited_thread' or activ=='deleted_response' or activ=='added_response':
+                return HttpResponseRedirect("/gstudio/group/gnowsys-grp/"+sys_id)
+        elif activ=='edited_twist':
+                return HttpResponseRedirect("/gstudio/"+sysurl)
+
+
+def notifyuser(request,sys_id,userid):
+	sys=System.objects.get(id=sys_id)
+	box=sys.system_set.all()[0]
+	sysurl = str(sys.get_view_url)
+	site=Site.objects.get_current()
+        box.member_set.add(Author.objects.get(id=userid))
+	render = render_to_string("/gstudio/notification/label.html",{'sender':request.user,'activity':'Subscribed','conjunction':'to','object':sys.title, 'url':sysurl,'site':site}) 
+	for bx in box.member_set.all():
+		notification.create_notice_type(render, "Invitation Received", "you have received an invitation")
+		notification.send([bx], render, {"from_user": request.user})
+        return HttpResponseRedirect("/gstudio/group/gnowsys-grp/"+sys_id)
+
+def notifyuserunsubscribe(request,sys_id,userid):
+	sys=System.objects.get(id=sys_id)
+	box=sys.system_set.all()[0]
+	sysurl = str(sys.get_view_url)
+	site=Site.objects.get_current()
+	render = render_to_string("/gstudio/notification/label.html",{'sender':request.user,'activity':'UnSubscribed','conjunction':'from','object':sys.title,'url':sysurl,'site':site}) 
+	for bx in box.member_set.all():
+		notification.create_notice_type(render, "Invitation Received", "you have received an invitation")
+		notification.send([bx], render, {"from_user": request.user})
+        box.member_set.remove(Author.objects.get(id=userid))
+        return HttpResponseRedirect("/gstudio/group/gnowsys-grp/"+sys_id)
 
 def grouplater(request, sys_id, starttime):
 #   return HttpResponse("the meeting is scheduled later")
@@ -101,6 +175,8 @@ def groupdashboard(request,grpid):
         	if boolean :
 	     		return HttpResponseRedirect("/gstudio/group/gnowsys-grp/"+str(grpid))
    	grpid = int(grpid)
+	if request.user.is_superuser:
+		flag = True
    	if request.user.id == meeting_ob.authors.all()[0].id :
      		flag = True 
    	Topic = meeting_ob.system_set.all()[0].gbobject_set.all()

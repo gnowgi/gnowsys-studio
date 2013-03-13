@@ -54,8 +54,8 @@ urlpatterns = patterns(
     url(r'^resources/addreln/',include('gstudio.urls.addreln')),
     url(r'^resources/images/',include('gstudio.urls.image')), 
     url(r'^resources/videos/',include('gstudio.urls.video')), 
-    url(r'^resources/documents',include('gstudio.urls.docu')), 
-
+    url(r'^resources/documents',include('gstudio.urls.docu')),
+    url(r'^userpreference/',include('gstudio.urls.userpreference')),
 
     )
 

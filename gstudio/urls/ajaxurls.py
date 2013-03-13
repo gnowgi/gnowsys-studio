@@ -29,5 +29,10 @@ urlpatterns = patterns('gstudio.views.ajaxviews',
                        url(r'^ajaxcreatehtml/$', 'AjaxCreateHtml', name='ajax_views_createhtml'),
                        url(r'^ajaxcreatefile/$', 'AjaxCreateFile', name='ajax_views_createfile'),
                        url(r'^contentadd/$', 'AjaxAddContent', name='ajax_views_contentadd'),
-                      
+		       url(r'^draweradd/$', 'AjaxAddDrawer', name='ajax_views_draweradd'),
+                       url(r'^htmlexport/$', 'HtmlExport', name='ajax_view_htmlexport'),
+                       url(r'^collectionadd/$', 'AjaxAddCollection', name='ajax_view_collectionadd'),
+                       url(r'^iswiki/$', 'IsWiki', name='ajax_view_iswiki'),
+                       url(r'^deletepriorpage/$', 'ajaxDeletePriorpage', name='ajax_delete_priorpage'),
+                       url(r'^addresponsestotwist/$', 'ajaxAddResponsesToTwist', name='ajax_addresponsestotwist'),
                        )

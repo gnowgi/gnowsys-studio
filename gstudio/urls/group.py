@@ -20,6 +20,9 @@ from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('gstudio.views.group',
+                       url(r'^notify/([_\w]+)/(\d+)/(\d+)/$','notifyactivity',name='notify'),
+			url(r'^notify/(\d+)/(\d+)/$','notifyuser',name='group_notify'),
+			url(r'^notify/unsubscribe/(\d+)/(\d+)/$','notifyuserunsubscribe',name='group_notify_unsubscribe'),
                        url(r'^gnowsys-grp/(\d+)/$', 'groupdashboard', name='gstudio_group'),
                      url(r'^later$', 'grouplater', name='gstudio_group'),
                       url(r'^over$', 'groupover',

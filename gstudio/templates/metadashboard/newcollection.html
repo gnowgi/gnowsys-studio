@@ -1,0 +1,8 @@
+{% load i18n comments gstudio_tags %} 
+{% load adminmedia grp_tags %}
+{% load gstudio_tags %}
+	 
+	     {% for each in objset %}
+	     <li> <a href={{each.get_view_object_url}}>{{each.title}}</a></li>
+	     {% endfor %}
+	 

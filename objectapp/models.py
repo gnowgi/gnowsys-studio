@@ -209,6 +209,7 @@ class Gbobject(Node):
     rurl=models.URLField(_('rurl'),verify_exists=True,null=True, blank=True)
     objects = models.Manager()
     published = GbobjectPublishedManager()
+    #collection_order = models.IntegerField(_('collection_order'), null=True, blank=True)
 
     @property
     def getthread_of_response(self):
@@ -402,28 +403,39 @@ class Gbobject(Node):
         rel_dict['left-subjecttypes'] = {}
         rel_dict['right_subjecttypes'] ={}
 
-               
+
+        
         for relation in left_relset:
+            relc={}
             # check if relation already exists
+           
             if relation.relationtype.title not in rel_dict['left-subjecttypes'].keys():
                 # create a new list field and add to it
-                rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = []
+                rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = {}
             # add
             obj=Gbobject.objects.get(id=relation.right_subject_id)
-            rel_dict['left-subjecttypes'][str(relation.relationtype.title)].append(obj.title) 
-
+            relc[obj.title]=obj.get_view_object_url
+            if not obj.title in rel_dict['left-subjecttypes'][str(relation.relationtype.title)]:
+                rel_dict['left-subjecttypes'][str(relation.relationtype.title)].update(relc) 
+        
         for relation in right_relset:
+            reld={}
             # check if relation exists
             if relation.relationtype.inverse not in rel_dict['right_subjecttypes'].keys():
                 # create a new list key field and add to it
-                rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = []
+                rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = {}
                 # add to the existing key
             obj=Gbobject.objects.get(id=relation.left_subject_id)
-            rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].append(obj.title)
+            reld[obj.title]=obj.get_view_object_url
+            if not obj.title in rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)]:
+                 rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].update(reld)
 
+          
+           
+#        print "reldict-=",rel_dict
         relation_set.update(rel_dict['left-subjecttypes'])
         relation_set.update(rel_dict['right_subjecttypes'])
-        
+#        print relation_set,"=relset"       
         return relation_set
        
 
@@ -565,7 +577,7 @@ class Gbobject(Node):
 
        
 
-        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_absolute_url(),"refType":self.reftype}
+        this_node = {"_id":str(self.id),"title":self.title,"screen_name":self.title, "url":self.get_view_object_url,"refType":self.reftype}
         g_json["node_metadata"].append(this_node)      
 	
 
@@ -586,20 +598,22 @@ class Gbobject(Node):
                                     
                                 elif item.reftype!="Relation":
                                     # create nodes
-                                    g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_absolute_url(),"refType":item.reftype})
+                                    g_json["node_metadata"].append({"_id":str(item.id),"screen_name":item.title,"title":self.title, "url":item.get_view_object_url,"refType":item.reftype})
                                     g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item.id  })
                                     
                                 else:
                                     
                                     if item.left_subject.id==self.id:
                                         item1=item.right_subject
+                                        itemid=item.right_subject.id
                                         flag=1
                                         
                                     elif item.right_subject.id==self.id:
                                         item1=item.left_subject
+                                        itemid=item.left_subject.id
                                         flag=0						
-                                        
-                                    g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":item1.get_absolute_url(),"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
+                                    getit=Gbobject.objects.get(id=itemid)
+                                    g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":getit.get_view_object_url,"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
                                         
                                         
                                     g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
@@ -961,57 +975,129 @@ class Gbobject(Node):
 
     @property
     def get_view_object_url(self, *args, **kwargs):
-	def show_systemobjecturl(object_id):
-    		search=object_id    
-    		nbh=""
-	    	url=""
-    		for each in System.objects.all():
-    		    sysid=each.id
-    		    for eachsys in each.systemtypes.all():
-    		        if eachsys.title=="Meeting":
-    		            url="group/gnowsys-grp/"
-			    objecttitle = "TWIST"
-    		        elif eachsys.title=="Wikipage":
-    		            url="page/gnowsys-page/"
-			    objecttitle = "WIKIPAGE"
-    		    for eachob in each.system_set.all():
-    		        if eachob.gbobject_set.all():
-    		            for eachgbob in eachob.gbobject_set.all():
-    		                if search==eachgbob.id:
-    		                    nbh=url+str(sysid)
-            	
-    		    if search==sysid:
-    		        nbh=url+str(sysid)
-    			   
-    		return nbh
+        object_id = ""
+        objmem = self.ref.get_nbh['member_of']
+        objectname = ""
+        objstr = str(objmem)
+        if objstr != '[]':
+           objectname = objmem[0].title
+           if objectname == "Image":
+               return '/gstudio/resources/images/show/'+ str(self.id)
+           elif objectname == "Document":
+               return '/gstudio/resources/documents/show/'+str(self.id)
+           elif objectname == "Video":
+               return '/gstudio/resources/videos/show/'+str(self.id)
+           elif objectname == "Topic":
+               for each in self.in_gbobject_set_of.all():
+                   for each1 in each.system_set.all():
+                       object_id = each1.id
+               return '/gstudio/group/gnowsys-grp/'+object_id
+           elif objectname == "Section":
+               for each in self.in_gbobject_set_of.all():
+                   for each1 in each.system_set.all():
+                       object_id = each1.id
+               return '/gstudio/page/gnowsys-page/'+object_id
+           elif objectname == "Subsection":
+               return self.get_absolute_url
+           elif objectname == "Reply":
+               tes = self.gettwist_of_response
+               systes = tes.getthread_of_twist
+               return '/'+systes.get_view_url
+           else:
+            # show=show_systemobjecturl(self.id)                                                                                             
+            # if show != "":                                                                                                                 
+            #     return '/gstudio/'+show                                                                                                    
+            # else:                                                                                                                          
+            return self.get_absolute_url
+        else:
+            systemtype = ""
+            systemtype = self.ref.system.systemtypes.all()[0].title
+            if systemtype == "Wikipage":
+                return '/gstudio/page/gnowsys-page/'+str(self.id)
+            elif systemtype == "Meeting":
+                return '/gstudio/group/gnowsys-grp/'+str(self.id)
+            else:
+                return self.get_absolute_url
 
-	objmem = self.get_nbh['member_of']
-	objectname = ""
-	objstr = str(objmem)
-	if objstr != '[]':
-	   objectname = objmem[0].title
-	if objectname == "Image":
-	    return '/gstudio/resources/images/show/'+ str(self.id)
-	elif objectname == "Document":
-	    return '/gstudio/resources/documents/show/'+str(self.id)
-	elif objectname == "Video":
-	    return '/gstudio/resources/videos/show/'+str(self.id)
-	elif objectname == "Topic":
-	    return '/gstudio/'+show_systemobjecturl(self.id)
-	elif objectname == "Section":
-	    return '/gstudio/'+show_systemobjecturl(self.id)
-	elif objectname == "Subsection":
-	    return '/gstudio/'+show_systemobjecturl(self.id)
-	elif objectname == "Reply":
-	    tes = self.gettwist_of_response
-	    systes = tes.getthread_of_twist
-	    return '/'+systes.get_view_url
-	else:
-	    show=show_systemobjecturl(self.id)
-	    if show != "":
-		return '/gstudio/'+show
-	    else:
-		return self.get_absolute_url   
+ 	# def show_systemobjecturl(object_id):
+    	# 	search=object_id    
+    	# 	nbh=""
+	#     	url=""
+    	# 	for each in System.objects.all():
+    	# 	    sysid=each.id
+    	# 	    for eachsys in each.systemtypes.all():
+    	# 	        if eachsys.title=="Meeting":
+    	# 	            url="group/gnowsys-grp/"
+	# 		    objecttitle = "TWIST"
+    	# 	        elif eachsys.title=="Wikipage":
+    	# 	            url="page/gnowsys-page/"
+	# 		    objecttitle = "WIKIPAGE"
+    	# 	    for eachob in each.system_set.all():
+    	# 	        if eachob.gbobject_set.all():
+    	# 	            for eachgbob in eachob.gbobject_set.all():
+    	# 	                if search==eachgbob.id:
+    	# 	                    nbh=url+str(sysid)
+            	
+    	# 	    if search==sysid:
+    	# 	        nbh=url+str(sysid)
+    			   
+    	# 	return nbh
+
+	# objmem = self.get_nbh['member_of']
+	# objectname = ""
+	# objstr = str(objmem)
+	# if objstr != '[]':
+	#    objectname = objmem[0].title
+	# if objectname == "Image":
+	#     return '/gstudio/resources/images/show/'+ str(self.id)
+	# elif objectname == "Document":
+	#     return '/gstudio/resources/documents/show/'+str(self.id)
+	# elif objectname == "Video":
+	#     return '/gstudio/resources/videos/show/'+str(self.id)
+	# elif objectname == "Topic":
+	#     return '/gstudio/'+show_systemobjecturl(self.id)
+	# elif objectname == "Section":
+	#     return '/gstudio/'+show_systemobjecturl(self.id)
+	# elif objectname == "Subsection":
+	#     return '/gstudio/'+show_systemobjecturl(self.id)
+	# elif objectname == "Reply":
+	#     tes = self.gettwist_of_response
+	#     systes = tes.getthread_of_twist
+	#     return '/'+systes.get_view_url
+	# else:
+	#     show=show_systemobjecturl(self.id)
+	#     if show != "":
+	# 	return '/gstudio/'+show
+	#     else:
+	# 	return self.get_absolute_url   
+    @property
+    def get_object_bgcolor(self, *args, **kwargs):
+	username = self.authors.all()[0]
+	userobject = Gbobject.objects.get(title=username.username+"_preference").get_attributes()
+	if userobject:
+		bgc = ""
+		for key in userobject.keys():
+			if key == 'bg_color':
+				bgc = str(userobject['bg_color'][0])
+	#else :
+		#bgc = 'E8E8E8'
+			#if key == 'font_color':
+			#	fc =  str(usergbobjectattribute['font_color'][0])
+	return bgc
+    @property
+    def get_object_fontcolor(self, *args, **kwargs):
+	username = self.authors.all()[0]
+	userobject = Gbobject.objects.get(title=username.username+"_preference").get_attributes()
+	if userobject:
+		fc = ""
+		for key in userobject.keys():
+			if key == 'font_color':
+				fc = str(userobject['font_color'][0])
+	#else :
+	#	fc = 'E81809'
+			#if key == 'font_color':
+			#	fc =  str(usergbobjectattribute['font_color'][0])
+	return fc
 
     class Meta:
         """Gbobject's Meta"""

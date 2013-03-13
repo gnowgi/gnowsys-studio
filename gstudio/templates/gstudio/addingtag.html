@@ -8,15 +8,23 @@ $.merge(availableTags, {% get_add_tag %})
 
 jQuery(document).ready(function($) { 
 $(".tag{{objectid}}").click(function(){
-data = $("#tags{{objectid}}").attr('value');
+data = $("#tags{{objectid}}").val();//attr('value');
 $.ajax({
-url: '/gstudio/resources/images/addtag/',
-//type: 'POST',
-data: {objectid:{{objectid}},data:data},
-success: function(data){
-$('.tags{{objectid}}').html(data);
+	url: '/gstudio/resources/images/addtag/',
+	//type: 'POST',
+	data: {objectid:{{objectid}},data:data},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('.tags{{objectid}}').html(data);
+			     },
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+		  }
 
-}
 });  
 $("#tags{{objectid}}").val("");
 });
@@ -36,16 +44,32 @@ $('.tags{{objectid}}').html(data);
 });*/
 });
 function tagfunction(arr,id){
+r = confirm("Please confirm delete ")
+if (r==true)
+  {
 tagname = arr;
 $.ajax({
-url: '/gstudio/resources/images/deletetag/',
-//type: 'POST',
-data: {objectid:id,data:tagname},
-success: function(data){
-$('.tags'+id).html(data);
-}
+	url: '/gstudio/resources/images/deletetag/',
+	//type: 'POST',
+	data: {objectid:id,data:tagname},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('.tags'+id).html(data);
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+		  }
 });  
-
+       			      
+  }
+else
+  {
+  
+  }
 }
 </script>	
 

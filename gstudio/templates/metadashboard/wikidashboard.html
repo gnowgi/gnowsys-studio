@@ -1,24 +1,39 @@
 {% extends "gstudio/base.html" %}
 {% load gstudio_tags %}
 {% load i18n %}
+{% load pagination_tags %}
 {% block title %}Wikipages{% endblock %}
 {% block content %}
+ <script type="text/javascript" >
+$(window).load(function() {
+ 
+ $("#graphcss").hide();
+});
 
+</script>
 
+<form method="post" action="">
+{% csrf_token %}
+<h2 style="color: black;">Search Wikipage</h2>
+<input type="text" name="wikisearch" id="pagesearch">
+<input type="submit" value="Search" id="searchpage">
+<br/><br/>
+</form>
 
-  
 <p> Here is a list of all the pages:</p>
 </br>
 	{% if user.is_authenticated %}
     <input type="button" value="Create a new page" onClick="location.href='pageadd/';">
 	<br/>
 	{% endif %}
-    {% for each in pages.member_systems.all %}
+    {% autopaginate page 15 %}
+    {% for each in page %}
     <a href="/gstudio/page/gnowsys-page/{{each.id}}/">{{each.title}}</a></br>
     {% endfor %}
 	{% if user.is_authenticated %}
     <input type="button" value="Create a new page" onClick="location.href='pageadd/';">
 	{% endif %}
+ {% paginate %}
     </p>
     <p>
     </br>

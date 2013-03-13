@@ -7,6 +7,20 @@
  {% block title %}{{meet_ob.title}}{% endblock %}
 {% block content %}
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" >
+//This script is about fold and unfold twist of the loom
+$(window).load(function() {
+$(".divHide").hide();
+});
+$(document).ready(function() {
+$(".titleShowClass").click(function(){
+//$(this).attr('class','titleHideClass');
+var divid=$(this).attr("id");
+$(".img"+divid).toggle();
+$("#twist"+divid).slideToggle('slow');
+ });
+});
+</script>
     <script type="text/javascript" >
       $(window).load(function() {
       $("#content").css({
@@ -75,8 +89,8 @@ $("#topicsubmit"+submtobj).trigger('click');
 }
 if(activity=='added_response')
 {
-
-$("#topicsubmit"+submtobj).trigger('click');
+add_response_ajax();
+//$("#topicsubmit"+submtobj).trigger('click');
 }
 if(activity=='deleted_response')
 {
@@ -87,7 +101,75 @@ if(activity=='deleted_response')
 
 
 
+function add_response_ajax()
+{
 
+var response_content = $("#response_to_"+submtobj+" input[name=reply]").val();
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:submtobj,userid:{{user.id}},username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+submtobj).html(data);
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+		isResponse=false;
+		  }
+}); 
+}
+
+function add_sub_response_ajax(responseid)
+{
+
+var response_content = $("#sub_response_to_"+responseid+" input[name=reply]").val();
+
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:responseid,userid:"{{user.id}}",username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+responseid).html(data);
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+                isSubResponse=false;
+		$('#response'+responseid).focus();
+		window.scroll($('#response'+responseid).offset().left,$('#response'+responseid).offset().top-250);
+
+		  }
+});  
+}  
 
 
 
@@ -145,6 +227,7 @@ $("#sub1").attr("onclick","Subscribeuser()");
 {
  background-color:#F4F4F4;
 }
+
 </style>
 
 
@@ -152,8 +235,8 @@ $("#sub1").attr("onclick","Subscribeuser()");
   <h>Hello Welcome to the {{ meet_ob.title }}</h></br> -->
 
   
-<h2 style="line-height:1">{{meet_ob.title}}{% if user.is_authenticated %} {% edit_title meet_ob.id meet_ob.title %} {% endif %}</h2>
-<font size ="3" > {{admin_m.username}}'s initial twist to the thread  &nbsp;[ <a href="{{ meet_ob.get_absolute_url }}" title="{{ meet_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;</font>
+<h2 style="line-height:1"><font id="fonttitleid" >{{meet_ob.title}}</font>{% if user.is_authenticated %} {% edit_title meet_ob.id meet_ob.title %} {% endif %}</h2>
+<font size ="3" > {{admin_m.username}}'s initial twist to the thread <!--  &nbsp;[ <a href="{{ meet_ob.get_absolute_url }}" title="{{ meet_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;--> </font>
 </br>
 {% if user.is_authenticated %}
 
@@ -227,7 +310,17 @@ $("#sub1").attr("onclick","Subscribeuser()");
 -->
 </br>   {% autoescape off %}
    {% for each in topic %}
-      	<h4><font size="5" >{{each.title}}</font>&nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]</h4>
+      	<h4>
+<a style="text-decoration:none" id="{{ each.id}}" class="titleShowClass">
+<font size ="5" >{{each.title}}</font>
+<img src="/static/gstudio/img/Plus.png" class="img{{ each.id}}">
+<img src="/static/gstudio/img/Minus.png" class="img{{ each.id}}" style="display: none" ></a>
+<!--&nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]-->
+<!--
+<input type="button" id="fold{{ each.id}}" value="{{ each.id}}" class="twistHideClass" style="background:url(/static/gstudio/img/fold.png) no-repeat;box-shadow:none"/>
+<input type="button" id="unfold{{ each.id}}" value="{{ each.id}}" class="twistShowClass" style="background:url(/static/gstudio/img/unfold.png) no-repeat;box-shadow:none;"/>!-->
+</h4>
+<div id="twist{{ each.id}}" class="divHide">
       		Posted on : {{each.creation_date}}
 		by : 
    		{% for author in each.authors.all %} 
@@ -240,7 +333,7 @@ $("#sub1").attr("onclick","Subscribeuser()");
 		{% endwith %}
 	{% endautoescape%}
 	<div>
-	<form method="post" action=".">{% csrf_token %}
+	<form  name="response_to_{{each.id}}" id="response_to_{{each.id}}" method="post" action=".">{% csrf_token %}
                 
     		<input type="hidden" class="reptext" id="topictext{{ each.id }}" name = "reply" style="display:none">
 	<input type="hidden" id="hidden{{ each.id }}" value="{{ each.id }}" name ="hiddenid">
@@ -293,9 +386,13 @@ $("#sub1").attr("onclick","Subscribeuser()");
  	<a href="?#">Expand All</a> </div>-->
 	<!--<ul class="treeview" id="tree">
  	<li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li>-->
+<div id="response{{each.id}}">
          {% show_comment each user.id flag1 admin_id attribute  %}
+</div>
+</div>
      {% endfor %}
 	The discussion freezes at {{endtime}}
+
 {% endautoescape %}
 
 

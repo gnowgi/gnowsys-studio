@@ -56,7 +56,7 @@ SAVE_PING_EXTERNAL_URLS = getattr(settings, 'OBJECTAPP_PING_EXTERNAL_URLS', True
 
 COPYRIGHT = getattr(settings, 'OBJECTAPP_COPYRIGHT', 'Objectapp')
 
-PAGINATION = getattr(settings, 'OBJECTAPP_PAGINATION', 4)
+PAGINATION = getattr(settings, 'OBJECTAPP_PAGINATION', 10)
 ALLOW_EMPTY = getattr(settings, 'OBJECTAPP_ALLOW_EMPTY', True)
 ALLOW_FUTURE = getattr(settings, 'OBJECTAPP_ALLOW_FUTURE', True)
 

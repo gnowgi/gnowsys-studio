@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>orgitdown! Universal markup editor</title>
+<link rel="stylesheet" type="text/css" href="images/style.css" />
+<!-- jQuery -->
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+<!-- orgitdown! -->
+<script type="text/javascript" src="orgitdown/jquery.orgitdown.js"></script>
+<!-- orgitdown! toolbar settings -->
+<script type="text/javascript" src="orgitdown/sets/default/set.js"></script>
+<!-- orgitdown! skin -->
+<link rel="stylesheet" type="text/css" href="orgitdown/skins/orgitdown/style.css" />
+<!--  orgitdown! toolbar skin -->
+<link rel="stylesheet" type="text/css" href="orgitdown/sets/default/style.css" />
+</head>
+<body>
+<script type="text/javascript">
+<!--
+$(document).ready(function()	{
+	// Add orgitdown! to your textarea in one line
+	// $('textarea').orgitdown( { Settings }, { OptionalExtraSettings } );
+	$('#orgitdown').orgitdown(mySettings);
+	
+	// You can add content from anywhere in your page
+	// $.orgitdown( { Settings } );	
+	$('.add').click(function() {
+ 		$.orgitdown( { 	openWith:'<opening tag>',
+						closeWith:'<\/closing tag>',
+						placeHolder:"New content"
+					}
+				);
+ 		return false;
+	});
+	
+	// And you can add/remove orgitdown! whenever you want
+	// $(textarea).orgitdownRemove();
+	$('.toggle').click(function() {
+		if ($("#orgitdown.orgitdownEditor").length === 1) {
+ 			$("#orgitdown").orgitdownRemove();
+			$("span", this).text("get orgitdown! back");
+		} else {
+			$('#orgitdown').orgitdown(mySettings);
+			$("span", this).text("remove orgitdown!");
+		}
+ 		return false;
+	});
+});
+-->
+</script>
+<h1><a href="http://orgitdown.jaysalvat.com/">orgitdown!</a></h1>
+<p><em><a href="http://www.jaysalvat.com">By Jay Salvat</a></em></p>
+<p>Click <a href="#" class="add">this link to insert content</a> from anywhere in the page or <a href="#" class="toggle">this one to <span>remove orgitdown!</span></a></p>
+<p>
+<textarea id="orgitdown" cols="80" rows="20">
+&lt;h1&gt;Welcome on orgitdown!&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;orgitdown!&lt;/strong&gt; is a JavaScript plugin built on the jQuery library. It allows you to turn any textarea into a markup editor. Html, Textile, Wiki Syntax, Markdown, BBcode or even your own markup system can be easily implemented.&lt;/p&gt;
+</textarea>
+</p>
+<p>Support the project : <a href="http://orgitdown.jaysalvat.com/">Donate</a> | <a href="http://orgitdown.jaysalvat.com/">Contact</a></p>
+</body>
+</html>

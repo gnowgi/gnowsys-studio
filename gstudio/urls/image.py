@@ -19,11 +19,15 @@ from django.conf.urls.defaults import url
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('gstudio.views.image',
-                       url(r'^$', 'image',
-                           name='image'),
-                       url(r'show/(\d+)/$','show',name='showimage'),
-                       url(r'edittitle/$','edit_title',name='edittitle'),
-                       url(r'addpriorpost/$','addpriorpost',name='addpriorpost'),
-                       url(r'addtag/$','addtag',name='addtag'),
-                       url(r'deletetag/$','deletetag',name='deletetag'),
+                       url(r'^$', 'image',name='image'),
+		       url(r'show/(\d+)/$','show',name='showimage'),
+		       url(r'edittitle/$','edit_title',name='edittitle'),
+		       url(r'addpriorpost/$','addpriorpost',name='addpriorpost'),
+		       url(r'addtag/$','addtag',name='addtag'),
+		       url(r'deletetag/$','deletetag',name='deletetag'),
+		       url(r'imagedelete/$','imageDelete',name='imageDelete'),
+		       url(r'imagepost/$','postImage',name='postImage'),
+                       url(r'checkpageexist/$','checkpageexist',name='checkpageexist'),
+                       url(r'createwikinew/$','createwikinew',name='createwikinew'),
+                       url(r'refpriorpost/$','refpriorpost',name='refpriorpost'),
                        )

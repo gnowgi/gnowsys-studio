@@ -1,0 +1,25 @@
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags %}
+{% load i18n %}
+{% block title %}Wikipages{% endblock %}
+{% block content %}
+
+<form method="post" action="">
+{% csrf_token %}
+<h2 style="color: black;">Search Wikipage</h2>
+<input type="text" name="wikisearch" id="pagesearch">&nbsp;
+<br/>
+<input type="submit" value="Search" id="searchpage"><br/><br/>
+</form>
+Wikipage Listing:<br/>
+{% if wikipage %}
+{% for each in wikipage %}
+{% if not "page box" in each.title %}
+<a href={{each.get_view_object_url}}>{{each.title}}</a><br/>
+{% endif %}
+{% endfor %}
+{% else %}
+<h2><font color="red">Wikipage not found!!</font></h2>
+{% endif %}
+
+{% endblock %}

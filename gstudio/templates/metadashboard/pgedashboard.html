@@ -1,3 +1,4 @@
+
 {% extends "gstudio/base.html" %}
 {% load i18n comments gstudio_tags %} 
 {% load adminmedia grp_tags %}
@@ -15,16 +16,28 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" >
 var availableTags = [];
+var arr=[];
+var arr1=[];
 $.merge(availableTags, {% get_add_tag %})
+var pagedrawer = [];
+$.merge(pagedrawer, {% get_page_drawer %})
+var length = pagedrawer.length;
+
       $(window).load(function() {
-      $("#content").css({
-    "width": "1000px",});});
+   $("#content").css({
+    "width": "600px",});
+   $("#graphcss").css({
+    "margin-left": "450px",
+    });});
+   //$("#graphcss").css({
+   // "margin-left": "-300px",
+    //"margin-right": "-200px",
+    //"margin-top": "-100px",});
+//	});
+
 $(window).load(function() {
- $("#chart").hide();});
-$(window).load(function() {
- 
- $("#graphcss").hide();   
-  });
+ //$("#chart").hide();
+ });
 $(window).load(function() {
  
  $(".savepagecontent").hide();
@@ -38,6 +51,9 @@ $(window).load(function() {
  $(".pagedit").hide()
 $(".savesubsec1").hide();
  $(".submitsubsec1").hide();
+      $("#content").css({
+      "width": "600px",});
+
   });
 
 </script>
@@ -45,11 +61,72 @@ $(".savesubsec1").hide();
 
 {% autopaginate section 1 %}
    <!-- <input type="button" value="Home" onClick="location.href='/gstudio/user/wikipage/{{user.username}}';"> -->
-   <h1 style="line-height:0.5">{{ page_ob.title }}  {% if user.is_authenticated %} {% edit_title page_ob.id page_ob.title %} {% endif %}</h1> 
+   <h1 style=""><font id="fonttitleid" >{{ page_ob.title }} </font> {% if user.is_authenticated %} {% edit_title page_ob.id page_ob.title %} {% endif %}</h1> 
   Wikipage posted on : {{page_ob.creation_date}}
 		by {% for author in page_ob.authors.all %} 
    			{{author}}
-   		{% endfor %} &nbsp;[ <a href="{{ page_ob.get_absolute_url }}" title="{{ page_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;</br></br>
+   		{% endfor %}<!-- &nbsp;[ <a href="{{ page_ob.get_absolute_url }}" title="{{ page_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;</br></br> -->
+</br>
+<b>Versions:&nbsp;</b>
+        {% for sid in page_ob.ref.get_ssid  %}
+	   
+	      
+	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ page_ob.title }} {{ page_ob.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
+	 
+        {% endfor %}
+</br></br>
+	{% if user.is_authenticated %}
+
+	 <input type="button" id="htmlexport" value="Export as HTML"/>
+       	 <input type="button" class="addtodrawer" value="Create/Edit Collection" name="addtodrawer"/>
+  	 <br>
+	 {% endif %}
+<div id="coll1">
+
+</div>        
+    <div id="collection" style="display:none;">
+
+	<table style="width:370px" id="drawertable">
+   	 <tr>
+     	  <td style='width:160px;'>
+           	 <b>Pages:</b><br/>
+         	  <select multiple="multiple" id='lstBox1'>
+                  {% for key,value in test1.items %}
+	            <option id={{key}}>{{value}}</option>
+	     
+                  {% endfor %}
+          	    
+           	</select>
+   	 </td>
+   	 <td style='width:50px;text-align:center;vertical-align:middle;'>
+       <input type='button' id='btnUp' value ='  ^  '/><br/> 
+       <input type='button' id='btnRight' value ='  >  '/><br/>
+       <input type='button' id='btnLeft' value ='  <  '/><br/>
+       <input type='button' id='btnDown' value ='  v  '/><br/> 
+
+    </td>
+    <td style='width:160px;'>
+        <b>Added to Drawer: </b><br/>
+        <select multiple="multiple" name="lstb2" id='lstBox2'>
+          {% for each in test %}
+	     <option id={{each.id}}>{{each.title}}</a></option>
+	  {% endfor %}
+	  </option>
+        </select>
+    </td><br>
+    </tr>
+    <tr>
+    <td>
+      <input type="button"  value="Reset" id="resetdrawer"/>
+      <input type="button"  value="Submit" id="lstvalue"/>
+      <input type="button"  value="Cancel" id="cancel"/>
+      
+      
+ </td>
+    
+</tr>
+</table>
+</div>
 
    {% with page_ob.html_content|safe as page_ob_content %}
    <font size="3"> 
@@ -59,7 +136,9 @@ $(".savesubsec1").hide();
 	<form method="post" action="">{% csrf_token %}
 	<input type="hidden" class="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
 	<input type="hidden" class="editval" name="edit" value="empty"/>
-	<input type="hidden" value="{{page_ob.id}}" name = "iden">
+	<input type="hidden" value="{{page_ob.id}}" name = "iden" id="ptitle">
+	<input type="hidden" value="{{page_ob.title}}">
+
 	<input type="hidden" value="{{user.username}}" name ="usr">
 	<input type="hidden" value="{{user.id}}" name = "idusr">
 	<input type="button" class="editpagecontent" name="{{page_ob.content_org}}" value="Edit"/>
@@ -67,16 +146,37 @@ $(".savesubsec1").hide();
 	<input type="submit" class="pagedit" value="Submit"/>
        </form>
         {% endif %}
-	<!-- Add relations for a page -->
-        
-	{% add_res_relation page_ob %}
-	<br/>
+	<div id="coll">
+	  
+	    {% for each in test %}
+	      <li> <a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+	    {% endfor %}
+	  
 	
+	  </div>
+         <input id="drawer{{page_ob.id}}"  class="getdrawer" name="texttags" style="visibility:hidden">
+	
+	 <input type="button" id="showcollection" value="Show Drawer" style="visibility:hidden"/>
+       	 <br>
+	<script type="text/javascript" >
+	$(document).ready(function(){
+        $( "#drawer{{page_ob.id}}" ).autocomplete({
+	source: pagedrawer
+        });
+ 	});
+	</script>
+	<!--ADDING AND DISPLAY TAG-->
+	{% addtag ot page_ob.id user %}
 
 	<!--ADDING PRIOR PAGE-->
 	{% addpriorpost page_ob.id user %}
-	<!--ADDING AND DISPLAY TAG-->
-	{% addtag ot page_ob.id user %}
+
+	<!-- Add relations for a page -->
+        {% if user.is_authenticated %}
+	{% add_res_relation page_ob %}
+	<br/>
+	{% endif %}
+
 
 	 {% ifequal document.rating.get_rating 0 %}
 
@@ -98,7 +198,113 @@ $(".savesubsec1").hide();
      <input type="hidden" name="iden" value={{page_ob.id}}>
      <input type="submit" value="Rate it!!!">
 	 </form><br>
+	
 	 {% endif %}
+	
+ <script type="text/javascript" >
+	
+	$(document).ready(function(){
+	$("#lstvalue").click(function(){
+	
+	$("#collection").hide();
+	opts = lstBox2.options, len = opts.length;
+	if (len == 0){
+        arr=[];
+        arr1=[];
+	
+	}
+	else{
+	for (var i = 0; i < len; i++) {
+	      arr[i] = "'"+opts[i].value+"'";
+	      arr1[i]=opts[i].id;
+			    }}
+	 var abc1=arr1.join(',');
+	 	      
+	 if (abc1){
+	 var abc=abc1;
+	 
+	 }
+	 else{
+	 var abc="null";
+	 }
+
+	 var wtitle= document.getElementById("ptitle").value;
+	  
+			      $.ajax({
+       			      url: '/gstudio/ajax/draweradd/',
+       			      data:{'title':abc,'wtitle':wtitle},
+                              beforeSend: function() {
+                              $("#ajax_load_image").show();
+                            
+			      $("#content").css({"opacity":"0.1",})
+	   
+                              },
+       			      
+       			      success: function(data) {
+	                      $("#coll").html(data);
+			      $(".addtodrawer").show();
+       			      
+       			    },
+                             complete: function(){
+                             $("#ajax_load_image").hide();
+			      $("#content").css({"opacity":"",})
+			      
+	             }       
+       });
+			      
+	 });
+	 $("#htmlexport").click(function(){
+	 
+	 var ptitle= document.getElementById("ptitle").value;
+	
+
+	 opts = lstBox2.options, len = opts.length;
+	 if (len == 0){
+         arr=[];
+         arr1=[];
+	 
+	 }
+	 else{
+	 for (var i = 0; i < len; i++) {
+	       arr[i] = "'"+opts[i].value+"'";
+	       arr1[i]=opts[i].id;
+			    }}
+	  var abc1=arr.join(',');
+	  	      
+	  if (abc1){
+	  var abc=abc1;
+	  }
+	  else{
+	  var abc="null";
+	  }
+
+			      
+	 $.ajax({
+	 url: '/gstudio/ajax/htmlexport/',
+	 data:{'ptitle':ptitle,'title':abc},
+	 beforeSend: function() {
+         $("#ajax_load_image").show();
+                            
+	 $("#content").css({"opacity":"0.1",})
+	  },
+       			      
+         success: function(data) {
+	 $("#coll1").html(data);	 
+	 
+	 },
+         complete: function(){
+         $("#ajax_load_image").hide();		      
+         $("#content").css({"opacity":"",})
+			      
+	  }       
+	 
+	 });
+	 
+	 });
+	 });
+			      
+	</script>
+      
       
 
 		{% if user.is_authenticated %}
@@ -226,10 +432,11 @@ $(".savesubsec1").hide();
   {% endwith %}
 </div>
 {% endblock %}
+{% if user.is_authenticated %}
 <div class="commentForm span-16 last">
   {% render_comment_form for ot %}
 </div>
-
+{% endif %}
 {% paginate %}
 
 {% endblock %}

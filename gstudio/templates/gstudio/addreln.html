@@ -1,7 +1,7 @@
 {% load gstudio_tags %}
 <script type="text/javascript">
 var availableobjs = [];
-$.merge(availableobjs, {% get_available_objects %})
+$.merge(availableobjs,{% get_available_objects %} )
 var availablerts=[]
 $.merge(availablerts, {% get_available_rts %})
 $(document).ready(function(){
@@ -12,9 +12,7 @@ $(document).ready(function(){
             source: availableobjs
         });
 $("#addreln").click(function(){
-alert("Please wait till the relation is shown in the existing relations...");
 var ajurl ="/gstudio/resources/addreln/thread/"+{{meetingob.id}}
-
 var res_reln = $("#res_relation").val()
 var res_obj= $("#res_object").val()
 if (res_reln == "" || res_obj == "" )
@@ -25,13 +23,19 @@ else
 $.ajax({
        url: ajurl,
        data: {relnobj:res_reln,obobject:res_obj},
-       success: function(data){
-
+       beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+       success: function(data){	
                 $('#res_relation').val("");
                 $('#res_object').val("");
-                alert("Added relation");
 	        $('#relndiv').html(data);
-
+                               },
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+		
 			   }
 });
 }
@@ -45,19 +49,60 @@ llbars');
 
            }
 
+function relationfunction(id){
+
+r = confirm("Please confirm delete ")
+if (r==true)
+  {
+	var relation_id = "";
+	relation_id = id;
+	var ajurl ="/gstudio/resources/addreln/deleteRelation/"+{{meetingob.id}}
+	$.ajax({
+       		url: ajurl,
+	       data: {relation_ajax_id:relation_id},
+	       beforeSend: function() {
+                              $("#ajax_load_image").show();
+                            
+			      $("#content").css({"opacity":"0.1",})
+	   
+                              },
+	       success: function(data){	
+	       		     $('#relndiv').html(data);
+			     },
+	       complete: function(){
+                             $("#ajax_load_image").hide();
+			     $("#content").css({"opacity":"",})
+			     },
+   		});
+                             
+       			      
+  }
+else
+  {
+  
+  }
+
+
+
+}
 </script>
 <div id="relndiv">
 <br/>
-
 <b>Existing Relations for this page: </b>
+
         {% if not meetingob.get_relations_for_view.items %}
             No relations
         {% endif %}
         {% for key,value in meetingob.get_relations_for_view.items %}
         {{key}} -
-        {% for rel in value %}
-        {{rel}};
+        {% for rkey,rval in value.items %}
+          <a href="{{rval}}">{{rkey}}</a>
+
+	   <a class="deleterelation" value="{{rel.id}}" id = "{{rel.id}}" title="delete {{rel.right_subject.title}}" onclick='relationfunction("{{rel.id}}");' > <img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/></a>
+
+	{% if not forloop.last %},{% endif %}
         {% endfor %}
+	   ;
         {% endfor %}
 
 </div>
@@ -74,3 +119,22 @@ Select an object: <nbsp>
 <input value="" name="textobj" id="res_object">
 <input type="button" id="addreln" name="" value="Add Relation">
 </form>
+<script type="text/javascript">
+function refreshdiv()
+{
+ajurl="/gstudio/resources/addreln/refreshrts/"
+$.ajax({
+       url: ajurl,
+       success: function(data){
+          $.each(data, function(index) {
+availablerts=data[index]
+   $("#res_relation").autocomplete({
+            source: availablerts
+        });
+
+})
+}
+})
+
+}
+</script>

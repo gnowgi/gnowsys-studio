@@ -3,11 +3,12 @@
 <div>
 
     {% for tag in tags %}
-
+	{% if tag.count > 3 %}
       <a href="{% url objectapp_tag_detail tag.name %}"
          title="{% blocktrans count tag.count as gbobject_count %}{{ gbobject_count }} gbobject{% plural %}{{ gbobject_count }} gbobjects{% endblocktrans %}"
          class="tag_{{ tag.font_size }}">{{ tag }}</a>
-
+	{% else %}
+	{% endif %}
     {% endfor %}
 
 </div>

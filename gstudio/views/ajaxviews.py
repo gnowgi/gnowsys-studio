@@ -405,7 +405,14 @@ def AjaxAddDrawer(request):
     list1=request.GET["title"]
     wtitle=request.GET["wtitle"]
     sys=System.objects.get(id=wtitle)
-
+    collection_set=Systemtype.objects.get(title="Collection")
+    collection_set1=collection_set.member_systems.all()
+    f=0
+    for each in collection_set1:
+        if (each.id) == wtitle:
+            f=1
+    if f == 0:
+        sys.systemtypes.add(Systemtype.objects.get(title="Collection"))
     if list1 == "null":
 	sys=System.objects.get(id=wtitle)
        
@@ -430,7 +437,7 @@ def AjaxAddDrawer(request):
         var=sys.in_gbobject_set_of.__dict__['through']
         varobset=[]
         for each in var.objects.all():
-            print sys.id,sys.title,each.system_id
+            
             if each.system_id == sys.id:
                 s=Gbobject.objects.get(id=each.gbobject_id)
                 s1=s.title
@@ -448,7 +455,7 @@ def HtmlExport(request):
         ptitle=System.objects.get(id=ptitle)
         s=ptitle.get_ssid.pop()	
         contorg=ptitle.content_org    #ptitle=eval(ptitle)
-        content_org="* "+ptitle.title+"\n"+contorg+"\n"
+        content_org="* "+ptitle.title+"\n"+unicode(contorg)+"\n"
 
     else:
 	ptitle1=System.objects.get(id=ptitle)
@@ -460,7 +467,7 @@ def HtmlExport(request):
         s1=str(ptitle.title)
         varobset=get_gbobjects(ptitle)
         contorg=ptitle1.content_org    #ptitle=eval(ptitle)
-        content_org="* "+ptitle1.title+"\n"+str(contorg)+"\n"
+        content_org="* "+ptitle1.title+"\n"+unicode(contorg)+"\n"
         set2=[]
         set2=ptitle1.gbobject_set.all()
         l=len(set2)
@@ -469,53 +476,52 @@ def HtmlExport(request):
             while i<len(varobset):
                 st=System.objects.get(id=varobset[i].id)
                 stcontorg=st.content_org
-                content_org += "** "+varobset[i].title+"\n"+stcontorg+"\n"
+                content_org += "** "+varobset[i].title+"\n"+unicode(stcontorg)+"\n"
                 if st.gbobject_set.exists():
                     gbset=get_gbobjects(st.id)
                     
                     
                     for each in gbset:
-                        subst=System.objects.get(title=each.title)
+                        subst=System.objects.get(id=each.id)
                         substcontorg=subst.content_org
-                        content_org += "*** "+"\n"+substcontorg+"\n"
-                i+=1                
-                  
+                        content_org += "*** "+str(each)+"\n"+unicode(substcontorg)+"\n"
+                   
                             
                 
-                #          if subst.gbobject_set.exists():
-                #              subgbset=get_gbobjects(subst.id)
-                #              for each in subgbset:
-                #                  subtwost=System.objects.get(id=each.id)
-                            
-                #                  content_org += "**** "+str(each)+"\n"+each.content_org+"\n"
-                            
-                #                  if subtwost.gbobject_set.exists():
-                #                      subtwogbset=get_gbobjects(subtwost.id)
-                #                      for each in subtwogbset:
-                #                          subthreest=System.objects.get(id=each.id)
-                #                          content_org += "***** "+str(each)+"\n"+each.content_org+"\n"
+                        if subst.gbobject_set.exists():
+                            subgbset=get_gbobjects(subst.id)
+                            for each in subgbset:
+                                subtwost=System.objects.get(id=each.id)
+                                
+                                content_org += "**** "+str(each)+"\n"+each.content_org+"\n"
+                                
+                                if subtwost.gbobject_set.exists():
+                                    subtwogbset=get_gbobjects(subtwost.id)
+                                    for each in subtwogbset:
+                                        subthreest=System.objects.get(id=each.id)
+                                        content_org += "***** "+str(each)+"\n"+each.content_org+"\n"
                 
 
-                #                          if subthreest.gbobject_set.exists():
-                #                              subthreegbset=get_gbobjects(subthreest.id)
-                #                              for each in subthreegbset:
-                #                                  subfourst=System.objects.get(id=each.id)
-                #                                  content_org += "****** "+str(each)+"\n"+each.content_org+"\n"
+                                        if subthreest.gbobject_set.exists():
+                                            subthreegbset=get_gbobjects(subthreest.id)
+                                            for each in subthreegbset:
+                                                subfourst=System.objects.get(id=each.id)
+                                                content_org += "****** "+str(each)+"\n"+each.content_org+"\n"
                                             
-                #                                  if subfourst.gbobject_set.exists():
-                #                                      subfourgbset=get_gbobjects(subfourst.id)
-                #                                      for each in subfourgbset:
-                #                                          subfivest=System.objects.get(id=each.id)
-                #                                          content_org += "******* "+str(each)+"\n"+each.content_org+"\n"
+                                                if subfourst.gbobject_set.exists():
+                                                    subfourgbset=get_gbobjects(subfourst.id)
+                                                    for each in subfourgbset:
+                                                        subfivest=System.objects.get(id=each.id)
+                                                        content_org += "******* "+str(each)+"\n"+each.content_org+"\n"
                                                     
-                #                                          if subfivest.gbobject_set.exists():
-                #                                              subfivegbset=get_gbobjects(subfivest.id)
-                #                                              for each in subfivegbset:
-                #                                                  subsixst=System.objects.get(id=each.id)
-                #                                                  content_org += "******** "+str(each)+"\n"+each.content_org+"\n"
+                                                        if subfivest.gbobject_set.exists():
+                                                            subfivegbset=get_gbobjects(subfivest.id)
+                                                            for each in subfivegbset:
+                                                                subsixst=System.objects.get(id=each.id)
+                                                                content_org += "******** "+str(each)+"\n"+each.content_org+"\n"
                                                             
                     
-                # i+=1 
+                i+=1 
 		
    
     fname=str(s)+"-download"
@@ -549,7 +555,7 @@ def HtmlExport(request):
     n=""
     for line in s:
         n += line.lstrip()
-    print r1
+    
     ap.write(n)
     ap.close()
     src=FILE_URL+fname+".html"

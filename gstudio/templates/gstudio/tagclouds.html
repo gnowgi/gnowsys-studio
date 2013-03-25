@@ -1,0 +1,36 @@
+
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags i18n %}
+{% load objectapp_tags i18n %}
+{% load adminmedia  grp_tags %}
+{% load i18n %}
+ {% block title %}Tagcloud{% endblock %}
+{% block content %}
+
+<script type="text/javascript" >
+$(window).load(function(){ 
+$("#content").css({"width": "109%"});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ $("#graphcss").hide();   
+  });
+</script>
+    <style type="text/css">
+	.tags .tag_1 { font-size: 1em; color: #001e2d; }
+	.tags .tag_2 { font-size: 1.125em; color: #00334c; }
+	.tags .tag_4 { font-size: 2em; color: #005b89; }
+	.tags .tag_5 { font-size: 2.25em; color: #0070a8; }
+	.tags .tag_6 { font-size: 3em; color: #0099e5; }
+	<!--.tags .tag_6 { font-size: 3.20em; color: #00adff; }-->
+      }
+	#tag{ width: 50%; } 
+      }
+</style>
+<div class="tags" align="center" id="tag">
+
+{% put_tag_search %}
+
+{% get_tag_cloud %}
+</div>
+{% endblock %}

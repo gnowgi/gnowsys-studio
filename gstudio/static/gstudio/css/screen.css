@@ -447,11 +447,10 @@ a:hover { text-decoration: underline; }
     float: left;
     clear: both;
     margin-bottom: 10px;
-    margin-left: 0%;
-    margin-right: 0%;
+    margin-left: 10%;
+    margin-right: 10%;
     margin-top: 10px;
-    padding-right: 0px;
-    width:250px;
+    width: 80%;
 }
 #graph {
     position: absolute;

@@ -9,24 +9,41 @@
 <script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
-    <script type="text/javascript" >
-      var isVideotitle=false;
-      $(window).load(function() {
-      $("#content").css({
-    "width": "600px",});});
+<script type="text/javascript" >
+  $(function(){
+          $("#mydropdown").change(function(event){
+            $("option:selected", $(this)).each(function(){
+                var obj = document.getElementById('mydropdown').value;
+                if(obj=="creation_date"){
+		$("#searchfont").show();
+		}
+		else{$("#searchfont").hide();}
+	
+            });
+          });
+        });
+var isVideotitle=false;
 $(window).load(function() {
- $("#chart").hide();});
+$("#content").css({
+"width": "100%",});});
 $(window).load(function() {
- 
- $("#graphcss").hide();   
-  });
+$("#chart").hide();});
+$(window).load(function() {
+$("#graphcss").hide();   
+});
 var i = 0;
+var availableTags = [];
+$.merge(availableTags, {% get_add_tag %})
 jQuery(document).ready(function($) {
-      isImage=true;
+      
     $("#commenteditor").click(function(){
+	isImage=true;
+	$(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
         document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
 	<!--document.getElementById('descriptionsave').style.visibility="visible";-->
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
+	$("#submitpostid").hide();//css({"margin-left":"400px","margin-top":"-38px"});
 	$("#commenteditor").hide();
 		
 	});
@@ -35,97 +52,140 @@ jQuery(document).ready(function($) {
 	    var encode_data = encodeURIComponent(org_data);
 	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));  
  	    $("#descriptioncommenttext").val(decode_data);
+	    $(".orgitdownContainer").hide();
+	    $("#submitpostid").css({"margin-left":"0px","margin-top":"0px"});
+	    $("#divpost b").text(decode_data); 
+	    $("#editcommenteditor").show();
+	    $("#submitpostid").show();
 	   
+	});
+
+     $("#editcommenteditor").click(function(){
+	$('.orgitdownContainer').show();
+	$("#editcommenteditor").hide();
+	$("#submitpostid").hide();
 	});
 });
 jQuery(document).ready(function($) {
     $(".doceditcontent").click(function(){
-	isImage=true;
-	
+	isEditdoc=true;
+	$(this).replaceWith('<textarea id="gnoweditoredit" style="visibility:hidden;width:450px"></textarea>');
 	var a = $(this).attr("id");
 	objid=a;
-        document.getElementById('gnoweditor').style.visibility="visible";
-	 $("#gnoweditor").val($("#editortext"+a).val());
-        $("#gnoweditor").orgitdown(mySettings);
-        var screentop=$(document).scrollTop();
-        $(".orgitdownContainer").css({"margin-top":screentop,});
+        document.getElementById('gnoweditoredit').style.visibility="visible";
+	 $("#gnoweditoredit").val($("#editortext"+a).val());
+        $("#gnoweditoredit").orgitdown(mySettings);
+        //var screentop=$(document).scrollTop();
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
+        //$(".orgitdownContainer").css({"margin-top":screentop,});
 <!--	document.getElementById('save'+a).style.visibility="visible";-->
 	$("#"+a).hide();
 	});
-     $(".commentsavecontent").click(function(){
-            var org_data = $("#gnoweditor").val(); 
+     $("#editsavedoc").click(function(){
+	    alert("ineditdave");
+            var org_data = $("#gnoweditoredit").val(); 
 	    var encode_data = encodeURIComponent(org_data);
 	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));     
  	    $(".commenttext").val(decode_data);
+            $(".orgitdownContainer").hide();
+	    $(".commentsavecontent").trigger('click');
 	    });
 });
 
 </script>
 <style type="text/css">
-#divsearch
-{
-position:absolute;
-}
 #upperdiv
 {
 position:relative;
-margin-bottom:35%;
+margin-bottom:6%;
+height:200px;
 }
-#divpost
-{
-position:absolute;
-margin-left:52%;
+#divsearch {
+    background-color: #DDDDEE;
+    border-color: #AAAAAA;
+    border-style: dashed;
+    border-width: 3px;
+    float: left;
+    padding: 6px;
+    position: relative;
+    width: 45%;
+    height: 200px;
+    margin:3px;
 }
+
+#divpost {
+    background-color: #DDDDEE;
+    border-color: #AAAAAA;
+    border-style: dashed;
+    border-width: 3px;
+    float:left;
+    padding: 6px;
+    position: relative;
+    width: 45%;
+    margin:3px;
+    height: 200px;
+}
+
 </style> 
 
 {% autopaginate documents 8 %}
-<h2 style="color: teal;">Document Library</h2>
-<br>
+<h2 style="">Document Library</h2>
+<br/>
 <div id="upperdiv">
 
 <div id="divsearch">
 <form method="post" action="">
 {% csrf_token %}
-<br/>
 <h4 style="color: black;">Search File</h4>
-<input type="text" name="sdoc" value={{val}}>&nbsp;
+<p><input type="text" name="sdoc" value={{val}}></p>
+<font size="1" id="searchfont" style="display:none"><b>YY-MM-DD HH:MM:SS</b></font>
 <br/>
-<br/>
-<select name="mydropdown" style="margin:0">
+<select name="mydropdown" id="mydropdown" style="margin:0">
 <option value="title">Title</option>
 <option value="creation_date">Creation Date</option>
 </select>
-<br/>
-<br/>
+<br/> <br/>
 <input type="submit" value="Search">
 </form>
+<br/>
+{% if user.is_authenticated %}
+<form method="post" action="/gstudio/resources/documents">
+{% csrf_token %}
+<input type="hidden" name="user" value={{user.username}}>
+<input type="submit" name="fav" value="View Favourites">
+</form>
+{% endif %}
 </div>
 {% if user.is_authenticated %}
 <div id="divpost">
 <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
-<br/>
-<h4 style="color: black;">Post File:</h4>
-<font size="2">Title:</font>&nbsp; <input type="text" name="title1"><br/>
+<h4 style="color: black;">Submit File:</h4>
+<font size="2">Title:</font>&nbsp; <input type="text" name="title1"><br/> <br/>
 <font size="2">File:</font>&nbsp;&nbsp;&nbsp;<input type=file name="doc[]" multiple="multiple" /><br><br>
-Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Content" >
+Description:&nbsp;&nbsp;<b></b>
+<input type="button"  id="editcommenteditor"  value="edit" style="display:none" >
+<input type="button"  id="commenteditor"  value="Add Content" >
 <input type="button" class="commentsavecontent" id="descriptionsave" value="Save" style="visibility:hidden" />
 <input type=text name="contenttext" id="descriptioncommenttext" style="visibility:hidden" />
 <input type="hidden" name="user" value={{user.username}}><br><br>
-
-<input type="submit" value="Post">
+<input type="submit" id="submitpostid" value="Submit">
 </form>
 </div>
 {% endif %}
 </div>
 <br>
-<br>
-<br>
-<br>
-<h4 style="color: teal;">Documents Listing</h4>
+<div id="lowerdiv">
+{% if fav %}
+<h2 style="">Favourite Documents</h2><br/>
+{% else %}
+<h2 style="">Documents Listing</h2>
+{% endif %}
+
 {% if reportid %}
 <h2><font color="red">this document is already uploaded on this site</font></h2>
 <a href="/gstudio/resources/documents/show/{{ reportid }}/"> <font size="4">to see this image click here</font></a><br/><br/><br/>
 {% endif %}
+
 
 {% for document in documents %}
 
@@ -133,15 +193,17 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
      <!-- {{ object_content }}-->
     </div>
 <form method="post" action="">{% csrf_token %}
-<h2 style="color: green;">{{document.title}}</a></h2>
+<h2><a href="/gstudio/resources/documents/show/{{document.id}}" title="{{document.title}}">{{document.title}}</a>
+&nbsp;<!--[ <a href="{{ document.get_absolute_url }}" title="{{ document.title }}" rel="bookmark">Show Graph</a> ]-->
+</h2>
 <font color = 'black'>Posted By : </font>
 {% for author in document.authors.all %}
-  <font color = 'teal'>{{author}}</font>
+  <font >{{author}}</font>
 {% endfor %}
 <br>
-<font color = 'black'>Posted At : </font><font color = 'teal'>{{document.creation_date}}</font>
+<font color = 'black'>Posted At : </font><font >{{document.creation_date}}</font>
 <br>
-<font color = 'black'>Description:</font><font color = 'teal'>
+<font color = 'black'>Description:</font><font >
 {%autoescape on%}
 {% with document.html_content|safe as document_content %}
      {{document_content}}
@@ -149,10 +211,11 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 {% endautoescape%}</font>
 {% if user.is_authenticated %}
 <input type="hidden" name="docid" value={{document.id}}>
-<input type="button" class="doceditcontent" id="{{document.id}}"  value="Edit"/>
-<input type="submit" class="commentsavecontent" id="save{{document.id}}" value="Save" style="visibility:hidden" />
+<!--<input type="button" class="doceditcontent" id="{{document.id}}"  value="Edit"/>
+<input type="button" id="editsavedoc" style="visibility:hidden" />
 <input type="hidden" name="commenttext" class="commenttext" id="commenttext{{document.id}}" style="visibility:hidden" />
 <input type="hidden" id="editortext{{document.id}}" style="visibility:hidden" value="{{document.content_org}}">
+<input type="submit" class="commentsavecontent"  value="Save" style="visibility:hidden" />-->
 {% endif %}
 </form>
 <br>
@@ -180,10 +243,10 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 <br>
 {% ifequal document.rating.get_rating 0 %}
 
-<font color = 'black'>Current rating is: &nbsp;<font color = 'teal'> No rating yet </font></font>
+<font color = 'black'>Current rating is: &nbsp;<font > No rating yet </font></font>
 {% else %}
 <font color = 'black'>Average Current rating is: </font><h4>{{ document.rating.get_rating }}</h4>
-<font color = 'black'>Total Number of votes is:  &nbsp;<font color='teal'><b>{{ document.rating_votes }}</b></font> </font>
+<font color = 'black'>Total Number of votes is:  &nbsp;<font ><b>{{ document.rating_votes }}</b></font> </font>
 {% endifequal %}
 <br>
 {% if user.is_authenticated %}
@@ -198,12 +261,8 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 <input type="hidden" name="docid" value={{document.id}}>
 <input type="submit" value="Rate it!!!">
 </form><br>
-<form method="post" action="">{% csrf_token %}
-<input type="hidden" name="docid" value={{document.id}}>
-<input type="text" value="" name="texttags"  />
-<input type="submit" value="Add Tags" name="addtags" />
-</form>
 {% endif %}
+
 <br>
 <div class="tags">
     <p class="gbobject-tags span-16 last">
@@ -217,7 +276,22 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
       {% endfor %}
     </p>
 </div>
-<br/><br/>
+<br/>
+{% if user.is_authenticated %}
+<script type="text/javascript" >
+$(document).ready(function(){
+        $( "#tags{{document.id}}" ).autocomplete({
+            source: availableTags
+        });
+ });
+</script>
+<form method="post" action="">{% csrf_token %}
+<input type="hidden" name="docid" value={{document.id}}>
+<input id="tags{{document.id}}" name="texttags">
+<input type="submit" value="Add Tags" name="addtags" />
+</form>
+<br/>
+{% endif %}
 <hr width="100%" style="height:5px;" color="black"/>
 <br>
 {% endfor %}<br>
@@ -228,7 +302,7 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
  <h2>
 {% paginate %}</h2>
 
-
+</div>
 
 
 

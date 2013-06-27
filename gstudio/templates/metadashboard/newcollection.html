@@ -3,6 +3,13 @@
 {% load gstudio_tags %}
 	 
 	     {% for each in objset %}
-	     <li> <a href={{each.get_view_object_url}}>{{each.title}}</a></li>
+	     <li class="list"> <a href={{each.get_view_object_url}}>{{each.title}}</a></li>
 	     {% endfor %}
-	 
+	     {% if collection %}
+	     <input type="button" class="addtodrawer" value="Edit Collection" name="addtodrawer"/>
+	     <input type="button" class="htmlexport" value="Export as HTML"/>
+	     {% else %}
+	     <input type="button" class="addtodrawer" value="Create Collection" name="addtodrawer"/>
+	     <input type="button" class="htmlexport" value="Export as HTML"/>
+	     {% endif %}
+

@@ -1,26 +1,162 @@
 from gstudio.models import *
 from objectapp.models import *
 from django.template.defaultfilters import slugify
-import datetime
+from datetime import datetime as date_time
+import datetime as date_methds
 import os
 import shutil
 import urllib
 from demo.settings import PYSCRIPT_URL_GSTUDIO
 from demo.settings import FILE_URL
 #from demo.settings import MATHJAX_FILE_URL
+from django.contrib.auth.models import User
+#from django.contrib.sessions.models import Session
+#from notification import notify
+from notification import models as notification
+from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
+#from django.contrib.comments.signals import comment_will_be_posted
+from django.core.mail import send_mail
+from django.contrib.sessions.models import Session
+from djangoratings.models import *
+lst1=[]
+count=0
+response_set=[]
+
+
+
+
+def recur_responses(twist):
+    global lst1
+    lst1=[]
+    return get_recur_responses_of_twist(twist)
+
+
+def get_recur_responses_of_twist(twist):
+    postnodes=twist.posterior_nodes.all()
+    if postnodes:
+        for each in postnodes:
+            lst1.append(each)
+            get_recur_responses_of_twist(each)
+    return lst1
+def get_rate_of_object_of_user(user,sysid):
+#   us = User.objects.get(username="gnowgi")                                                                                                 
+    print "insget",sysid,user
+    voteofuser = Vote.objects.filter(user = user)
+    rating_made = 0
+    #voteofuser.count()                                                                                                                      
+    for vote in voteofuser:
+        objectofvote = vote.content_object
+        if objectofvote.objecttypes.all():
+            if objectofvote.objecttypes.all()[0].title=='Reply':
+                objectofvoteid = objectofvote.getthread_of_response.id
+                if sysid == objectofvoteid:
+                    rating_made = rating_made + 1
+    return rating_made
+def posts_recd_for_subscr(subscrid,thdid):
+    usr=User.objects.get(id=subscrid)
+    c=0
+    sys=System.objects.get(id=thdid)
+#   get_twists_of_thread                                                                                                                     
+    box=sys.system_set.all()[0]
+    twists=box.gbobject_set.all()
+    for each in twists:
+        getresponses=recur_responses(each)
+        for eachres in getresponses:
+             if eachres.authors.all()[0]==usr:
+               resp=recur_responses(eachres)
+               c +=len(resp)
+    return c
+def get_all_logged_in_users():
+    # Query all non-expired sessions                                                                                                        \
+                                                                                                                                             
+    sessions = Session.objects.filter(expire_date__gte=date_time.now())
+    uid_list = []
+
+    # Build a list of user ids from that query                                                                                              \
+                                                                                                                                             
+    for session in sessions:
+        data = session.get_decoded()
+        uid_list.append(data.get('_auth_user_id', None))
+
+    # Query all logged in users based on id list                                                                                            \
+                                                                                                                                             
+    return User.objects.filter(id__in=uid_list)
+
+def get_authors_of_response(user,thread):
+       count =0
+       for each in thread.system_set.all()[0].gbobject_set.all():
+           print "threads=",each
+           response_set=recur_responses(each)
+           print response_set
+           for each1 in response_set:
+               print each1.authors.all()[0],str(user)
+               if str(each1.authors.all()[0])==str(user):
+                   count=count+1
+       return count
+
+def get_no_of_twist_posted(user,thread):
+       sys=System.objects.get(title=thread)
+       count=0
+       twistset=sys.system_set.all()[0].gbobject_set.all()
+       for each1 in twistset:
+                     if str(each1.authors.all()[0])==str(user):
+                            count=count+1
+       return count
+
+def loom_status(pageid):
+  retdict={}
+  userdet=[]
+  thdid=pageid
+  #get subscribers                                                                                                                           
+  sys=System.objects.get(id=pageid)
+  box=sys.system_set.all()[0]
+  logged_users=get_all_logged_in_users()
+  #get online-offline                                                                                                                        
+  print box.member_set.all(),"memset"
+  for each in box.member_set.all():
+      print each,"-eacch"
+      eachuser=User.objects.get(username=each)
+      print "eauseR",eachuser
+      if eachuser in logged_users:
+         userdet.append("green1")
+      else:
+         userdet.append("grey")
+#     get no-of-posts(twist/responses)
+#     resps=get_authors_of_response(each,sys)                                                                                              
+#     thds=get_no_of_twist_posted(each,sys)                                                                                                
+#     strng=str(thds)+"/"+str(resps)                                                                                                        #     userdet.append(strng)                                                                                                                
+# #get Ratings user made                                                                                                                   
+#     ratngs=get_rate_of_object_of_user(each,sys.id)                                                                                       
+#     userdet.append(str(ratngs))                                                                                                          
+# #responses his post received                                                                                                             
+#     psts=posts_recd_for_subscr(each.id,thdid)                                                                                             #     userdet.append(str(psts))                                                                                                            
+      retdict[each.username]=userdet
+      userdet=[]
+  return retdict
+
 
 
 def check_page_exists(pgetocheck):
   fl=0
-  getobjs=System.objects.filter(title=pgetocheck)
+  getobjs=Gbobject.objects.filter(title=pgetocheck)
   if not getobjs:
       return fl
   else:
       for each in getobjs:
-          getob=System.objects.get(id=each.id)
-          if getob.systemtypes.all()[0].title=='Wikipage':
-              fl=1
-              return fl
+          sysid=System.objects.filter(id=each.id)
+          if sysid:
+            getob=System.objects.get(id=each.id)
+            for eachtitle in getob.systemtypes.all():
+                if eachtitle.title=='Wikipage':
+                    print "wiki"
+                    fl=1 
+                    return fl
+            fl=2
+            return fl
+          else:
+            fl=2
+            return fl
       return fl
 
 
@@ -131,12 +267,15 @@ def make_rep_object(replytext,auth_id,usr):
  new_ob.sites.add(Site.objects.get_current())
  return new_ob
 
-def edit_section(sec_id,title,usr):
+def edit_section(sec_id,title,usr,isPreview):
+ 
  new_ob = Gbobject.objects.get(id=int(sec_id))
  contorg = unicode(title)
  new_ob.content_org=contorg.encode('utf8')
  ssid=new_ob.get_ssid.pop()
  fname=str(ssid)+"-"+usr
+ boolean=False
+ boolean=isPreview
  ext='.org'
  html='.html'
  myfile = open(os.path.join(FILE_URL,fname+ext),'w')
@@ -157,17 +296,32 @@ def edit_section(sec_id,title,usr):
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+ 
  output = stdout.read()
+ # if boolean:
+     
+ #     os.system("firefox /tmp/beta/%s"%(fname+html))
+ #     data = open(os.path.join(FILE_URL,fname+html))
+ #     data1 = data.readlines()
+ #     data2 = data1[86:]
+ #     dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+ #     data3 = data2[:-6]
+ #     newdata=""
+ #     for line in data3:
+ #         newdata += line.lstrip()
+ #     print newdata
+
+# else:
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[107:]
+ data2 = data1[86:]
  dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
  data3 = data2[:-6]
  newdata=""
  for line in data3:
-        newdata += line.lstrip()
- new_ob.content = newdata
- new_ob.save()
+     newdata += line.lstrip()
+     new_ob.content = newdata
+     new_ob.save()
  return True
 
 
@@ -379,15 +533,15 @@ def create_meeting(title,idusr,content,usr):
  sys.systemtypes.add(Systemtype.objects.get(title="Meeting"))
  sys.authors.add(Author.objects.get(id=idusr))
  
- a = Attribute()
- a.title = "released button of " + title
- a.slug = slugify(a.title)
- a.content = a.slug
- a.status = 2
- a.subject = sys
- a.svalue = "False"
- a.attributetype_id = Attributetype.objects.get(title="release").id
- a.save()
+# a = Attribute()
+# a.title = "released button of " + title
+# a.slug = slugify(a.title)
+# a.content = a.slug
+# a.status = 2
+# a.subject = sys
+# a.svalue = "False"
+# a.attributetype_id = Attributetype.objects.get(title="release").id
+# a.save()
  sys1 = System()
  sys1.title = "message box of " + title
  sys1.status = 2
@@ -403,13 +557,16 @@ def create_meeting(title,idusr,content,usr):
  sys1.sites.add(Site.objects.get_current())
  return sys.id 
 
-def create_wikipage(title,idusr,content_org,usr,collection,list1):
+def create_wikipage(title,idusr,content_org,usr,collection,list1,status):
  sys = System()
  sys.title = title
- sys.status = 2
+ if status:
+     sys.status = 1
+ else:
+     sys.status = 2
  boolean=False
  boolean=collection
- 
+
  list1=list1.split(",")
  contorg =content_org
  contorg=urllib.unquote_plus(contorg)
@@ -440,7 +597,7 @@ def create_wikipage(title,idusr,content_org,usr,collection,list1):
  output = stdout.read()
  data = open(os.path.join(FILE_URL,fname+html))
  data1 = data.readlines()
- data2 = data1[107:]
+ data2 = data1[86:]
  dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
  data3 = data2[:-6]
  newdata=""
@@ -538,19 +695,25 @@ def make_title(id_no):
 def get_time(sys_id):
 	later = False
 	meetover = False
-	sys=System.objects.get(id=sys_id)
-        now=datetime.datetime.now()
+	sys=System.objects.filter(id=sys_id)
+        if sys:
+          sys=System.objects.get(id=sys_id)
+        else:
+          sys=Gbobject.objects.get(id=sys_id)
+        now=date_time.now()
+        starttime=""
+        endtime=""
         for each in AttributeDateTimeField.objects.all():
                 if(each.attributetype.title=='timeofstart' and each.subject.title==sys.title):
                         starttime=each.value
-		        if (now - starttime)< datetime.timedelta (minutes = 1):
+		        if (now - starttime)< date_methds.timedelta (minutes = 1):
 		                later=True
         		else:
                 		later = False
 
                 if(each.attributetype.title=='timeofend' and each.subject.title==sys.title):
                         endtime=each.value
-		        if(now-endtime)>datetime.timedelta(minutes=1):
+		        if(now-endtime)>date_methds.timedelta(minutes=1):
 		                meetover=True
         		else:
                 		meetover=False
@@ -695,7 +858,11 @@ def check_release_or_not(meet_ob):
  return fl
 def check_subscribe_or_not(meet_ob,user):
   fl=0
-  box=meet_ob.system_set.all()[0]
+  if meet_ob.system_set.all():
+    box=meet_ob.system_set.all()[0]
+  else:
+    box=""
+    return fl
   ch=Author.objects.filter(id=user.id)
   if ch:
   	ch=Author.objects.get(id=user.id)
@@ -744,3 +911,24 @@ def get_home_title():
   	 content = homeobj.content
   return content
 
+def sendMail_RegisterUser(senderuser,receiveruser,activity,conjuction,nid,url=None):
+
+    nodeid =  NID.objects.get(id=nid)
+    sys = nodeid.ref
+    if url == None:
+       url = sys.get_view_object_url
+    site=Site.objects.get_current()
+    render = render_to_string("/gstudio/notification/label.html",{'sender':senderuser,'activity':activity,'conjunction':conjuction,'object':sys.title,'url':url,'site':site}) 
+    notification.create_notice_type(render, "Invitation Received", "you have received an invitation")
+    notification.send(receiveruser, render,{"from_user": senderuser}, sender=senderuser)
+    return
+
+def sendMail_NonMember(senderuser,receiveremail,activity,conjuction,nid,url=None):
+    nodeid =  NID.objects.get(id=nid)
+    sys = nodeid.ref
+    if url == None:
+       url = sys.get_view_object_url
+    site=Site.objects.get_current()
+    render = render_to_string("/gstudio/notification/emailBody.html",{'sender':senderuser,'activity':activity,'conjunction':conjuction,'object':sys.title,'url':url,'site':site.domain}) 
+    send_mail("Invitation", render, senderuser.email, [receiveremail,])
+    return 

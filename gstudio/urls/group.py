@@ -25,6 +25,6 @@ urlpatterns = patterns('gstudio.views.group',
 			url(r'^notify/unsubscribe/(\d+)/(\d+)/$','notifyuserunsubscribe',name='group_notify_unsubscribe'),
                        url(r'^gnowsys-grp/(\d+)/$', 'groupdashboard', name='gstudio_group'),
                      url(r'^later$', 'grouplater', name='gstudio_group'),
-                      url(r'^over$', 'groupover',
-                           name='gstudio_group'),
+                      url(r'^over$', 'groupover',name='gstudio_group'),
+			url(r'^twist/(\d+)/$','twistDetail',name='twistDetail')
                        )

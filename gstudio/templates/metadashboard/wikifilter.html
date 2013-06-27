@@ -15,7 +15,17 @@ Wikipage Listing:<br/>
 {% if wikipage %}
 {% for each in wikipage %}
 {% if not "page box" in each.title %}
-<a href={{each.get_view_object_url}}>{{each.title}}</a><br/>
+        {% if each.status = 1  %}
+	{% for each1 in each.authors.all %}
+	{% if each1|stringformat:"s" = usr or is_staff %}
+	 <a href={{each.get_view_object_url}}><abbr title="Private"><font color="red">{{each.title}}</font></abbr></a> </br>
+	
+        {% endif %}
+	{% endfor %}
+	{% endif %}
+{% if each.status = 2 %}
+<a href={{each.get_view_object_url}}>{{each.title}}{{each.status}}</a><br/>
+{% endif %}
 {% endif %}
 {% endfor %}
 {% else %}

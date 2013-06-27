@@ -33,6 +33,11 @@ def userdashboard(request):#,username):
        #  return render_to_response(template,variables)
 
 def wikidashboard(request):#,username):
+	usr=str(request.user)
+	usr1=request.user
+	is_staff=False
+	if usr1.is_staff:
+		is_staff=True
     #if request.user.username == username :
 	if request.method=="POST":
 		sdoc = request.POST.get("wikisearch","")
@@ -40,13 +45,13 @@ def wikidashboard(request):#,username):
 		if sdoc != "":
 				wikipage = System.objects.filter(title__icontains=sdoc)
 				if wikipage !="":
-				#vido_new = vidon.get_nbh['contains_members']
+ 				#vido_new = vidon.get_nbh['contains_members']
 				#vido = vido_new.filter(title__contains=sdoc)
 				#vido2 = vido.order_by(sub3)
 				#vidon=vidon
 					pages = Systemtype.objects.get(title="Wikipage")
 					page=pages.member_systems.all()
-					variables = RequestContext(request,{'wikipage':wikipage,'val':sdoc,"pages" : pages,"page":page })
+					variables = RequestContext(request,{'wikipage':wikipage,'val':sdoc,"pages" : pages,"page":page,"usr":usr,"is_staff":is_staff })
 					template = "metadashboard/wikifilter.html"
 					return render_to_response(template, variables)
 				else:
@@ -55,7 +60,8 @@ def wikidashboard(request):#,username):
 		
 	pages = Systemtype.objects.get(title="Wikipage")
 	page=pages.member_systems.all()
-        variables = RequestContext(request,{"pages" : pages,"page":page })
+	usr=str(request.user)
+        variables = RequestContext(request,{"pages" : pages,"page":page,"usr":usr,"is_staff":is_staff })
     	template = "metadashboard/wikidashboard.html"
     	return render_to_response(template, variables)
     

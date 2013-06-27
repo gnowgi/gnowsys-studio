@@ -41,6 +41,7 @@ function saveclick(objid){
 
 jQuery(document).ready(function($) {
     $(document).on('click',".commenteditor",function(){
+
 	if(checkeditor==0){
         $(this).after('<textarea id="gnoweditor" style="visibility:hidden;width:450px;height:60px;"></textarea>');
         isSubResponse=true;
@@ -103,14 +104,27 @@ function topicsaveclick(objid){
 //    not_obj=objid
 
 
-    notifedtdel();
+	    if($("input:radio[name=intimate_"+objid+"]").is(':checked')) {
+        	var radio_select = $("input:radio[name=intimate_"+objid+"]:checked").val();
+        	if(radio_select=="Yes"){
+		notifedtdel();
+		}
+		else{ 
+			submitform(activity);
+	                $("#ajax_load_image").show();
+                        $("#content").css({"opacity":"0.1",});
+			 }
+	    }	
+	    else{ notifedtdel(); }
     $(".editor").show();
    // $(".editcontent").hide();
     $(".orgitdown").hide();
 }//closing saveclick      
   jQuery(document).ready(function($) {
 	$(document).on('click',".editor",function(){
+
        	//$(".editor").on("click",function() {
+	   if(checkeditor==0){
             $(this).after('<textarea id="gnoweditor" style="visibility:hidden;width:450px;height:60px;"></textarea>');
             isResponse=true;
             activity="added_response"
@@ -120,7 +134,9 @@ function topicsaveclick(objid){
 	    $("#content img").css({"max-width": "600px",})
 
 	    $("#content").css({"width": "600px",})
+	
 	    document.getElementById('gnoweditor').style.visibility="visible";
+
 	    $("#gnoweditor").orgitdown(mySettings);
 	//    var screentop=$(document).scrollTop();
 	  //  $(".orgitdownContainer").css({"margin-top":screentop,});
@@ -136,6 +152,28 @@ function topicsaveclick(objid){
             $(".submitdelete").hide();
             $(".rating").hide();
 	    checkeditor = 1;
+	}
+	else{
+	    $(this).after($('.orgitdown'));
+    	    $(".orgitdown").show();
+            isResponse=true;
+            activity="added_response"
+	    var a=$(this).attr("id");
+	    not_obj=a
+	    $("#chart").hide();
+	    document.getElementById('gnoweditor').value="";	
+	    document.getElementById('gnoweditor').style.visibility="visible";
+	    responseid=a;
+	    $(".editor").hide();
+	    $(".topicchk").hide();
+	    $(".topicdelete").hide();
+	    $(".editcontent").hide();
+	    $(".commenteditor").hide();
+            $(".chkdel").hide();
+            $(".submitdelete").hide();
+            $(".rating").hide();
+	
+	}
 	});
 
 });
@@ -144,9 +182,11 @@ function topicsaveclick(objid){
 jQuery(document).ready(function($) {
         $(".editcontent").one("click",function() {
             $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
+
 	    editTwist=true;
 	    activity="edited_twist"
 	    var each_id = $(this).attr("id");
+    	    $(".intimateSubscribers"+"_"+each_id).show('slow');
 	    not_obj=each_id
 	    $("#chart").hide();
             $("#content img").css({"max-width": "600px",})
@@ -233,7 +273,7 @@ jQuery(document).ready(function($) {
         $("#threadedit").one("click",function() {
             $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    editThread=true;
-	   
+	    $(".intimateSubscribers").show('slow');	   
 	    $("#chart").hide();
             $("#content img").css({"max-width": "600px",})
 
@@ -266,7 +306,18 @@ jQuery(document).ready(function($) {
             activity="edited_thread"
             not_obj=id
 	   
-            notifedtdel();
+	    if($("input:radio[name=intimate]").is(':checked')) {
+        	var radio_select = $('input:radio[name=intimate]:checked').val();
+        	if(radio_select=="Yes"){
+		notifedtdel();
+		}
+		else{ 
+			submitform(activity);
+	                $("#ajax_load_image").show();
+                        $("#content").css({"opacity":"0.1",});
+			 }
+	    }	
+	    else{ notifedtdel(); }
             $("#threadedit"+id).val("editthread");
             $(".commenteditor").hide();
             $(".editcontent").hide();

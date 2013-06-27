@@ -1,0 +1,399 @@
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags %}
+{% load tagging_tags %}
+{% block title %}{{twist.title}}{% endblock %}
+{% block content %}
+
+<script type="text/javascript">
+   $(window).load(function() {
+    $("#content").css({"width": "620px",});
+    $("#chart").hide(); 
+    $("#graphcss").hide();
+    $(".savecontent").hide();   
+    $(".submitresponse").hide();
+    $("#editthreadsave").hide();
+
+});
+
+function deleteclick(delobj)
+{
+	var userid='{{user.id}}';
+	alert(delobj,userid);
+	urlnot="/gstudio/group/notify/"+'deleted_response'+"/"+delobj+"/{{user.id}}"
+	$.ajax({
+             url: urlnot,
+             type:'GET',
+             success: function(){
+             document.forms["response"].submit();
+		alert('deleted');
+	}
+     	});
+      }
+
+function add_response_ajax()
+{
+
+var response_content = $("#response_to_"+submtobj+" input[name=reply]").val();
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:submtobj,userid:{{user.id}},username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+submtobj).html(data);
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+		isResponse=false;
+                document.getElementById("gnoweditor").style.visibility="hidden";
+		  }
+}); 
+}
+function add_sub_response_ajax(responseid)
+{
+
+var response_content = $("#sub_response_to_"+responseid+" input[name=reply]").val();
+
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:responseid,userid:"{{user.id}}",username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",});
+                              },
+	success: function(data){
+		$('#response'+responseid).html(data);
+		//setTimeout("add_sub_response_ajax(responseid)", 3000);
+                 $("#content").css({"opacity":"",});
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+                isSubResponse=false;
+		$('#response'+responseid).focus();
+		window.scroll($('#response'+responseid).offset().left,$('#response'+responseid).offset().top-250);
+                document.getElementById("gnoweditor").style.visibility="hidden";
+		  }
+});  
+}  
+
+
+
+function notifedtdel()
+{
+
+
+urlnot="/gstudio/group/notify/"+activity+"/"+not_obj+"/{{user.id}}"
+
+subactivity(urlnot,activity);
+}
+
+function subactivity(urlnot,activity)
+{
+      if(activity=='added_response')
+      {
+        submitform(activity);
+      }
+
+      if (activity != 'undefined')
+      {
+
+      $.ajax({
+       url: urlnot,
+       type:'GET',
+       success: function(){
+
+            //submitform(activity);
+       }
+     });
+      }
+      else
+      {
+      submitform(activity);
+      }
+}
+
+function submitform(activity)
+{
+
+
+if (activity=='edited_thread')
+{
+
+document.forms["threadform"].submit();
+}
+if(activity=='edited_twist')
+{
+
+
+$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='added_response')
+{
+
+//$("#topicsubmit"+submtobj).trigger('click');
+add_response_ajax();
+}
+if(activity=='deleted_response')
+{
+ 
+ document.forms["response"].submit();
+}
+}
+
+function Subscribeuser()
+{
+if (confirm("{{user.username}},Do you want to Subscribe to get all alerts in  your mail for this page"))
+{
+
+url = "/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub2").val("UnSubscribe");
+$("#sub2").attr("onclick","UnSubscribeuser()");
+}
+}
+
+function UnSubscribeuser()
+{
+url = "/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub1").val("Subscribe");
+$("#sub1").attr("onclick","Subscribeuser()");
+}
+   
+
+function twistReleaseBlockResponseFunction(twistid,activity)
+{
+$.ajax({
+	url: '/gstudio/ajax/releaseBlockResponseOfTwist/',
+	type: 'POST',
+	data: {threadTwistid:twistid,twistActivity:activity,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		if (activity == "true"){
+			document.getElementById('twistReleaseBlockResponse_'+twistid).value="Block Responses";
+			document.getElementById('twistReleaseBlockResponse_'+twistid).setAttribute("onclick","twistReleaseBlockResponseFunction("+twistid+",'false')");
+		}
+		else{
+			document.getElementById('twistReleaseBlockResponse_'+twistid).value="Release Responses";
+			document.getElementById('twistReleaseBlockResponse_'+twistid).setAttribute("onclick","twistReleaseBlockResponseFunction("+twistid+",'true')");
+			
+			}
+
+			     },
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	  }
+});
+}
+
+
+</script>
+<!-- script for to obtain response and refresh div !-->
+{% if user.is_authenticated %}
+<script type=text/javascript>
+setInterval(function () {
+    refreshCheck();
+}, 10000);
+function refreshCheck() {
+//alert("inside refresh check");
+    if (document.getElementById("gnoweditor").style.visibility!="visible" && (!$('.chkdel').is(':checked')) && (!$('.star').is(':checked')) )
+    {
+    //    alert("inside if");
+         updateMsg();
+    }
+}
+//setInterval(updateMsg, 5000);
+function updateMsg()
+{
+  //   alert("inside updatemsg");
+$.ajax({
+        url: '/gstudio/ajax/ajaxResponseReciev/',
+        type: 'POST',
+        data: {twistid:{{twist.id}},userid:{{user.id}},admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        success: function(data){
+                $('#response'+{{twist.id}}).html(data);
+                checkeditor = 0;},});
+
+}
+</script>
+{% endif %}
+
+<h2><a href="/gstudio/group/gnowsys-grp/{{thread.id}}">{{thread.title}}</a>»{{twist.title}}</h2>
+<div id="twist{{ twist.id}}" class="divHide">
+      		Posted on : {{twist.creation_date}}
+		by : 
+   		{% for author in twist.authors.all %} 
+   			{{author}}
+   		{% endfor %}</br>
+     		<!-- Current rating is <h5>{{ twist.rating.get_rating }}</h5> -->
+   	{%autoescape on%}
+		{% with twist.html_content|safe as twist_content %}
+		<font size ="3" > {{twist_content}} </font>
+		{% endwith %}
+
+	<div>
+		<div class="intimateSubscribers_{{twist.id}}" style="display:none;margin-bottom:-5px;margin-left:11px">
+			<br/>
+			<p  class="pintimateSubscribers" ><b>Would you like to intimate the subscribers about the edit? </b><p>
+			<input type="radio" name="intimate_{{twist.id}}" class="intimateSubscribers" value="Yes"><b>Yes</b> &nbsp;
+			<input type="radio" name="intimate_{{twist.id}}" class="intimateSubscribers" value="No" checked="checked"><b>No</b>
+		</div>
+		<form  name="response_to_{{twist.id}}" id="response_to_{{twist.id}}" method="post" action=".">{% csrf_token %}
+                
+    			<input type="hidden" class="reptext" id="topictext{{ twist.id }}" name = "reply" style="display:none">
+			<input type="hidden" id="hidden{{ twist.id }}" value="{{ twist.id }}" name ="hiddenid">
+		 	<input type="hidden" id="commentdata{{twist.id}}" value='{{twist.content_org}}'>
+	        	<input type="hidden" value={{user.username}} name = "usr">
+    			<input type="hidden" value="{{twist.id}}" name = "iden">
+	    		<input type="hidden" value="{{user.id}}" name = "idusr">
+	{% endautoescape%}
+			{% if user.is_authenticated %}
+			 <input type="button" class="editcontent" name=""  id="{{twist.id}}" value="Edit">
+<!-- start of  release and block the response  of twist -->
+   		{% for author in twist.authors.all %} 
+   			{% ifequal author.id  user.id %}
+				{% if twist.subject_of.all %}
+						 {% for attribute in twist.subject_of.all %}
+						{% ifequal attribute.attributetype.title "release" %}
+							{% ifequal attribute.svalue "true"%}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{twist.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{twist.id}}','false')">
+							{% else %}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{twist.id}}" value="Release Responses" onclick="twistReleaseBlockResponseFunction('{{twist.id}}','true')">
+							{% endifequal%}
+						{% endifequal %}
+				{% endfor %}
+				{% else %}
+						 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{twist.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{twist.id}}','false')">
+				{% endif %}
+			 {% else %}
+			{% if user.is_superuser %}
+				{% if twist.subject_of.all %}
+				{% for attribute in twist.subject_of.all %}
+						{% ifequal attribute.attributetype.title "release" %}
+							{% ifequal attribute.svalue "true"%}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{twist.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{twist.id}}','false')">
+							{% else %}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{twist.id}}" value="Release Responses" onclick="twistReleaseBlockResponseFunction('{{twist.id}}','true')">
+							{% endifequal%}
+						{% endifequal %}
+				{% endfor %}
+				{% else %}
+						 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{twist.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{twist.id}}','false')">
+				{% endif %}
+			{% endif %}
+			{% endifequal %}
+		   {% endfor %}
+<!-- end of  release and block the response  of twist -->
+
+				 <input type="button" class="editor" id="{{ twist.id }}" value="Add Response"/>
+				 <input type="hidden" class="editval" id="edit{{twist.id}}" name="edit" value="empty">
+                		<input type="button" class="savecontent" id="save{{ twist.id }}" value="Save" onclick="topicsaveclick(document.getElementById('hidden{{ twist.id }}').value)"><br/>
+              
+	        		<input type="submit" class="submitresponse" id="topicsubmit{{ twist.id }}" value="Submit"></br>
+		{% endif %}
+		{% ifequal user.id admin_id %}		
+		<input class="topicchk" id="chk{{ twist.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ twist.id }}" value="Delete the twist"></br>
+		{% else %}
+   		{% for author in twist.authors.all %} 
+   			{% ifequal user.id author.id %}
+		<input class="topicchk" id="chk{{ twist.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ twist.id }}" value="Delete the twist"></br>
+			{% endifequal %}
+   		{% endfor %}
+
+		{% endifequal %}
+  
+         <!--	Rate this ? </br>
+		<input name="star1" type="radio" value=1 class="star"/>
+		<input name="star1" type="radio" value=2 class="star"/>
+		<input name="star1" type="radio" value=3 class="star"/>
+		<input name="star1" type="radio" value=4 class="star"/>
+		<input name="star1" type="radio" value=5 class="star"/>
+		<!--topic id and user id hidden fields
+		</br>
+		<input type="submit" value="Rate it!!!">  -->
+         </form>
+	</div>   
+
+<!--ADDING AND DISPLAY TAG-->
+{% addtag twist twist.id user %}
+
+	<br/>
+        <p>
+	 Responses :
+	<!--	<div id="main">
+	<div id="sidetree">
+	<div class="treeheader">&nbsp;</div>
+ 	<a href="?#">Expand All</a> </div>-->
+	<!--<ul class="treeview" id="tree">
+ 	<li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li>-->
+<div id="response{{twist.id}}">
+{% if user.is_superuser %}
+         {% show_comment twist user.id flag1 admin_id "true"  %}
+{% else %}
+{% if twist.subject_of.all %}
+	 {% for twistattribute in twist.subject_of.all %}
+		{% ifequal twistattribute.attributetype.title "release" %}
+		         {% show_comment twist user.id flag1 admin_id twistattribute.svalue  %}
+		{% else %}
+			 {% show_comment twist user.id flag1 admin_id "false"  %}
+		{% endifequal %}
+	{% endfor %}
+{% else %}
+{% show_comment twist user.id flag1 admin_id "true"  %}
+{% endif %}
+{% endif %}
+
+</div>
+</div>
+{% endblock %}

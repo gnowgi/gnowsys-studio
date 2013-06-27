@@ -21,8 +21,13 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   vertical-align: baseline;
 }
 
+html{
+    margin: 0 auto;
+}
+
 body { 
-  line-height: 1.5; 
+    margin: 0 auto;
+    line-height: 1.5; 
 }
 
 /* Tables still need 'cellspacing="0"' in the markup. */

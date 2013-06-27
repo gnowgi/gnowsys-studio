@@ -28,7 +28,22 @@ $(window).load(function() {
 	{% endif %}
     {% autopaginate page 15 %}
     {% for each in page %}
-    <a href="/gstudio/page/gnowsys-page/{{each.id}}/">{{each.title}}</a></br>
+	{% if each.status = 2 %}
+	 <a href="/gstudio/page/gnowsys-page/{{each.id}}/">{{each.title}}</a></br>
+	 {% endif %}
+        {% if each.status = 1  %}
+	{% for each1 in each.authors.all %}
+	 
+	{% if each1|stringformat:"s" = usr or is_staff %} 
+	 <a href="/gstudio/page/gnowsys-page/{{each.id}}/"><abbr title="Private"><font color="red">{{each.title}}<font></abbr></a></br>
+	
+        {% endif %}
+	 
+	 
+	{% endfor %}
+	{% endif %}
+        
+    
     {% endfor %}
 	{% if user.is_authenticated %}
     <input type="button" value="Create a new page" onClick="location.href='pageadd/';">

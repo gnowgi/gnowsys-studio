@@ -8,10 +8,32 @@
 {% block content %}
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" >
-//This script is about fold and unfold twist of the loom
-$(window).load(function() {
-$(".divHide").hide();
+
+function showloomstatus()
+{
+ajurl="/gstudio/resources/loom/status/"+{{meet_ob.id}}
+$.ajax({
+        url: ajurl,
+       
+        success: function(data){
+                $("#status").html(data);
+                               },
+        complete: function(){
+                       isResponse=false;
+                            }
 });
+}
+</script>
+
+
+<script type="text/javascript" >
+//this will show loom status and refresh it
+$(window).load(function() {
+$("#showstatus").trigger('click');
+$(".divHide").hide();
+});w
+//This script is about fold and unfold twist of the loom
+/*
 $(document).ready(function() {
 $(".titleShowClass").click(function(){
 //$(this).attr('class','titleHideClass');
@@ -19,7 +41,7 @@ var divid=$(this).attr("id");
 $(".img"+divid).toggle();
 $("#twist"+divid).slideToggle('slow');
  });
-});
+});*/
 </script>
     <script type="text/javascript" >
       $(window).load(function() {
@@ -60,10 +82,20 @@ function subactivity(urlnot,activity)
       $.ajax({
        url: urlnot,
        type:'GET',
+      beforeSend: function(){
+      $("#ajax_load_image").show();
+      
+      $("#content").css({"opacity":"0.1",})
+      
+      },
+      
        success: function(){
 
-            submitform(activity);
-       }
+          submitform(activity);
+       },
+      complete: function(){
+      
+      }       
      });
       }
       else
@@ -172,8 +204,6 @@ $.ajax({
 }  
 
 
-
-
 function Subscribeuser()
 {
 if (confirm("{{user.username}},Do you want to Subscribe to get all alerts in  your mail for this page"))
@@ -197,9 +227,6 @@ $("#sub2").attr("onclick","UnSubscribeuser()");
 }
 
 
-
-
-
 function UnSubscribeuser()
 {
 url = "/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}"
@@ -217,6 +244,122 @@ $.ajax({
 $("#sub1").val("Subscribe");
 $("#sub1").attr("onclick","Subscribeuser()");
 }
+
+
+function UserInvitation()
+{
+  var items = [];  
+ $.getJSON('/gstudio/ajax/userListForInvitation/',{systemid:{{meet_ob.id}},senderuserid:{{user.id}}},function(result){
+
+    
+
+  $.each(result, function(key,value) {
+    items.push(value);
+  });
+        $( "#userInvite" ).autocomplete({
+            source: items
+        });
+
+});
+$(".invitation").show();
+$("#UserInvitation").hide();
+$("#hideUserInvitation").show();
+}
+
+
+function HideUserInvitation()
+{
+$(".invitation").hide();
+$("#UserInvitation").show();
+$("#hideUserInvitation").hide();
+}
+
+
+$(document).on('click',".addToList",function() {
+      data = $("#userInvite").val();//attr('value');
+      if(data != ""){
+           $("#selectOfInviteUser").append(new Option(data, data));
+           $("#userInvite").val("");
+           $("#selectOfInviteUser").show();
+           $(".submitUserInvite").show();
+      }
+      else{
+			$('.responseToInvite').html("select users to invite");
+			$('.responseToInvite').css("color","red");
+			
+          }
+});
+
+$(document).on('click',".submitUserInvite",function(){
+      var listobject, listobjectLength
+      listArray = []
+      listobject = selectOfInviteUser.options,
+      listobjectLength = listobject.length
+      for (var i = 0; i < listobjectLength; i++) {
+           listArray[i] = listobject[i].value;
+		    }
+       var joinlistArray= listArray.join(',');
+       //alert(listArray);JSON.stringify
+       data = $("#userInvite").val();//attr('value');
+
+$.ajax({
+	url: '/gstudio/ajax/sendInvitation/',
+	type: 'POST',
+	data: {systemid:{{meet_ob.id}},data:joinlistArray,senderuserid:{{user.id}},csrfmiddlewaretoken: '{{ csrf_token }}'},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		if(data=="sucess")
+		    {
+			$('.responseToInvite').html("invitation sent");
+			$('.responseToInvite').css("color","green");
+			$('#selectOfInviteUser').empty();
+			}
+		else{
+			$('.responseToInvite').text(data+"is invalid email");
+			<!-- $('.responseToInvite').html("'"+data+"'is invalid email"); -->
+			$('.responseToInvite').css("color","red");
+		 	$('#selectOfInviteUser').empty();
+			}
+		//$('.tags{{objectid}}').html(data);
+			     },
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	  }
+}); });
+<!-- javascript for release and block the response  of twist -->
+function twistReleaseBlockResponseFunction(twistid,activity)
+{
+$.ajax({
+	url: '/gstudio/ajax/releaseBlockResponseOfTwist/',
+	type: 'POST',
+	data: {threadTwistid:twistid,twistActivity:activity,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		if (activity == "true"){
+			document.getElementById('twistReleaseBlockResponse_'+twistid).value="Block Responses";
+			document.getElementById('twistReleaseBlockResponse_'+twistid).setAttribute("onclick","twistReleaseBlockResponseFunction("+twistid+",'false')");
+		}
+		else{
+			document.getElementById('twistReleaseBlockResponse_'+twistid).value="Release Responses";
+			document.getElementById('twistReleaseBlockResponse_'+twistid).setAttribute("onclick","twistReleaseBlockResponseFunction("+twistid+",'true')");
+			
+			}
+
+			     },
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	  }
+});
+}
+
 </script>
 <style type="text/css">
 #div2
@@ -246,16 +389,36 @@ $("#sub1").attr("onclick","Subscribeuser()");
 {% else %}
 <input type="button" id="sub2" value="Subscribe" name="edittitle" onclick="Subscribeuser()">
 {% endif %}
+<input type="button" id="UserInvitation" value="Invitation" onclick="UserInvitation()">
+<input type="button" id="hideUserInvitation" Value= "Hide Invitation" onclick="HideUserInvitation()" style="display:none;">
+<div class="invitation" style="display:none">
+<p>invitation</p>
+<form>
+<input id="userInvite">
+<input type="button" class="addToList" value="Add">
+<input type="button" class="submitUserInvite" value="invite" style="display:none"/>
+<p class="responseToInvite"></p>
+</form>
+<select id="selectOfInviteUser" multiple="multiple" style="display:none" >
+</select>
+</div>
+
 {% endif %}
 {% with meet_ob.html_content|safe as meet_ob_content %}
 <font size ="3" >{{meet_ob_content}} </font>
 {% endwith %}
 {% if user.is_authenticated %}
+<div class="intimateSubscribers" style="display:none;margin-bottom:-5px;margin-left:11px">
+	<br/>
+	<p  class="pintimateSubscribers" ><b>Would you like to intimate the subscribers about the edit? </b><p>
+	<input type="radio" name="intimate" class="intimateSubscribers" value="Yes"><b>Yes</b> &nbsp;
+	<input type="radio" name="intimate" class="intimateSubscribers" value="No" checked="checked"><b>No</b>
+</div>
 <form method="post" name="threadform" action=".">{% csrf_token %}
 <input type="hidden" id="threadid" value={{meet_ob.id}} style="visibility:hidden;" name="editiden">
 <input type="hidden" id="threadedit{{meet_ob.id}}" style="visibility:hidden;" name="editval">
 <input type="hidden" id="threadcontent{{meet_ob.id}}" value="{{meet_ob.content_org}}" style="visibility:hidden;" name="editcont">
-<input type="button" id="threadorg" value={{meet_ob.title}} style="visibility:hidden;" name="edittitle">
+<input type="button" id="threadorg" value={{meet_ob.title}} style="display:none;" name="edittitle">
 <br/>
 <input type="button" id="threadedit" value="Edit">
 <input type="button" id="editthreadsave" value="Save">
@@ -264,25 +427,6 @@ $("#sub1").attr("onclick","Subscribeuser()");
 </form>
 
 
-{% if flag %}
-{% check_release meet_ob as release %}
-{% if not release %}
-   <div id="Release"> 
-   <form method="post" action=".">{% csrf_token %}
-   <input type="submit" value="Release responses">
-       <input type="hidden" value="hits" name = "release">
-   </form>
-   </div>
-{% else %}
-   <div>
-   <form method="post" action=".">{% csrf_token %}
-   <input type="submit" value="Block responses">
-       <input type="hidden" value="hits" name = "block">
-   </form>
-   </div>
-   {% endif %}
-   </br>
-{% endif %}
 {% endif %}
 
 <!--ADDING AND DISPLAY TAG-->
@@ -311,90 +455,33 @@ $("#sub1").attr("onclick","Subscribeuser()");
 </br>   {% autoescape off %}
    {% for each in topic %}
       	<h4>
+<a href="/gstudio/group/twist/{{each.id}}" style="text-decoration:none">
+<font size ="5" >{{each.title}}</font></a>
+<!--
 <a style="text-decoration:none" id="{{ each.id}}" class="titleShowClass">
-<font size ="5" >{{each.title}}</font>
+<font size ="5" >{{each.title}}</font>!-->
+<!--
 <img src="/static/gstudio/img/Plus.png" class="img{{ each.id}}">
-<img src="/static/gstudio/img/Minus.png" class="img{{ each.id}}" style="display: none" ></a>
+<img src="/static/gstudio/img/Minus.png" class="img{{ each.id}}" style="display: none" >!-->
 <!--&nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]-->
 <!--
 <input type="button" id="fold{{ each.id}}" value="{{ each.id}}" class="twistHideClass" style="background:url(/static/gstudio/img/fold.png) no-repeat;box-shadow:none"/>
 <input type="button" id="unfold{{ each.id}}" value="{{ each.id}}" class="twistShowClass" style="background:url(/static/gstudio/img/unfold.png) no-repeat;box-shadow:none;"/>!-->
 </h4>
-<div id="twist{{ each.id}}" class="divHide">
-      		Posted on : {{each.creation_date}}
-		by : 
-   		{% for author in each.authors.all %} 
-   			{{author}}
-   		{% endfor %}</br>
-     		<!-- Current rating is <h5>{{ each.rating.get_rating }}</h5> -->
-   	{%autoescape on%}
-		{% with each.html_content|safe as each_content %}
-		<font size ="3" > {{each_content}} </font>
-		{% endwith %}
-	{% endautoescape%}
-	<div>
-	<form  name="response_to_{{each.id}}" id="response_to_{{each.id}}" method="post" action=".">{% csrf_token %}
-                
-    		<input type="hidden" class="reptext" id="topictext{{ each.id }}" name = "reply" style="display:none">
-	<input type="hidden" id="hidden{{ each.id }}" value="{{ each.id }}" name ="hiddenid">
-		 <input type="hidden" id="commentdata{{each.id}}" value="{{each.content_org}}">
-	        <input type="hidden" value={{user.username}} name = "usr">
-    		<input type="hidden" value="{{each.id}}" name = "iden">
-	    	<input type="hidden" value="{{user.id}}" name = "idusr">
-<br/>			{% if user.is_authenticated %}
-		 <input type="button" class="editcontent" name="{{each.content_org}}"  id="{{each.id}}" value="Edit">
-		 <input type="button" class="editor" id="{{ each.id }}" value="Add Response"/>
-		 <input type="hidden" class="editval" id="edit{{each.id}}" name="edit" value="empty">
-                <input type="button" class="savecontent" id="save{{ each.id }}" value="Save" onclick="topicsaveclick(document.getElementById('hidden{{ each.id }}').value)"><br/>
-              
-	        <input type="submit" class="submitresponse" id="topicsubmit{{ each.id }}" value="Submit"></br>
-			{% endif %}
-		{% ifequal user.id admin_id %}		
-		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
-		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
-		{% else %}
-   		{% for author in each.authors.all %} 
-   			{% ifequal user.id author.id %}
-		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
-		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
-			{% endifequal %}
-   		{% endfor %}
 
-		{% endifequal %}
-  
-         <!--	Rate this ? </br>
-		<input name="star1" type="radio" value=1 class="star"/>
-		<input name="star1" type="radio" value=2 class="star"/>
-		<input name="star1" type="radio" value=3 class="star"/>
-		<input name="star1" type="radio" value=4 class="star"/>
-		<input name="star1" type="radio" value=5 class="star"/>
-		<!--topic id and user id hidden fields
-		</br>
-		<input type="submit" value="Rate it!!!">  -->
-         </form>
-	</div>   
 
-<!--ADDING AND DISPLAY TAG-->
-{% addtag each each.id user %}
 
-	<br/>
-        <p>
-	 Responses :
-	<!--	<div id="main">
-	<div id="sidetree">
-	<div class="treeheader">&nbsp;</div>
- 	<a href="?#">Expand All</a> </div>-->
-	<!--<ul class="treeview" id="tree">
- 	<li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li>-->
-<div id="response{{each.id}}">
-         {% show_comment each user.id flag1 admin_id attribute  %}
-</div>
-</div>
      {% endfor %}
 	The discussion freezes at {{endtime}}
 
 {% endautoescape %}
 
 
+{% endblock %}
+
+{% block sidebardetails %}
+<input type="button" id="showstatus" value="Loom Status" onclick="showloomstatus()">
+<div id="status">
+</div>
 {% endblock %}
 

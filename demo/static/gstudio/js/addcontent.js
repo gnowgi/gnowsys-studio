@@ -197,19 +197,14 @@ function moveDown() {
 	  
 		    
        });
-	$(".addtodrawer").click(function(){
+	 $(document).on('click',".addtodrawer",function(){
 //	alert("test");
 	  
 	  // var ptitle=document.getElementById("ptitle").value;
 	  $(".addtodrawer").hide();
 	  var getdrawer=$(".getdrawer").val();
 	  $("#collection").show();
-	  for (i=0;i<= length;i++)
-	  {
-	      
-	      $('#lstBox1').append('<option>'+pagedrawer[i]+'</option>');
-	      // $('option').filter(function() { return $.text([this]) === ptitle; }).remove();
-          }
+	 
        });
 
 

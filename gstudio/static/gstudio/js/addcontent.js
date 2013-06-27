@@ -19,7 +19,8 @@
    var isImage=false;
    var isVideotitle=false;
    var isEditdoc = false;
-
+   var isPreview=false;
+      
    function subsecsave(objid){
        var org_data = $("#gnoweditor").val();
        var encode_data = encodeURIComponent(org_data);
@@ -176,7 +177,12 @@ function moveDown() {
 	   $(".chkbox").hide();
 	   $(".deletesec").hide();
        });
+             $("#Preview").one("click",function(){
+		 alert("previewtest");
+	     });
+
        $(".editpagecontent").one("click",function(){
+
 	    $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    editWikipage=true;
       	    $("#chart").hide();
@@ -186,15 +192,17 @@ function moveDown() {
 	   
 	    $("#content").css({"width":"600px",})
 	    document.getElementById('gnoweditor').style.visibility="visible";
+	   $(".orgitdownButton orgitdownButton10 preview").attr('rel','overlay');
+ 
 	    $("#gnoweditor").orgitdown(mySettings);
             var a = this.name;
 	    $("#gnoweditor").val(a);
 	    var elmts = document.getElementsByClassName("editval");
 	    for (var i = 0; i < elmts.length; i++){
 		elmts[i].setAttribute("value","edited");}
-	   //var screenTop = $(document).scrollTop();
+	      var screenTop = $(document).scrollTop();
       	    $(".orgitdownContainer").css({
-      		"margin-top":"0px","margin-left":"10px"});
+      		"margin-left":"10px"});
 	   //$(".tag").hide();
 	   //$(".tagtext").hide();
 	   $("#newsection1").hide();
@@ -248,6 +256,16 @@ function moveDown() {
 
    	
        $(".savepagecontent").one("click",function(){
+	   //alert("preview");
+	   //$("#Preview").attr('rel','overlay');
+ 
+	   // alert(isPreview);
+	   // if (isPreview){
+	   //     alert("elms");
+	   // var elmts = document.getElementsByClassName("preview");
+	   // for (var i = 0; i < elmts.length; i++){
+	   //    elmts[i].setAttribute("value","preview");}
+	   // }
 	   var org_data = $("#gnoweditor").val();
 	   var elmts = document.getElementsByClassName("reptext");
 	   var encode_data = encodeURIComponent(org_data);
@@ -257,7 +275,7 @@ function moveDown() {
            $(".pagedit").trigger('click');
 	   $(".savepagecontent").hide();
 	   $(".orgitdownContainer").hide();
-      	  
+      	   
        });
       $("#editnodecontent").one("click",function(){
 	  isNode=true;

@@ -9,9 +9,21 @@
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
     <script type="text/javascript" >
-      $(window).load(function() {
-      $("#content").css({
-    "width": "600px",});});
+  $(function(){
+          $("#mydropdown").change(function(event){
+            $("option:selected", $(this)).each(function(){
+                var obj = document.getElementById('mydropdown').value;
+                if(obj=="creation_date"){
+		$("#searchfont").show();
+		}
+		else{$("#searchfont").hide();}
+	
+            });
+          });
+        });
+$(window).load(function() {
+$("#content").css({
+"width": "100%",});});
 $(window).load(function() {
  $("#chart").hide();});
 $(window).load(function() {
@@ -21,10 +33,13 @@ $(window).load(function() {
 var i = 0;
 jQuery(document).ready(function($) {
     $("#commenteditor").click(function(){
+	$(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
         isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
 	<!--document.getElementById('save').style.visibility="visible";-->
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
+	$("#submitpostid").hide();//css({"margin-left":"400px","margin-top":"-38px"});
 	$("#commenteditor").hide();
 		
 	});
@@ -32,7 +47,18 @@ jQuery(document).ready(function($) {
             var org_data = $("#gnoweditor").val();   
 	    var encode_data = encodeURIComponent(org_data);
 	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));    
- 	    $("#commenttext").val(decode_data);	   
+ 	    $("#commenttext").val(decode_data);	
+	    $('.orgitdownContainer').hide();
+	    $("#submitpostid").css({"margin-left":"0px","margin-top":"0px"});
+	    $("#divpost b").text(decode_data); 
+	    $("#editcommenteditor").show();
+            $("#submitpostid").show();   
+	});
+
+     $("#editcommenteditor").click(function(){
+	$('.orgitdownContainer').show();
+	$("#editcommenteditor").hide();
+	$("#submitpostid").hide();
 	});
 });
 </script>
@@ -45,19 +71,33 @@ background-color:#E8E8E8 ;
 {
 background-color:white
 }
-#divsearch
-{
-position:absolute;
-}
+
 #upperdiv
 {
 position:relative;
-margin-bottom:20%;
+margin-bottom:6%;
 }
-#divpost
-{
-position:absolute;
-margin-left:52%;
+
+#divsearch {
+    background-color: #DDDDEE;
+    border-color: #AAAAAA;
+    border-style: dashed;
+    border-width: 3px;
+    float: left;
+    padding: 10px;
+    position: relative;
+    width: 48%;
+}
+
+#divpost {
+    background-color: #DDDDEE;
+    border-color: #AAAAAA;
+    border-style: dashed;
+    border-width: 3px;
+    float:left;
+    padding: 6px;
+    position: relative;
+    width: 48%;
 }
 #showingprocess
 {
@@ -77,7 +117,7 @@ background: green;
 
 
 
-{% autopaginate vids 10 %}
+{% autopaginate vids 40 %}
 
 
 <h2 style="">Video Library</h2>
@@ -89,15 +129,14 @@ background: green;
 {% csrf_token %}
 <h4 style="color: black;">Search Videos:</h4>
 <p><input type="text" name="svid" value={{val}}></p>
-
-
-<select name="mydropdown">
+<font size="1" id="searchfont" style="display:none"><b>YY-MM-DD HH:MM:SS</b></font>
+<br/>
+<select name="mydropdown" id="mydropdown">
 <option value="title">Title</option>
 <option value="creation_date">Creation Date</option>
 </select>
 <br/>
 <input type="submit" name="norm" value="Search">
-<input type="submit" name="spe" value="Search by User">
 </form>
 <br>
 {% if user.is_authenticated %}
@@ -116,16 +155,18 @@ background: green;
 <p><h4 style="color: black;">Submit Videos:</h4>
 Title:&nbsp; <input type="text" name="title1"><br/><br/>
 Video:&nbsp;<input type="file" name="clip" multiple="multiple" /></p><br/>
-Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Content" >
+Description:&nbsp;&nbsp;<b></b>
+<input type="button"  id="editcommenteditor"  value="edit" style="display:none" >
+<input type="button"  id="commenteditor"  value="Add Content" >
 <input type="button" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
 <input type=text name="contenttext" id="commenttext" style="visibility:hidden" />
 <input type="hidden" name="user" value={{user.username}}>
 <input type="hidden" name="userpassword" value={{user.password}}>
 <input type="hidden" name="useremail" value={{user.email}}>
-<p><b> Enter the password of wetube.gnowledge.org</b> </p>
+<p><font> Re-enter the password</font> </p>
 <input type="password" name="videopassword" />
 
-<input type="submit" value="Upload"  onclick="return myupload();" >
+<input type="submit" id="submitpostid" value="Upload"  onclick="return myupload();" >
 <script type="text/javascript">
 function myupload()
 {
@@ -153,14 +194,6 @@ document.getElementById('headvideo').style.visibility="visible";
 </div>
 {% endif %}
 </div>
-
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 {% if reportid %}
 <h2><font color="red">this image is already uploaded on this site</font></h2>
 <a href="/gstudio/resources/images/show/{{ reportid }}/"> <font size="4">to see this image click here</font></a><br/><br/><br/>
@@ -179,88 +212,44 @@ document.getElementById('headvideo').style.visibility="visible";
 {% endif %}
 
 <div id="listvideo">
+<table>
+    <tr>
 {% for video in vids %}
-<!--<iframe src="{{video.rurl}}/embed?in=0&out=10000&view=video" width="256" height="144" allowfullscreen></iframe>-->
+<td>
+<form enctype="multipart/form-data" method="post" action="" target="_blank">{% csrf_token %}
+	<input type="hidden" name = "full" value ={{video.slug}}>
+	<a href="/gstudio/resources/videos/show/{{video.id}}/">
+	<img src="http://wetube.gnowledge.org/{{video.slug}}/icon128.jpg" alt="{{ video.title }}" style="border-radius: 10px 10px 10px 10px;" title="{{ video.title }}">
+	</a>
+	{% for author in video.get_nbh.posted_by %}
+  	<input type="hidden" name="authorname" value="{{ author }}"  />
+	{% endfor %}
 
+	{% for date in video.get_nbh.creation_day %}
+ 	<input type="hidden" name="datename" value="{{ date }}"  />
+	{% endfor %}
+ 	<input type="hidden" name="titlename" value="{{ video.title }}"  />
 
-<div id="divvideo">
-<script type="text/javascript">
-i = i+1;
-if (i%2 == 0){
-document.getElementById("divvideo").setAttribute("id","div1");
-}
-else
-{
-document.getElementById("divvideo").setAttribute("id","div2");
-}
-
-</script>
-<font size="4">{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}[ <a href="{{ video.get_absolute_url }}" title="{{ video.title }}" rel="bookmark">Show Graph</a> ]</font>
-<form enctype="multipart/form-data" method="post" action="" target="_blank">
-{% csrf_token %}
-<input type="hidden" name = "full" value ={{video.slug}}>
-<!--<input type="submit" value="Play">-->
-<a href="/gstudio/resources/videos/show/{{video.id}}/"><font size="4"><u>Show</u></font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href={{video.rurl}} target="_blank">Right click to download</a><br>
-<!-- <font color = 'black'>Posted By : </font> -->
-{% for author in video.get_nbh.posted_by %}
-
-  <input type="hidden" name="authorname" value="{{ author }}"  />
-{% endfor %}
-
-<!-- <br> -->
-<!-- <font color = 'black'>Posted At :</font> -->
-{% for date in video.get_nbh.creation_day %}
- <input type="hidden" name="datename" value="{{ date }}"  />
-{% endfor %}
- <input type="hidden" name="titlename" value="{{ video.title }}"  />
-
-<!-- <br> -->
-{% for we in video.get_nbh.source %}
-		<!-- <font color = 'black'>Location: </font>  -->
+	{% for we in video.get_nbh.source %}
 			{% for map in video.get_nbh.map_link %}
 				{% ifnotequal map '' %}
 		                    <input type="hidden" name="mapname" value="{{ map }}"  />
 				     <input type="hidden" name="wename" value="{{ we }}"  />
-					<!-- <a href=http://maps.google.co.in/maps?hl=en&cp=43&gs_id=6&xhr=t&q={{map}}&bav=on.2,or.r_gc.r_pw.r_qf.,cf.osb&biw=1304&bih=680&um=1&ie=UTF-8&sa=N&tab=wl target="_blank">{{we}}</a> -->
 				{% endifnotequal %}
 			{% endfor %}
 		{% endfor %}
-<!-- <br> -->
- <input type="hidden" name="contentname" value="{{ video.content }}" />
- <input type="hidden" name="ratename" value="{{ video.rating.get_rating }}" />
-
-<!-- <br> -->
-<!-- <form method="post" action=""> -->
-<!-- {% csrf_token %} -->
-<!-- <input name="star1" type="radio" value=1 class="star"/> -->
-<!-- <input name="star1" type="radio" value=2 class="star"/> -->
-<!-- <input name="star1" type="radio" value=3 class="star"/> -->
-<!-- <input name="star1" type="radio" value=4 class="star"/> -->
-<!-- <input name="star1" type="radio" value=5 class="star"/> -->
-  
-<input type="hidden" name="vidid" value={{video.id}}>
+ 	<input type="hidden" name="contentname" value="{{ video.content }}" />
+ 	<input type="hidden" name="ratename" value="{{ video.rating.get_rating }}" />
+	<input type="hidden" name="vidid" value={{video.id}}>
 </form>
-<!-- <input type="submit" value="Rate it!!!"> -->
-<!-- </form> -->
-<!-- <br> -->
-<!-- <form method="post" action=""> -->
-<!-- {% csrf_token %} -->
-<!-- <input type="hidden" name="favid" value={{video.id}}> -->
-<!-- <input type="hidden" name="favusr" value={{user.username}}> -->
-<!-- <input type="submit" value="Add to favourites"> -->
-<!-- </form><br> -->
-<!-- <hr width="100%" style="height:5px;" color="black"/> -->
-<!-- <br> -->
-</div>
-
+<td>
+ {% if not forloop.last and forloop.counter|divisibleby:"8" %}
+</tr>
+{% endif %}
 {% endfor %}
-
+</table>
 </div>
-<br>
-
-<h2>
-{% paginate %}</h2>
+<h2>{% paginate %}</h2>
 
 {% endblock %}
 

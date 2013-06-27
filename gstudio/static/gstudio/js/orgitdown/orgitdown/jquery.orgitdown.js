@@ -158,7 +158,7 @@
 						for (j = levels.length -1; j >= 0; j--) {
 							t += levels[j]+"-";
 						}
-						li = $('<li class="orgitdownButton orgitdownButton'+t+(i)+' '+(button.className||'')+'"><a href="" '+key+' title="'+title+'">'+(button.name||'')+'</a></li>')
+						li = $('<li class="orgitdownButton orgitdownButton'+t+(i)+' '+(button.className||'')+'"><a href="" '+key+' title="'+title+'" id="'+title+'" rel="overlay">'+(button.name||'')+'</a></li>')
 						.bind("contextmenu.orgitdown", function() { // prevent contextmenu on mac and allow ctrl+click
 							return false;
 						}).bind('click.orgitdown', function() {
@@ -466,6 +466,15 @@
 			    
                     }
                  });}
+		    function preview1() {
+			previewtest();
+			
+			isPreview=true;
+			
+			//$(".savepagecontent").trigger('click');
+			
+                        }
+
 		    function close() {
                         $(".orgitdownContainer").hide();
 		        location.reload();}

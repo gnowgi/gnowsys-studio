@@ -30,9 +30,17 @@ urlpatterns = patterns('gstudio.views.ajaxviews',
                        url(r'^ajaxcreatefile/$', 'AjaxCreateFile', name='ajax_views_createfile'),
                        url(r'^contentadd/$', 'AjaxAddContent', name='ajax_views_contentadd'),
 		       url(r'^draweradd/$', 'AjaxAddDrawer', name='ajax_views_draweradd'),
+                       url(r'^preview/$', 'Preview', name='ajax_views_preview'),
+                       url(r'^status/$', 'Status', name='ajax_views_status'),
+                       url(r'^pagedelete/$', 'Pagedelete', name='ajax_views_pagedelete'),
+
                        url(r'^htmlexport/$', 'HtmlExport', name='ajax_view_htmlexport'),
                        url(r'^collectionadd/$', 'AjaxAddCollection', name='ajax_view_collectionadd'),
                        url(r'^iswiki/$', 'IsWiki', name='ajax_view_iswiki'),
                        url(r'^deletepriorpage/$', 'ajaxDeletePriorpage', name='ajax_delete_priorpage'),
                        url(r'^addresponsestotwist/$', 'ajaxAddResponsesToTwist', name='ajax_addresponsestotwist'),
+		       url(r'^userListForInvitation/$', 'ajaxuserListForInvitation', name='ajax_userListForInvitation'),
+                       url(r'^sendInvitation/$', 'ajaxSendInvitation', name='ajax_SendInvitation'),
+                       url(r'^releaseBlockResponseOfTwist/$', 'ajaxReleaseBlockResponseOfTwist', name='ajax_ReleaseBlockResponseOfTwist'),
+                       url(r'^ajaxResponseReciev/$', 'ajaxResponseReciev', name='ajax_ajaxResponseReciev')
                        )

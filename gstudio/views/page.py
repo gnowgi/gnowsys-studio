@@ -23,7 +23,18 @@ from gstudio.methods import *
 def pagedashboard(request,pageid):
    pageid = int(pageid)
    flag= False
+   collection=False
+   isPreview=False
+   status=False
+   usr1=request.user
+   is_staff=False
+   if usr1.is_staff:
+      is_staff=True
+      
+
    page_ob = System.objects.get(id=pageid)
+   print page_ob
+   print "page_ob"
    test=""
    test=get_gbobjects(page_ob.id)
    test1=get_pdrawer()	
@@ -31,6 +42,7 @@ def pagedashboard(request,pageid):
    if request.method == "POST" :
       boolean = False
       rep = request.POST.get("replytosection",'')
+      status1=request.POST.get("status",'')
       id_no = request.POST.get("iden",'')
       id_no1 = request.POST.get("parentid","")
       idusr = request.POST.get("idusr",'')
@@ -42,11 +54,21 @@ def pagedashboard(request,pageid):
       addtags = request.POST.get("addtags","")
       texttags = unicode(request.POST.get("texttags",""))
       editable = request.POST.get("edit","")
-      if editable=="edited":
-          if id_no:
-             edit_section(id_no,rep,usr)
-          elif id_no1:
-             edit_section(id_no1,rep,str(request.user))
+      preview = request.POST.get("ispreview","")
+      print preview
+      print "pev value"
+      if editable=="edited" and preview=="preview":
+         isPreview=True
+         if id_no:
+            edit_section(id_no,rep,usr,isPreview)
+         elif id_no1:
+            edit_section(id_no1,rep,str(request.user),isPreview)
+      elif editable=="edited":
+         if id_no:
+            edit_section(id_no,rep,usr,isPreview)
+         elif id_no1:
+            edit_section(id_no1,rep,str(request.user),isPreview)
+
       if section_del:
          del_section(int(id_no))
       if comment_del:
@@ -57,7 +79,9 @@ def pagedashboard(request,pageid):
          i=Gbobject.objects.get(id=docid)
          i.tags = i.tags+ ","+(texttags)
          i.save()
-
+      if status1:
+         page_ob.status == 2
+   
       if rep and editable!='edited':
          if not id_no :
             ptitle= make_title(int(id_no1))      
@@ -82,7 +106,13 @@ def pagedashboard(request,pageid):
       post="no topic added yet!!"
    ot=Gbobject.objects.get(id=pageid)
    page_ob = System.objects.get(id=pageid)
-   variables = RequestContext(request, {'ot' : ot,'section' : Section,'page_ob' : page_ob,'object':page_ob,'admin_m':admin_m,"flag" : flag,"admin_id" : admin_id,'post':post,'test':test, 'test1':test1})
+   collsys=page_ob.systemtypes.all()
+   iscoll=collsys.filter(title="Collection")
+   if iscoll:
+      collection=True
+   if (page_ob.status == 1):
+      status=True
+   variables = RequestContext(request, {'ot' : ot,'section' : Section,'page_ob' : page_ob,'object':page_ob,'admin_m':admin_m,"flag" : flag,"admin_id" : admin_id,'post':post,'test':test, 'test1':test1,'collection':collection,'status':status,"is_staff":is_staff})
    template= "metadashboard/download.html"
    template = "metadashboard/pgedashboard.html"
    return render_to_response(template, variables)

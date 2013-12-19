@@ -21,4 +21,6 @@ urlpatterns = patterns('gstudio.views.addreln',
                        url(r'^form/(\d+)/$','addrelnform',name = 'addrelfrm'),
                        url(r'^thread/(\d+)/$', 'addreln',name='addreln'),
                        url(r'^deleteRelation/(\d+)/$', 'deleteRelation',name='deleteRelation'),
+                       url(r'^puttagsearch/$','puttagsearch',name='puttagsearch'),
+                       url(r'^refreshtag/$','refreshsearch',name='reftagsearch'),
                        )

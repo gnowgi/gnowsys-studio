@@ -1,0 +1,43 @@
+{% load gstudio_tags %}
+<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+<script src="/static/gstudio/js/tagsearch.js"></script>
+
+<style type="text/css">
+
+div.overlay {
+        width:500px;
+        display:none;
+        color:#fff;
+        padding:10px;
+        background-color:white;
+}
+img{
+position:absolute;
+}
+
+div.overlay a.close {
+        background-image:url("/static/gstudio/img/close.png");
+        position:absolute;
+        right:5px;
+        top:5px;
+        cursor:pointer;
+        height:27px;
+        width:27px;
+}
+</style>
+<div id="tagdiv">
+<form method="post" action=""> {% csrf_token %}
+<p align="center">
+<input type="text" name="textfirst" id="search_first">
+<select id="opt">
+<option value="AND" >AND</option>
+<option value="OR" >OR</option>
+</select>
+<input type="text" name="textsecond" id="search_secnd">
+<button rel="#tagoverlay" id="tagsearch" type="button" >Search</button>
+</p>
+</form>
+<div class="overlay" id="tagoverlay">
+
+</div>
+</div>

@@ -1,0 +1,32 @@
+{% if dic %}
+<table>
+<tr>
+<td><img src="/static/gstudio/img/subscriber.png" alt="Subscribers" title="Subscribers" width="25" height="25"></td>
+<td><img src="/static/gstudio/img/onoffline.png" alt="Online/Offline" title="Online/Offline" width="25" height="25"></td>
+<td><img src="/static/gstudio/img/posts_made.png" alt="No of Posts(Twists/Responses)" title="No of Posts(Twists/Responses)" width="25" height="25"></td>
+<td><img src="/static/gstudio/img/ratngs_made.png" alt="Ratings subscriber made" title="Ratings subscriber made" width="25" height="25"></td>
+<td><img src="/static/gstudio/img/ratngs_recd.png" alt="Ratings subscriber received" title="Ratings subscriber received" width="25" height="25"></td>
+<td><img src="/static/gstudio/img/resp_post_recd.png" alt="Responses his post received" title="Responses his post received" width="25" height="25"></td>
+
+</tr>
+{% for key,value in dic.items %}
+<tr>
+<td>
+{{key}}
+</td>
+
+{% for items in value %}
+
+{% if items == "grey" or items == "green1" %}
+<td> <img src="/static/gstudio/img/{{items}}.png" width="20" height="20"></td>
+{% else %}
+   <td> {{items}}</td>
+{% endif %}
+
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<font color="red" size="5" >No Subscribers for this thread </font>
+{% endif %} 

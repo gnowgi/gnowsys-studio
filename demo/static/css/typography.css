@@ -97,6 +97,10 @@ ul, li {
     list-display-position: inherit;
 }
 
+.list{
+	margin-left:50px;
+	font-size: 15px;
+}
 
 
 /*  Blockquote, Pre, Code

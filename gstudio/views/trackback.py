@@ -77,16 +77,16 @@ def nodetype_trackback(request, object_id):
         excerpt = request.POST.get('excerpt') or title
         blog_name = request.POST.get('blog_name') or title
 
-        if not error:
-            comment, created = comments.get_model().objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(Nodetype),
-                object_pk=nodetype.pk, site=site, user_url=url,
-                user_name=blog_name, defaults={'comment': excerpt})
-            if created:
-                user = nodetype.authors.all()[0]
-                comment.flags.create(user=user, flag='trackback')
-            else:
-                error = u'Trackback is already registered'
+        # if not error:
+        #     comment, created = comments.get_model().objects.get_or_create(
+        #         content_type=ContentType.objects.get_for_model(Nodetype),
+        #         object_pk=nodetype.pk, site=site, user_url=url,
+        #         user_name=blog_name, defaults={'comment': excerpt})
+        #     if created:
+        #         user = nodetype.authors.all()[0]
+        #         comment.flags.create(user=user, flag='trackback')
+        #     else:
+        #         error = u'Trackback is already registered'
 
         return direct_to_template(request, 'gstudio/nodetype_trackback.xml',
                                   mimetype='text/xml',

@@ -19,6 +19,16 @@
 {% block title %}{% trans "Latest gbobjects" %} {% if Objecttype %}| {% trans "Objecttype" %} {{ Objecttype }}{% endif %}{% if tag %}| {% trans "Tag" %} {{ tag }}{% endif %}{% if author %}| {% trans "Author" %} {{ author }}{% endif %}{% if page_obj %}{% ifnotequal page_obj.number 1 %} | {% trans "Page" %} {{ page_obj.number }}{% endifnotequal %}{% endif %}{% endblock %}
 
 {% block content %}
+<script type="text/javascript" >
+$(window).load(function(){ 
+$("#content").css({"width": "600px"});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ $("#graphcss").hide();   
+  });
+
+</script>
 {% if Objecttype %}
 <h1>{{ Objecttype.title }}</h1>
 {% if Objecttype.description %}
@@ -27,11 +37,21 @@
 {% endif %}
 
 {% if tag %}
+<script type="text/javascript" >
+$(window).load(function(){ 
+$("#content").css({"width": "600px"});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ $("#graphcss").hide();   
+  });
+
+</script>
 <h1>{% trans "Tag" %} : {{ tag }}</h1>
 {% endif %}
 
 {% if author %}
-<h1>{% blocktrans with author.username as author %}Gbobjects by {{ author }}{% endblocktrans %}</h1>
+<h1>{% blocktrans with author.username as author %}contributes by {{ author }}{% endblocktrans %}</h1>
 {% endif %}
 
 {% for object in object_list %}

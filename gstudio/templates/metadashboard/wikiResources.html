@@ -1,0 +1,103 @@
+{% load gstudio_tags %}
+{% load adminmedia grp_tags %}
+{%  for key,value in page_ob.get_relations_for_view.items %}
+
+	{% if key == 'has_text' %}
+	<p><img src="{{STATIC_URL}}gstudio/img/text.png" alt="Texts" title="Texts"/> </p>
+	{% endif %}
+
+	{% if key == 'has_audio' %}
+	<p><img src="{{STATIC_URL}}gstudio/img/audio_icon.png" alt="Audios" title="Audios"/></p>
+	{% endif %}
+	
+	{% if key == 'has_pdf' %}
+	<p><img src="{{STATIC_URL}}gstudio/img/pdf-icon.jpg" alt="PDF" title="PDF"/></p>
+
+	{% endif %}
+
+        {% if key == 'has_image' %}
+	<p><img src="{{STATIC_URL}}gstudio/img/img.png" alt="Images" title="Images"/></p>
+	{% endif %}
+
+	{% if key == 'has_video' %}
+	<p><img src="{{STATIC_URL}}gstudio/img/video.png" alt="Videos" title="Videos" /></p>
+	{% endif %}
+
+	{% if  key == 'has_document'  %}
+	<p><img src="{{STATIC_URL}}gstudio/img/documents.jpg" alt="Documents" title="Documents"/></p>
+	{% endif %}
+
+	{% if  key == 'has_presentation'  %}
+	<p><img src="{{STATIC_URL}}gstudio/img/ppt.jpg" alt="Presentations" title="Presentations"/></p>
+	{% endif %}
+
+	{% if  key == 'has_spreadsheet'  %}
+	<p><img src="{{STATIC_URL}}gstudio/img/spreadsheet.jpg" alt="Spreadsheets" title="Spreadsheets"/></p>
+
+	{% endif %}
+
+	{% if  key == 'has_multimedia'  %}
+	<p><img src="{{STATIC_URL}}gstudio/img/multimedia.png" alt="Multimedia" title="Multimedia"/></p>
+
+	{% endif %}
+
+	{% if  key == 'has_html'  %}
+	<p><img src="{{STATIC_URL}}gstudio/img/page_html.jpg" alt="HTML" title="HTML"/></p>
+
+	{% endif %}
+
+	{% for k  in value %}
+		{% if  key == 'has_image'  %}
+
+
+
+<a href="{{k.url}}"><img src="{% admin_media_prefix %}img/{{k.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}-thumbnail" alt="{{k.title}}" ></a> &nbsp;
+	
+
+		{% endif %}
+	
+		{% if  key == 'has_audio'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}	
+		
+		{% if  key == 'has_video'  %}
+
+
+
+ <a href="{{k.url}}">
+        <img src="http://wetube.gnowledge.org/{{k.slug}}/icon128.jpg" alt="{{ k.title }}" style="border-radius: 10px 10px 10px 10px;" title="{{ k.title }}"> </a>&nbsp;
+
+
+		{% endif %}
+		
+		{% if  key == 'has_document'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}
+		
+		{% if  key == 'has_text'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}
+
+		{% if  key == 'has_pdf'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}
+			
+		{% if  key == 'has_presentation'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}	
+
+		{% if  key == 'has_spreadsheet'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}
+			
+		{% if  key == 'has_multimedia'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}
+
+		{% if  key == 'has_html'  %}
+			<a href="{{k.url}}">{{k.title}}</a>,&nbsp;
+		{% endif %}
+	
+	{% endfor %}
+	<br/>
+{% endfor %}

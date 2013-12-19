@@ -5,6 +5,7 @@
         <script type="text/javascript">
         $(document).ready(function()
         {          
+        slnchange();
         $('#id_value_1').datepicker();
         $('#id_value_2').datepicker();
         });
@@ -46,6 +47,7 @@
 	}
         </script>
 {%endblock%}
+ {% block title %}Thread{% endblock %}
 {% block content  %}
 <style type="text/css">
 #content
@@ -62,21 +64,25 @@
 </ul>
 {% endif %}
 <form action="" method="post">
+(all fields mark with an <font color="red">*</font> are mandatory)
 {% csrf_token %}
-<p><font size ="3" >Name of the Thread:</font> <input type="text" name="subject"></p>
-<p><font size ="3" >Substance:</font> </p> 
+<p><font size ="3" >Name of the Thread:</font> <input type="text" name="subject"><font color="red"> *</font></p>
+<p><font size ="3" >Description:</font> </p> 
 <textarea id="threadcontent" name="message" rows="10" cols="50" style="display:none"></textarea>
 
-<input type="button" id="addthreadcontent"  name="content" value="Add Description">
+<input type="button" id="addthreadcontent"  name="content" value="Add Description"><font color="red"> *</font>
 <input type="button" id="threadsave" name="savecontent" value="Save" style="display:none">
 </br>
 
-{% get_factory_looms as abc %}
+{% get_factory_looms as functions %}
 
 <p><font size ="3" >Type:</font></p>
 <select id="opt" onchange="slnchange()" >
- {% for each in abc %}
+ <option value="Discussion Forum" >Discussion Forum</option> 
+ {% for each in functions %}
+ {% if not each in 'Discussion Forum' %}
  <option value="{{each}}" >{{each}}</option> 
+ {% endif %}
 {% endfor %}
 </select>
 <br/>
@@ -84,7 +90,7 @@
 <font size ="3" >Please Set the time 
 <p>Creating a thread will require to schedule it for an indefinite period of time. So in this case, please enter end time of say 50 years from now</p></font>
 </br>
-<font size ="3" >Start time:</font>
+<font size ="3" >Start time:</font><font color="red"> *</font>
 </br>
         <span class="datetimeshortcuts">
         	<a href="javascript:DateTimeShortcuts.openCalendar(0);"id = "calendarlink0"></a>
@@ -93,14 +99,14 @@
         <font size ="2" >Hours:</font><input id = "id_hr1" type = "text" name = "hours1">
         <font size ="2" >Minutes:</font><input id = "id_min1" type = "text" name = "minutes1"><br/>
 	<font size ="3" ><p><b>Note</b>&nbsp;The thread will be accessible to members (except the creator)only after the scheduled start time</p></font>
-       <font size ="3" > End time:  </font> </br>
+       <font size ="3" > End time:  </font><font color="red">*</font></br>
         <font size ="2" >Date: </font><input id="id_value_2" type="text" class="vTimeField hasTimepicker" name="endDate" size ="8">
         <font size ="2" >Hours:</font><input id = "id_hr2"  type = "text" name = "hours2">
         <font size ="2" >Minutes:</font><input id = "id_min2"  type = "text" name = "minutes2">
 <font size ="3" ><p>After this time the threads remain but it will be inactive<p></font>
 <input type="hidden" value={{user.id}} name = "idusr">
 <input type="hidden" value={{user.username}} name = "usr">
-<input type="submit" value="Submit">
+<input type="submit" value="Submit"><font color="red"> *</font>
 </form>
 {%else%}
 <font size ="3" ><p> Please Login </p></font>

@@ -17,7 +17,9 @@
         | <a href="{{  get_absolute_url }}/gstudio/user/wikipage" title="Wikipages">Wikipages</a>
 	| <a href="{{  get_absolute_url }}/gstudio/resources/documents" title="My Documents">Documents</a>
         | <a href="{{  get_absolute_url }}/gstudio/resources/images" title="Images">Images</a>
+        | <a href="{{  get_absolute_url }}/gstudio/resources/videos/wetube" title="wetube.gnowledge.org">WeTube</a>  
         | <a href="{{  get_absolute_url }}/gstudio/resources/videos" title="My Videos">Videos</a>
+        | <a href="/tagclouds/" title="Tag Cloud">Tags</a>
 <!--        | <a href="{{  get_absolute_url }}/nodetypes" title="Nodes">Node Types</a>
         | <a href="{{  get_absolute_url }}/objects" title="Objects">Node Objects</a>
 -->
@@ -28,8 +30,7 @@
 
        {% endif %}
     {% endif %}
-    
-
+    	| <a href="http://beta.metastudio.org/gstudio/page/gnowsys-page/10093/" title="Help">Help</a>
     </div> 
 
     {% if user.is_authenticated %}
@@ -72,7 +73,7 @@
         </ul>
     {% else %}
         <ul id="user-tools">
-	  <li><a href="{{root_path}}/accounts/login" title="Login">{% trans 'Login' %}</a></li>
+	  <li><a href="{{root_path}}/accounts/login/?next={{request.path}}" title="Login">{% trans 'Login' %}</a></li>
 	  <li>Not registered ? <a href="{{root_path}}/accounts/register" title="Register">{% trans 'Register' %}</a></li>
 	    </ul>
 	 
@@ -82,6 +83,10 @@
     {% endif %}
     {% block nav-global %}
     {% endblock %}
+<ul  id="wetubemessage" style="display:none;margin-left:950px;margin-top:7px;color:white">
+          <li> To Login,Logout and register use "User" tab</li>
+          </ul>
+
 </div>
 
 <script type="text/javascript" charset="utf-8">

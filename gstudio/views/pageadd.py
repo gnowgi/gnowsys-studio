@@ -23,6 +23,7 @@ import datetime
 def pageadd(request):
     errors = []
     collection= None
+    private= None
     pageId = ""
     test1=get_pdrawer()
     if request.method == 'POST':
@@ -37,10 +38,16 @@ def pageadd(request):
             idusr=request.POST['idusr']
             list1=request.POST['list1']
             collection = request.POST.get("collection",'')
+	    private = request.POST.get("private",'')
             orgcontent=request.POST['orgcontent']
             usr = request.POST.get("usr",'')
             editable= request.POST.get("edit","")
            # print content_org,"content"
+            if private:
+                private=True
+                
+            else:
+                private=False
             if collection:
                 collection=True
                 
@@ -54,7 +61,7 @@ def pageadd(request):
                # elif id_no1:
                 #    edit_section(id_no1,rep)
 
-	    pageId = create_wikipage(title,int(idusr),orgcontent,usr,collection,list1)
+	    pageId = create_wikipage(title,int(idusr),orgcontent,usr,collection,list1,private)
             
             if pageId :
                 return HttpResponseRedirect('/gstudio/page/gnowsys-page/'+ str(pageId))

@@ -5,6 +5,11 @@
 
 {% block title %}{% trans "Archives" %} {{ year }}{% endblock %}
 
+{% block blockbots %}
+	<meta name="robots" content="NONE,NOARCHIVE" />
+{% endblock %}
+
+
 {% block content %}
 <h1>{% trans "Archives" %} {{ year }}</h1>
 

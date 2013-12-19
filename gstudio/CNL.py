@@ -80,6 +80,7 @@ def get_lex_sentence(self):
     else:      
        # If AT or RT       
        at = []
+       g = ""
        if self.title:
            title = slugify(self.title)
            title_slug = slugify(title)

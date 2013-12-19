@@ -1,0 +1,386 @@
+{% extends "gstudio/base.html" %}
+{% load adminmedia grp_tags %}
+{% load i18n %}
+{% block title %}Collections{% endblock %}
+{% block content %}
+   <script src="/static/gstudio/js/tabcontent.js" type="text/javascript"></script>
+    <link href="/static/gstudio/css/tabcontent.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+ function getCollectionPage(pageid,pageTitle){
+ $(".conceptpage").show();
+        $("#titleOfPage").show();
+	$("#titleOfPage").text(pageTitle);
+	objectid = pageid
+	fgraph();
+       {% if user.is_authenticated %}
+	$.ajax({
+	url: '/gstudio/ajax/getConceptPageText/',
+	//url: '/gstudio/page/gnowsys-page/'+this.id+'/',
+	type: 'POST',
+	data: {objectid:pageid,csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+      $("#view5").html('<img id="ajax_image_custom" width="50" style="padding-left:275px" src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif">');
+                              },
+	success: function(result){
+		
+		$("#view5").html(result);
+                
+	     },
+        complete: function(){
+
+
+		  }
+	});
+     {% endif %}
+$.ajax({
+	url: '/gstudio/ajax/getConceptPageResources/',
+	type: 'POST',
+	data: {objectid:pageid,csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+        $("#view3").html('<img id="ajax_image_custom" width="50" style="padding-left:275px" src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif">');
+                              },
+	success: function(result){
+		$("#view3").html(result);
+		
+	     },
+        complete: function(){
+
+		  }
+	});
+$.ajax({
+	url: '/gstudio/ajax/getConceptPageComments/',
+	type: 'POST',
+	data: {objectid:pageid,csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+        $("#view4").html('<img id="ajax_image_custom" width="50" style="padding-left:275px" src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif">');        
+                              },
+	success: function(result){
+                
+		$("#view4").html(result);
+		
+	     },
+        complete: function(){
+
+		  }
+	});
+
+
+	
+$.ajax({
+	url: '/gstudio/ajax/getConceptPageGraphText/',
+	type: 'POST',
+	data: {objectid:pageid,csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+        $("#view2").html('<img id="ajax_image_custom" width="50" style="padding-left:275px" src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif">');        
+                              },
+	success: function(result){
+
+		$("#view2").html(result);
+		
+	     },
+        complete: function(){
+
+		  }
+	});
+
+
+	}
+
+
+
+function getGraph()
+	{
+
+		$("#view1").html("<div id='chart'></div>");
+			fgraph();
+		$("li").prop("onclick", null);
+	}
+
+jQuery(document).ready(function($) {
+
+    $(document).on('click',".getCollections",function(){
+	var backgroundClass = $(this).parent('div').attr("class")
+	$("."+backgroundClass+" .getCollections").css({"background":""});
+	$(this).css({"background":"#C8C8C8"});
+	var pageid= this.id
+	var pageTitle = $(this).attr("title");
+	var to = $(this).parent('div').attr("id")
+	if(to != "Fifth"){
+//        $(".collection"+to+"Column").show();
+	$.ajax({
+	url: '/gstudio/ajax/getCollections/',
+	type: 'POST',
+	data: {objectid:this.id,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        beforeSend: function() {
+                              },
+	success: function(result){
+		var jSon = JSON.parse(result);
+		$(".collection"+to+"Content").html("");
+
+                var i = 0  	
+		for(var each in jSon){
+		i = i + 1
+		var div1=$("<div>"+"</div>")
+		        .attr("id", each )
+			.attr("class","getCollections")
+			.attr("title",jSon[each])
+			.appendTo($(".collection"+to+"Content"));
+		var atag = $("<a>"+jSon[each] +"</a>")
+			  .attr("href","#" )
+			  .appendTo(div1);
+	} 
+	if(i==0){
+		$(".collectionTable").hide();
+		$(".show_collection").show();
+		$(".hide_collection").hide();
+		getCollectionPage(pageid,pageTitle);
+		
+        }
+	else{
+	        $(".collection"+to+"Column").show();
+	}
+	},
+        complete: function(){
+
+		  }
+	});  
+	}
+else  {
+		$(".collectionTable").hide();
+		$(".show_collection").show();
+		$(".hide_collection").hide();
+		getCollectionPage(pageid,pageTitle);
+	/*$(".conceptpage").show();
+        $("#titleOfPage").show();
+	$("#titleOfPage").text(pageTitle);
+	objectid = this.id
+	fgraph();
+	$.ajax({
+	url: '/gstudio/ajax/getConceptPage/',
+	//url: '/gstudio/page/gnowsys-page/'+this.id+'/',
+	type: 'POST',
+	data: {objectid:objectid,csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+                              },
+	success: function(result){
+		$("#view2").html(result);
+		
+	     },
+        complete: function(){
+
+		  }
+	});*/
+
+	}
+	 });	
+});
+
+
+	//$(document).on('click',"#lstvalue",function(){
+	$("#lstvalue").live('click',function(){
+
+	$("#collection").hide();
+	opts = lstBox2.options, len = opts.length;
+	if (len == 0){
+        arr=[];
+        arr1=[];
+	
+	}
+	else{
+        arr1=[];
+	for (var i = 0; i < len; i++) {
+	      arr[i] = "'"+opts[i].value+"'";
+	      arr1[i]=opts[i].id;
+			    }}
+	 var abc1=arr1.join(',');
+	 
+	 	      
+	 if (abc1){
+	 var abc=abc1;
+	 
+	 }
+	 else{
+	 var abc=null;
+	 }
+
+	 var wtitle= document.getElementById("ptitle").value;
+	 var collection= document.getElementById("iscollection").value; 
+			      $.ajax({
+       			      url: '/gstudio/ajax/draweradd/',
+       			      data:{'title':abc,'wtitle':wtitle,'collection':collection},
+                              beforeSend: function() {
+                              $("#ajax_load_image").show();
+                            
+			      $("#content").css({"opacity":"0.1",})
+	   
+                              },
+       			      
+       			      success: function(data) {
+	                      $("#coll").html(data);
+			      $(".addtodrawer").show();
+			      $("#chart").text("");
+		  	      fgraph();
+       			      
+       			    },
+                             complete: function(){
+                             $("#ajax_load_image").hide();
+			      $("#content").css({"opacity":"",})
+			      
+	             }       
+       });
+			      
+	 });
+	// $(document).on('click',".htmlexport",function(){
+	$(".htmlexport").live('click',function(){	 
+	 
+	 var ptitle= document.getElementById("ptitle").value;
+	
+
+	 opts = lstBox2.options, len = opts.length;
+	 if (len == 0){
+         arr=[];
+         arr1=[];
+	 
+	 }
+	 else{
+	 for (var i = 0; i < len; i++) {
+	       arr[i] = "'"+opts[i].value+"'";
+	       arr1[i]=opts[i].id;
+			    }}
+	  var abc1=arr.join(',');
+	  	      
+	  if (abc1){
+	  var abc=abc1;
+	  }
+	  else{
+	  var abc="null";
+	  }
+	 $.ajax({
+	 url: '/gstudio/ajax/htmlexport/',
+	 data:{'ptitle':ptitle,'title':abc},
+	 beforeSend: function() {
+         $("#ajax_load_image").show();
+                            
+	 $("#content").css({"opacity":"0.1",})
+	  },
+       			      
+         success: function(data) {
+	 $("#coll1").html(data);	 
+	 
+	 },
+         complete: function(){
+         $("#ajax_load_image").hide();		      
+         $("#content").css({"opacity":"",})
+			      
+	  }       
+	 	 });
+	 });
+			      
+function showCollection(){
+		$(".collectionTable").show();
+		$(".show_collection").hide();
+		$(".hide_collection").show();
+}
+
+function hideCollection(){
+		$(".collectionTable").hide();
+		$(".show_collection").show();
+		$(".hide_collection").hide();
+}
+	
+
+</script>
+<font size="4"><a href="#" class="show_collection" onclick="showCollection()" style="display:none">Show Collections</a></font>
+<font size="4"><a href="#" class="hide_collection" onclick="hideCollection()" style="display:none">Hide Collections</a></font>
+<!--<div class="collectionTable" style="border: 1px solid;display:table">-->
+<table class="collectionTable" style="border: 1px solid;display:table">
+<tr>
+<td id="td1">
+<div class="collectionFirstColumn" style="top: 0px; bottom: 0px; width: 180px; left: 0px;">
+<div class="collectionFirstColumnTitle" style="width: 100%; height: 16px;background: lightgray;border:1px solid"><center><b>Level</b></center></div>
+<div class="collectionFirstContent" id="Second" style="left: 0px; right: 0px;  height: 276px; width: 180px; top: 0px;overflow: scroll;" >
+<!--<div style="top: 0px; bottom: 0px;  height: 80px; left: 0px;" >-->
+<div class="getCollections" id="19021"  title="Secondary and Higher Secondary Level" >
+<a href="#">Secondary and Higher Secondary Level</a>
+</div>
+<div class="getCollections" id="18968" title="Elementary Education">
+<a href="#">  Elementary Education</a>
+</div>
+<!--</div>-->
+</div>
+</div>
+</td>
+<td>
+
+<div class="collectionSecondColumn"  style="top: 0px; bottom: 0px; width: 180px; left: 0px;display: none;">
+<div class="collectionSecondColumnTitle" style="width: 100%; height: 16px;background: lightgray;border:1px solid"><center><b>Subject</b></center></div>
+<div class="collectionSecondContent" id="Third" style="left: 0px; right: 0px;  height: 276px; width: 180px; top: 0px;overflow: scroll;" >
+
+
+
+</div>
+</div>
+</td>
+
+<td>
+
+<div class="collectionThirdColumn"  style="top: 0px; bottom: 0px; width: 180px; left: 0px;display: none;">
+<div class="collectionThirdColumnTitle" style="width: 100%; height: 16px;background: lightgray;border:1px solid"><center><b>Concept</b></center></div>
+<div class="collectionThirdContent" id="Fourth" style="left: 0px; right: 0px;  height: 276px; width: 180px; top: 0px;overflow: scroll;" >
+
+
+
+</div>
+</div>
+</td>
+
+<td>
+
+<div class="collectionFourthColumn"  style="top: 0px; bottom: 0px; width: 180px; left: 0px;display: none;">
+<div class="collectionFourthColumnTitle" style="width: 100%; height: 16px;background: lightgray;border:1px solid"><center><b>Concept page</b></center></div>
+<div class="collectionFourthContent" id="Fifth" style="left: 0px; right: 0px;  height: 276px; width: 180px; top: 0px;overflow: scroll;" >
+
+
+
+</div>
+</div>
+</td>
+
+</tr>
+</table>
+<!--</div >-->
+<h1 id="titleOfPage" style="display:none"> </h1>
+<div class="conceptpage" style="display:none">
+    <div style="width: 100%; margin: 0 auto; padding: 0px 0 0px; font: 1.0em arial;">
+            <ul class="tabs" persist="true">
+            <li onclick="getGraph();"><a href="#" rel="view1">Concept View</a></li>
+             <li><a href="#" rel="view2">Related Topics</a></li>
+            <li><a href="#" rel="view3">Resources</a></li>
+            <li><a href="#" rel="view4">Comments</a></li>
+	        {% if user.is_authenticated %}
+	        <li><a href="#" rel="view5">Edit</a></li>
+		    {% endif%}
+        </ul>
+       <div class="tabcontents">
+            <div id="view1" class="tabcontent">
+		<div id="chart"></div>
+              
+            </div>
+            <div id="view2" class="tabcontent">
+
+	    </div>	
+            <div id="view3" class="tabcontent">
+       
+	    </div>
+            <div id="view4" class="tabcontent">
+	
+	    </div>
+       {% if user.is_authenticated %}
+           <div id="view5" class="tabcontent">
+         
+           </div>
+       {% endif %}
+	</div>
+    </div>
+</div
+{% endblock%}

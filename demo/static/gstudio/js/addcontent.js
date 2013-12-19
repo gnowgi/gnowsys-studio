@@ -1,5 +1,5 @@
 
- $.noConflict();
+
    var isWikipage=false;
    var editWikipage=false;
    var objid;
@@ -47,8 +47,21 @@ function moveDown() {
 
     
   jQuery(document).ready(function($) {
-        $('#btnUp').click(moveUp);
-     	 $('#btnDown').click(moveDown);
+//        $('#btnUp').click(moveUp);
+	    $(document).on('click','#btnUp',moveUp);
+//     	 $('#btnDown').click(moveDown);
+	    $(document).on('click','#btnDown',moveDown);
+
+      $(document).on('click','#cancel',function(){
+	    $("#collection").hide();
+            $("#collectionimg").hide();
+            $("#coll input").show();
+//            $(".addtoimgdrawer").show();
+//css({"display":""});
+            $("#imagecollections").show();
+           
+	});
+  
         $("#addcontent").one("click",function(){
  	
 	   isSection=true;
@@ -88,15 +101,13 @@ function moveDown() {
 	$(".orgitdownContainer").hide();
 	$("#pagedata").val(encode_data);
 	if ($("#coll").is(":checked")) {
-	    alert("checked");}
+	    }
 	    else {
 		 $('#submitpage').trigger('click');}
 
 
 	});
-        $("#cancel").one("click",function() {
-	    $("#collection").hide();
-	});
+//        $("#cancel").one("click",function() {
       $(".editseccontent").one("click",function(){
           editSection=true;
 	 // $(".saveseccontent").show();
@@ -166,7 +177,8 @@ function moveDown() {
 	   $(".chkbox").hide();
 	   $(".deletesec").hide();
        });
-       $(".editpagecontent").one("click",function(){
+//      $(".editpagecontent").live("click",function(){
+	    $(document).on('click','.editpagecontent',function(){
 	    $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
 	    editWikipage=true;
       	    $("#chart").hide();
@@ -197,20 +209,23 @@ function moveDown() {
 	  
 		    
        });
-	$(".addtodrawer").click(function(){
-//	alert("test");
-	  
-	  // var ptitle=document.getElementById("ptitle").value;
+	
+       $(document).on('click',".addtodrawer",function(){
+	
 	  $(".addtodrawer").hide();
 	  var getdrawer=$(".getdrawer").val();
 	  $("#collection").show();
-	  for (i=0;i<= length;i++)
-	  {
-	      
-	      $('#lstBox1').append('<option>'+pagedrawer[i]+'</option>');
-	      // $('option').filter(function() { return $.text([this]) === ptitle; }).remove();
-          }
+	 
        });
+        $(".addtoimgdrawer").click(function(){
+          $("#imagecollections").hide();
+          $("#imagediv").css({"position":"relative","margin-top":"335px"})
+          $(".addtoimgdrawer").hide();
+          var getdrawer=$("#drawer").val();
+          $("#collectionimg").show();
+
+      });
+
 
 
       $("#resetdrawer").click(function(){
@@ -218,7 +233,8 @@ function moveDown() {
       });
 
      
-        $('#btnRight').click(function(e) {
+      //  $('#btnRight').click(function(e) {
+    $(document).on('click','#btnRight',function(){
         var selectedOpts = $('#lstBox1 option:selected');
         if (selectedOpts.length == 0) {
             alert("Nothing to move.");
@@ -229,7 +245,8 @@ function moveDown() {
         $(selectedOpts).remove();
         e.preventDefault();
     });
-      $('#btnLeft').click(function(e) {
+//      $('#btnLeft').click(function(e) {
+    $(document).on('click','#btnLeft',function(){
         var selectedOpts = $('#lstBox2 option:selected');
         if (selectedOpts.length == 0) {
             alert("Nothing to move.");
@@ -242,7 +259,8 @@ function moveDown() {
     });
 
    	
-       $(".savepagecontent").one("click",function(){
+//       $(".savepagecontent").one("click",function(){
+    $(document).on('click','.savepagecontent',function(){
 	   var org_data = $("#gnoweditor").val();
 	   var elmts = document.getElementsByClassName("reptext");
 	   var encode_data = encodeURIComponent(org_data);

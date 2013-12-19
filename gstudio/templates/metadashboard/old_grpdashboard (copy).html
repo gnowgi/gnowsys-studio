@@ -1,0 +1,329 @@
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags %}
+{% load pagination_tags %}
+{% load adminmedia grp_tags %}
+{% load i18n comments gstudio_tags %} 
+{% load tagging_tags comments i18n %}
+ {% block title %}{{meet_ob.title}}{% endblock %}
+{% block content %}
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" >
+//This script is about fold and unfold twist of the loom
+$(window).load(function() {
+$(".divHide").hide();
+});
+$(document).ready(function() {
+$(".titleShowClass").click(function(){
+//$(this).attr('class','titleHideClass');
+var divid=$(this).attr("id");
+$(".img"+divid).toggle();
+$("#twist"+divid).slideToggle('slow');
+ });
+});
+</script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#content").css({
+    "width": "620px",});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ 
+ $("#graphcss").hide();
+$(".savecontent").hide();   
+$(".submitresponse").hide();
+$("#editthreadsave").hide();
+  });
+var i=0;
+var availableTags = [];
+$.merge(availableTags, {% get_add_tag %})
+
+function notifedtdel()
+{
+
+
+urlnot="/gstudio/group/notify/"+activity+"/"+not_obj+"/{{user.id}}"
+
+subactivity(urlnot,activity);
+}
+
+function subactivity(urlnot,activity)
+{
+      if(activity=='added_response')
+      {
+        submitform(activity);
+      }
+
+      if (activity != 'undefined')
+      {
+
+      $.ajax({
+       url: urlnot,
+       type:'GET',
+       success: function(){
+
+            submitform(activity);
+       }
+     });
+      }
+      else
+      {
+      submitform(activity);
+      }
+}
+
+function submitform(activity)
+{
+
+
+if (activity=='edited_thread')
+{
+
+document.forms["threadform"].submit();
+}
+if(activity=='edited_twist')
+{
+
+
+$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='added_response')
+{
+
+$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='deleted_response')
+{
+
+ document.forms["response"].submit();
+}
+}
+
+
+
+
+
+
+
+
+function Subscribeuser()
+{
+if (confirm("{{user.username}},Do you want to Subscribe to get all alerts in  your mail for this page"))
+{
+
+url = "/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub2").val("UnSubscribe");
+$("#sub2").attr("onclick","UnSubscribeuser()");
+}
+}
+
+
+
+
+
+function UnSubscribeuser()
+{
+url = "/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/unsubscribe/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub1").val("Subscribe");
+$("#sub1").attr("onclick","Subscribeuser()");
+}
+</script>
+<style type="text/css">
+#div2
+{
+ background-color:#E8E8E8 ;
+}
+#div1
+{
+ background-color:#F4F4F4;
+}
+</style>
+
+
+<!--   <input type="button" value="Home" onClick="location.href='/gstudio/user/{{user.username}}';">
+  <h>Hello Welcome to the {{ meet_ob.title }}</h></br> -->
+
+  
+<h2 style="line-height:1"><font id="fonttitleid" >{{meet_ob.title}}</font>{% if user.is_authenticated %} {% edit_title meet_ob.id meet_ob.title %} {% endif %}</h2>
+<font size ="3" > {{admin_m.username}}'s initial twist to the thread <!--  &nbsp;[ <a href="{{ meet_ob.get_absolute_url }}" title="{{ meet_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;--> </font>
+</br>
+{% if user.is_authenticated %}
+
+{% check_subscribe meet_ob user as subscribe %}
+{%if subscribe %}
+<input type="button" id="sub1" value="UnSubscribe" name="edittitle" onclick="UnSubscribeuser()">
+{% else %}
+<input type="button" id="sub2" value="Subscribe" name="edittitle" onclick="Subscribeuser()">
+{% endif %}
+{% endif %}
+{% with meet_ob.html_content|safe as meet_ob_content %}
+<font size ="3" >{{meet_ob_content}} </font>
+{% endwith %}
+{% if user.is_authenticated %}
+<form method="post" name="threadform" action=".">{% csrf_token %}
+<input type="hidden" id="threadid" value={{meet_ob.id}} style="visibility:hidden;" name="editiden">
+<input type="hidden" id="threadedit{{meet_ob.id}}" style="visibility:hidden;" name="editval">
+<input type="hidden" id="threadcontent{{meet_ob.id}}" value="{{meet_ob.content_org}}" style="visibility:hidden;" name="editcont">
+<input type="button" id="threadorg" value={{meet_ob.title}} style="visibility:hidden;" name="edittitle">
+<br/>
+<input type="button" id="threadedit" value="Edit">
+<input type="button" id="editthreadsave" value="Save">
+<input type="button" id="subeditresp" value="Submit" style="visibility:hidden;">
+
+</form>
+
+
+{% if flag %}
+{% check_release meet_ob as release %}
+{% if not release %}
+   <div id="Release"> 
+   <form method="post" action=".">{% csrf_token %}
+   <input type="submit" value="Release responses">
+       <input type="hidden" value="hits" name = "release">
+   </form>
+   </div>
+{% else %}
+   <div>
+   <form method="post" action=".">{% csrf_token %}
+   <input type="submit" value="Block responses">
+       <input type="hidden" value="hits" name = "block">
+   </form>
+   </div>
+   {% endif %}
+   </br>
+{% endif %}
+{% endif %}
+
+<!--ADDING AND DISPLAY TAG-->
+{% addtag ot meet_ob.id user %}
+
+	<br/>
+{% if user.is_authenticated %}
+	<form method="post" action=".">{% csrf_token %}
+      <!--  <input type="hidden" value="{{meet_ob.id}}" name = "meetid">-->
+	<input type="button" id="twistaddbtn" value="Add your twist" onClick="location.href='topicadd1/{{meet_ob.id}}';">
+        </form>
+{% endif %}
+<!-- direct link to identica 
+<a href="http://www.addtoany.com/add_to/identi_ca?linkurl=ur url&linkname={{post}} via" ><img src="http://www.tildehash.com/identishare/share.png" ></img></a>
+-->
+<!-- Twitter syndicating button 
+<a href="https://twitter.com/share" class="twitter-share-button"  data-url="https://127.0.0.1:8000/chat/" data-via="{{user.title}}" data-lang="en" data-text="{{post}}" data-related="anywhereTheJavascriptAPI" data-count="none">Tweet</a>
+-->
+<!-- Diaspora syndicating button 
+<script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
+<input id="diasporacontent" value="{{post}}" type="hidden" name="diaspora"></input>
+<div id="R-button" style="width:44px;height:44px;cursor:pointer;">
+<img id="asterisk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQ1JREFUeNpi/P//PwO9ACMJajuA2BiL+FkgriDGABYSLANZ5EKJz5gY6AhGLaO6ZaAEoERl85WQUzCyZeVAfBeIz0DZShRYUA41B2ReGjZF/7FgZIt341CzG80CdPl36BaF4jCIWjgUORhdaJw2UMx/R2OfgYOSGYgFgfgoED8HYikon1rgHhDPAuJOIH6PqwzEFdnEYFiiMiYnGc8k0pIOSkNFiYT4fEepZbtJDMJV5FpUTmaclZNqkTER8YMvOIlOHIIEUmIHET4/Q0pb4z+echAZrCLCUXiLFVJSmyC0ZMelh2AxGIojubuQEL/vYIUvsflrNwkprBxLlUNW8ic276wi5ChGeraIAQIMAFUG5PAQfeaJAAAAAElFTkSuQmCC" width="26" height="26">
+</div>
+-->
+</br>   {% autoescape off %}
+   {% for each in topic %}
+      	<h4>
+<a style="text-decoration:none" id="{{ each.id}}" class="titleShowClass">
+<font size ="5" >{{each.title}}</font>
+<img src="/static/gstudio/img/Plus.png" class="img{{ each.id}}">
+<img src="/static/gstudio/img/Minus.png" class="img{{ each.id}}" style="display: none" ></a>
+<!--&nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]-->
+<!--
+<input type="button" id="fold{{ each.id}}" value="{{ each.id}}" class="twistHideClass" style="background:url(/static/gstudio/img/fold.png) no-repeat;box-shadow:none"/>
+<input type="button" id="unfold{{ each.id}}" value="{{ each.id}}" class="twistShowClass" style="background:url(/static/gstudio/img/unfold.png) no-repeat;box-shadow:none;"/>!-->
+</h4>
+<div id="twist{{ each.id}}" class="divHide">
+      		Posted on : {{each.creation_date}}
+		by : 
+   		{% for author in each.authors.all %} 
+   			{{author}}
+   		{% endfor %}</br>
+     		<!-- Current rating is <h5>{{ each.rating.get_rating }}</h5> -->
+   	{%autoescape on%}
+		{% with each.html_content|safe as each_content %}
+		<font size ="3" > {{each_content}} </font>
+		{% endwith %}
+	{% endautoescape%}
+	<div>
+	<form method="post" action=".">{% csrf_token %}
+                
+    		<input type="hidden" class="reptext" id="topictext{{ each.id }}" name = "reply" style="display:none">
+	<input type="hidden" id="hidden{{ each.id }}" value="{{ each.id }}" name ="hiddenid">
+		 <input type="hidden" id="commentdata{{each.id}}" value="{{each.content_org}}">
+	        <input type="hidden" value={{user.username}} name = "usr">
+    		<input type="hidden" value="{{each.id}}" name = "iden">
+	    	<input type="hidden" value="{{user.id}}" name = "idusr">
+<br/>			{% if user.is_authenticated %}
+		 <input type="button" class="editcontent" name="{{each.content_org}}"  id="{{each.id}}" value="Edit">
+		 <input type="button" class="editor" id="{{ each.id }}" value="Add Response"/>
+		 <input type="hidden" class="editval" id="edit{{each.id}}" name="edit" value="empty">
+                <input type="button" class="savecontent" id="save{{ each.id }}" value="Save" onclick="topicsaveclick(document.getElementById('hidden{{ each.id }}').value)"><br/>
+              
+	        <input type="submit" class="submitresponse" id="topicsubmit{{ each.id }}" value="Submit"></br>
+			{% endif %}
+		{% ifequal user.id admin_id %}		
+		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
+		{% else %}
+   		{% for author in each.authors.all %} 
+   			{% ifequal user.id author.id %}
+		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
+			{% endifequal %}
+   		{% endfor %}
+
+		{% endifequal %}
+  
+         <!--	Rate this ? </br>
+		<input name="star1" type="radio" value=1 class="star"/>
+		<input name="star1" type="radio" value=2 class="star"/>
+		<input name="star1" type="radio" value=3 class="star"/>
+		<input name="star1" type="radio" value=4 class="star"/>
+		<input name="star1" type="radio" value=5 class="star"/>
+		<!--topic id and user id hidden fields
+		</br>
+		<input type="submit" value="Rate it!!!">  -->
+         </form>
+	</div>   
+
+<!--ADDING AND DISPLAY TAG-->
+{% addtag each each.id user %}
+
+	<br/>
+        <p>
+	 Responses :
+	<!--	<div id="main">
+	<div id="sidetree">
+	<div class="treeheader">&nbsp;</div>
+ 	<a href="?#">Expand All</a> </div>-->
+	<!--<ul class="treeview" id="tree">
+ 	<li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li>-->
+         {% show_comment each user.id flag1 admin_id attribute  %}
+</div>
+     {% endfor %}
+	The discussion freezes at {{endtime}}
+
+{% endautoescape %}
+
+
+{% endblock %}
+

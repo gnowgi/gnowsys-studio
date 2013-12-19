@@ -4,10 +4,13 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db import IntegrityError
 from django.forms import ModelForm
+from django.contrib.auth.decorators import login_required
+
 
 from gstudio.models import *
 from objectapp.models import *
 
+@login_required
 def context_member(request,reltit , memtit):
 
     member = []
@@ -185,7 +188,7 @@ def context_member(request,reltit , memtit):
     context = RequestContext(request,{'finaldict':finaldict,'gb':memtit,'reltit':reltit, 'absolute_url_node': absolute_url_node})
     return render_to_response(template,context)
 
-
+@login_required
 def context_save(request,leftmem, reltype, rightmem):
     try:
         leftmem = str(leftmem)

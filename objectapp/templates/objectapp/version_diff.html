@@ -1,10 +1,7 @@
-
 {% load i18n comments gstudio_tags %}
 {% load gstudio_tags i18n  %}
 {% get_tags as nodetype_tags %}
 {% load adminmedia  grp_tags %}
-
-
 {% load gstudio_tags i18n  %}
 {% get_tags as nodetype_tags %}
 {% load adminmedia  grp_tags %}
@@ -22,6 +19,14 @@
 			.content1
 			{
 			}
+			/*ins
+			{
+			color:33CC33;
+			}
+			del
+			{
+			color:FF0000;
+			}*/
 	 </style>
 		{% block blockbots %}
     		<meta name="robots" content="NONE,NOARCHIVE" />
@@ -68,6 +73,12 @@
 
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
     	<script src="{{STATIC_URL}}gstudio/js/gstudio.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	  $(document).ready(function(){
+	  $('ins').css({"background": "", "color": "#33CC33"});
+	  $('del').css({"background": "", "color": "#FF0000"});
+	  });
+	  </script>
     		<!-- EXTRAHEAD -->
     		{% block extrahead %}{% endblock %}
 
@@ -102,8 +113,8 @@
 				/ {% block breadcrumbs %}{% endblock %}
 			</div>
 			<!-- <div id="body" class="span-24 last" > -->
-			  	<table border="0" >
-					<tr><td>
+			  	<table border="0" width="100%">
+					<tr><td width="50%">
 					     
 		<h3>{% block content %}
 		  {% block nodetype-content %}
@@ -155,7 +166,9 @@
 			{% endfor %}                         
 			{% endif %}
 		   {% if ver_new_nbh_dict.content or ver_old_nbh_dict.content %}
-                     <b> Content:<nbsp></b>{{ ver_new_nbh_dict }}  <br/>
+			 {% autoescape off %}
+                     <b> Content:<nbsp></b>{{ ver_new_nbh_dict.content|cut:"cript>"|safe }}  <br/>
+			{% endautoescape %}		
                     {% endif %}           
                             
                             
@@ -164,7 +177,7 @@
 		   {% endblock %}
 
 					    </td>
-					    <td>
+					    <td width="50%">
 					     
 		<h3>{% block content1 %}
 		  {% block nodetype-content1 %}
@@ -173,8 +186,7 @@
 		    </a>
 		  </h2> <br>
 		    {% with nt.html_content|safe as object_content %}
-
-		    <b>Name:<nbsp></b>{% autoescape off %}
+				    <b>Name:<nbsp></b>{% autoescape off %}
 		                  {{ compare_dict.title }}
                                 {% endautoescape %}<br> 
 	           {% if ver_old_nbh_dict.plural or ver_new_nbh_dict.plural %}
@@ -184,13 +196,13 @@
 		   {% endif %}
 		   {% if ver_old_nbh_dict.altnames or ver_new_nbh_dict.altnames %}
 		    <b> Alternate names:<nbsp></b>  {% autoescape off %}
-		                  {{ compare_dict.altnames }}
+		                  {{ compare_dict.altnames|safe }}
                                 {% endautoescape %}
 		      <br/>
 		   {% endif %}
 		   {% if ver_new_nbh_dict.member_of or ver_old_nbh_dict.member_of %}
 		      <b> Member of:<nbsp></b>  {% autoescape off %}
-		                  {{ compare_dict.member_of }}
+		                  {{ compare_dict.member_of|safe }}
                                 {% endautoescape %}
 		      <br/>
 		   {% endif %}
@@ -230,28 +242,31 @@
                                              
                                 
 				   <b>Subjecttype of:<nbsp> </b> {% autoescape off %}
-		                  {{ compare_dict.ats }}
+		                  {{ compare_dict.ats|safe }}
                                 {% endautoescape %}<br>
 		    {% endif %}
                     {% if ver_new_nbh_dict.content or ver_old_nbh_dict.content %}
-                     <b> Content:<nbsp></b>  {% autoescape off %}
-		         {{ compare_dict.content }}
-                       {% endautoescape %} <br/>
+                     <b> Content:<nbsp></b>  
+			
+			 {% autoescape off %}
+		         {{ compare_dict.content|safe }}
+			{% endautoescape %}
+                       <br/>
                     {% endif %}                                     
  {% endwith %}
  {% endblock %} 
  {% endblock %}
 <br>
 </td></tr>
-<tr><td>
+<tr><td width="50%">
 <form method="get" action="/objects/display/merge/{{ ssid1 }}/{{ ssid2 }}">
 <input type="submit" value="Merge {{ nt.id }}.{{ version_no1 }} with {{ nt.id }}.{{ version_no2 }}" id="merge1" name="left" ></input></td>
-<td><input type="submit" value="Merge {{ nt.id }}.{{ version_no2 }} with {{ nt.id }}.{{ version_no1 }}" id="merge2" name="right"></input></td></form>
+<td width="50%"><input type="submit" value="Merge {{ nt.id }}.{{ version_no2 }} with {{ nt.id }}.{{ version_no1 }}" id="merge2" name="right"></input></td></form>
 </tr>
-<tr><td>
+<tr><td width="50%">
 <form method="get" action="/objects/display/revert" >
 <input type="submit" value="Revert to {{ nt.id }}.{{ version_no1 }}" name="{{ ssid1 }}"></input></td>
-<td><input type="submit" value="Revert to {{ nt.id }}.{{ version_no2 }}" name="{{ ssid2 }}"></input></td>
+<td width="50%"><input type="submit" value="Revert to {{ nt.id }}.{{ version_no2 }}" name="{{ ssid2 }}"></input></td>
 </form></tr>
 </table>						
 </body>

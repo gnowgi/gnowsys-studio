@@ -1,0 +1,13 @@
+{% load gstudio_tags %}
+	<div class="tags">
+	{{nbhdata.subnode.count}}
+	{% for each in nbhdata.node %}
+		<a class="tag_4" id="{{each.id}}" href='{{each.url}}'>{{each.title}}</a>
+		<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			
+	{% endfor %}
+        {% for each in nbhdata.subnode %}
+		<a class="tag_2" id="{{each.id}}" href='{{each.url}}'>{{each.title}}</a>
+		<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	{% endfor %}
+	</div>

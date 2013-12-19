@@ -41,8 +41,12 @@ def graph_json(request, node_id):
         return HttpResponse(str(jsonFile.read()), "application/json")
 
     try:
-        node = NID.objects.get(id=node_id)
-        node = node.ref 
+        nodefilter = NID.objects.filter(id=node_id).exclude(nodemodel='Relationtype').exclude(nodemodel='Attributetype').exclude(nodemodel='Systemtype').exclude(nodemodel='Attribute').exclude(nodemodel='Relation')
+        if nodefilter:
+            node = NID.objects.get(id=node_id)
+            node = node.ref 
+        else :
+            return HttpResponse("node not found", "text/html")
     except:
 	
         return HttpResponse("node not found", "text/html")

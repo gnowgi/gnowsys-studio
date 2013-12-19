@@ -1,0 +1,218 @@
+{% load gstudio_tags %}
+{% load i18n %}
+
+<script type="text/javascript">
+$(window).load(function() {
+$(".commentsavecontent").hide();
+$(".postreply").hide();
+});
+function deleteclick(delobj)
+{
+ activity ='deleted_response'
+ not_obj=delobj
+notifedtdel();
+}
+</script>
+<style type="text/css">
+.response_change{
+margin-bottom:1px;
+padding-left:10px;
+padding-right:5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px;
+}
+</style>
+{% if comment.posterior_nodes.count %}
+<!--<ul style="display: none;">-->
+<div style="margin-left:40px;margin-bottom:1px">
+{% for child in comment.posterior_nodes.all %}
+       <!-- Flag1 outside {{flag}}-->
+        {% for each in child.authors.all %}
+        	{% ifequal idusr admin_id %}
+<!-- If user is admin -->
+<div class="response_change" id="divchange" style="{% if child.get_object_bgcolor%}background:#{{ child.get_object_bgcolor}}{%endif%};">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0)
+{
+document.getElementById("divchange").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divchange").setAttribute("id","div2");
+}
+function submtfrm()
+{
+alert("form to post");
+document.forms["response"].submit();
+
+}
+</script>
+
+
+<span style = "color:#{% if child.get_object_fontcolor %}{{ child.get_object_fontcolor}}{%else%}000000{%endif%};">{{each}}'s Response 
+{% if child.rating.get_rating %}
+<h5>Current rating is {{ child.rating.get_rating }}<h5/>
+{% endif %}</span>
+<font style = "color:#{% if child.get_object_fontcolor %}{{ child.get_object_fontcolor}}{%else%}E81809{%endif%};" size = 3>{{child.content}}</font>
+   <form method="post" name="response" action=".">{% csrf_token %}
+                                <input type="hidden" class="commentreptext" id="text{{child.id}}" name="reply" style="visibility:hidden">
+                                <input type="hidden" id="hidden{{child.id}}" value={{child.id}} name="parentid">
+                                <input type="hidden" value={{idusr}} name="idusr">
+
+                                 
+				<br/>	
+				 <input type="button" class="commenteditor" id="{{ child.id }}"  value="Add a Response">
+                                 <input type="button" class="commentsavecontent" id="save{{child.id}}" value="Save" onclick="saveclick(document.getElementById('hidden{{child.id}}').value)">
+                                <input type="submit" class="postreply" id="submit{{child.id}}" value="Submit">
+
+                                <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
+                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">
+
+<br/>
+<div class="rating">
+     Rate the response </br>
+                 <input name="star1" type="radio" value=1 class="star"/>
+                <input name="star1" type="radio" value=2 class="star"/>
+                <input name="star1" type="radio" value=3 class="star"/>
+                <input name="star1" type="radio" value=4 class="star"/>
+                <input name="star1" type="radio" value=5 class="star"/>
+  <!--topic id and user id hidden fields-->
+                </br>
+                <input type="submit" value="Rate Response">
+</div>
+                                </form>
+</div>
+
+
+                {% show_comment child idusr flag admin_id attribute%}
+
+
+                {% else %}
+                        {% ifequal idusr each.id %}
+
+<div class="response_change" id="divchange" style="{% if child.get_object_bgcolor%}background:#{{ child.get_object_bgcolor}}{%endif%};">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0)
+{
+document.getElementById("divchange").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divchange").setAttribute("id","div2");
+}
+</script>
+<span style = "color:#{% if child.get_object_fontcolor %}{{ child.get_object_fontcolor}}{%else%}000000{%endif%};">{{each}}'s Response <br/>
+{% if child.rating.get_rating %}
+Current rating is {{ child.rating.get_rating }}</span><br/>
+{% endif %}
+                        <font style = "color:#{% if child.get_object_fontcolor %}{{ child.get_object_fontcolor}}{%else%}E81809{%endif%};" size ="3">{{child.content}}</font>
+
+			<form method="post" name="response" action="">{% csrf_token %}
+                                <input type="hidden" class="commentreptext" id="text{{child.id}}" name="reply" style="visibility:hidden">
+                                <input type="hidden" id="hidden{{child.id}}" value={{child.id}} name="parentid">
+                                <input type="hidden" value={{idusr}} name="idusr">
+
+                                <br/>
+					
+				 <input type="button" class="commenteditor" id="{{ child.id }}"  value="Add a Response">
+                                 <input type="button" class="commentsavecontent" id="save{{child.id}}" value="Save" onclick="saveclick(document.getElementById('hidden{{child.id}}').value)">
+                                <input type="submit" class="postreply" id="submit{{child.id}}" value="Submit">
+
+
+
+                                <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
+                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">
+
+<br/>
+<div class="rating">
+     Rate the response </br>
+                                <input name="star1" type="radio" value=1 class="star"/>
+<input name="star1" type="radio" value=2 class="star"/>
+                <input name="star1" type="radio" value=3 class="star"/>
+                <input name="star1" type="radio" value=4 class="star"/>
+                <input name="star1" type="radio" value=5 class="star"/>
+                <!--topic id and user id hidden fields-->
+                </br>
+                <input type="submit" value="Rate Response">
+</div>
+                                </form>
+</div>
+                                {% show_comment child idusr flag admin_id attribute%}
+
+
+                        {% else %}
+                                {% ifequal attribute "true" %}
+
+<div class="response_change" id="divchange" style="{% if child.get_object_bgcolor%}background:#{{ child.get_object_bgcolor}}{%endif%};">
+<script type="text/javascript">
+i = i+1;
+if (i%2 == 0)
+{
+document.getElementById("divchange").setAttribute("id","div1");
+}
+else
+{
+document.getElementById("divchange").setAttribute("id","div2");
+}
+</script>
+<span style = "color:#{% if child.get_object_fontcolor %}{{ child.get_object_fontcolor}}{%else%}000000{%endif%};">{{each}}'s Response <br/>
+{% if child.rating.get_rating %}
+Current rating is {{ child.rating.get_rating }}</span><br/>
+{% endif %}
+                        <font style = "color:#{% if child.get_object_fontcolor %}{{ child.get_object_fontcolor}}{%else%}E81809{%endif%};" size = 3>{{child.content}}</font>
+
+			<form method="post" name="response" action=".">{% csrf_token %}
+                              <input type="hidden" class="commentreptext" id="text{{child.id}}" name="reply" style="visibility:hidden">
+                               <input type="hidden" id="hidden{{child.id}}" value={{child.id}} name="parentid">
+                               <input type="hidden" value={{idusr}} name="idusr">
+
+                                <br/>
+					{% if idusr %}
+			     <input type="button" class="commenteditor" id="{{ child.id }}"  value="Add a Response">
+                                 <input type="button" class="commentsavecontent" id="save{{child.id}}" value="Save" onclick="saveclick(document.getElementById('hidden{{child.id}}').value)">
+                                <input type="submit" class="postreply" id="submit{{child.id}}" value="Submit">
+
+{% check_user_admin idusr as admin_usercheck %}
+{% if admin_usercheck %}
+
+                                <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
+                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">                                                
+
+<br/>
+{% endif %}
+{% for author in child.authors.all %}
+{% ifequal author.id idusr  %}
+
+                                <input type="checkbox" class="chkdel" id="chk{{child.id}}" name="del_comment" value="delete_comment">
+                                <input type="submit" class="submitdelete" id="delete{{child.id}}" value="Delete" onclick="deleteclick(document.getElementById('hidden{{child.id}}').value)">                                                
+
+<br/>
+{% endifequal %}
+{% endfor %}
+
+<div class="rating">                                                                                                                       
+     Rate this response </br>                                                                                                        
+                                <input name="star1" type="radio" value=1 class="star"/>                                              
+                <input name="star1" type="radio" value=2 class="star"/>                                                              
+                <input name="star1" type="radio" value=3 class="star"/>                                                              
+                <input name="star1" type="radio" value=4 class="star"/>                                                              
+                <input name="star1" type="radio" value=5 class="star"/>                                                              
+                <!--topic id and user id hidden fields-->                                                                            
+                </br>                                       
+ <input type="submit" value="Rate Response">                                                                          
+</div>            
+           {% endif %}                                                                                                  
+      </form>                                                                          
+                 
+</div>                                                                                                                               
+                                                                                                                               
+               {% show_comment child idusr flag admin_id attribute%}    {% endifequal %}                                                                                 
+                         {% endifequal %}                                                                                            
+               {% endifequal %}                                                                                                      
+       {% endfor %}                                                                                                                  
+ {% endfor %}                                                                                                                         
+</div>                                                                                                                                
+{% endif %}             

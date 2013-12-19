@@ -48,26 +48,64 @@
 			var isImage=false;
 			var isVideotitle=false;
 			var isNode=false;
-      $(window).load(function() {
-      $("#content").css({
-    "width": "600px"});});
+			var isObject=false;
+			var isEditdoc = false;
+$(document).ready(function(){
+var sendData = JSON.stringify({'id': "{{video.slug}}", 'keys': []});
+var jsonDetails = {'Posted By':"user","Posted At":"created","Location":"location","Source":"source","Summary":"summary","Description":"notes","Language":"language","Topic":"topic"}
+/* ajax call for fetching video's data from wetube.gnowledge.org api */
+$.ajax({
+	url: 'http://wetube.gnowledge.org/api',
+	type: 'POST',
+	dataType: "json",
+	data: {action:"get",data:sendData},
+        beforeSend: function() {},
+			success: function(result){
+			if (result.data.title != "{{video.title}}"){ 
+			$("#fonttitleid").text(result.data.title);
+			$.ajax({
+			url: '/gstudio/resources/images/edittitle/',
+			data: {title:result.data.title,titleid:{{video.id}}},
+			success: function(data){}
+			});  }
+			for (var each in jsonDetails){if(result.data[jsonDetails[each]]){
+			 var font1=$("<font>"+each+"  :  "+"</font>")
+			.attr("color","black")
+			.appendTo($(".detailsOfVideo"));
+			var font2 = $("<font>"+result.data[jsonDetails[each]]+"</font>")
+			.appendTo($(".detailsOfVideo"));
+			var br = $("<br>")
+			.appendTo($(".detailsOfVideo"));
+			} } 
+			
+			},
+        complete: function(){
+			}
+
+});  
+
+});
 
 $(window).load(function() {
-
+      $("#content").css({"width": "600px"});
+});
+$(window).load(function() {
  $("#graphcss").hide();   
-  });
+});
 $(window).load(function() {
- $("#chart").hide();});
+ $("#chart").hide();
+});
 var i = 0;
 jQuery(document).ready(function($) {
     $("#editcontent").click(function(){
+        $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
         isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
 	 $("#gnoweditor").val($("#editortext").val());
         $("#gnoweditor").orgitdown(mySettings);
 	$("#content img").css({"max-width":"600px",})
 	   
-        
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});               
 	<!--document.getElementById('save').style.visibility="visible";-->
 	$("#editcontent").hide();
         
@@ -79,22 +117,8 @@ jQuery(document).ready(function($) {
 	    var encode_data = encodeURIComponent(org_data);
 	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
  	    $("#commenttext").val(decode_data);	   
+	    $(".orgitdownContainer").hide();
 	});
-    $("#titleeditcontent").click(function(){
-	isVideotitle=true;
-        document.getElementById('gnoweditor').style.visibility="visible";
-	 $("#gnoweditor").val($("#titleeditortext").val());
-        $("#gnoweditor").orgitdown(mySettings);
-	<!--document.getElementById('titlesave').style.visibility="visible";-->
-	$("#titleeditcontent").hide();
-		
-	});
-      $("#titlesave").click(function(){
-      var org_data = $("#gnoweditor").val();       
-      var encode_data = encodeURIComponent(org_data);
-      var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
-      $("#titlecommenttext").val(decode_data);	   
-      })
 });
 </script>
 <script type="text/javascript">
@@ -110,49 +134,19 @@ $('#pandoravideo').pandoravideo();
 </head>
 <body>
 {% block content %}
-
+<font id="fonttitleid" >{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}</font>
+{% if user.is_authenticated %}
+{#% edit_title video.id video.title %#}
+{% endif %}
 <div id="pandoravideo" data-pandora-id={{video.slug}} data-pandora-layers="transcripts, descriptions, keywords, places">
 </div>
-<b>Download:</b>&nbsp;&nbsp;<a href={{video.rurl}} target="_blank">Right click to download</a><br/>
+<b>Download:</b>&nbsp;&nbsp;<a href={{video.rurl}} target="_blank">Right click and choose "Save Link as.." to Download </a><br/>
+<div class="detailsOfVideo">
+</div>
 <form method="post" action="">{% csrf_token %}
-<font color='black'>Name:</font>
-<font color='teal'>{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}</font>
-{% if user.is_authenticated %}
-<input type="hidden" name="vidid" value={{video.id}}>
-<input type="button" id="titleeditcontent" name="{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}" value="Edit a title"/>
-<input type="submit" class="titlecommentsavecontent" id="titlesave" value="Save" style="visibility:hidden" />
-<input type="hidden" name="titlecontenttext" id="titlecommenttext" style="visibility:hidden" />
-<input type="hidden" id="titleeditortext" style="visibility:hidden" value="{% if video.title %}{{video.title}}{% else %}{{video.altnames}}{% endif %}">
-{% endif %}
-<br/>
-<font color = 'black'>Posted By : </font>
-{% for author in video.get_nbh.posted_by %}
-  <font color = 'teal'>{{ author }}</font>
-{% endfor %}
-
-<br>
-<font color = 'black'>Posted At :</font>
-{% for date in video.get_nbh.creation_day %}
-<font color = 'teal'>{{date}}</font>
-
-{% endfor %}
- 
-
-<br>
-		<font color = 'black'>Location: </font>
-{% for we in video.get_nbh.source %}
-		<!-- <font color = 'black'>Location: </font>  -->
-			{% for map in video.get_nbh.map_link %}
-				{% ifnotequal map '' %}
-<a href=http://maps.google.co.in/maps?hl=en&cp=43&gs_id=6&xhr=t&q={{map}}&bav=on.2,or.r_gc.r_pw.r_qf.,cf.osb&biw=1304&bih=680&um=1&ie=UTF-8&sa=N&tab=wl target="_blank">{{we}}</a>
-				{% endifnotequal %}
-			{% endfor %}
-		{% endfor %}
-
-<br>
  <input type="hidden" name="contentname" value="{{ video.content }}" />
  <input type="hidden" name="ratename" value="{{ video.rating.get_rating }}" />
-<font color = 'black'>Description:</font>
+<font color = 'black'>Content:</font>
 {%autoescape on%}
 {% with video.html_content|safe as video_content %}
      {{video_content}}
@@ -169,54 +163,30 @@ $('#pandoravideo').pandoravideo();
 </form>
 <br/>
 
-{% ifequal video.rating.get_rating 0 %}
 
-<font color = 'black'>Current rating is: &nbsp;<font color = 'teal'> No rating yet </font></font>
-{% else %}
-<font color = 'black'>Average Current rating is:  &nbsp;<font color='teal'><b>{{ video.rating.get_rating }}</b></font> </font><br/>
-<font color = 'black'>Total Number of votes is:  &nbsp;<font color='teal'><b>{{ video.rating_votes }}</b></font> </font>
-{% endifequal %}
-<br>
 {% if user.is_authenticated %}
+<!--ADDING AND DISPLAY rating -->
+{% adding_rating video  %}
+
+
 <form method="post" action="">
 {% csrf_token %}
-<input name="star1" type="radio" value=1 class="star"/>
-<input name="star1" type="radio" value=2 class="star"/>
-<input name="star1" type="radio" value=3 class="star"/>
-<input name="star1" type="radio" value=4 class="star"/>
-<input name="star1" type="radio" value=5 class="star"/>
-  
-<input type="hidden" name="vidid" value={{video.id}}>
-<input type="submit" value="Rate it!!!">
-</form>
-<br>
-<form method="post" action="">
-{% csrf_token %}
-<input type="hidden" name="favid" value={{video.id}}>
 <input type="hidden" name="favusr" value={{user.username}}>
+{% if relation %}
+<input type="hidden" name="removefavid" value={{video.id}}>
+<input type="submit" value="Remove from favourites">
+{% else %}
+<input type="hidden" name="favid" value={{video.id}}>
 <input type="submit" value="Add to favourites">
-</form><br>
-<form method="post" action="">{% csrf_token %}
-<input type="hidden" name="vidid" value={{video.id}}>
-<input type="text" value="" name="texttags"  />
-<input type="submit" value="Add Tags" name="addtags" />
+{% endif %}
+
 </form>
 {% endif %}
-<br/>
-<br/>
-<div class="tags">
-    <p class="gbobject-tags span-16 last">
-      <strong>{% trans "Tags" %}</strong> :
-      {% tags_for_object video as tag_list %}
-      {% for tag in tag_list %}
-      <a href="{% url objectapp_tag_detail tag %}"
-         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-      {% empty %}
-      <span>{% trans "No tags" %}</span>
-      {% endfor %}
-    </p>
-</div>
-<br/><br/>
+<br>
+<!--ADDING AND DISPLAY TAG-->
+	{% addtag video video.id user %}
+
+
 {% block nodetype-comments %}
 <div id="comments" class="">
   <h5>{% trans "Comments" %}</h5>
@@ -259,14 +229,9 @@ $('#pandoravideo').pandoravideo();
 {% endblock %}
 
 
-<div class="commentForm span-16 last">
-  {% render_comment_form for video %}
-</div>
-<!--<hr width="100%" style="height:5px;" color="black"/>-->
-<br>
 
 {% endblock %}
-{% block graph %}
+{% block sidebargraph %}
 
 {% endblock %}
 </body>

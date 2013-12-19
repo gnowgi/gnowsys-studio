@@ -11,6 +11,7 @@
       $("#addpriorpost").click(function(){
      
         var data 
+        var s=false
         data = $("#priorpage").val();//attr('value');
         var pdat=data
 
@@ -19,10 +20,12 @@
               data: {title:data},
               success: function(data){
                            $.each(data, function(index) {
+                         
                            as=data[index]
+                         
                            if (as ==0)
                            {
-                                r=confirm("Page doesn't exist! , Create the page?")
+                               r=confirm("Page doesn't exist! , Create the page?.After clicking OK, Use the list to Add the page as posterior page.")
                                 if (r==true)
                                 {
                                     $.ajax({
@@ -47,31 +50,34 @@
 
                                          }
                                          });
-                               } <!-- if closes -->
+                                } <!-- if closes -->
                           } <!-- outer if closes -->
                          else
                          {
-                               $.ajax({
-	                          url: '/gstudio/resources/images/addpriorpost/',
-	                          //type:"POST",
-	                          data: {title:pdat,titleid:{{objectid}}},
-                                  beforeSend: function() {
-                                      $("#ajax_load_image").show();
-                                      $("#content").css({"opacity":"0.1",})
-                                  },
-	                          success: function(data){
-		                      $('#priorpostpages').html(data);
-			          },
-                                  complete: function(){
-                                      $("#ajax_load_image").hide();
-		                      $("#content").css({"opacity":"",})
-		                  }
-
-                               });
+                               
+                                         $.ajax({
+                                               url: '/gstudio/resources/images/addpriorpost/',
+	                                       //type:"POST",
+	                                       data: {title:pdat,titleid:{{objectid}}},
+                                               beforeSend: function() {
+                                                        $("#ajax_load_image").show();
+                                                        $("#content").css({"opacity":"0.1",})
+                                               },
+	                                       success: function(data){
+		                                        $('#priorpostpages').html(data);
+							$("#chart").text("");
+							fgraph();
+			                       },
+                                                        complete: function(){
+                                                        $("#ajax_load_image").hide();
+		                                        $("#content").css({"opacity":"",})
+		                               }
+                                         });
+                                   
                          }<!-- else closed-->
 
- }); <!-- closed each -->
- } <!-- closed success -->
+                  }); <!-- closed each -->
+                  } <!-- closed success -->
 }) <!-- ajax closed -->
 }) <!-- addpriorpost closed -->
 })<!-- document ready closed -->
@@ -103,7 +109,8 @@ $.ajax({
                               },
 	success: function(data){
 		$('#priorpostpages').html(data);
-		
+		$("#chart").text("");
+		fgraph();		
 		},
         complete: function(){
                 $("#ajax_load_image").hide();
@@ -125,9 +132,11 @@ else
 <strong>Prior Pages:</strong>
 {% for each in priorgbobject %}
 <a href="{{each.get_view_object_url}}">{{each}}</a>
+{% if user.is_authenticated %}
 <a class="deletepriorpage" id="{{each.id}}" value="{{each}}" title="delete {{each}}"> 
 <img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/>
 </a>
+{% endif %}
 {% if not forloop.last %},{% endif %}
 {% empty %}
  <span>No prior page</span>

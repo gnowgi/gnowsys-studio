@@ -31,8 +31,27 @@ urlpatterns = patterns('gstudio.views.ajaxviews',
                        url(r'^contentadd/$', 'AjaxAddContent', name='ajax_views_contentadd'),
 		       url(r'^draweradd/$', 'AjaxAddDrawer', name='ajax_views_draweradd'),
                        url(r'^htmlexport/$', 'HtmlExport', name='ajax_view_htmlexport'),
+                       url(r'^status/$', 'Status', name='ajax_views_status'),	
                        url(r'^collectionadd/$', 'AjaxAddCollection', name='ajax_view_collectionadd'),
                        url(r'^iswiki/$', 'IsWiki', name='ajax_view_iswiki'),
                        url(r'^deletepriorpage/$', 'ajaxDeletePriorpage', name='ajax_delete_priorpage'),
                        url(r'^addresponsestotwist/$', 'ajaxAddResponsesToTwist', name='ajax_addresponsestotwist'),
-                       )
+		       url(r'^userListForInvitation/$', 'ajaxuserListForInvitation', name='ajax_userListForInvitation'),
+                       url(r'^sendInvitation/$', 'ajaxSendInvitation', name='ajax_SendInvitation'),
+                       url(r'^releaseBlockResponseOfTwist/$', 'ajaxReleaseBlockResponseOfTwist', name='ajax_ReleaseBlockResponseOfTwist'),
+                       url(r'^ajaxResponseReciev/$', 'ajaxResponseReciev', name='ajax_ajaxResponseReciev'),
+                       url(r'^rateIt/$','ajaxRateIt',name='ajax_RateIt'),
+
+                   #    url(r'^loadGbobjectsHome/$', 'ajaxloadGbobjectsHome', name='ajax_loadGbobjectsHome'),
+                       # url(r'^getCollections/$', 'ajaxgetCollections', name='ajax_getCollections'),
+                       # url(r'^getConceptPageText/$', 'ajaxgetConceptPageText', name='ajax_getConceptPageText'),
+                       # url(r'^getConceptPageComments/$', 'ajaxgetConceptPageComments', name='ajax_getConceptPageComments'),
+                       # url(r'^deletedoccolln/$','Deldoccolln',name='ajax_deldoccolln'),
+                       # url(r'^deleteimgcolln/$','Delimgcolln',name='ajax_delimgcolln'),
+
+
+
+		       url(r'^getConceptPageResources/$', 'ajaxgetConceptPageResources', name='ajax_getConceptPageResources'),
+		       url(r'^getConceptPageGraphText/$', 'ajaxgetConceptPageGraphText', name='ajax_getConceptPageGraphText')
+
+    )

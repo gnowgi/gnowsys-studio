@@ -19,6 +19,7 @@ $.ajax({
                               },
 	success: function(data){
 		$('.tags{{objectid}}').html(data);
+				fgraph();
 			     },
         complete: function(){
                 $("#ajax_load_image").hide();
@@ -58,6 +59,7 @@ $.ajax({
                               },
 	success: function(data){
 		$('.tags'+id).html(data);
+				fgraph();
 		},
         complete: function(){
                 $("#ajax_load_image").hide();

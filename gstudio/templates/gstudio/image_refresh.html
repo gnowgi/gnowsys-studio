@@ -1,0 +1,93 @@
+{% load pagination_tags %}
+{% load adminmedia grp_tags %}
+<div id="imageGallery">
+{% autopaginate images 40 %}
+<table>
+    <tr>
+{% for image1 in images %}
+        <td class="gbobject-image1" id = "{{image1.id}}"><a href="/gstudio/resources/images/show/{{image1.id}}"><img src="{% admin_media_prefix %}img/{{image1.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}-thumbnail"></a>
+<form method="post" action="">{% csrf_token %}
+{% for author in image1.authors.all %}
+	{% ifequal author.username user.username %}&nbsp;
+	<input type="hidden" name="fulid" value={{image1.id}}>
+	<!--  <input type="submit" value="Show" name="Show">-->
+	<input type="hidden" name="pict" id="imgid" value={{image1.id}}>
+	<input type="hidden" name="user" value={{user.username}}>
+	<input type="button" id="delete" name="delete" value="Delete" onclick="ajaxmakesure({{image1.id}})" style="margin-top:5px;width:60px">
+
+
+	{% endifequal %}
+{% endfor %}
+</form>
+        </td>  
+	     
+    {% if not forloop.last and forloop.counter|divisibleby:"8" %}
+    </tr>
+    <tr>
+				<td colspan="8">
+ 				 {%  with x=forloop.counter|add:"-8"|stringformat:"s" %}
+ 				 {% with y=forloop.counter|stringformat:"s" %}
+ 				  {% with count=x|add:":"|add:y %}
+ 				{% for image in images|slice:count %}
+ 					 				
+ 					<div  align="center" class="gbobject-image" id = "divimage{{image.id}}" style="display:none">
+					
+      					<center>
+					<h2><a href="/gstudio/resources/images/show/{{image.id}}/">{{image.title}}</a>
+					
+					</h2></center><br/>
+					
+					<center>
+					<a  href="/gstudio/resources/images/show/{{image.id}}/">&nbsp;
+					<img id="{% admin_media_prefix %}img/{{image.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}_display_1024" width="300px" align="center" src ="" class="imgbig{{image.id}}">
+					</a></center>
+					&nbsp;[ <a href="{{ image.get_absolute_url }}" title="{{ image.title }}" rel="bookmark">Show Graph</a> ]					&nbsp;
+
+					{% for author in image.authors.all %}
+ 					<font color = 'black'>Posted By : </font> <font >{{author}}</font>
+					{% endfor %}
+					</div>
+					
+ 				{% endfor %}
+ 					{% endwith %}
+ 				{% endwith%}
+ 			{% endwith %}
+ 			</td>
+ 		</tr>
+		
+     {% endif %}	
+{% endfor %}
+    </tr>
+<tr>
+				<td colspan="8">
+ 				 
+ 				{% for image in images|slice:"0:40" %}
+ 					 				
+ 					<div  align="center" class="gbobject-image" id = "divimage{{image.id}}" style="display:none">
+					
+      					<center>
+					<h2><a href="/gstudio/resources/images/show/{{image.id}}/">{{image.title}}</a>
+					
+					</h2></center><br/>
+					
+					<center>
+					<a  href="/gstudio/resources/images/show/{{image.id}}/">&nbsp;
+					<img id="{% admin_media_prefix %}img/{{image.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}_display_1024" width="300px" align="center" src ="" class="imgbig{{image.id}}">
+					</a></center>
+					&nbsp;[ <a href="{{ image.get_absolute_url }}" title="{{ image.title }}" rel="bookmark">Show Graph</a> ]					&nbsp;
+
+					{% for author in image.authors.all %}
+ 					<font color = 'black'>Posted By : </font> <font >{{author}}</font>
+					{% endfor %}
+					</div>
+					
+ 				{% endfor %}
+				
+ 				
+ 			</td>
+ 		</tr>
+</table>
+
+<h2>
+{% paginate %}</h2>
+</div>

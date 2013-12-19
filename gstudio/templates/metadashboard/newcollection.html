@@ -3,6 +3,20 @@
 {% load gstudio_tags %}
 	 
 	     {% for each in objset %}
-	     <li> <a href={{each.get_view_object_url}}>{{each.title}}</a></li>
+
+                {% if each.system.gbobject_set.exists %}
+	            <li class="list"><abbr title="Collection"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/folder.png"></abbr> <a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+	        {% else %}
+		    <li class="list"><abbr title="Page"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/doc.png"></abbr><a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+                {% endif %}
+	     
 	     {% endfor %}
+              {% if collection %}
+		 <input type="button" class="addtodrawer" value="Edit Collection" name="addtodrawer"/>
+		 <input type="button" class="htmlexport" value="Export as HTML"/>
+		 {% else %}
+		 <input type="button" class="addtodrawer" value="Create Collection" name="addtodrawer"/>
+		 <input type="button" class="htmlexport" value="Export as HTML"/>
+		 {% endif %}
+
 	 

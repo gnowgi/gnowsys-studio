@@ -22,4 +22,8 @@ urlpatterns = patterns('gstudio.views.video',
                        url(r'^$', 'video',
                            name='video'),
 		       url(r'show/(\d+)/$','show',name='showvideo'),
+                       url(r'^wetube/$', 'wetube',name='wetube'),
+                       url(r'^getVideo/$','getVideo',name='getVideo'),
+                       url(r'^getCollectionItems/$', 'getCollectionItems',name='getCollectionItems'),
+
                        )

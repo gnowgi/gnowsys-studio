@@ -103,29 +103,29 @@ def get_authors(number=5, template='objectapp/tags/authors.html'):
 
 
 @register.inclusion_tag('objectapp/tags/dummy.html')
-def get_recent_gbobjects(number=5, template='objectapp/tags/recent_gbobjects.html'):
-    i = 0
-    j = 0
-    a = 12
-    gb =  Gbobject.published.all()[:60]
-    for objects in gb:
-        varobj = str(objects.ref.get_nbh['member_of'])
-        if 'page box of' in objects.title:
-            i = i + 1
-        elif 'message box of' in objects.title:
-             i = i + 1
-        elif "[<Nodetype: OT: Video>]" == varobj:
-             i = i + 1
-	else:
-	     j = j + 1 
+def get_recent_gbobjects(template='objectapp/tags/recent_gbobjects.html'):
+    # i = 0
+    # j = 0
+    # a = 12
+    # gb =  Gbobject.published.all()[:60]
+    # for objects in gb:
+    #     varobj = str(objects.ref.get_nbh['member_of'])
+    #     if 'page box of' in objects.title:
+    #         i = i + 1
+    #     elif 'message box of' in objects.title:
+    #          i = i + 1
+    #     elif "[<Nodetype: OT: Video>]" == varobj:
+    #          i = i + 1
+    #     else:
+    #          j = j + 1 
         
-        if j == 12:
-	   break 	 
+    #     if j == 12:
+    #        break 	 
     
-  
+    number = 25
     """Return the most recent gbobjects"""
     return {'template': template,
-            'gbobjects': Gbobject.published.all()[:a + i]}
+            'gbobjects': Gbobject.published.all()[:number]}#a+i
 
 
 @register.inclusion_tag('objectapp/tags/dummy.html')
@@ -140,10 +140,16 @@ def get_featured_gbobjects(number=5,
 def get_random_gbobjects(number=5, template='objectapp/tags/random_gbobjects.html'):
     """Return random gbobjects"""
     gbobjects = Gbobject.published.all()
+    lstobjs=[]
     if number > len(gbobjects):
         number = len(gbobjects)
+    for each in gbobjects:
+        if not ('page box of' in each.title or 'message box of' in each.title):
+            lstobjs.append(each)
+    if not lstobjs:
+        lstobjs = gbobjects
     return {'template': template,
-            'gbobjects': sample(gbobjects, number)}
+            'gbobjects': sample(lstobjs, number)}
 
 
 @register.inclusion_tag('objectapp/tags/dummy.html')

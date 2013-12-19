@@ -475,7 +475,8 @@
 			if (isNode){
 			 $("#savenodecontent").trigger('click');}
 			if (isObject){
-			    $("#saveobjectcontent").trigger('click');}
+			 $("#saveobjectcontent").trigger('click');}
+			
                         if (editWikipage){
 			    $(".savepagecontent").trigger('click');}
 			if (isSection){
@@ -497,7 +498,9 @@
 			    topicsaveclick(twistid);}
 			if (isResponse){
 			    topicsaveclick(responseid);}
-
+			if (isEditdoc){
+			    $("#editsavedoc").trigger('click');
+			    }
 			if (editImage){
 			   $("#save").trigger('click');}
 			if (isImage){
@@ -506,8 +509,10 @@
 			    $("#save"+objid).trigger('click');}
 			if (isVideotitle){
 			   $("#titlesave").trigger('click');}
-			if(isSubResponse){
-			    saveclick(objid);}
+			if (isSubResponse){
+			       saveclick(objid);}
+			   
+	
 		    }
 
 			// open preview window

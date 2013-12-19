@@ -20,6 +20,7 @@ from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('gstudio.views.image',
                        url(r'^$', 'image',name='image'),
+                       url(r'colln/(\d+)/$', 'imagecollection',name='imagecollection'),
 		       url(r'show/(\d+)/$','show',name='showimage'),
 		       url(r'edittitle/$','edit_title',name='edittitle'),
 		       url(r'addpriorpost/$','addpriorpost',name='addpriorpost'),
@@ -30,4 +31,6 @@ urlpatterns = patterns('gstudio.views.image',
                        url(r'checkpageexist/$','checkpageexist',name='checkpageexist'),
                        url(r'createwikinew/$','createwikinew',name='createwikinew'),
                        url(r'refpriorpost/$','refpriorpost',name='refpriorpost'),
+                       url(r'createcolln/$','createcolln',name='createcolln'),
+
                        )

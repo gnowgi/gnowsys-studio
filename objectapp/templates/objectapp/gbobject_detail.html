@@ -1,5 +1,6 @@
 {% extends "objectapp/base.html" %}
-{% load i18n comments objectapp_tags %}
+{% load i18n  objectapp_tags %}
+{% load gstudio_tags tagging_tags comments i18n %}
 {% block title %}{{ object.title }}{% endblock %}
 
 {% block meta-description %}{% if object.excerpt %}{{ object.excerpt|striptags }}{% else %}{{ object.content|striptags|truncatewords:100 }}{% endif %}{% endblock %}
@@ -30,45 +31,214 @@
 
 
 {% block content %}
+ <style type="text/css">
+
+  .span-16
+   {
+    width:500px;
+    }
+  #content 
+  {
+	width:500px;
+  }
+  .commentForm
+   {
+	width : 200px;
+    }
+   
+#graphcss {
+   
+	margin-left: 500px;
+   }
+  </style>
 {% block gbobject-content %}
 
   {% with object.html_content|safe as object_content %}
   {% include "objectapp/_gbobject_detail.html" %}
+<div id="gbobject-{{ object.pk }}" class="hgbobject{% if object.featured %} featured{% endif %} span-16 last">
+  <div class="gbobject-header span-16 last">
+     
+           <table border="1" cellspacing="0">
+	<b>Versions:&nbsp;</b>
+        {% for sid in object.ref.get_ssid  %}
+	   
+	      
+	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ object.title }} {{ object.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
+	 
+        {% endfor %}
+	   </table>
+	
+    <p class="gbobject-info">
+      {% if object.ref.authors.count %}
+      {% trans "Written by" %}
+      {% for author in object.ref.authors.all %}
+      <span class="vcard author">
+        <a href="{% url objectapp_author_detail author %}" class="fn nickname url" rel="author"
+           title="{% blocktrans with author as author %}Show {{ author }} gbobjects{% endblocktrans %}">{{ author }}</a>
+      </span>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+      {% trans "on" %}
+      {% else %}
+      {% trans "Written on" %}
+      {% endif %}
+      <abbr class="published" title="{{ object.creation_date|date:"c" }}Z">{{ object.creation_date|date:"DATE_FORMAT" }}</abbr>
+      {% if object.objecttypes.count %}
+      {% trans "in" %}
+      {% for Objecttype in object.objecttypes.all %}
+      <a href="{{ Objecttype.get_absolute_url }}" title="{{ Objecttype }}" rel="tag Objecttype">{{ Objecttype }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}.
+    </p>
 
-  <script type="text/javascript" >
-			  var s = 0
-		 	  var i
-			 
-			  {% if object.get_rendered_nbh.plural %}
-			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
-				s = parseInt(s + 1)
-			  {% endif %}
-	  		   {% if object.get_rendered_nbh.title %}
-			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
-				s = parseInt(s + 1)
-			  {% endif %}
-			   {% if object.get_rendered_nbh.altnames %}
-			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
-				s = parseInt(s + 1)
-			  {% endif %}
-			   {% if object.get_rendered_nbh.member_of %}
-			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
-				s = parseInt(s + 1)
-			  {% endif %}
-			   {% if object.get_rendered_nbh.relations %}
-			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
-				s = parseInt(s + 1)
-			  {% endif %}
-			{% if object.get_rendered_nbh.attributes %}
-			       //var i = parseInt({{ object.get_rendered_nbh.count_plural }})
-				s = parseInt(s + 1)
-			  {% endif %}
-			 if ( s > 0)
-				{
-				s = parseInt(s)
-			  	//alert(s)
-				}
-</script>	
+</div>
+
+
+<p>
+             <b>Name: </b> {{ object.title }} <br/>
+
+
+               {% if object.get_rendered_nbh.plural %}
+                                <b> Plural Name :<nbsp></b>
+                                         {{object.get_rendered_nbh.plural}} <br/>
+                           {% endif %}
+                            {% if object.get_rendered_nbh.altnames %}
+                               <b> Alternate names :<nbsp></b>
+                                         {{object.get_rendered_nbh.altnames}} <br/>
+{% endif %}
+              
+              {% if object.get_rendered_nbh.member_of %}
+                           
+                          
+                                <b> Member of :<nbsp></b>
+
+                                    {% for mkey,mvalue in object.get_rendered_nbh.member_of.items %}
+                                        <a href="{{mvalue}}">{{mkey}}</a>;
+                                    {% endfor %}<br/>
+                           {% endif %}
+			{% if object.content %}
+                            <b>
+					Content:<nbsp></b>
+				
+				         <!-- <input type="button" id="editdata" value="Edit Content"/><nbsp><nbsp> 
+					  <input type="button" id="savecontent" value="Save Content"/>-->
+					 <input type="hidden" id="objectid" value="{{object.id}}"/>
+		                          
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+					
+					</b>
+				   	{{object_content}}<br/>
+
+					{% else %}
+						<b>
+					Content:<nbsp></b> <!--<input type="button"id="editdata"value="Edit Content"/><nbsp><nbsp>
+					  <input type="button" id="savecontent" value="Save Content"/>-->
+					  <input type="hidden" id="objectid" value="{{object.id}}"/>
+		
+					  <input type="hidden" id="title" value="{{object.title}}"/>
+					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
+				        </b>
+					{{object_content}}<br/>
+					
+                          {% endif %}
+		
+
+              {% if object.get_rendered_nbh.relations %}
+                         
+                         
+                                 {% for relkey,relvalue in object.get_rendered_nbh.relations.items %}
+                                          <b>{{relkey}}:<nbsp></b>
+{% for relk, relv in relvalue.items %}
+<a href="{{relv}}">{{relk}}</a>;
+                                        {% endfor %}<br/>
+{% endfor %}
+{% endif %}
+                           
+                           {% if object.get_rendered_nbh.attributes %}
+			   {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %}
+                                 {% if atvalue %}
+			    <b>     {{atkey}}:<nbsp></b>
+                                    
+				    {% for items in atvalue %}
+					{{items}};<nbsp>
+                                    {% endfor %}
+                                 {% endif %}<br/>
+			{% endfor %}                         
+			{% endif %}
+
+</p>
+
+</div>
+  
+
+  <div class="gbobject-body span-16 last">
+    {% if object.image %}
+    <div class="gbobject-image">
+      <p>
+        <a href="{{ object.get_absolute_url }}" rel="bookmark">
+<img src="{{ object.image.url }}" alt="{{ object.title }}" class="left" />
+        </a>
+      </p>
+    </div>
+    {% endif %}
+    <div class="gbobject-content">
+ 
+    </div>
+  </div>
+
+  <div class="gbobject-footer">
+    <p class="gbobject-tags span-16 last">
+      <strong>{% trans "Tags" %}</strong> :
+      {% tags_for_object object as tag_list %}
+      {% for tag in tag_list %}
+      <a href="{% url objectapp_tag_detail tag %}"
+         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+      {% empty %}
+      <span>{% trans "No tags" %}</span>
+      {% endfor %}
+    </p>
+
+    <p class="gbobject-shorturl span-16 last">
+      <strong>{% trans "Short url" %}</strong> :
+      <a href="{{ object.short_url }}" title="{{ object.title }}" rel="shortlink">
+        {{ object.short_url }}
+      </a>
+    </p>
+
+    <p class="gbobject-comments span-16 last">
+      <strong>{% trans "Discussions" %}</strong> :
+      {% with object.comments.count as comment_count %}
+      {% if comment_count %}
+      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
+        {% blocktrans count comment_count as comment_count %}{{ comment_count }} comment{% plural %}{{ comment_count }} comments{% endblocktrans %}
+      </a>
+      {% else %}
+      {% if object.comments_are_open %}
+      {% trans "No comments yet." %}
+      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
+        {% trans "Be first to comment!" %}
+      </a>
+      {% else %}
+      {% trans "Comments are closed." %}
+      {% endif %}
+      {% endif %}
+      {% endwith %}
+      {% with object.pingbacks.count as pingback_count %}
+      {% if pingback_count %}
+       <a href="{{ object.get_absolute_url }}#pingbacks" title="{{ object.title }}">
+        {% blocktrans count pingback_count as pingback_count %}{{ pingback_count }} pingback{% plural %}{{ pingback_count }} pingbacks{% endblocktrans %}
+      </a>
+      {% endif %}
+      {% endwith %}
+      {% with object.trackbacks.count as trackback_count %}
+      {% if trackback_count %}
+       <a href="{{ object.get_absolute_url }}#trackbacks" title="{{ object.title }}">
+        {% blocktrans count trackback_count as trackback_count %}{{ trackback_count }} trackback{% plural %}{{ trackback_count }} trackbacks{% endblocktrans %}
+      </a>
+      {% endif %}
+      {% endwith %}
+    </p>
+  </div>
+<!-- nbh code -->
+	
 
   {% endwith %}
 {% endblock %}
@@ -257,14 +427,6 @@
 {% endblock %}
 
 
-
-{% block gbobject-comments-form %}
-{% if object.comments_are_open %}
-<div class="commentForm span-16 last">
-  {% render_comment_form for object %}
-</div>
-{% endif %}
-{% endblock %}
 
 {% endblock %}
 

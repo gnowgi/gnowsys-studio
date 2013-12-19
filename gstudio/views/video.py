@@ -17,6 +17,7 @@
 import time;
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from django.http import Http404
 import ox
 import os
 from gstudio.models import *
@@ -29,6 +30,11 @@ from gstudio.methods import *
 from django.contrib.auth import authenticate
 from django.template.defaultfilters import slugify
 import hashlib
+from tagging.models import Tag, TaggedItem
+from django.http import Http404
+import json
+import threading
+
 report = "true"
 global md5_checksum
 md5_checksum = ""
@@ -252,11 +258,11 @@ def video(request):
 					
 		if sub3 != "":
 			if svid != "":
-				if sub2 == "":
+				if sub3 == "title":
 				
 					vidon = Objecttype.objects.get(title="Video")
 					vido_new = vidon.get_nbh['contains_members']
-					vido = vido_new.filter(title__contains=svid)
+					vido = vido_new.filter(title__icontains=svid)
 					if sub3 == 'title':
 						vido2 = vido.order_by(sub3)
 					else:
@@ -267,11 +273,8 @@ def video(request):
 				else:
 					vidon = Objecttype.objects.get(title="Video")
 					vido_new = vidon.get_nbh['contains_members']
-					vido = vido_new.filter(slug__contains=svid)
-					if sub3 == 'title':
-						vido2 = vido.order_by(sub3)
-					else:
-						vido2 = sort_video(vido)
+					vido = vido_new.filter(creation_date__icontains=svid)
+					vido2 = vido.order_by(sub3)
 					variables = RequestContext(request,{'vids':vido2,'val':svid})
 					template = "gstudio/video.html"
 					return render_to_response(template, variables)
@@ -285,104 +288,104 @@ def video(request):
 				variables = RequestContext(request,{'vids':vido,'val':svid })
 				template = "gstudio/video.html"
 				return render_to_response(template, variables)
-	api.signin({'username': sd,'password':password})
-	r= api.find({'sort': [{'key': 'title','operator': '+'}],'query': {'conditions': [{'key': 'title','value': '','operator': ''}],'operator': '&'},'keys': ['id', 'title','user','created','duration','sourcedescription'],'range': [0,500]})
-	s=r['data']['items']
-	for each in s:
-		flag=0
-		for vid in q:
-			if vid.title==each['title'].lower():
-				flag=1
-			if vid.altnames==each['title'].lower():
-				flag=1
-		if flag==0:
-			m=Gbobject()
-			if title:
-	  			m.title = title
-			else:
-				m.title = each['title'].lower()
-			m.altnames=each['title'].lower()
-			fname=slugify(title)+"-"+str(usr)
-			m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
-			m.slug=each['id']
-			contorg=unicode(content)
-			m.content_org=contorg.encode('utf8')
-			m.status=2
-			m.save()
-                        m.sites.add(Site.objects.get_current())
-			m.save()
-			m.objecttypes.add(Objecttype.objects.get(id=p.id))
-			m.save()
-			a=Attribute()
-			a.attributetype=Attributetype.objects.get(title="posted_by")
-			a.subject=m
-			a.svalue=each['user']
-			a.save()
-			a1=Attribute()
-			a1.attributetype=Attributetype.objects.get(title="time_limit")
-			a1.subject=m
-			a1.svalue=each['duration']
-			a1.save()
-			a2=Attribute()
-			a2.attributetype=Attributetype.objects.get(title="creation_day")
-			a2.subject=m
-			a2.svalue=each['created']
-			a2.save()
-			a3=Attribute()
-			a3.attributetype=Attributetype.objects.get(title="source")
-			a3.subject=m
-			a3.svalue=each['sourcedescription']
-			a3.save()
-			a4=Attribute()
-			a4.attributetype=Attributetype.objects.get(title="map_link")
-			a4.subject=m
-			l=each['sourcedescription']
-			final=''
-			for each in l:
-				if each==" ":
-					final=final+'+'
-				else:
-					final=final+each
-			a4.svalue=final
-			a4.save()
-			m.save()
-			new_ob = content
-			usr=str(request.user)
-			ext='.org'
-			html='.html'
-			myfile = open(os.path.join(FILE_URL,fname+ext),'w')
-			myfile.write(m.content_org)
-			myfile.close()
-			myfile = open(os.path.join(FILE_URL,fname+ext),'r')
-			rfile=myfile.readlines()
-			scontent="".join(rfile)
-			newcontent=scontent.replace("\r","")
-			myfile = open(os.path.join(FILE_URL,fname+ext),'w')
-			myfile.write(newcontent)
+	# api.signin({'username': sd,'password':password})
+	# r= api.find({'sort': [{'key': 'title','operator': '+'}],'query': {'conditions': [{'key': 'title','value': '','operator': ''}],'operator': '&'},'keys': ['id', 'title','user','created','duration','sourcedescription'],'range': [0,1500]})
+	# s=r['data']['items']
+	# for each in s:
+	# 	flag=0
+	# 	for vid in q:
+	# 		if vid.title==each['title'].lower():
+	# 			flag=1
+	# 		if vid.altnames==each['title'].lower():
+	# 			flag=1
+	# 	if flag==0:
+	# 		m=Gbobject()
+	# 		if title:
+	#   			m.title = title
+	# 		else:
+	# 			m.title = each['title'].lower()
+	# 		m.altnames=each['title'].lower()
+	# 		fname=slugify(title)+"-"+str(usr)
+	# 		m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
+	# 		m.slug=each['id']
+	# 		contorg=unicode(content)
+	# 		m.content_org=contorg.encode('utf8')
+	# 		m.status=2
+	# 		m.save()
+        #                 m.sites.add(Site.objects.get_current())
+	# 		m.save()
+	# 		m.objecttypes.add(Objecttype.objects.get(id=p.id))
+	# 		m.save()
+	# 		a=Attribute()
+	# 		a.attributetype=Attributetype.objects.get(title="posted_by")
+	# 		a.subject=m
+	# 		a.svalue=each['user']
+	# 		a.save()
+	# 		a1=Attribute()
+	# 		a1.attributetype=Attributetype.objects.get(title="time_limit")
+	# 		a1.subject=m
+	# 		a1.svalue=each['duration']
+	# 		a1.save()
+	# 		a2=Attribute()
+	# 		a2.attributetype=Attributetype.objects.get(title="creation_day")
+	# 		a2.subject=m
+	# 		a2.svalue=each['created']
+	# 		a2.save()
+	# 		a3=Attribute()
+	# 		a3.attributetype=Attributetype.objects.get(title="source")
+	# 		a3.subject=m
+	# 		a3.svalue=each['sourcedescription']
+	# 		a3.save()
+	# 		a4=Attribute()
+	# 		a4.attributetype=Attributetype.objects.get(title="map_link")
+	# 		a4.subject=m
+	# 		l=each['sourcedescription']
+	# 		final=''
+	# 		for each in l:
+	# 			if each==" ":
+	# 				final=final+'+'
+	# 			else:
+	# 				final=final+each
+	# 		a4.svalue=final
+	# 		a4.save()
+	# 		m.save()
+	# 		new_ob = content
+	# 		usr=str(request.user)
+	# 		ext='.org'
+	# 		html='.html'
+	# 		myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	# 		myfile.write(m.content_org)
+	# 		myfile.close()
+	# 		myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	# 		rfile=myfile.readlines()
+	# 		scontent="".join(rfile)
+	# 		newcontent=scontent.replace("\r","")
+	# 		myfile = open(os.path.join(FILE_URL,fname+ext),'w')
+	# 		myfile.write(newcontent)
 			
-			#myfile.readline()
-			myfile = open(os.path.join(FILE_URL,fname+ext),'a')
-			myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
-			myfile.write("\n#+TITLE: ")
-			myfile = open(os.path.join(FILE_URL,fname+ext),'r')
-			stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
-			output = stdout.read()
-			data = open(os.path.join(FILE_URL,fname+html))
-		 	data1 = data.readlines()
-		  	data2 = data1[107:]
-                        dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
+	# 		myfile.readline()
+	# 		myfile = open(os.path.join(FILE_URL,fname+ext),'a')
+	# 		myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+	# 		myfile.write("\n#+TITLE: ")
+	# 		myfile = open(os.path.join(FILE_URL,fname+ext),'r')
+	# 		stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
+	# 		output = stdout.read()
+	# 		data = open(os.path.join(FILE_URL,fname+html))
+	# 	 	data1 = data.readlines()
+	# 	  	data2 = data1[107:]
+        #                 dataa = data2[data2.index('<div id="content">\n')]='<div id=" "\n'
 
-			data3 = data2[:-6]
-		 	newdata=""
-		 	for line in data3:
-		        	newdata += line.lstrip()
-		 	m.content = newdata
-		 	m.save()
-		        a=Attribute()
-        		a.attributetype=Attributetype.objects.get(title="md5_checksum_document")
-        		a.subject=m
-        		a.svalue=md5_checksum
-			a.save()
+	# 		data3 = data2[:-6]
+	# 	 	newdata=""
+	# 	 	for line in data3:
+	# 	        	newdata += line.lstrip()
+	# 	 	m.content = newdata
+	# 	 	m.save()
+	# 	        a=Attribute()
+        # 		a.attributetype=Attributetype.objects.get(title="md5_checksum_document")
+        # 		a.subject=m
+        # 		a.svalue=md5_checksum
+	# 		a.save()
 		
 	svid=""
 	q=p.get_nbh['contains_members']
@@ -512,7 +515,17 @@ def show(request,videoid):
 		if contenttext !="":
 			 edit_description(vidid,contenttext,str(request.user))	
 
-	gbobject = Gbobject.objects.get(id=videoid)
+	gbobject = Gbobject.objects.filter(id=videoid)
+        if gbobject:
+            gbobject = Gbobject.objects.get(id=videoid)
+	    if "Video" in [each.title for each in gbobject.objecttypes.all()]:
+		pass
+            else:
+    	        raise Http404
+
+        else:
+ 	    raise Http404
+
 	relation = ""
 	if gbobject.get_relations():
 		if gbobject.get_relations()['is_favourite_of']:
@@ -573,3 +586,65 @@ def md5Checksum(filePath):
             break
         m.update(data)
     return m.hexdigest()
+def wetube(request):
+        vars=RequestContext({})
+        template="gstudio/wetube.html"
+        return render_to_response(template,vars)
+
+lock = threading.Lock()
+def getVideo(request):
+	'''
+	saving wetube.gnowledge.org videos data in Gbobject, with locking  
+	'''
+	lock.acquire()
+	try:
+		api=ox.api.API("http://wetube.gnowledge.org/api")
+		countVideo = api.find({"query":{"conditions":[{"key":"*","value":"","operator":"="}],"operator":"&"},"range":[0,1]})
+		totalVideoNo=countVideo['data']['items']
+		allVideo = api.find({'sort': [{'key': 'title','operator': '+'}],'query': {'conditions': [{'key': 'title','value': '','operator': ''}],'operator': '&'},'keys': ['id', 'title','user','created','duration','sourcedescription'],'range': [0,totalVideoNo]})
+		
+		allVideosData=allVideo['data']['items']
+		objecttypeVideo=Objecttype.objects.get(title="Video")
+		videosObject=objecttypeVideo.get_nbh['contains_members']
+		videolist = [each.slug for each in videosObject]
+		for each in allVideosData:
+			if not each['id'] in videolist:
+				m=Gbobject()
+				m.title = each['title'].lower()
+				m.altnames=each['title'].lower()
+				m.rurl="http://wetube.gnowledge.org/"+each['id']+'/480p.webm'
+				m.slug=each['id']
+				m.status=2
+				m.save()
+				m.sites.add(Site.objects.get_current())
+				m.objecttypes.add(objecttypeVideo)
+
+	finally:
+		lock.release()
+	return HttpResponse("sucess")
+
+
+def getCollectionItems(request):
+	'''
+	By taking tagname, fetching Tag's items from wetube and return gobject's id,title,slug corresponding to Tag's items 
+	'''
+	tagId = []
+	resultTag = []
+	videoObject = ""
+	if request.is_ajax() and request.method =="POST":
+		tagName=request.POST['tagName']
+		api=ox.api.API("http://wetube.gnowledge.org/api")
+		countTagitems = api.find({"query":{"operator":"&","conditions":[{"key":"keywords","value":tagName,"operator":"=="}]}})
+		totalTagNo=countTagitems['data']['items']
+		Tagitems = api.find({"keys":["id","title"],"query":{"operator":"&","conditions":[{"key":"keywords","value":tagName,"operator":"=="}]},"range":[0,totalTagNo],"sort":[{"operator":"+","key":"title"}]})
+
+		for each in Tagitems['data']['items']:
+			tagId.append(each['id'])
+		for each in tagId:
+			videoObject = NID.objects.filter(slug=each)
+			if videoObject:
+				nidObject = NID.objects.get(slug=each)
+				resultTag.append({'id':nidObject.id,"slug":each,"title":nidObject.title})
+					
+	return HttpResponse(json.dumps(resultTag))             
+

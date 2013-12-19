@@ -1,0 +1,27 @@
+{% load adminmedia grp_tags %}
+{% load gstudio_tags %}
+{% show_doc_collections doc.id as doccolln %}
+
+{% if doccolln %}
+<font size="3">Documents in this collection:</font><br/>
+
+  {% for vals in doccolln %}
+         <li class="list"><abbr title="Collection"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/doc.png"></abbr><a href="{{vals.get_view_object_url}}">{{vals.title}}</a><br/>
+  {% endfor %}
+
+{% endif %}
+ <br/>
+
+{% show_edit_doc_collection doc.id user %}
+
+
+{% get_doc_download doc.id as dwn %}
+{% if dwn %}
+<br/>
+<a href="/{{dwn}}">Download link </a>
+{% else %}
+Can't get source files
+{% endif %}
+
+
+

@@ -126,13 +126,10 @@ GSTUDIO_XMLRPC_METAWEBLOG = [
      'metaWeblog.setRelation'),
     ('gstudio.xmlrpc.metaweblog.get_gbobject_neighbourhood',
      'metaWeblog.getGbobjectNeighbourhood'),
-    # ('gstudio.xmlrpc.metaweblog.list_id',
-    #  'metaWeblog.list_id'),
-    # ('gstudio.xmlrpc.metaweblog.dict_id',
-    #  'metaWeblog.dict_id'),
-    ('gstudio.xmlrpc.metaweblog.show_id',
-     'metaWeblog.show_id'),
-    ('gstudio.xmlrpc.metaweblog.show_instance',
-     'metaWeblog.show_instance')]
+    ('gstudio.xmlrpc.metaweblog.list_id',
+     'metaWeblog.list_id'),
+    ('gstudio.xmlrpc.metaweblog.dict_id',
+     'metaWeblog.dict_id')]
+
 
 GSTUDIO_XMLRPC_METHODS = GSTUDIO_XMLRPC_PINGBACK + GSTUDIO_XMLRPC_METAWEBLOG

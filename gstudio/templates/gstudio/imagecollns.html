@@ -1,0 +1,48 @@
+{% load gstudio_tags %}
+<script type="text/javascript">
+$(".delimgcolln").click(function(){
+        $("#coll").show();
+        $("#coll").css({"margin-top":"0px"});
+var obid = this.id;
+        r = confirm("Please confirm delete ")
+        if (r==true)
+{
+ $("#lstBox2").empty();
+ $("#imgcolname").val("");
+
+$.ajax({
+url: '/gstudio/ajax/deleteimgcolln/',
+data: {obid:obid},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                      },
+success: function(data){
+                $('#imagecollections').html(data);
+                     },
+        complete: function(){
+$("#ajax_load_image").hide();
+$("#content").css({"opacity":"",})
+                  }
+});
+
+  }
+});
+</script>
+
+
+
+{% get_image_collections as col%}
+{% if col %}
+<font size="4" color="black">Image Collections</font><br/>
+{% for key,value in col.items %}
+<a href="/gstudio/resources/images/show/{{key}}/">
+{{value}}</a>&nbsp;;
+{% if user.is_authenticated %}
+<a class="delimgcolln" id="{{key}}" value="{{key}}" title="delete {{value}}">
+<img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/>
+</a>
+{% endif %}
+
+{% endfor %}
+{% endif %}

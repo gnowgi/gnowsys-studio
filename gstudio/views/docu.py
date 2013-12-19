@@ -25,6 +25,7 @@ from gstudio.methods import *
 import hashlib
 from django.template.defaultfilters import slugify
 import os
+from django.http import Http404
 
 report = "true"
 def docu(request):
@@ -60,6 +61,7 @@ def docu(request):
 			variables = RequestContext(request,{'documents':list1,'fav':fav})
 			template = "gstudio/docu.html"
 			return render_to_response(template, variables)	
+	
 
 		if delete != "":
 			each=q.get(id=dn)
@@ -73,13 +75,22 @@ def docu(request):
 			return render_to_response(template, vars)
 		if sub3 != "":
 			if sdoc != "":
-				vidon = Objecttype.objects.get(title="Document")
-				vido_new = vidon.get_nbh['contains_members']
-				vido = vido_new.filter(title__contains=sdoc)
-				vido2 = vido.order_by(sub3)
-				variables = RequestContext(request,{'documents':vido2,'val':sdoc})
-				template = "gstudio/docu.html"
-				return render_to_response(template, variables)
+				if sub3 == "title":
+					vidon = Objecttype.objects.get(title="Document")
+					vido_new = vidon.get_nbh['contains_members']
+					vido = vido_new.filter(title__icontains=sdoc)
+					vido2 = vido.order_by(sub3)
+					variables = RequestContext(request,{'documents':vido2,'val':sdoc})
+					template = "gstudio/docu.html"
+					return render_to_response(template, variables)
+				else: 
+					vidon = Objecttype.objects.get(title="Document")
+					vido_new = vidon.get_nbh['contains_members']
+					vido = vido_new.filter(creation_date__icontains=sdoc)
+					vido2 = vido.order_by(sub3)
+					variables = RequestContext(request,{'documents':vido2,'val':sdoc})
+					template = "gstudio/docu.html"
+					return render_to_response(template, variables)
 			else:
 				vidon = Objecttype.objects.get(title="Document")
 				vido_new = vidon.get_nbh['contains_members']
@@ -161,7 +172,7 @@ def create_object(file,log,content,usr,title):
 			final=final+'-'
 		else:
 			final = final+each1	
-	p.slug=final
+	p.slug=slugify(final)
 	contorg=unicode(content)
 	p.content_org=contorg.encode('utf8')
 	p.status=2
@@ -264,7 +275,16 @@ def show(request,documentid):
 			objects = Gbobject.objects.get(id=removefavid)
 			objects.get_relations()['is_favourite_of'][0].delete()
 
-	gbobject = Gbobject.objects.get(id=documentid)
+	gbobject = Gbobject.objects.filter(id=documentid)
+        if gbobject:
+            gbobject = Gbobject.objects.get(id=documentid)
+	    if "Document" in [each.title for each in gbobject.objecttypes.all()]:
+		pass
+            else:
+    	        raise Http404
+
+        else:
+ 	    raise Http404
 	relation = ""
 	if gbobject.get_relations():
 		if gbobject.get_relations()['is_favourite_of']:
@@ -326,3 +346,48 @@ def md5Checksum(filePath):
             break
         m.update(data)
     return m.hexdigest()
+
+def createcolln(request):
+    listcl=request.GET["listofcollns"]
+    print "listdoccl=",listcl
+    coltitle=request.GET["coltitle"]
+    editcoln=request.GET["editcoln"]
+    colid=request.GET["colid"]
+    if editcoln=='1':
+        print "inside doceditcol"
+        col=System.objects.get(id=colid)
+        col.gbobject_set.clear()
+        i=0
+        if listcl != "null":
+                listcl=listcl+","
+		listcl=eval(listcl)
+		while i < len(listcl):
+			objs=Gbobject.objects.get(id=listcl[i])
+			print "objs",objs
+                        col.gbobject_set.add(objs)
+        i=i+1
+        col.save()
+        p=col.gbobject_set.all()
+        print "complelst",p
+        t=get_template('gstudio/estngdoccollns.html')
+        html = t.render(Context({'doc':col,'user':request.user}))
+        return HttpResponse(html)
+    else:
+        syscol=Systemtype.objects.get(title='Documentcollection')
+        col=System()
+        col.title=coltitle
+        col.slug=slugify(coltitle)
+        col.save()
+        col.systemtypes.add(syscol)
+        t='gstudio/doccollns.html'
+        if listcl != "" and listcl != "null":
+                i=0
+                listcl=listcl+","
+		listcl=eval(listcl)
+                while i < len(listcl):
+                        objs=Gbobject.objects.get(id=listcl[i])
+                        col.gbobject_set.add(objs)
+                        i=i+1
+		col.save()
+	return render_to_response(t,RequestContext(request))
+

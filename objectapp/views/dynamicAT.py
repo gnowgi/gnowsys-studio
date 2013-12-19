@@ -4,6 +4,9 @@ from django.forms import ModelForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.forms.models import modelform_factory
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
+
 
 from objectapp.models import *
 from objectapp.forms import *
@@ -23,27 +26,30 @@ def MakeForm(model_cls, *args, **kwargs):
 			
 	return ContextForm(*args, **kwargs)
 
+@login_required
 def dynamic_save(request, attit, memtit):
-	rdict ={}
-	savedict = {}
-	memtit = NID.objects.get(title = str(memtit))
-	name = memtit.ref
+	try:
+		rdict ={}
+		savedict = {}
+		memtit = NID.objects.get(title = str(memtit))
+		name = memtit.ref
+		
+		absolute_url_node = name.get_absolute_url()
 
-	absolute_url_node = name.get_absolute_url()
-
-	at = Attributetype.objects.get(title = str(attit))
-	dt = str(at.get_dataType_display())
-	MyModel = eval('Attribute'+dt)
-
-	print getattr(models , dt)
-
-	list1 = []
-
-	rdict.update({str(at.title):MyModel})
-	
-	print "rdict",str(rdict)
-	print 'dt ',dt
-
+		at = Attributetype.objects.get(title = str(attit))
+		dt = str(at.get_dataType_display())
+		MyModel = eval('Attribute'+dt)
+		
+		print getattr(models , dt)
+		
+		list1 = []
+		
+		rdict.update({str(at.title):MyModel})
+		
+		print "rdict",str(rdict)
+		print 'dt ',dt
+	except ObjectDoesNotExist:
+		raise  Http404()
 	if request.method == 'POST':	
 		form = MakeForm(rdict,request.POST,request.FILES)
 		try:

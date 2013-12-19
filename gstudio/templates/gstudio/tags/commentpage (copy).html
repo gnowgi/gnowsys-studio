@@ -1,0 +1,91 @@
+
+
+
+
+{% load gstudio_tags %}
+{% load i18n %}
+{% load tagging_tags comments i18n %}
+
+
+
+{% if comment.posterior_nodes.count %}
+<!--<ul style="display: none;">-->
+<ul>
+{% for child in comment.posterior_nodes.all %}
+       <!-- Flag1 outside {{flag}}-->
+        {% for each in child.authors.all %}
+        	<!--{% ifequal idusr admin_id %}-->
+			</br><h3><font size="5"><li>{{child.title}}</font></h3></br>
+			<font size="3"> {{child.content}}</font>
+			<form method="post" action=".">{% csrf_token %}
+			  <input type="hidden" class="reptext" name = "replytosection" id="sectionreply{{child.id}}" style="visibility:hidden;"/></br>
+			  <input type="hidden" value="{{idusr}}" name="idusr">
+			<input type="hidden" value="{{child.id}}" id="hidden{{child.id}}" name="parentid">
+			<input type="button" class="editsubsec" name="{{child.content_org}}" id="{{child.id}}" value="Edit"/>
+			<input type="button" class="savesubsec1" name="{{each.id}}" id="save{{child.id}}"  value="Save" onclick="subsecsave(document.getElementById('hidden{{child.id}}').value)"/>
+			<input type="button" id="subsec{{child.id}}" value="{{child.content_org}}" style="visibility:hidden;"/>
+			<input type="button" id="subsecid" value="{{child.id}}" style="visibility:hidden;"/>	
+			<input type="hidden" class="editval" id="edit{{child.id}}" name="edit" value="empty"/>
+			<!-- <input type="checkbox" name="del_comment" value="delete_comment"> -->
+        		<!--<input type="submit" value="Delete this Subsection">-->
+			<input type="submit" class="submitsubsec1" id="subsecsubmit{{child.id}}" value="Submit">
+			<form method="post" action="">{% csrf_token %}
+			  <input type="hidden" name="docid" value={{child.id}}>
+			  <input type="text" class="tagtext" value="" name="texttags"  />
+			  <input type="submit" class="tag" value="Add Tags" name="addtags" />
+			</form>
+			<br>
+			<div class="tags">
+			  <p class="gbobject-tags span-16 last">
+			    <strong>{% trans "Tags" %}</strong> :
+			    {% tags_for_object child as tag_list %}
+			    {% for tag in tag_list %}
+			    <a href="{% url objectapp_tag_detail tag %}"
+			       title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
+			    {% empty %}
+			    <span>{% trans "No tags" %}</span>
+			    {% endfor %}
+			  </p>
+			</div>
+		
+			</form>
+			{% show_commentpage child idusr flag admin_id attribute%}
+			</li>
+        	<!--{% else %}
+			{% ifequal idusr each.id %}
+				<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
+				<form method="post" action=".">{% csrf_token %}
+				<input type="text" name = "replytosection">
+			  	<input type="hidden" value={{child.id}} name = "parentid">
+				<input type="hidden" value={{idusr}} name="idusr">
+			    	<input type="submit" value="Reply to section">
+				<input type="checkbox" name="del_comment" value="delete_comment">
+        			<input type="submit" value="delete this comment">
+				</form>
+				<!--{% show_commentpage child idusr flag admin_id attribute%}-->
+				</li>
+			{% else %}
+				{% ifequal attribute "true" %}
+                                 
+				<li>{{each}} says <font style = "color:red;" size = 3>{{child.title}}</font>
+				<form method="post" action=".">{% csrf_token %}
+				<input type="text" name = "replytosection">
+			  	<input type="hidden" value={{child.id}} name = "parentid">
+				<input type="hidden" value={{idusr}} name="idusr">
+			    	<input type="submit" value="Reply to section">
+				<input type="checkbox" name="del_comment" value="delete_comment">
+        			<input type="submit" value="delete this comment">
+				</form>
+				{% show_commentpage child idusr flag admin_id attribute%}
+				</li>
+	       	 		{% endifequal %}
+                         {% endifequal %}
+               {% endifequal %}
+       {% endfor %}
+	
+	
+{% endfor %}
+</ul>
+{% endif %}
+
+

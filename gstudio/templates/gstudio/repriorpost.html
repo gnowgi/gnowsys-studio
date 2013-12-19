@@ -18,7 +18,8 @@ $.ajax({
                               },
 	success: function(data){
 		$('#priorpostpages').html(data);
-
+		$("#chart").text("");
+		fgraph();
 		},
         complete: function(){
                 $("#ajax_load_image").hide();

@@ -1,0 +1,304 @@
+{% load gstudio_tags %}
+
+
+<script type="text/javascript" >
+var availableTags = [];
+var arr=[];
+var arr1=[];
+$.merge(availableTags, {% get_add_tag %})
+var pagedrawer = [];
+$.merge(pagedrawer, {% get_page_drawer %})
+var length = pagedrawer.length;
+$(window).load(function() {
+ 
+ $(".savepagecontent").hide();
+ $("#saveseccontent").hide();
+ $("#savesubsec").hide();
+ $("#savesubsec1").hide();
+ $(".submitresponse").hide();
+ $(".saveseccontent").hide();
+ $(".savesubsec").hide();
+ $(".submitsubsec").hide();
+ $(".pagedit").hide()
+$(".savesubsec1").hide();
+ $(".submitsubsec1").hide();
+
+  });
+jQuery(document).ready(function($) {
+$("#collectionsearch").keyup(function () {
+            $("#lstBox1 option").show();
+            $("#lstBox1 option:not(option:contains('" + $("#collectionsearch").val() + "'))").hide();
+        }); 
+
+});	
+
+</script>
+	
+   {% with page_ob.html_content|safe as page_ob_content %}
+   <font size="3"> 
+                {{page_ob_content}}</font>
+   {% endwith %}
+
+{% if user.is_authenticated %}
+	<form method="post" action="">{% csrf_token %}
+	<input type="hidden" class="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+	<input type="hidden" class="editval" name="edit" value="empty"/>
+	<input type="hidden" value="{{page_ob.id}}" name = "iden" id="ptitle">
+	<input type="hidden" value="{{page_ob.title}}" name="subject">
+        <input type="hidden" value="{{collection}}" id="iscollection">
+	<input type="hidden" value="{{user.username}}" name ="usr">
+	<input type="hidden" value="{{user.id}}" name = "idusr">
+	<input type="button" class="editpagecontent" name="{{page_ob.content_org}}" value="Edit Content"/></br>
+	<input type="button" class="savepagecontent" name="{{page_ob.id}}" value="Save"/></br>
+	<input type="submit" class="pagedit" value="Submit"/>
+       </form>
+        {% endif %}
+
+<div id="coll">
+	  
+	    {% for each in test %}
+	    {% if each.system.gbobject_set.exists %}
+	    <li class="list"><abbr title="Collection"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/folder.png"></abbr> <a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+	    {% else %}
+	    <li class="list"><abbr title="Page"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/doc.png"></abbr><a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+            {% endif %}
+	    {% endfor %}
+	         {% if collection %}
+		 {% if user.is_authenticated %}
+
+		 <input type="button" class="addtodrawer" value="Edit Collection" name="addtodrawer"/>
+		 <input type="button" class="htmlexport" value="Export as HTML"/>
+		 {% endif %}
+
+		 {% else %}
+		 {% if user.is_authenticated %}
+
+		 <input type="button" class="addtodrawer" value="Create Collection" name="addtodrawer"/>
+		 <input type="button" class="htmlexport" value="Export as HTML"/>
+		 {% endif %}
+
+		 {% endif %}
+</div>
+
+<div id="coll1">
+
+</div> 
+
+<div id="collection" style="display:none;">
+
+	<table style="width:370px" id="drawertable" width="500px">
+   	 <tr>
+     	  <td style='width:160px;'>
+           	 <b>Pages: <input type="text" id="collectionsearch" value=""></b><br/>
+         	  <select multiple="multiple" id='lstBox1'>
+                  {% for key,value in test1.items %}
+	            <option id={{key}}>{{value}}</option>
+	     
+                  {% endfor %}
+          	    
+           	</select>
+   	 </td> 
+   	 <td style='width:50px;text-align:center;vertical-align:middle;'>
+       <input type='button' id='btnUp' value ='  ^  '/><br/> 
+       <input type='button' id='btnRight' value ='  >  '/><br/>
+       <input type='button' id='btnLeft' value ='  <  '/><br/>
+       <input type='button' id='btnDown' value ='  v  '/><br/> 
+
+    </td>
+    <td style='width:160px;'>
+        <b>Added to Drawer: </b><br/>
+        <select multiple="multiple" name="lstb2" id='lstBox2'>
+          {% for each in test %}
+	     <option id={{each.id}}>{{each.title}}</a></option>
+	  {% endfor %}
+	  </option>
+        </select>
+    </td><br>
+    </tr>
+    <tr>
+    <td>
+      <input type="button"  value="Reset" id="resetdrawer"/>
+      <input type="button"  value="Submit" id="lstvalue"/>
+      <input type="button"  value="Cancel" id="cancel"/>
+      
+      
+ </td>
+    
+</tr>
+</table>
+</div>
+
+ <input id="drawer{{page_ob.id}}"  class="getdrawer" name="texttags" style="visibility:hidden">
+	
+	 <input type="button" id="showcollection" value="Show Drawer" style="visibility:hidden"/>
+       	 <br>
+	<script type="text/javascript" >
+	$(document).ready(function(){
+        $( "#drawer{{page_ob.id}}" ).autocomplete({
+	source: pagedrawer
+        });
+ 	});
+	</script>
+<!--ADDING AND DISPLAY TAG-->
+	{% addtag ot page_ob.id user %}
+
+<!--ADDING PRIOR PAGE-->
+	{% addpriorpost page_ob.id user %}
+
+<!-- Add relations for a page -->
+        {% if user.is_authenticated %}
+	{% add_res_relation page_ob %}
+	<br/>
+	{% endif %}
+
+<!--ADDING AND DISPLAY rating -->
+ {% if user.is_authenticated %}
+	{% adding_rating page_ob  %}
+	
+	 {% endif %}
+
+<script type="text/javascript" >
+	
+	$(document).on('click',"#lstvalue",function(){
+
+	$("#collection").hide();
+	opts = lstBox2.options, len = opts.length;
+	if (len == 0){
+        arr=[];
+        arr1=[];
+	
+	}
+	else{
+        arr1=[];
+	for (var i = 0; i < len; i++) {
+	      arr[i] = "'"+opts[i].value+"'";
+	      arr1[i]=opts[i].id;
+			    }}
+	 var abc1=arr1.join(',');
+	 
+	 	      
+	 if (abc1){
+	 var abc=abc1;
+	 
+	 }
+	 else{
+	 var abc=null;
+	 }
+
+	 var wtitle= document.getElementById("ptitle").value;
+	 var collection= document.getElementById("iscollection").value; 
+			      $.ajax({
+       			      url: '/gstudio/ajax/draweradd/',
+       			      data:{'title':abc,'wtitle':wtitle,'collection':collection},
+                              beforeSend: function() {
+                              $("#ajax_load_image").show();
+                            
+			      $("#content").css({"opacity":"0.1",})
+	   
+                              },
+       			      
+       			      success: function(data) {
+	                      $("#coll").html(data);
+			      $(".addtodrawer").show();
+			      $("#chart").text("");
+		  	      fgraph();
+       			      
+       			    },
+                             complete: function(){
+                             $("#ajax_load_image").hide();
+			      $("#content").css({"opacity":"",})
+			      
+	             }       
+       });
+			      
+	 });
+
+       $(document).on('click',"#status",function(){
+			    
+	$("#status").hide();		    
+	 var pageobj= document.getElementById("ptitle").value;
+	 
+	 $.ajax({
+	 url: '/gstudio/ajax/status/',
+	 data:{'pageobj':pageobj},
+	 beforeSend: function() {
+         $("#ajax_load_image").show();
+                            
+	 $("#content").css({"opacity":"0.1",})
+	  },
+       			      
+         success: function(data) {
+	 	 
+	 
+	 },
+         complete: function(){
+         $("#ajax_load_image").hide();		      
+         $("#content").css({"opacity":"",})
+			      
+	  }       
+	 
+	 });
+	 		    
+			    
+			    			});
+
+
+	 $(document).on('click',".htmlexport",function(){
+	 
+	 var ptitle= document.getElementById("ptitle").value;
+	
+
+	 opts = lstBox2.options, len = opts.length;
+	 if (len == 0){
+         arr=[];
+         arr1=[];
+	 
+	 }
+	 else{
+	 for (var i = 0; i < len; i++) {
+	       arr[i] = "'"+opts[i].value+"'";
+	       arr1[i]=opts[i].id;
+			    }}
+	  var abc1=arr.join(',');
+	  	      
+	  if (abc1){
+	  var abc=abc1;
+	  }
+	  else{
+	  var abc="null";
+	  }
+
+			      
+	 $.ajax({
+	 url: '/gstudio/ajax/htmlexport/',
+	 data:{'ptitle':ptitle,'title':abc},
+	 beforeSend: function() {
+         $("#ajax_load_image").show();
+                            
+	 $("#content").css({"opacity":"0.1",})
+	  },
+       			      
+         success: function(data) {
+	 $("#coll1").html(data);	 
+	 
+	 },
+         complete: function(){
+         $("#ajax_load_image").hide();		      
+         $("#content").css({"opacity":"",})
+			      
+	  }       
+	 
+	 });
+	 
+	 });
+			      
+	</script>
+
+{% if user.is_authenticated %}
+	<form method="post" action=".">{% csrf_token %}
+	<!--<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">-->
+	<input type="hidden" id="pageid1" value="{{page_ob.id}}"/>
+        </form>
+	{% endif %}
+</br> 
+

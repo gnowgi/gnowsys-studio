@@ -220,7 +220,10 @@ class Gbobject(Node):
         try:
             loop=True
             while loop:
-                obj=obj.prior_nodes.all()[0]
+                if obj.prior_nodes.all():
+                    obj=obj.prior_nodes.all()[0]
+                else:
+                    break
             if not obj.prior_nodes.all():
                     loop=False
             return obj.getthread_of_twist
@@ -411,26 +414,29 @@ class Gbobject(Node):
            
             if relation.relationtype.title not in rel_dict['left-subjecttypes'].keys():
                 # create a new list field and add to it
-                rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = {}
+                rel_dict['left-subjecttypes'][str(relation.relationtype.title)] = []
             # add
             obj=Gbobject.objects.get(id=relation.right_subject_id)
-            relc[obj.title]=obj.get_view_object_url
+            relc['title']=obj.title
+            relc['id']=relation.id
+            relc['url']=obj.get_view_object_url
             if not obj.title in rel_dict['left-subjecttypes'][str(relation.relationtype.title)]:
-                rel_dict['left-subjecttypes'][str(relation.relationtype.title)].update(relc) 
+                rel_dict['left-subjecttypes'][str(relation.relationtype.title)].append(relc)
+          
         
         for relation in right_relset:
             reld={}
             # check if relation exists
             if relation.relationtype.inverse not in rel_dict['right_subjecttypes'].keys():
                 # create a new list key field and add to it
-                rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = {}
+                rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)] = []
                 # add to the existing key
             obj=Gbobject.objects.get(id=relation.left_subject_id)
-            reld[obj.title]=obj.get_view_object_url
+            reld['title']=obj.title
+            reld['id']=relation.id
+            reld['url']=obj.get_view_object_url
             if not obj.title in rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)]:
-                 rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].update(reld)
-
-          
+                 rel_dict['right_subjecttypes'][str(relation.relationtype.inverse)].append(reld)
            
 #        print "reldict-=",rel_dict
         relation_set.update(rel_dict['left-subjecttypes'])
@@ -551,6 +557,7 @@ class Gbobject(Node):
         # get all the relations of the object    
         nbh.update(self.get_relations())
         nbh.update(self.get_attributes())
+        nbh['Tags']=self.get_rendered_nbh['Tags']
         # encapsulate the dictionary with its node name as key
         return nbh
 
@@ -613,7 +620,8 @@ class Gbobject(Node):
                                         itemid=item.left_subject.id
                                         flag=0						
                                     getit=Gbobject.objects.get(id=itemid)
-                                    g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":getit.get_view_object_url,"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
+                                    getiturl=getit.get_view_object_url
+                                    g_json["node_metadata"].append({"_id":str(item1.id),"screen_name":item1.title,"title":self.title, "url":getiturl,"refType":item.reftype,"inverse":item.relationtype.inverse,"flag":flag})
                                         
                                         
                                     g_json["relations"].append({"from":predicate_id[key] ,"type":str(key), "value":1,"to":item1.id  })
@@ -636,11 +644,14 @@ class Gbobject(Node):
     def get_label(self,key):
         nbh=self.get_nbh
         list_of_nodes=[]
-        for item in nbh[key]:
-            node = NID.objects.get(id=item.id)
-            node = node.ref
-            list_of_nodes.append(node)
-            return list_of_nodes
+        if not key=='Tags':
+            for item in nbh[key]:
+                node = NID.objects.get(id=item.id)
+                node = node.ref
+                list_of_nodes.append(node)
+                return list_of_nodes
+        else:
+            return nbh[key]
 
 
 
@@ -844,7 +855,18 @@ class Gbobject(Node):
         #get Attributes
         attributes =self.get_attributes()
         nbh['attributes']=attributes
-        nbh['history']=history     	
+        nbh['history']=history
+        #get Tags
+        obtags=self.tags
+        obls=[]
+        nbh['Tags']=[]
+        while obtags:
+            part=obtags.partition(",")
+            if part[0]:
+               if part[0]!=" ":
+                   obls.append(part[0])
+            obtags=part[2]
+        nbh['Tags']=obls
         return nbh
 
 
@@ -991,14 +1013,14 @@ class Gbobject(Node):
                for each in self.in_gbobject_set_of.all():
                    for each1 in each.system_set.all():
                        object_id = each1.id
-               return '/gstudio/group/gnowsys-grp/'+object_id
+               return '/gstudio/group/gnowsys-grp/'+str(object_id)
            elif objectname == "Section":
                for each in self.in_gbobject_set_of.all():
                    for each1 in each.system_set.all():
                        object_id = each1.id
-               return '/gstudio/page/gnowsys-page/'+object_id
+               return '/gstudio/page/gnowsys-page/'+str(object_id)
            elif objectname == "Subsection":
-               return self.get_absolute_url
+               return self.get_absolute_url()
            elif objectname == "Reply":
                tes = self.gettwist_of_response
                systes = tes.getthread_of_twist
@@ -1008,16 +1030,19 @@ class Gbobject(Node):
             # if show != "":                                                                                                                 
             #     return '/gstudio/'+show                                                                                                    
             # else:                                                                                                                          
-            return self.get_absolute_url
+            return self.get_absolute_url()
         else:
             systemtype = ""
             systemtype = self.ref.system.systemtypes.all()[0].title
             if systemtype == "Wikipage":
                 return '/gstudio/page/gnowsys-page/'+str(self.id)
+            elif systemtype == "Collection":
+                return '/gstudio/page/gnowsys-page/'+str(self.id)
+           
             elif systemtype == "Meeting":
                 return '/gstudio/group/gnowsys-grp/'+str(self.id)
             else:
-                return self.get_absolute_url
+                return self.get_absolute_url()
 
  	# def show_systemobjecturl(object_id):
     	# 	search=object_id    

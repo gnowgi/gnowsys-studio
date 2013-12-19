@@ -237,7 +237,7 @@
 		</style>
     <!-- the header lines from grappelli -->
     {% block blockbots %}
-        <meta name="robots" content="NONE,NOARCHIVE" />
+
     {% endblock %}
     <!-- STYLESHEETS -->
     {% block stylesheets %}
@@ -307,7 +307,7 @@
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="cache-control" content="public" />
-    <meta name="robots" content="follow, all" />
+   
     <meta name="language" content="{{ LANGUAGE_CODE }}" />
     <meta name="description" content="{% block meta-description %}Demonstration of the Gstudio Blog application.{% endblock %}" />
     <meta name="keywords" content="{% block meta-keywords %}django, blog, gstudio, {{ objecttype_tags|join:", "}}{% endblock %}" />
@@ -421,6 +421,7 @@ function load(key)
 {
 
 
+/*
 if ( s > 0) {
 var w = 700;
 var p = 122 + "%";
@@ -431,7 +432,11 @@ var w = 700;
 var p = 122 + "%";
 var h = 680;
 var q = 110 + "%";
-} 
+} */
+			var w = 700;
+	   		var p = 122 + "%";
+			var h = 680;
+   			var q = 110 + "%"; 
         fill = d3.scale.category20();
  
   var vis = d3.select("#chart")

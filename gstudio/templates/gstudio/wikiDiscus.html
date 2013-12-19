@@ -1,0 +1,120 @@
+{% load gstudio_tags %}
+{% for each in topic %}
+<h4>
+<a style="text-decoration:none" id="{{ each.id}}" class="titleShowClass">
+<font size ="5" >{{each.title}}</font>
+<img src="/static/gstudio/img/Plus.png" class="img{{ each.id}}">
+<img src="/static/gstudio/img/Minus.png" class="img{{ each.id}}" style="display: none" ></a>
+</h4>
+<div id="twist{{ each.id}}" class="divHide">
+      		Posted on : {{each.creation_date}}
+		by : 
+   		{% for author in each.authors.all %} 
+   			{{author}}
+   		{% endfor %}</br>
+     		<!-- Current rating is <h5>{{ each.rating.get_rating }}</h5> -->
+   	{% autoescape on %}
+		<!-- {% with each.html_content|safe as each_content %} -->
+		<!-- <font size ="3" > {{each_content}} </font> -->
+		<!-- {% endwith %} -->
+	
+	<form  name="response_to_{{each.id}}" id="response_to_{{each.id}}" method="post" action=".">{% csrf_token %}
+                
+    		<input type="hidden" class="reptext" id="topictext{{ each.id }}" name = "reply" style="display:none">
+	<input type="hidden" id="hidden{{ each.id }}" value="{{ each.id }}" name ="hiddenid">
+		 <input type="hidden" id="commentdata{{each.id}}" value="{{each.content_org}}">
+	        <input type="hidden" value={{user.username}} name = "usr">
+    		<input type="hidden" value="{{each.id}}" name = "iden">
+	    	<input type="hidden" value="{{user.id}}" name = "idusr">
+		{% endautoescape%}
+<br/>			{% if user.is_authenticated %}
+		 <!-- <input type="button" class="editcontent" name="{{each.content_org}}"  id="{{each.id}}" value="Edit"> -->
+	
+<!-- start of  release and block the response  of twist -->
+   		{% for author in each.authors.all %} 
+   			{% ifequal author.id  user.id %}
+				{% if each.subject_of.all %}
+						 {% for attribute in each.subject_of.all %}
+						{% ifequal attribute.attributetype.title "release" %}
+							{% ifequal attribute.svalue "true"%}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{each.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{each.id}}','false')">
+							{% else %}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{each.id}}" value="Release Responses" onclick="twistReleaseBlockResponseFunction('{{each.id}}','true')">
+							{% endifequal%}
+						{% endifequal %}
+				{% endfor %}
+				{% else %}
+						 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{each.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{each.id}}','false')">
+				{% endif %}
+			 {% else %}
+			{% if user.is_superuser %}
+				{% if each.subject_of.all %}
+				{% for attribute in twist.subject_of.all %}
+						{% ifequal attribute.attributetype.title "release" %}
+							{% ifequal attribute.svalue "true"%}
+							 <input type="button" class="eachReleaseBlockResponse" id="twistReleaseBlockResponse_{{each.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{each.id}}','false')">
+							{% else %}
+							 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{each.id}}" value="Release Responses" onclick="twistReleaseBlockResponseFunction('{{each.id}}','true')">
+							{% endifequal%}
+						{% endifequal %}
+				{% endfor %}
+				{% else %}
+						 <input type="button" class="twistReleaseBlockResponse" id="twistReleaseBlockResponse_{{each.id}}" value="Block Responses" onclick="twistReleaseBlockResponseFunction('{{each.id}}','false')">
+				{% endif %}
+			{% endif %}
+			{% endifequal %}
+		   {% endfor %}
+<!-- end of  release and block the response  of twist -->
+	
+		
+		 <input type="button" class="editor" id="{{ each.id }}" value="Add Response"/>
+		 <input type="hidden" class="editval" id="edit{{each.id}}" name="edit" value="empty">
+                <input type="button" class="savecontent" id="save{{ each.id }}" value="Save" onclick="topicsaveclick(document.getElementById('hidden{{ each.id }}').value)"><br/>
+              
+	        <input type="submit" class="submitresponse" id="topicsubmit{{ each.id }}" value="Submit"></br>
+			{% endif %}
+		{% ifequal user.id admin_id %}		
+		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete the twist"></br>
+		{% else %}
+   		{% for author in each.authors.all %} 
+   			{% ifequal user.id author.id %}
+		<input class="topicchk" id="chk{{ each.id }}" name="del_topic" type="checkbox" value="delete_topic"/>
+		<input type="submit" class="topicdelete" id="delete{{ each.id }}" value="Delete Discuss"></br>
+			{% endifequal %}
+   		{% endfor %}
+
+		{% endifequal %}
+  
+         
+         </form>
+	
+
+<!--ADDING AND DISPLAY TAG-->
+{#{% addtag each each.id user %}#} <!--problem-->
+
+	<br/>
+        <p>
+	 Responses :
+	 <div id="response{{each.id}}">
+{% if user.is_superuser %}
+         {% show_comment each user.id flag admin_id "true"  %}
+{% else %}
+{% if each.subject_of.all %}
+	 {% for twistattribute in each.subject_of.all %}
+		{% ifequal twistattribute.attributetype.title "release" %}
+		         {% show_comment each user.id flag admin_id twistattribute.svalue  %}
+		{% else %}
+			 {% show_comment each user.id flag admin_id "false"  %}
+		{% endifequal %}
+	{% endfor %}
+{% else %}
+{% show_comment each user.id flag admin_id "true"  %}
+{% endif %}
+{% endif %}
+</div>
+</div>
+
+
+     {% endfor %}
+

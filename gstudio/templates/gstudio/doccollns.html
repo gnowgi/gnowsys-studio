@@ -1,0 +1,46 @@
+{% load gstudio_tags %}
+
+<script type="text/javascript">
+$(".deldoccolln").click(function(){
+        $("#coll").show();
+        $("#coll").css({"margin-top":"40px"});
+        var obid = this.id;
+        r = confirm("Please confirm delete ")
+        if (r==true)
+{
+        $.ajax({
+url: '/gstudio/ajax/deletedoccolln/',
+        data: {obid:obid},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                      },
+success: function(data){
+                $('#docucollections').html(data);
+                     },
+        complete: function(){
+$("#ajax_load_image").hide();
+                $("#content").css({"opacity":"",})
+                  }
+});
+
+  }
+});
+</script>
+
+{% get_document_collections as col %}
+
+{% if col %}
+<font size="4" color="black">Document Collections</font><br/>
+{% for key,value in col.items %}
+<a href="/gstudio/resources/documents/show/{{key}}/">{{value}}&nbsp;;</a>
+{% if user.is_authenticated %}
+<a class="deldoccolln" id="{{key}}" value="{{key}}" title="delete {{value}}">
+<img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg" width = 8px; style="vertical-align: super;"/>
+</a>
+{% endif %}
+
+{% endfor %}
+
+
+{% endif %}

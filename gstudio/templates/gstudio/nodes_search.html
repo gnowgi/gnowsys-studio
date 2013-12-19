@@ -11,16 +11,24 @@
 {% endblock %}
 
 {% block content %}
-<h1>{% trans "Search results for" %} {% if pattern %}'{{ pattern }}'{% endif %}</h1>
+<script type="text/javascript" >
+$(window).load(function(){ 
+$("#content").css({"width": "600px"});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ $("#graphcss").hide();   
+  });
+
+</script>
+<h1>{% trans "Search results  for" %} {% if pattern %}'{{ pattern }}'{% endif %}</h1>
 
 {% if error %}
 <p class="error">{{ error }}</p>
 {% endif %}
 
 {% if object_list %}
-<p class="success">
-  {% blocktrans count paginator.count as nodetype_count %}{{ nodetype_count }} nodetype found{% plural %}{{ nodetype_count }} nodetypes found{% endblocktrans %}
-</p>
+
 {% endif %}
 
 {% for object in object_list %}
@@ -51,6 +59,6 @@
 </div>
 
 {% if is_paginated %}
-  {% gstudio_pagination page_obj %}
+   <br/> <font size="5">{% gstudio_pagination page_obj %}</font>
 {% endif %}
 {% endblock %}

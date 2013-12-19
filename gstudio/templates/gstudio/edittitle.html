@@ -2,8 +2,11 @@
 jQuery(document).ready(function($) { 
 $("#titleeditcontent").click(function(){
 document.getElementById('texttagtitle').style.visibility="visible";
-$("#texttagtitle").val($("#titleeditortext").val());
+$("#texttagtitle").val($("#fonttitleid").text());
+//$("#texttagtitle").val($("#titleeditortext").val());
 document.getElementById('titlesave').style.visibility="visible";
+$("#texttagtitle").show();
+$("#titlesave").show();
 $("#titleeditcontent").hide();
 });
 $("#titlesave").click(function(){
@@ -16,11 +19,14 @@ $.ajax({
 url: '/gstudio/resources/images/edittitle/',
 <!-- type:"POST", -->
 data: {title:decode_data,titleid:{{objectid}}},
-success: function(){
-document.location.reload(true)
+success: function(data){
+$("#fonttitleid").html(data);
+//document.location.reload(true)
 }
 });  
-
+$("#texttagtitle").hide();
+$("#titlesave").hide();
+$("#titleeditcontent").show();
 });
 });
 </script>

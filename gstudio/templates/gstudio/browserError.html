@@ -1,0 +1,37 @@
+{% extends "gstudio/base.html" %}
+{% block DetectBrowser %}
+{% endblock %}
+{% block content %}
+<div id="errorContent">
+<center><img src="/static/gstudio/img/home/Crystal_Clear_app_error.png"></img></center>
+<b> nroer.gov.in</b> requires an up-to-date web browser. Please take a moment to download
+<br/>
+<center>
+<table>
+  <tr>
+    <td> 
+      <a href="http://google.com/chrome/">
+      <img src="/static/gstudio/img/home/Mozilla_Firefox_3.5_logo_256.png" width="80px"></img>
+      <div>Chrome</div>
+      </a>
+    </td>
+    <td>
+      <a href="http://mozilla.org/firefox/">
+	<img src="/static/gstudio/img/home/google-chrome-logo.png" width="80px"></img>
+	<div>Firefox</div>
+      </a>
+    </td>
+    <td>
+      <a href="http://apple.com/safari/">
+	<img src="/static/gstudio/img/home/safari-logo.png" width="80px"></img>
+	<div>Safari</div>
+      </a>
+    </td>
+  </tr> 
+</table> 
+</center>
+<br/>    
+<div> 
+Otherwise,<a href="/proceed"> proceed </a> at your own risk.
+</div>
+{% endblock %}

@@ -1,5 +1,4 @@
-
-# Copyright (c) 2011,  2012 Free Software Foundation
+ # Copyright (c) 2011,  2012 Free Software Foundation
 
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU Affero General Public License as
@@ -19,18 +18,17 @@
 import os
 TIME_ZONE = None
 gettext = lambda s: s
-direxist=os.path.isdir("/tmp/beta/")
+direxist = os.path.isdir("/tmp/beta/")
 if not direxist:
     os.system("mkdir /tmp/beta/")
+
 DEBUG = True
 TEMPLATE_DEBUG78 = True
-#INTERNAL_IPS = ('127.0.0.1','158.144.44.212','158.144.42.67')
-#DEBUG_TOOLBAR_CONFIG = { 'INTERCEPT-REDIRECTS':False,}
-DATABASES = {'default':
+DATABASES = {
+    'default':
              {'ENGINE': 'django.db.backends.sqlite3',
               'NAME': os.path.join(os.path.dirname(__file__), 'demo.db')}
              }
-
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static'
 RECAPTCHA_PUBLIC_KEY = '6LcBr9USAAAAAJNHxpA5_2nQK9JnKQCU3kTUstEK'
@@ -45,18 +43,19 @@ MEDIA_ROOTNEW = os.path.join(os.path.dirname(__file__), '../demo/media')
 #MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '../gstudio/static')
 PYSCRIPT_URL_GSTUDIO = os.path.join(os.path.dirname(__file__), '../gstudio/createhtml.py')
 PYSCRIPT_URL_OBJECTAPP = os.path.join(os.path.dirname(__file__), '../objectapp/createhtml.py')
-HTML_FILE_URL=os.path.join(os.path.dirname(__file__),'../demo/static/grappelli/file/')
-VIDEO_PANDORA_URL = os.getenv("HOME")+"/.ox/client.json"
 FILE_URL = os.path.join(os.path.dirname(__file__), '/tmp/beta/')
+HTML_FILE_URL = os.path.join(os.path.dirname(__file__),'../demo/static/grappelli/file/')
+MATHJAX_FILE_URL = os.path.join(os.path.dirname(__file__),'../demo/static/gstudio/js/MathJax.js')
+VIDEO_PANDORA_URL = os.getenv("HOME")+"/.ox/client.json"
 FILE_UPLOAD_MAX_MEMORY_SIZE= 524288000
 JPEG_ROOT = None
 STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(__file__),'grappelli/static'),
+    os.path.join(os.path.dirname(__file__), 'grappelli/static'),
 )
 
 GSTUDIO_UPLOAD_TO = 'static/img/'
 
-ADMIN_MEDIA_PREFIX = STATIC_URL 
+ADMIN_MEDIA_PREFIX = STATIC_URL
 
 SECRET_KEY = 'jo-1rzm(%sf)3#n+fb7h955yu$3(pt63abhi12_t7e^^5q8dyw'
 
@@ -78,6 +77,8 @@ ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'webmaster@beta.metastudio.org'
 LOGIN_REDIRECT_URL = '/'
+EMAIL_SUBJECT_PREFIX='[beta-error-reporting]'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # fourstore related
 FOURSTORE_KBNAME = "demo"  # Name of 4store knowledge base
@@ -102,6 +103,7 @@ LANGUAGES = (('en', gettext('English')),
              ('zh_CN', gettext('Simplified Chinese')),)
 
 MIDDLEWARE_CLASSES = (
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,7 +112,41 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'pagination.middleware.PaginationMiddleware',
+   # 'django.middleware.cache.UpdateCacheMiddleware',
+   # 'django.middleware.common.CommonMiddleware',
+   # 'django.middleware.cache.FetchFromCacheMiddleware',
+    'johnny.middleware.LocalStoreClearMiddleware',
+    'johnny.middleware.QueryCacheMiddleware',
+
     )
+
+#Memcached settings
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
+# CACHE_MIDDLEWARE_SECONDS=300
+# CACHE_MIDDLEWARE_KEY_PREFIX='beta'
+
+CACHES = {
+   'default': {
+       'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+       'BACKEND':'johnny.backends.memcached.MemcachedCache',
+       'LOCATION': ['127.0.0.1:11211'],
+       'TIMEOUT': 500,
+       'BINARY': True,
+       'JOHNNY_CACHE':True,
+       #'OPTIONS': { # Maps to pylibmc "behaviors"
+       #   'tcp_nodelay': True,
+       #    'ketama': True
+       #}
+   }
+}
+
+JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_beta'
+
 
 ROOT_URLCONF = 'demo.urls'
 
@@ -163,6 +199,7 @@ INSTALLED_APPS = (
     'pagination',
     'notification',
     'fixture_magic',
+#    'debug_toolbar',
     # Uncomment the south entry to activate south for database migrations
     # Please do install south before uncommenting
     # command: sudo pip install south 
@@ -170,15 +207,18 @@ INSTALLED_APPS = (
     )
 
 
-#if DEBUG:
-#    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
 
 from gstudio.xmlrpc import GSTUDIO_XMLRPC_METHODS
 XMLRPC_METHODS = GSTUDIO_XMLRPC_METHODS
+
 try:
     from local_settings import *
     #print "Local settings applied"
 except:
     #print "Default settings applied"
     pass
+
+

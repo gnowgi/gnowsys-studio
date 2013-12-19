@@ -1,211 +1,90 @@
-
 {% extends "gstudio/base.html" %}
-{% load i18n comments gstudio_tags %} 
+{% load i18n comments gstudio_tags %}
 {% load adminmedia grp_tags %}
 {% load gstudio_tags %}
 {% load pagination_tags %}
 {% load i18n objectapp_tags %}
 {% load tagging_tags comments i18n %}
 {% block title %}{{ page_ob.title }}{% endblock %}
-<!-- {% load i18n %} -->
 {% block content %}
 <style>
 <link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
 </style>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" >
-var availableTags = [];
-var arr=[];
-var arr1=[];
-$.merge(availableTags, {% get_add_tag %})
-var pagedrawer = [];
-$.merge(pagedrawer, {% get_page_drawer %})
-var length = pagedrawer.length;
-
-      $(window).load(function() {
-   $("#content").css({
-    "width": "600px",});
-   $("#graphcss").css({
-    "margin-left": "450px",
-    });});
-   //$("#graphcss").css({
-   // "margin-left": "-300px",
-    //"margin-right": "-200px",
-    //"margin-top": "-100px",});
-//	});
-
+<script src="/static/gstudio/js/tabcontent.js" type="text/javascript"></script>
+<link href="/static/gstudio/css/tabcontent.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" >
 $(window).load(function() {
- //$("#chart").hide();
- });
+      $("#content").css({
+    "width": "100%",});});
+function getGraph()
+	{
+
+		$("#view2").html("<div id='chart'></div>");
+                 load({{object.id}}); 
+		$("li").prop("onclick", null);
+	}
+     
 $(window).load(function() {
- 
  $(".savepagecontent").hide();
  $("#saveseccontent").hide();
  $("#savesubsec").hide();
  $("#savesubsec1").hide();
  $(".submitresponse").hide();
  $(".saveseccontent").hide();
+ $(".savecontent").hide(); 
  $(".savesubsec").hide();
  $(".submitsubsec").hide();
  $(".pagedit").hide()
 $(".savesubsec1").hide();
  $(".submitsubsec1").hide();
-      $("#content").css({
-      "width": "600px",});
 
-  });
+<!--Loading data for Resources by Ajax!-->
+$.ajax({
+	url: '/gstudio/ajax/getConceptPageResources/',
+	type: 'POST',
+	data: {objectid:{{object.id}},csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+       $("#view5").append('<img id="ajax_image_custom" width="50" style="padding-left:275px" src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif">');
+                              },
+	success: function(result){
+		$("#view5").html(result);
+		
+	     },
+        complete: function(){
 
+		  }
+	});
+<!--Loading data for Related Topic by Ajax!-->
+$.ajax({
+	url: '/gstudio/ajax/getConceptPageGraphText/',
+	type: 'POST',
+	data: {objectid:{{object.id}},csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+        $("#view4").append('<img id="ajax_image_custom" width="50" style="padding-left:275px"  src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif">');      
+                              },
+	success: function(result){
+
+		$("#view4").html(result);
+		
+	     },
+        complete: function(){
+
+		  }
+	});
+
+ });
 </script>
-
-
-{% autopaginate section 1 %}
-   <!-- <input type="button" value="Home" onClick="location.href='/gstudio/user/wikipage/{{user.username}}';"> -->
-   <h1 style=""><font id="fonttitleid" >{{ page_ob.title }} </font> {% if user.is_authenticated %} {% edit_title page_ob.id page_ob.title %} {% endif %}</h1> 
-  Wikipage posted on : {{page_ob.creation_date}}
-		by {% for author in page_ob.authors.all %} 
-   			{{author}}
-   		{% endfor %}<!-- &nbsp;[ <a href="{{ page_ob.get_absolute_url }}" title="{{ page_ob.title }}" rel="bookmark">Show Graph</a> ] &nbsp;</br></br> -->
-</br>
-<b>Versions:&nbsp;</b>
-        {% for sid in page_ob.ref.get_ssid  %}
-	   
-	      
-	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ page_ob.title }} {{ page_ob.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
-	 
-        {% endfor %}
-</br></br>
-	{% if user.is_authenticated %}
-
-	 <input type="button" id="htmlexport" value="Export as HTML"/>
-       	 <input type="button" class="addtodrawer" value="Create/Edit Collection" name="addtodrawer"/>
-  	 <br>
-	 {% endif %}
-<div id="coll1">
-
-</div>        
-    <div id="collection" style="display:none;">
-
-	<table style="width:370px" id="drawertable">
-   	 <tr>
-     	  <td style='width:160px;'>
-           	 <b>Pages:</b><br/>
-         	  <select multiple="multiple" id='lstBox1'>
-                  {% for key,value in test1.items %}
-	            <option id={{key}}>{{value}}</option>
-	     
-                  {% endfor %}
-          	    
-           	</select>
-   	 </td>
-   	 <td style='width:50px;text-align:center;vertical-align:middle;'>
-       <input type='button' id='btnUp' value ='  ^  '/><br/> 
-       <input type='button' id='btnRight' value ='  >  '/><br/>
-       <input type='button' id='btnLeft' value ='  <  '/><br/>
-       <input type='button' id='btnDown' value ='  v  '/><br/> 
-
-    </td>
-    <td style='width:160px;'>
-        <b>Added to Drawer: </b><br/>
-        <select multiple="multiple" name="lstb2" id='lstBox2'>
-          {% for each in test %}
-	     <option id={{each.id}}>{{each.title}}</a></option>
-	  {% endfor %}
-	  </option>
-        </select>
-    </td><br>
-    </tr>
-    <tr>
-    <td>
-      <input type="button"  value="Reset" id="resetdrawer"/>
-      <input type="button"  value="Submit" id="lstvalue"/>
-      <input type="button"  value="Cancel" id="cancel"/>
       
-      
- </td>
-    
-</tr>
-</table>
-</div>
 
-   {% with page_ob.html_content|safe as page_ob_content %}
-   <font size="3"> 
-                {{page_ob_content}}</font>
-   {% endwith %}
-	{% if user.is_authenticated %}
-	<form method="post" action="">{% csrf_token %}
-	<input type="hidden" class="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
-	<input type="hidden" class="editval" name="edit" value="empty"/>
-	<input type="hidden" value="{{page_ob.id}}" name = "iden" id="ptitle">
-	<input type="hidden" value="{{page_ob.title}}">
-
-	<input type="hidden" value="{{user.username}}" name ="usr">
-	<input type="hidden" value="{{user.id}}" name = "idusr">
-	<input type="button" class="editpagecontent" name="{{page_ob.content_org}}" value="Edit"/>
-	<input type="button" class="savepagecontent" name="{{page_ob.id}}" value="Save"/></br>
-	<input type="submit" class="pagedit" value="Submit"/>
-       </form>
-        {% endif %}
-	<div id="coll">
-	  
-	    {% for each in test %}
-	      <li> <a href={{each.get_view_object_url}}> {{each.title}}</a></li>
-	    {% endfor %}
-	  
 	
-	  </div>
-         <input id="drawer{{page_ob.id}}"  class="getdrawer" name="texttags" style="visibility:hidden">
-	
-	 <input type="button" id="showcollection" value="Show Drawer" style="visibility:hidden"/>
-       	 <br>
-	<script type="text/javascript" >
-	$(document).ready(function(){
-        $( "#drawer{{page_ob.id}}" ).autocomplete({
-	source: pagedrawer
-        });
- 	});
-	</script>
-	<!--ADDING AND DISPLAY TAG-->
-	{% addtag ot page_ob.id user %}
 
-	<!--ADDING PRIOR PAGE-->
-	{% addpriorpost page_ob.id user %}
+  <script type="text/javascript" >
 
-	<!-- Add relations for a page -->
-        {% if user.is_authenticated %}
-	{% add_res_relation page_ob %}
-	<br/>
-	{% endif %}
+	$(document).on('click',"#lstvalue",function(){
+	//$("#lstvalue").live('click',function(){
 
-
-	 {% ifequal document.rating.get_rating 0 %}
-
-	 <font color = 'black'>Current rating is: &nbsp;<font > No rating yet </font></font>
-	 {% else %}
-	 <font color = 'black'>Average Current rating is: </font><h4>{{ page_ob.rating.get_rating }}</h4>
-	 <font color = 'black'>Total Number of votes is:  &nbsp;<font ><b>{{ page_ob.rating_votes }}</b></font> </font>
-	 {% endifequal %}
-	 <br>
-	 {% if user.is_authenticated %}
-	 <form method="post" action="">
-	   {% csrf_token %}
-	   <input name="star1" type="radio" value=1 class="star"/>
-	   <input name="star1" type="radio" value=2 class="star"/>
-	   <input name="star1" type="radio" value=3 class="star"/>
-	   <input name="star1" type="radio" value=4 class="star"/>
-	   <input name="star1" type="radio" value=5 class="star"/>
-     </br>
-     <input type="hidden" name="iden" value={{page_ob.id}}>
-     <input type="submit" value="Rate it!!!">
-	 </form><br>
-	
-	 {% endif %}
-	
- <script type="text/javascript" >
-	
-	$(document).ready(function(){
-	$("#lstvalue").click(function(){
-	
 	$("#collection").hide();
 	opts = lstBox2.options, len = opts.length;
 	if (len == 0){
@@ -214,25 +93,27 @@ $(".savesubsec1").hide();
 	
 	}
 	else{
+        arr1=[];
 	for (var i = 0; i < len; i++) {
 	      arr[i] = "'"+opts[i].value+"'";
 	      arr1[i]=opts[i].id;
 			    }}
 	 var abc1=arr1.join(',');
+	 
 	 	      
 	 if (abc1){
 	 var abc=abc1;
 	 
 	 }
 	 else{
-	 var abc="null";
+	 var abc=null;
 	 }
 
 	 var wtitle= document.getElementById("ptitle").value;
-	  
+	 var collection= document.getElementById("iscollection").value; 
 			      $.ajax({
        			      url: '/gstudio/ajax/draweradd/',
-       			      data:{'title':abc,'wtitle':wtitle},
+       			      data:{'title':abc,'wtitle':wtitle,'collection':collection},
                               beforeSend: function() {
                               $("#ajax_load_image").show();
                             
@@ -243,6 +124,8 @@ $(".savesubsec1").hide();
        			      success: function(data) {
 	                      $("#coll").html(data);
 			      $(".addtodrawer").show();
+			      $("#chart").text("");
+		  	      fgraph();
        			      
        			    },
                              complete: function(){
@@ -253,7 +136,8 @@ $(".savesubsec1").hide();
        });
 			      
 	 });
-	 $("#htmlexport").click(function(){
+	 $(document).on('click',".htmlexport",function(){
+	//$(".htmlexport").live('click',function(){	 
 	 
 	 var ptitle= document.getElementById("ptitle").value;
 	
@@ -277,8 +161,6 @@ $(".savesubsec1").hide();
 	  else{
 	  var abc="null";
 	  }
-
-			      
 	 $.ajax({
 	 url: '/gstudio/ajax/htmlexport/',
 	 data:{'ptitle':ptitle,'title':abc},
@@ -297,147 +179,323 @@ $(".savesubsec1").hide();
          $("#content").css({"opacity":"",})
 			      
 	  }       
-	 
-	 });
-	 
-	 });
+	 	 });
 	 });
 			      
 	</script>
-      
-      
+<script type="text/javascript" >
+//This script is about fold and unfold twist of the loom
+$(window).load(function() {
+$(".divHide").hide();
+});
+$(document).ready(function() {
+$(".titleShowClass").live("click",function(){
+//$(this).attr('class','titleHideClass');
+var divid=$(this).attr("id");
+$(".img"+divid).toggle();
+$("#twist"+divid).slideToggle('slow');
+ });
+});
+</script>
+<!-- Discus script !-->
 
-		{% if user.is_authenticated %}
-	<form method="post" action=".">{% csrf_token %}
-	<!--<input type="button" id="newsection1"  value="Add a new Section" onClick="location.href='sectionadd1/{{page_ob.id}}';">-->
-	<input type="hidden" id="pageid1" value="{{page_ob.id}}"/>
-        </form>
-	{% endif %}
-</br>   {% autoescape off %}
+<script type="text/javascript" >
+function wikiDiscus()
+{
+ var usr=document.getElementsByName('usr')[0].value;
+ var idusr=document.getElementsByName('idusr')[0].value;
+ var subject=document.getElementsByName('subject')[0].value;
+ var pageid1=document.getElementById('pageid1').value
+ var postUrl='/gstudio/topicAddtoWiki/'+pageid1
+	$.ajax({
+        url: postUrl,
+        type: 'POST',
+        data: {'usr': usr,'idusr':idusr,'subject':subject,'admin_id':{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}'},
+	beforeSend: function() {
+              $("#ajax_load_image").show();
+	       $("#btnDiscus").hide();
+              $("#content").css({"opacity":"0.1",}) },
+        success: function(data){
+		alert("sucess"); 
+		$('#view3').html(data);
 
-   {% for each in section %}
-      	<h4><font size="6">{{each.title}} &nbsp;[ <a href="{{ each.get_absolute_url }}" title="{{ each.title }}" rel="bookmark">Show Graph</a> ]</h4></font>
-	  Posted on : {{each.creation_date}}
-	  by {% for author in each.authors.all %} 
-	  {{author}}
-	  {% endfor %}</br>
-     	{% ifequal each.rating.get_rating 0 %}
-	<h5> Not yet rated </h5>
-	{% else %}
-	Current rating is <h5>{{ each.rating.get_rating }}</h5>
-	{% endifequal %}
-   	{%autoescape on%}
-	 {% with each.html_content|safe as each_content %}
-	<font size="3"> 
-		{{each_content}}</font>
-	{% endwith %}
-	{% endautoescape%}
-		{% if user.is_authenticated %}
-	<form method="post" action="">{% csrf_token %}
-	<input type="hidden" class="reptext" name = "replytosection" id="sectionreply" style="visibility:hidden;"/></br>
-	<input type="hidden" value="{{each.id}}" name = "iden">
-	<input type="hidden" value="{{user.username}}" name ="usr">
-	<input type="hidden" value="{{user.id}}" name = "idusr">
-	<input type="hidden" class="editval" name="edit" value="empty"/>
-	<input type="button" class="editseccontent" name="{{each.content_org}}" value="Edit"/>
-	<input type="button" class="saveseccontent" name="{{each.id}}" value="Save"/>
-	<input type="submit" class="submitresponse" value="Submit"/>
-       </form>
-	{% endif %}
-	  <br>
+		},
+	complete: function(){
+		alert("complete");
+		$("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",});
+		$(".divHide").hide();
+		$(".submitresponse").hide();
+		$(".savecontent").hide();},
+
+                
+	//	location.reload(true);}
+    });       
 	
-	<!--ADDING AND DISPLAY TAG-->
-	{% addtag each each.id user %}
-     
+}
+</script>
 
-		{% if user.is_authenticated %}
-	<form method="post" action=".">{% csrf_token %}<br/>
-        	<!-- Create Subsection:-->
-	        <input type="hidden" name = "replytosection" class="reptext" style="visibility:hidden;"/></br>
-    		<input type="hidden" value="{{each.id}}" name = "iden">
-		<input type="hidden" value="{{user.username}}" name ="usr">
-	    	<input type="hidden" value="{{user.id}}" name = "idusr">
-		<!--<input type="button" value="Create Subsection" class="createsubsection">-->
- 		<input type="hidden" value="empty" name = "edit" class="editval"/>
+<script type="text/javascript" >
+function notifedtdel()
+{
 
-		<input type="button" value="save" class="savesubsec" name="{{each.id}}">
-		<input type="submit" class="submitsubsec" value="Submit" ></br>
 
-	       </br></br><input name="del_section" class="chkbox" type="checkbox" value="delete_section"/> 
-  		<input type="submit" class="deletesec" value="Delete the section"></br>
-		<div id="rating">
-         	Do you wanna rate it ? </br>
-		<input name="star1" type="radio" value=1 class="star"/>
-		<input name="star1" type="radio" value=2 class="star"/>
-		<input name="star1" type="radio" value=3 class="star"/>
-		<input name="star1" type="radio" value=4 class="star"/>
-		<input name="star1" type="radio" value=5 class="star"/>
-		<!--topic id and user id hidden fields-->
+urlnot="/gstudio/group/notify/"+activity+"/"+not_obj+"/{{user.id}}"
+
+subactivity(urlnot,activity);
+}
+
+function subactivity(urlnot,activity)
+{
+      if(activity=='added_response')
+      {
+        submitform(activity);
+      }
+
+      if (activity != 'undefined')
+      {
+
+      $.ajax({
+       url: urlnot,
+       type:'GET',
+      beforeSend: function(){
+      $("#ajax_load_image").show();
+      
+      $("#content").css({"opacity":"0.1",})
+      
+      },
+      
+       success: function(){
+
+          submitform(activity);
+       },
+      complete: function(){
+      
+      }       
+     });
+      }
+      else
+      {
+      submitform(activity);
+      }
+}
+
+ function submitform(activity)
+{
+
+
+if (activity=='edited_thread')
+{
+
+document.forms["threadform"].submit();
+}
+if(activity=='edited_twist')
+{
+
+
+$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='added_response')
+{
+add_response_ajax();
+//$("#topicsubmit"+submtobj).trigger('click');
+}
+if(activity=='deleted_response')
+{
+
+ document.forms["response"].submit();
+}
+}
+
+
+
+function add_response_ajax()
+{
+
+var response_content = $("#response_to_"+submtobj+" input[name=reply]").val();
+
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:submtobj,userid:{{user.id}},username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+submtobj).html(data);
 		
-		<input type="submit" value="Rate it!!!">
-		</div>
-         </form>
-	{% endif %}
-	</br>
-        <p>
-	 Subsections :
-	<!-- <div id="main"> -->
-	<!-- <div id="sidetree"> -->
-	<!-- <div class="treeheader">&nbsp;</div> -->
- 	<!-- <a href="?#">Expand All</a> </div> -->
-	<!-- <ul class="treeview" id="tree"> -->
- 	<!-- <li class="expandable"><div class="hitarea expandable-hitarea"></div>Expand the replies</li></ul></div> -->
-        {% show_commentpage each user.id flag1 admin_id attribute  %}
-     {% endfor %}
-{% endautoescape %}
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+		isResponse=false;
+		  }
+}); 
+}
+
+function add_sub_response_ajax(responseid)
+{
+
+var response_content = $("#sub_response_to_"+responseid+" input[name=reply]").val();
 
 
-{% block nodetype-comments %}
-<div id="comments" class="">
-  <h5>{% trans "Comments" %}</h5>
-  {% with page_ob.comments as comment_list %}
-  {% if comment_list.count %}
-  <ol id="comment-list" class="span-15 last">
-    {% for comment in comment_list %}
-    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in page_ob.authors.all %} post-author{% endif %} span-15 last">
-      <div class="span-2">
-<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
-      </div>
-      <div class="comment-body span-13 last">
-<div class="comment-author span-13 last">
-{% if comment.url %}
-<a href="{{ comment.url }}" class="fn url" title = "{{ comment.user_name }}">{{ comment.user_name }}</a>
-{% else %}
-{{ comment.user_name }}
-{% endif %}
-{% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
-</div>
-<div class="span-13 last">
-{{ comment.comment|linebreaks }}
-</div>
-      </div>
-    </li>
-    {% endfor %}
-  </ol>
-    {% if not page_ob.comments_are_open %}
-  <p>{% trans "Comments are closed." %}</p>
-    {% endif %}
-  {% else %}
-    {% if page_ob.comments_are_open %}
-  <p>{% trans "No comments yet." %}</p>
-    {% else %}
-  <p>{% trans "Comments are closed." %}</p>
-    {% endif %}
-  {% endif %}
-  {% endwith %}
-</div>
-{% endblock %}
-{% if user.is_authenticated %}
-<div class="commentForm span-16 last">
-  {% render_comment_form for ot %}
-</div>
-{% endif %}
-{% paginate %}
+$.ajax({
+	url: '/gstudio/ajax/addresponsestotwist/',
+	type: 'POST',
+	data: {response_content:response_content,twistid:responseid,userid:"{{user.id}}",username:"{{user.username}}",admin_id:{{admin_id}},csrfmiddlewaretoken: '{{ csrf_token }}' },
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		$('#response'+responseid).html(data);
+		
+		},
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	        $(".editor").show();
+	    	$(".topicchk").show();
+	    	$(".topicdelete").show();
+	    	$(".editcontent").show();
+	    	$(".commenteditor").show();
+            	$(".chkdel").show();
+            	$(".submitdelete").show();
+            	$(".rating").show();
+                isSubResponse=false;
+		$('#response'+responseid).focus();
+		window.scroll($('#response'+responseid).offset().left,$('#response'+responseid).offset().top-250);
 
-{% endblock %}
+		  }
+});  
+}  
 
+
+function Subscribeuser()
+{
+if (confirm("{{user.username}},Do you want to Subscribe to get all alerts in  your mail for this page"))
+{
+
+url = "/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}"
+
+<!--alert(url);-->
+<!-- $.get(url,function(){ -->
+<!-- alert("notified user"); -->
+<!-- }); -->
+$.ajax({
+       url: '/gstudio/group/notify/{{meet_ob.id}}/{{user.id}}',
+       success: function(){
+              <!--alert('notified user');-->
+       }
+     }); 
+$("#sub2").val("UnSubscribe");
+$("#sub2").attr("onclick","UnSubscribeuser()");
+}
+}
+
+
+// javascript for release and block the response  of twist
+function twistReleaseBlockResponseFunction(twistid,activity)
+{
+$.ajax({
+	url: '/gstudio/ajax/releaseBlockResponseOfTwist/',
+	type: 'POST',
+	data: {threadTwistid:twistid,twistActivity:activity,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        beforeSend: function() {
+              $("#ajax_load_image").show();
+              $("#content").css({"opacity":"0.1",})
+                              },
+	success: function(data){
+		if (activity == "true"){
+			document.getElementById('twistReleaseBlockResponse_'+twistid).value="Block Responses";
+			document.getElementById('twistReleaseBlockResponse_'+twistid).setAttribute("onclick","twistReleaseBlockResponseFunction("+twistid+",'false')");
+		}
+		else{
+			document.getElementById('twistReleaseBlockResponse_'+twistid).value="Release Responses";
+			document.getElementById('twistReleaseBlockResponse_'+twistid).setAttribute("onclick","twistReleaseBlockResponseFunction("+twistid+",'true')");
+			
+			}
+
+			     },
+        complete: function(){
+                $("#ajax_load_image").hide();
+		$("#content").css({"opacity":"",})
+	  }
+});
+}
+
+</script>
+
+<!-- Discus Script closed !-->
+
+ <h2 style=""><font id="fonttitleid" >{{ page_ob.title }} </font> {% if user.is_authenticated %} {% edit_title page_ob.id page_ob.title %} {% endif %}</h2> 
+ {% if user.is_authenticated %}
+     {% if status %}
+  
+   <label id="status"><input type="checkbox">Public</label><br>
+     {% endif %}
+     {% endif %}
+  Wikipage posted on : {{page_ob.creation_date}}
+		by {% for author in page_ob.authors.all %} 
+   			{{author}}
+   		{% endfor %}
+</br>
+<b>Versions:&nbsp;</b>
+        {% for sid in page_ob.ref.get_ssid  %}
+	   
+	      
+	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ page_ob.title }} {{ page_ob.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
+	 
+        {% endfor %}
+
+
+<div style="width: 100%; margin: 0 auto; padding: 0px 0 0px; font: 1.0em arial;">
+        <ul class="tabs" persist="true">
+	    <li>  <a href="#" rel="view1">Text</a></li>
+            <li onclick="getGraph();"><a href="#" rel="view2">Graph</a></li>
+	    <li>  <a href="#" rel="view3">Discuss</a></li>
+             <li><a href="#" rel="view4">Related Topic</a></li>
+            <li><a href="#" rel="view5">Resources</a></li>
+            <li><a href="#" rel="view6">Comments</a></li>
+       </ul>
+
+
+<!--<div class="tab-container">!-->
+<div class="tabcontents">
+             <div id="view1" class="tabcontent">
+               {% include "metadashboard/test1.html"%}
+	     </div>
+	     
+	     <div id="view2" class="tabcontent">
+	       <div id="chart"></div>
+	     </div>  
+	     <div class="tabcontent" id="view3">
+	       {% if not topic %}
+		 {% if user.is_authenticated %}
+	       <p>No discus page yet created Click <input type="button" id ="btnDiscus" value="here" onclick="wikiDiscus()"/> to create Discussion</p>
+		  {% endif %}	
+	       {% endif %}
+	       {% include "gstudio/wikiDiscus.html" %}
+	     </div>
+	
+	     <div id="view4" class="tabcontent">
+	     </div>
+	     <div id="view5" class="tabcontent">
+	     </div>  
+	     <div id="view6" class="tabcontent">
+               {% include "metadashboard/wikicomment.html"%}
+	     </div>		
+	     		
+</div>
+<div class="clear"> 
+</div>			
+{% endblock%}

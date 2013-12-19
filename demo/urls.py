@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.conf.urls.defaults import url
 from django.conf.urls.defaults import include
 from django.conf.urls.defaults import patterns
+from django.views.generic.simple import direct_to_template
 
 from gstudio.sitemaps import TagSitemap
 from gstudio.sitemaps import NodetypeSitemap
@@ -31,7 +32,7 @@ from objectapp.sitemaps import GbobjectSitemap
 # import gstudio.regbackend
 from gstudio.forms import *
 from registration.views import register
-from views import home_view, more_view
+from views import home_view, more_view, google_view, bing_view,static_page
 
 
 admin.autodiscover()
@@ -44,11 +45,15 @@ urlpatterns = patterns(
      {'url': '/home/'}),
     url(r'^home/', home_view),
     url(r'^more/',more_view),
+    url(r'^browserError/', direct_to_template, {'template': 'gstudio/browserError.html'}),
     url(r'^nodetypes/', include('gstudio.urls')),
     url(r'^gstudio/', include('gstudio.urls')),
     url(r'^objects/', include('objectapp.urls')),
- 
+    url(r'^tagclouds/',include('gstudio.urls.tagclouds')),
     url(r'^comments/', include('django.contrib.comments.urls')),
+   ###google verification 
+    url(r'^google74cffa303b94cfe6.html/',google_view), 
+    url(r'^BingSiteAuth.xml/',bing_view), 
     #URL for XMLRPC
     url(r'^xmlrpc/$','django_xmlrpc.views.handle_xmlrpc'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
@@ -57,13 +62,16 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^objects/admin/', include(admin.site.urls)),
     url(r'^nodetypes/admin/', include(admin.site.urls)),
+    url(r'^browsecollection/','gstudio.views.browseCollection.browseCollection'),
     url(r'^grappelli/', include('grappelli.urls')),
+    url(r'^notification/',include('notification.urls')),
     url(r'^accounts/register/$', register, {'backend': 'gstudio.regbackend.MyBackend','form_class': UserRegistrationForm}, name='registration_register'),
 
     url(r'^accounts/', include('registration.urls')),
 
     url(r'^$', 'django.views.generic.simple.redirect_to',
             { 'template': 'index.html' }, 'index'),
+    url(r'^(?P<page_alias>.+?)/$', static_page),
     )
 
 sitemaps = {'tags': TagSitemap,

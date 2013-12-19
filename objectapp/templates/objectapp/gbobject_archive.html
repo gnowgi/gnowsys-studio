@@ -25,6 +25,16 @@
 {% block title %}{% trans "Latest gbobjects" %}{% endblock %}
 
 {% block content %}
+<script type="text/javascript" >
+$(window).load(function(){ 
+$("#content").css({"width": "600px"});});
+$(window).load(function() {
+ $("#chart").hide();});
+$(window).load(function() {
+ $("#graphcss").hide();   
+  });
+
+</script>
 {% get_featured_gbobjects 5 "objectapp/tags/slider_gbobjects.html" %}
 {{ block.super }}
 {% endblock %}

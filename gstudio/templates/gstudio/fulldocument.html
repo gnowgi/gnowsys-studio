@@ -19,13 +19,13 @@ $(window).load(function() {
   });
 jQuery(document).ready(function($) {
     $("#editcontent").click(function(){
+        $(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
         isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
-	 $("#gnoweditor").val($("#editortext").val());
-	$("#content img").css({"max-width":"600px",})
-	   
-        
+        $("#gnoweditor").val($("#editortext").val());
+	$("#content img").css({"max-width":"600px",});
         $("#gnoweditor").orgitdown(mySettings);
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
 	<!--document.getElementById('save').style.visibility="visible";-->
 	$("#editcontent").hide();
 		
@@ -35,8 +35,10 @@ jQuery(document).ready(function($) {
 	    var encode_data = encodeURIComponent(org_data);
 	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));
  	    $("#commenttext").val(decode_data);
+	    $(".orgitdownContainer").hide();
 			   
 	});
+
 });
 </script>
 </script>
@@ -46,18 +48,21 @@ jQuery(document).ready(function($) {
 
 
 <br/>
-<form method="post" action="">{% csrf_token %}
-<h2><font color = 'teal'>{{doc.title}}</font></h2>
+
+<h2><font id="fonttitleid" >{{doc.title}}</font></h2>
+{% if user.is_authenticated %}
+{% edit_title doc.id doc.title %}
+{% endif %}
 <br/>
 <font color = 'black'>Posted By : </font>
 {% for author in doc.authors.all %}
-  <font color = 'teal'>{{author}}</font>
+  <font >{{author}}</font>
 {% endfor %}
 <br>
 
-<font color = 'black'>Posted At : </font><font color = 'teal'>{{doc.creation_date}}</font>
+<font color = 'black'>Posted At : </font><font >{{doc.creation_date}}</font>
 <br/>
-<font color = 'black'>Download: </font><a href="{% admin_media_prefix %}img/{{doc.title}}">Click to download!!</a>
+<font color = 'black'>Download: </font><a href="{% admin_media_prefix %}img/{{doc.altnames}}">Click to download!!</a>
 <br>
 <font color = 'black'>Description:</font>
 {%autoescape on%}
@@ -69,58 +74,43 @@ jQuery(document).ready(function($) {
 
 
 {% if user.is_authenticated %}
+<form method="post" action="">{% csrf_token %}
 <input type="hidden" name="docid" value={{doc.id}}>
 <input type="button" id="editcontent" value="Edit"/>
 
 <input type="submit" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
 <input type="hidden" name="contenttext" id="commenttext" style="visibility:hidden" />
 <input type="hidden" id="editortext" style="visibility:hidden" value="{{doc.content_org}}">
-{% endif %}
 </form>
+{% endif %}
+
 
 <br/>
-{% ifequal doc.rating.get_rating 0 %}
 
-<font color = 'black'>Current rating is: &nbsp;<font color = 'teal'> No rating yet </font></font>
-{% else %}
-<font color = 'black'>Average Current rating is: &nbsp; <font color = 'teal'> {{ doc.rating.get_rating }} </font></font><br/>
-<font color = 'black'>Total Number of votes is:  &nbsp;<font color='teal'><b>{{ doc.rating_votes }}</b></font> </font>
-{% endifequal %}
-<br>
 {% if user.is_authenticated %}
+<!--ADDING AND DISPLAY rating -->
+{% adding_rating doc  %}
+
+
+
 <form method="post" action="">
 {% csrf_token %}
-<input name="star1" type="radio" value=1 class="star"/>
-<input name="star1" type="radio" value=2 class="star"/>
-<input name="star1" type="radio" value=3 class="star"/>
-<input name="star1" type="radio" value=4 class="star"/>
-<input name="star1" type="radio" value=5 class="star"/>
-</br>
-<input type="hidden" name="docid" value={{doc.id}}>
-<input type="submit" value="Rate it!!!">
-</form>
-<br/>
 
-<form method="post" action="">{% csrf_token %}
-<input type="hidden" name="docid" value={{doc.id}}>
-<input type="text" value="" name="texttags"  />
-<input type="submit" value="Add Tags" name="addtags" />
+<input type="hidden" name="favusr" value={{user.username}}>
+{% if relation %}
+<input type="hidden" name="removefavid" value={{doc.id}}>
+<input type="submit" value="Remove from favourites">
+{% else %}
+<input type="hidden" name="favid" value={{doc.id}}>
+<input type="submit" value="Add to favourites">
+{% endif %}
 </form>
 {% endif %}
 <br/>
-<div class="tags">
-    <p class="gbobject-tags span-16 last">
-      <strong>{% trans "Tags" %}</strong> :
-      {% tags_for_object doc as tag_list %}
-      {% for tag in tag_list %}
-      <a href="{% url objectapp_tag_detail tag %}"
-         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-      {% empty %}
-      <span>{% trans "No tags" %}</span>
-      {% endfor %}
-    </p>
-</div>
-<br/><br/>
+<!--ADDING AND DISPLAY TAG-->
+	{% addtag doc doc.id user %}
+<br/>
+
 {% block nodetype-comments %}
 <div id="comments" class="">
   <h5>{% trans "Comments" %}</h5>
@@ -162,10 +152,6 @@ jQuery(document).ready(function($) {
 </div>
 {% endblock %}
 
-
-<div class="commentForm span-16 last">
-  {% render_comment_form for doc %}
-</div>
 
 
 

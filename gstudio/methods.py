@@ -1,26 +1,244 @@
 from gstudio.models import *
 from objectapp.models import *
 from django.template.defaultfilters import slugify
-import datetime
+from datetime import datetime as date_time
+import datetime as date_methds
 import os
 import shutil
 import urllib
 from demo.settings import PYSCRIPT_URL_GSTUDIO
 from demo.settings import FILE_URL
 #from demo.settings import MATHJAX_FILE_URL
+from django.contrib.auth.models import User
+#from django.contrib.sessions.models import Session
+#from notification import notify
+from notification import models as notification
+from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
+#from django.contrib.comments.signals import comment_will_be_posted
+from django.core.mail import send_mail
+from django.contrib.sessions.models import Session
+from djangoratings.models import *
+lst1=[]
+count=0
+response_set=[]
+
+
+def get_all_logged_in_users():
+    # Query all non-expired sessions
+    sessions = Session.objects.filter(expire_date__gte=date_methds.datetime.now())
+    uid_list = []
+
+    # Build a list of user ids from that query
+    for session in sessions:
+        data = session.get_decoded()
+        uid_list.append(data.get('_auth_user_id', None))
+
+    # Query all logged in users based on id list
+    return User.objects.filter(id__in=uid_list)
+
+def delete_all_unexpired_sessions_for_user(user, session_to_omit=None):
+    for session in all_unexpired_sessions_for_user(user):
+        if session is not session_to_omit:
+            session.delete()
+def all_unexpired_sessions_for_user(user):
+    user_sessions = []
+    all_sessions  = Session.objects.filter(expire_date__gte=date_methds.datetime.now())
+    for session in all_sessions:
+        session_data = session.get_decoded()
+        if user.pk == session_data.get('_auth_user_id'):
+            user_sessions.append(session)
+    return user_sessions
+
+def recur_responses(twist):
+    global lst1
+    lst1=[]
+    return get_recur_responses_of_twist(twist)
+
+
+def get_recur_responses_of_twist(twist):
+    postnodes=twist.posterior_nodes.all()
+    if postnodes:
+        for each in postnodes:
+            lst1.append(each)
+            get_recur_responses_of_twist(each)
+    return lst1
+def get_rate_of_object_of_user(user,sysid):
+    try:
+        voteofuser = Vote.objects.filter(user = user)
+        rating_made = 0
+        for vote in voteofuser:
+            objectofvote = vote.content_object
+            if objectofvote:
+                if objectofvote.objecttypes:
+                    if objectofvote.objecttypes.all():
+                        if objectofvote.objecttypes.all()[0].title=='Reply':
+                            objectofvoteid = objectofvote.getthread_of_response.id
+                            if sysid == objectofvoteid:
+                                rating_made = rating_made + 1
+            
+        return rating_made
+    except:
+        pass
+def posts_recd_for_subscr(subscrid,thdid):
+    usr=User.objects.get(id=subscrid)
+    c=0
+    sys=System.objects.get(id=thdid)
+#   get_twists_of_thread                                                                                                                     
+    box=sys.system_set.all()[0]
+    twists=box.gbobject_set.all()
+    for each in twists:
+        getresponses=recur_responses(each)
+        for eachres in getresponses:
+             if eachres.authors.all()[0]==usr:
+               resp=recur_responses(eachres)
+               c +=len(resp)
+    return c
+def get_all_logged_in_users():
+    # Query all non-expired sessions                                                                                                        \
+                                                                                                                                             
+    sessions = Session.objects.filter(expire_date__gte=date_time.now())
+    uid_list = []
+
+    # Build a list of user ids from that query                                                                                              \
+                                                                                                                                             
+    for session in sessions:
+        data = session.get_decoded()
+        uid_list.append(data.get('_auth_user_id', None))
+
+    # Query all logged in users based on id list                                                                                            \
+                                                                                                                                             
+    return User.objects.filter(id__in=uid_list)
+
+# def get_authors_of_response(user,thread):
+#        count =0
+#        for each in thread.system_set.all()[0].gbobject_set.all():
+#            print "threads=",each
+#            response_set=recur_responses(each)
+#            print response_set
+#            for each1 in response_set:
+#                print each1.authors.all()[0],str(user)
+#                if str(each1.authors.all()[0])==str(user):
+#                    count=count+1
+#        return count
+
+def get_authors_of_response(user,thread):
+       count =0
+       ratngs = 0
+       dictret={}
+        # for vote in voteofuser:                                                                                                           
+        #     objectofvote = vote.content_object                                                                                            
+        #     if objectofvote.objecttypes.all():                                                                                                    #         if objectofvote.objecttypes.all()[0].title=='Reply':                                                                              #             objectofvoteid = objectofvote.getthread_of_response.id                                                                        #             if sysid == objectofvoteid:                                                                                                   #                 rating_made = rating_made + 1                                                                                             # return rating_made                                                                                                               
+  
+       for each in thread.system_set.all()[0].gbobject_set.all():
+           response_set=recur_responses(each)
+           for each1 in response_set:
+               if str(each1.authors.all()[0])==str(user):
+                   count=count+1
+#                   print "obj",each1
+                   if each1.rating.get_ratings():
+                       lst=each1.rating.get_ratings()
+#                       print "ratings",lst
+                       ratngs+=lst.count()
+       dictret['respcount']=count
+       dictret['ratng']=ratngs
+       return dictret
+
+
+def get_no_of_twist_posted(user,thread):
+       sys=System.objects.get(title=thread)
+       count=0
+       twistset=sys.system_set.all()[0].gbobject_set.all()
+       for each1 in twistset:
+                     if str(each1.authors.all()[0])==str(user):
+                            count=count+1
+       return count
+
+def loom_status(pageid):
+  retdict={}
+  userdet=[]
+  thdid=pageid
+  #get subscribers                                                                                                                        
+  sys=System.objects.get(id=pageid)
+  box=sys.system_set.all()[0]
+  twistset=box.gbobject_set.all()
+  logged_users=get_all_logged_in_users()
+  #get online-offline                                                                                                                       
+  for eachsubscbr in box.member_set.all():
+      count =0
+      ratngs = 0
+      nooftwists=0
+      pstc=0
+      voteofuser = Vote.objects.filter(user = eachsubscbr)
+      rating_made = 0
+#      eachuser=User.objects.get(username=eachsubscbr)
+      if eachsubscbr in logged_users:
+         userdet.append("green1")
+      else:
+         userdet.append("grey")
+#  get no-of-posts(twist/responses)
+      for eachtwist in twistset:
+           respns=0
+           if str(eachtwist.authors.all()[0])==str(eachsubscbr):
+               nooftwists+=1
+           response_set=recur_responses(eachtwist)
+           for each1 in response_set:
+               if str(each1.authors.all()[0])==str(eachsubscbr):
+#                   print "eachte",eachtwist,each1.id
+                   respns=recur_responses(each1)
+                   pstc +=len(respns)
+                   count=count+1
+                   lst=each1.rating.get_ratings()
+                   if lst:
+                       ratngs+=lst.count()
+
+#      resps=get_authors_of_response(each,sys)                                                                                              
+#      thds=get_no_of_twist_posted(each,sys)                                                                                                
+      strng=str(nooftwists)+"/"+str(count)
+      userdet.append(strng) 
+#get Ratings user made
+      for vote in voteofuser:
+          objectofvote = vote.content_object
+          if objectofvote:
+              if objectofvote.objecttypes.all():
+                  if objectofvote.objecttypes.all()[0].title=='Reply':
+                      objectofvoteid = objectofvote.getthread_of_response.id
+                      if thdid== objectofvoteid:
+                          rating_made = rating_made + 1                                                                                 
+#      ratngsuser=get_rate_of_object_of_user(eachsubscbr,sys.id)
+      userdet.append(str(rating_made))
+      userdet.append(str(ratngs))                                                                                                   
+#      print "rantngs",userdet
+#responses his post received
+#      psts=posts_recd_for_subscr(each.id,thdid)
+      userdet.append(str(pstc))
+      retdict[eachsubscbr.username]=userdet
+      userdet=[]
+#      print "fin",retdict
+  return retdict
+
 
 
 def check_page_exists(pgetocheck):
   fl=0
-  getobjs=System.objects.filter(title=pgetocheck)
+  getobjs=Gbobject.objects.filter(title=pgetocheck)
   if not getobjs:
       return fl
   else:
       for each in getobjs:
-          getob=System.objects.get(id=each.id)
-          if getob.systemtypes.all()[0].title=='Wikipage':
-              fl=1
-              return fl
+          sysid=System.objects.filter(id=each.id)
+          if sysid:
+            getob=System.objects.get(id=each.id)
+            for eachtitle in getob.systemtypes.all():
+                if eachtitle.title=='Wikipage':
+#                    print "wiki"
+                    fl=1 
+                    return fl
+            fl=2
+            return fl
+          else:
+            fl=2
+            return fl
       return fl
 
 
@@ -45,7 +263,7 @@ def get_pdrawer():
     pageid=[]
     dict1={}
     #wikiset = Systemtype.objects.all()
-    drawerset = Systemtype.objects.get(title="Wikipage")
+    drawerset =Systemtype.objects.get(title="Wikipage")
     drawer= drawerset.member_systems.all()
     
     for each in drawer:
@@ -98,7 +316,7 @@ def make_rep_object(replytext,auth_id,usr):
  myfile = open(os.path.join(FILE_URL,fname+ext),'w')
  myfile.write(newcontent)
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  # read 
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
@@ -150,7 +368,7 @@ def edit_section(sec_id,title,usr):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  #myfile.write("\n#+MATHJAX: align:"left" path:MATHJAX_FILE_URL mathml:t")
  
@@ -190,7 +408,7 @@ def make_topic_object(title,auth_id,content,usr):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -237,7 +455,7 @@ def make_sectionreply_object(content_org,title,auth_id,usr):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -285,7 +503,7 @@ def make_section_object(title,auth_id,content_org,usr):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -358,7 +576,7 @@ def create_meeting(title,idusr,content,usr):
  myfile.write(newcontent)
 # myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -379,15 +597,15 @@ def create_meeting(title,idusr,content,usr):
  sys.systemtypes.add(Systemtype.objects.get(title="Meeting"))
  sys.authors.add(Author.objects.get(id=idusr))
  
- a = Attribute()
- a.title = "released button of " + title
- a.slug = slugify(a.title)
- a.content = a.slug
- a.status = 2
- a.subject = sys
- a.svalue = "False"
- a.attributetype_id = Attributetype.objects.get(title="release").id
- a.save()
+# a = Attribute()
+# a.title = "released button of " + title
+# a.slug = slugify(a.title)
+# a.content = a.slug
+# a.status = 2
+# a.subject = sys
+# a.svalue = "False"
+# a.attributetype_id = Attributetype.objects.get(title="release").id
+# a.save()
  sys1 = System()
  sys1.title = "message box of " + title
  sys1.status = 2
@@ -403,10 +621,13 @@ def create_meeting(title,idusr,content,usr):
  sys1.sites.add(Site.objects.get_current())
  return sys.id 
 
-def create_wikipage(title,idusr,content_org,usr,collection,list1):
+def create_wikipage(title,idusr,content_org,usr,collection,list1,status):
  sys = System()
  sys.title = title
- sys.status = 2
+ if status:
+     sys.status = 1
+ else:
+     sys.status = 2
  boolean=False
  boolean=collection
  
@@ -433,7 +654,7 @@ def create_wikipage(title,idusr,content_org,usr,collection,list1):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -538,19 +759,25 @@ def make_title(id_no):
 def get_time(sys_id):
 	later = False
 	meetover = False
-	sys=System.objects.get(id=sys_id)
-        now=datetime.datetime.now()
+	sys=System.objects.filter(id=sys_id)
+        if sys:
+          sys=System.objects.get(id=sys_id)
+        else:
+          sys=Gbobject.objects.get(id=sys_id)
+        now=date_time.now()
+        starttime=""
+        endtime=""
         for each in AttributeDateTimeField.objects.all():
                 if(each.attributetype.title=='timeofstart' and each.subject.title==sys.title):
                         starttime=each.value
-		        if (now - starttime)< datetime.timedelta (minutes = 1):
+		        if (now - starttime)< date_methds.timedelta (minutes = 1):
 		                later=True
         		else:
                 		later = False
 
                 if(each.attributetype.title=='timeofend' and each.subject.title==sys.title):
                         endtime=each.value
-		        if(now-endtime)>datetime.timedelta(minutes=1):
+		        if(now-endtime)>date_methds.timedelta(minutes=1):
 		                meetover=True
         		else:
                 		meetover=False
@@ -595,7 +822,7 @@ def edit_topic(topic_id,title,usr):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -631,7 +858,7 @@ def edit_thread(thread_id,title,usr):
  myfile.write(newcontent)
  #myfile.readline()
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -670,7 +897,7 @@ def edit_nodetype(iden,rep,usr):
  myfile.write(newcontent)
 
  myfile = open(os.path.join(FILE_URL,fname+ext),'a')
- myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
+ myfile.write("\n#+OPTIONS: timestamp:nil author:nil creator:nil  ^:{} H:3 num:nil toc:nil @:t ::t |:t ^:t -:t f:t *:t <:t")
  myfile.write("\n#+TITLE: ")
  myfile = open(os.path.join(FILE_URL,fname+ext),'r')
  stdout = os.popen("%s %s %s"%(PYSCRIPT_URL_GSTUDIO,fname+ext,FILE_URL))
@@ -695,7 +922,11 @@ def check_release_or_not(meet_ob):
  return fl
 def check_subscribe_or_not(meet_ob,user):
   fl=0
-  box=meet_ob.system_set.all()[0]
+  if meet_ob.system_set.all():
+    box=meet_ob.system_set.all()[0]
+  else:
+    box=""
+    return fl
   ch=Author.objects.filter(id=user.id)
   if ch:
   	ch=Author.objects.get(id=user.id)
@@ -718,10 +949,11 @@ def check_usr_admin(userid):
 
 def get_factory_loom_OTs():
  retlist=[]
- for each in Objecttype.objects.all():
-	if each.parent:
-		if ((each.parent.title=='Factory_Object') and (str(each.slug)[0:4]=='loom')):
-			retlist.append(each.title)
+ nts=Nodetype.objects.get(title='Factory_Object')
+ ots=Objecttype.objects.filter(parent=nts)
+ for each in ots:
+         if (str(each.slug)[0:4]=='loom'):
+             retlist.append(each.title)
  return retlist
 
 def get_home_content():
@@ -744,3 +976,119 @@ def get_home_title():
   	 content = homeobj.content
   return content
 
+def sendMail_RegisterUser(senderuser,receiveruser,activity,conjuction,nid,url=None):
+
+    nodeid =  NID.objects.get(id=nid)
+    sys = nodeid.ref
+    if url == None:
+       url = sys.get_view_object_url
+    site=Site.objects.get_current()
+    render = render_to_string("/gstudio/notification/label.html",{'sender':senderuser,'activity':activity,'conjunction':conjuction,'object':sys.title,'url':url,'site':site}) 
+    notification.create_notice_type(render, "Invitation Received", "you have received an invitation")
+    notification.send(receiveruser, render,{"from_user": senderuser}, sender=senderuser)
+    return
+
+def sendMail_NonMember(senderuser,receiveremail,activity,conjuction,nid,url=None):
+    nodeid =  NID.objects.get(id=nid)
+    sys = nodeid.ref
+    if url == None:
+       url = sys.get_view_object_url
+    site=Site.objects.get_current()
+    render = render_to_string("/gstudio/notification/emailBody.html",{'sender':senderuser,'activity':activity,'conjunction':conjuction,'object':sys.title,'url':url,'site':site.domain}) 
+    send_mail("Invitation", render, senderuser.email, [receiveremail,])
+    return 
+
+check = []
+def get_nbh_of_nbh(nid):
+    global check
+    data = {}
+    data['node']=[]
+    data['subnode']=[]
+    nidobject = NID.objects.get(id=nid)
+    nidobject = nidobject.ref
+    data['title']=nidobject.title
+    check.append(nid)
+    for each in nidobject.prior_nodes.all():
+        if not each.id in check:
+            data1 = {}
+            data1['id'] = each.id
+            data1['title'] = each.title
+            data1['url'] = each.get_view_object_url
+            data['node'].append(data1)
+            check.append(each.id)
+    for each in nidobject.posterior_nodes.all():
+        if not each.id in check:
+            data1 = {}
+            data1['id'] = each.id
+            data1['title'] = each.title
+            data1['url'] = each.get_view_object_url
+            data['node'].append(data1)
+            check.append(each.id)
+    r_right = Relation.objects.filter(right_subject=nid)
+    l_left = Relation.objects.filter(left_subject=nid)
+    for each in r_right:
+        each1 =  each.left_subject.ref
+        if not each1.id in check:
+            data1 = {}
+            data1['id'] = each1.id
+            data1['title'] = each1.title
+            data1['url'] = each1.get_view_object_url
+            data['node'].append(data1)
+            check.append(each1.id)
+    for each in l_left:
+        each1 =  each.right_subject.ref
+        if not each1.id in check:
+            data1 = {}
+            data1['id'] = each1.id
+            data1['title'] = each1.title
+            data1['url'] = each1.get_view_object_url
+            data['node'].append(data1)
+            check.append(each1.id)
+    for each in data['node']:
+        data['subnode'].extend(get_subjson(each['id']))
+    check = []
+    return(data)
+
+def get_subjson(nid):
+    global check
+    data = []
+    nidobject = NID.objects.get(id=nid)
+    nidobject = nidobject.ref
+    for each in nidobject.prior_nodes.all():
+        if not each.id in check:
+            data1 = {}
+            data1['id'] = each.id
+            data1['title'] = each.title
+            data1['url'] = each.get_view_object_url
+            data.append(data1)
+            check.append(each.id)
+    for each in nidobject.posterior_nodes.all():
+        if not each.id in check:
+            data1 = {}
+            data1['id'] = each.id
+            data1['title'] = each.title
+            data1['url'] = each.get_view_object_url
+            data.append(data1)
+            check.append(each.id)
+    r_right = Relation.objects.filter(right_subject=nid)
+    l_left = Relation.objects.filter(left_subject=nid)
+    for each in r_right:
+        each1 =  each.left_subject.ref
+        if not each1.id in check:
+            data1 = {}
+            data1['id'] = each1.id
+            data1['title'] = each1.title
+            data1['url'] = each1.get_view_object_url
+            data.append(data1)
+            check.append(each1.id)
+    for each in l_left:
+        each1 =  each.right_subject.ref
+        if not each1.id in check:
+            data1 = {}
+            data1['id'] = each1.id
+            data1['title'] = each1.title
+            data1['url'] = each1.get_view_object_url
+            data.append(data1)
+            check.append(each1.id)
+
+    return(data)

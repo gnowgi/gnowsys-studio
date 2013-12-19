@@ -11,6 +11,14 @@
 {% endblock %}
 
 {% block content %}
+<script type="text/javascript" >
+$(window).load(function(){ 
+$("#content").css({"width": "600px"});
+$(".span-16").css({"width": "1000px"});
+$("#chart").hide();
+$("#graphcss").hide(); 
+});
+</script>
 <h1>{% trans "Search results for" %} {% if pattern %}'{{ pattern }}'{% endif %}</h1>
 
 {% if error %}

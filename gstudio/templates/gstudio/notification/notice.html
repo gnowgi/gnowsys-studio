@@ -1,0 +1,12 @@
+
+{% extends "gstudio/base.html" %}
+{% load i18n %}
+{% block content %}
+<style type="text/css">
+#content{
+width: 1000px;
+}
+</style>
+{% for each in notices %}
+<h3> {{ each }} </h3>
+{% endfor %}{% endblock %}

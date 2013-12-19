@@ -51,20 +51,27 @@
       <table id="portal-columns">
         <tbody>
             <tr>
-	     
+<p>
 
-<p>This site is an initiative of
+{% put_more_content as more_content %}
+
+{% with more_content|safe as more %}
+{{more}}
+{% endwith %}
+</p>
+<br/>
+<p>This site is an initiative of a
 the <a href="http://www.hbcse.tifr.res.in/">Homi Bhabha Centre for
-Science Education, TIFR</a> , Mumbai, India for establishing
+Science Education</a>, <a href="http://www.tifr.res.in" target="_blank"> TIFR</a> , Mumbai, India for establishing
 collaboration among students, teachers, researchers or anyone else
 interested, to shape education and research in strikingly different
 ways.  Why is the platform called "metaStudio" is described in another
 article.  However, if you join at this portal as a registered user, it
-does not imply that you endorse the idea of <a href="/groups/studio"
+does not imply that you endorse the idea of <a href="http://metastudio.org/groups/studio"
 target="_self" title="studio based education">studio based
-education.</a> Please read the <a href="/about/terms" target="_self"
+education.</a> Please read the <a href="http://metastudio.org/about/terms" target="_self"
 title="terms">terms</a> of using the site before registration at the
-site. Please do read the articles in the <a href="/about"
+site. Please do read the articles in the <a href="http://metastudio.org/about"
 target="_self" title="about">About section</a> from the menu, as well.
 If you have any queries, please do not hesitate to write to us.
 

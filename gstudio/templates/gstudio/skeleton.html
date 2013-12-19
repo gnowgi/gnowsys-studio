@@ -3,7 +3,9 @@
 {% load adminmedia  grp_tags %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
+
 	<head>
+
 		<style type="text/css">
 			.link {
 				stroke: #ccc;
@@ -40,23 +42,40 @@
 				background-color: white;
 			}
 			#chart {
-				height: 90%;
-				margin: 0 auto;
+				height: 600px;
+				/*margin: 0 auto;
 				width: 90%;
-				display: block;
+				display: block;*/
 			}
-			svg {
+			/*svg {
 				margin-left: 0%;
 				margin-right: 10%;
 				display: block;
 				position: absolute;
-			}
+			}*/
+
+
+
+                         #sidebardetails { 
+           		       right: 0; 
+			       position:absolute; 
+                               margin-top:1px; 
+                               background-color:#A1D4E5; 
+                        } 
+                         #sidebargraph {
+           		       right: 0;
+			       position:absolute;
+                               margin-top:-200px;
+                               background-color:#A1D4E5;
+                        }
+
+
 .orgitdown .orgitdownButton1 a {
 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/save.jpeg);
 	margin-left:10px;
 	margin-top:1px;
-}
 
+}
 .orgitdown .orgitdownButton2 a {
 	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/bold.png);
 }
@@ -82,12 +101,16 @@
 }
 
 .orgitdown .orgitdownButton9 a {
-	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg);
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/s.jpeg);
 }
 
-<!--.orgitdown .preview a {
-	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/default/images/preview.png);
-}-->
+.orgitdown .orgitdownButton10 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/codesnippet.jpeg);
+}
+
+.orgitdown .orgitdownButton11 a {
+	background-image:url(/static/gstudio/js/orgitdown/orgitdown/sets/org/images/close.jpeg);
+}
 
 .orgitdown * {
 	margin:0px; padding:0px;
@@ -98,6 +121,7 @@
 	color:#000;
 	text-decoration:none;
 }
+
 .orgitdown  {
 	width:700px;
 	margin:5px 0 5px 0;
@@ -244,7 +268,7 @@
 		</style>
 		<!-- the header lines from grappelli -->
 		{% block blockbots %}
-		<meta name="robots" content="NONE,NOARCHIVE" />
+
 		{% endblock %} <!-- STYLESHEETS -->
 		{% block stylesheets %}
 		<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
@@ -260,6 +284,7 @@
 			// GLOBALS
 			var isImage=false;
 			var editImage=false;
+			var isEditdoc = false;
 			var objid;
 			var grappelli = {},
 			
@@ -338,13 +363,7 @@
 		{% block extrahead %}{% endblock %}
 
 		{% endblock %} <!-- the header lines from gstudio -->
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta http-equiv="cache-control" content="public" />
-		<meta name="robots" content="follow, all" />
-		<meta name="language" content="{{ LANGUAGE_CODE }}" />
-		<meta name="description" content="{% block meta-description %}Demonstration of the Gstudio Blog application.{% endblock %}" />
-		<meta name="keywords" content="{% block meta-keywords %}django, blog, gstudio, {{ nodetype_tags|join:", "}}{% endblock %}" />
-		<meta name="author" content="gnowgi" />
+
 		{% block meta %}{% endblock %}
 		<link rel="pingback" href="/xmlrpc/" />
 		<link rel="shortcut icon" href="{{ STATIC_URL }}gstudio/img/favicon.ico" />
@@ -379,19 +398,25 @@
 			<div id="breadcrumbs" class="">
 				/ {% block breadcrumbs %}{% endblock %}
 			</div>
+<center><img id="ajax_load_image" width="50" style="display: none; position:fixed; top: 50%; left: 55%; margin-top: -50px; margin-left: -100px;" src="{% admin_media_prefix %}grappelli/img/ajax-loader1.gif"></center>
 			<div id="body" class="span-24 last">
-				<div id="content" class="hfeed span-16 border">
+<div id="content" class="hfeed span-16 border">
 					{% block content %} <h3>The content block need to be overrided!</h3>
 					{% endblock %}
 				</div>
 
 				<textarea id="gnoweditor" style="visibility:hidden;"></textarea>
+
+
+	
+								
+					</div>
 				
-				{% block graph %}
-				<div id="graphcss">
+                         {% block sidebargraph %}
+			<!--<div id="graphcss">
 				<div id="chart">
 					
-				</div>
+				</div>!-->
 				<script type="text/javascript" src="/static/gstudio/js/jquery.min.js" ></script>
 				<script type="text/javascript" src="/static/gstudio/js/jquery-ui.js" ></script>
 				<script type="text/javascript" src="/static/gstudio/js/underscore.js" ></script>
@@ -430,7 +455,7 @@ function init(a,b)
  
 }
 
-$(function fgraph() {
+function fgraph() {
 neighbour_node= new Array();
 clicked_node=new Array();
 prev_node=new Array();
@@ -443,22 +468,27 @@ $.getJSON('/nodetypes/graphs/graph_json/' + {{object.id}}, function (json1) {
 										init(metadata,relations);
 										load({{object.id}}) });
 
-
+}
 function load(key)
 {
   
-			if (s > 0 ){
+/*			if (s > 0 ){
 			var a = 50 * s;
 			var w = 1000;
 	   		var p = 140 + "%";
 			var h = 650;
    			var q = 3 * s + 75 + "%";
-			}else{
-			var w = 1000;
+			}else{*/
+			/*var w = 1000;
 	   		var p = 140 + "%";
 			var h = 650;
-   			var q = 110 + "%";			
-			}
+   			var q = 110 + "%";*/			
+			//}
+		var w = 1050;
+		var p = 105 + "%";
+  		var h = 550;
+  		var q = 110 + "%";
+
         fill = d3.scale.category20();
  
   var vis = d3.select("#chart")
@@ -704,50 +734,138 @@ $(window).bind('keydown',function(event) {
   	  
 
 
-			
 		text1 = new_g.append("svg:text")
-			.attr("class",function(d) {var e=(d._id).charAt(0);  if (d._id==key) return "mainnode";else if (e=="-") return "nodetext"; else if (isNaN(d._id)) return "relnode";  else return "node"; })
+			.attr("class",function(d) {var e=(d._id).charAt(0); if (d._id==key){d.cls="mainnode"; return "mainnode";}else if (e=="-"){d.cls="nodetext"; return "nodetext";} else if (isNaN(d._id)){d.cls="relnode"; return "relnode";}  else{d.cls="node"; return "node";} })
                         .attr("y", 20)
 	                .attr("x", 25) 
 			.attr("dy", ".35em")
                         .attr("text-anchor","middle") 
 			
                        
-                        .text(function(d) {
-                          return d.screen_name;
+                        .text(function(d,i) {
+                           d.w=d.screen_name.toString().length;
+			//	if(relations[i]["col"]=="false" || d.cls=="mainnode" || d.cls=="relnode")
+				return d.screen_name;
                         });  
 			
                 bbox = text1.node().getBBox();
-		console.log(bbox);
 
-		new_g.filter(function(d) { return (d._id).charAt(0)=="-"; }).append("svg:rect")
-                                                      .attr("x",bbox.x-22)
-						      .attr("y", bbox.y)	
-						       .attr("width", function(d) {var ttx=d.screen_name ; return (ttx.length+bbox.width+50)})
+
+
+
+	
+		
+		//var count=0;
+	//	console.log(relations.toString());
+		new_g.filter(function(d,i) {		//for each (x in d.relations){
+							//	count=count+1;}
+								
+							 return ((d._id).charAt(0)=="-")
+; }).append("svg:rect")
+                                                      //.attr("x",function(d){ return (bbox.x+22+200/Math.pow(d.w,0.7))})
+							.attr("x",function(d){ return 23-Math.pow(d.w,1.37)})
+						       .attr("y", bbox.y)	
+						       .attr("width", function(d) {var ttx=d.screen_name ; return (d.w*5+20)})
 							.attr("height", bbox.height)
 						      .call(force.drag)
 				    		      .style("fill-opacity", ".1")
 				                      .style("stroke", "#000")
-				 		      .style("stroke-width","1px"  );
-				    		      
-							
+				 		      .style("stroke-width","1px");
+	
+		var s;
+		function E1(id,sname)
+		{
+			this.	name = name;
+			this.id = 0;		
+		}
+		//console.log("nodes by id  " +nodes_by_id[0]);
+		var col_txt = _(relations).chain().map(function(e){
+				//var a = e.to;
+				console.log("e.to " + nodes_by_id[e.to]["screen_name"] );
+				var e1 = new E1();
+				e1.id = e.to;
+				e1.sname = nodes_by_id[e.to]["screen_name"];
+				return e1;		
+				}).value();
+
+
+		var s=new Array();
+		console.log("col_txt " + col_txt[1].id);
+	
+				new_g.filter(function(d,i) {
+					var j = 0;
+					while(col_txt[++j]!=null)
+					{
+						if(col_txt[j].id == relations[i]["to"])
+						{	
+							s[i] = col_txt[j].sname;
+							//if(col_txt[j].sname=="software freedom")
+								//console.log("check "+relations[i]["col"]+col_txt[j].sname);
+							break;
+						}
+					}
+					//console.log("s : " + s + ' relations[i]["to"] ' + relations[i]["to"]);
+					return relations[i]["col"] == "true"})
+					.append("svg:text")
+					.attr("x",20)
+					.attr("y", 45)
+					//.text(function(d,i){ return s[i];})					
+					.call(force.drag)
+					.attr("dy", ".35em")
+        		                .attr("text-anchor","middle") 
+		//console.log("screen name"+s);
+		var st='';
+		for(i=1;i<5;i++){		
+			st+=(s[i]+"\n");
+		}
+		console.log("final string :" +st);
+						
+	//	var p = d3.select("#chart").append("svg").attr("width",500).attr("height",200);
+	//	var g = p.append("g")
+	//	.call(force.drag)		
+	//	.attr("transform","scale(0)");
+
+	/*	var rect = g.append("rect")
+		.attr("width",300)
+		.attr("height",100)
+		.style("fill-opacity", ".1")
+		.style("stroke", "#000")
+		.style("stroke-width","1px");
+	
+		var text = g.append("text").attr("x",25).attr("y",50).text(st);
+		g.transition().duration(500).attr("transform","scale(1)");	*/
+
+
+//	new_g.filter(function(d) {return d._id});
+var arr = new_g.filter(function(d) {		//for each (x in d.relations){
+							//	count=count+1;}
+								//console.log(d."relations.type.toString());
+				
+		 return (d.type) });
+	
+			var arr1 = eval(arr);
 
 
 
 
-		new_g.filter(function(d) { return (d._id)>0;}).append("svg:ellipse")
-				    .attr("cx", bbox.x+25)
-				    .attr("cy", bbox.y+13)
+
+		for(i=0;relations[i]!=null;i++)
+		{
+			console.log("TYPE " + relations[i]["type"] + " COL " + relations[i]["col"]);
+		}
+			
+
+		new_g.filter(function(d) { 
+					return (d._id)>0;}).append("svg:ellipse")
+				    .attr("cx", function(d){return (23 + Math.pow(d.w,0.33))})
+				    .attr("cy", bbox.y+11)
 				    .call(force.drag)
-				    .attr("rx",function(d) {var ttx=d.screen_name ; return (ttx.length + 70)})
+				    .attr("rx",function(d) {var ttx=d.screen_name ; return (d.w*5+15)})
 				    .attr("ry",13)
 				    .style("fill-opacity", "0.3")
 				    .style("stroke", "white")
 				    .style("stroke-width", "0.0px")
 				    .style("fill", function(d) {if ((d.expanded=="true" && d.refType=="Objecttype") ||(d._id=={{object.id}}) ) return "blue"; else if(d.expanded=="true" && d.refType=="Gbobject") return "red"; else return "none"});
-
-
-
 
 
            	node.exit().remove();
@@ -810,19 +928,21 @@ function check_Relationtype(metadata,relations)
 						 }); 
 return relations;
 
-
 }
 
-
-});
+$(fgraph());
 
 </script>
 
-				</div>
-				{% endblock %}
-		</div>
-				
-				
+				<!--</div>-->
+	
+                                {% endblock %}
+                                  <div id="sidebardetails">
+                                   {% block sidebardetails %} 
+                                  {% endblock %}
+                                  </div> 
+	</body>				
+
 				<div id="footer" align="center">
 				<p>
   
@@ -844,5 +964,5 @@ return relations;
 				</div>
 		
 	
-	</body>
+
 </html>

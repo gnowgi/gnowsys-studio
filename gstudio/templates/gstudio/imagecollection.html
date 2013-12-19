@@ -1,0 +1,173 @@
+{% extends "gstudio/base.html" %}
+{% load gstudio_tags %}
+{% load adminmedia grp_tags %}
+{% block content %}
+<!-- include  carouFredSel plugin -->
+
+<script type="text/javascript" language="javascript" src="/static/gstudio/js/jquery.carouFredSel-6.2.1-packed.js"></script>
+<script type="text/javascript" src="/static/gstudio/js/jquery-ui.js" ></script>
+
+<!--
+<style type="text/css">
+.fullimage {
+    background-color: #EFEFEF;
+    border: 2px solid #FFFFFF;
+    outline: 1px solid #DDDDDD;
+    padding: 15px 0;
+    text-align: center;
+    width: 700px;
+}
+.image_carousel {
+padding: 15px 0 15px 40px;
+position: relative;
+}
+.image_carousel img {
+border: 1px solid #ccc;
+background-color: white;
+padding: 9px;
+margin: 7px;
+display: block;
+float: left;
+}
+a.prev, a.next {
+background: url(/static/gstudio/img/miscellaneous_sprite.png) no-repeat transparent;
+width: 45px;
+height: 50px;
+display: block;
+position: absolute;
+top: 85px;
+}
+a.prev {left: -22px;
+background-position: 0 0; }
+a.prev:hover {background-position: 0 -50px; }
+a.prev.disabled {background-position: 0 -100px !important;  }
+a.next {right: -22px;
+background-position: -50px 0; }
+a.next:hover {background-position: -50px -50px; }
+a.next.disabled {background-position: -50px -100px !important;  }
+a.prev.disabled, a.next.disabled {
+cursor: default;
+}
+
+a.prev span, a.next span {
+display: none;
+}
+.pagination {
+text-align: center;
+}
+.pagination a {
+background: url(/static/gstudio/img/miscellaneous_sprite.png) 0 -300px no-repeat transparent;
+width: 15px;
+height: 15px;
+margin: 0 5px 0 0;
+display: inline-block;
+}
+.pagination a.selected {
+background-position: -25px -300px;
+cursor: default;
+}
+.pagination a span {
+display: none;
+}
+.clearfix {
+float: none;
+clear: both;
+}
+
+
+</style>
+-->
+<h2><font id="fonttitleid" >{{image.title}}</font></h2>
+
+<font color = 'black'>Posted By : </font>
+{% for author in image.authors.all %}
+  <font >{{author}}</font>
+{% endfor %}
+<br>
+
+<font color = 'black'>Posted At : </font><font >{{image.creation_date}}</font>
+<br/>
+<font color = 'black'>Description:</font>
+{% autoescape on %}
+{% with image.html_content|safe as image_content %}
+     {{image_content}}
+{% endwith %}
+{% endautoescape%}
+
+
+<form>
+{% if user.is_authenticated %}
+<input type="hidden" name="imgid" value={{image.id}}>
+<input type="button" id="editcontent" value="Edit"/>
+
+<input type="submit" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
+<input type="hidden" name="contenttext" id="commenttext" style="visibility:hidden" />
+<input type="hidden" id="editortext" style="visibility:hidden" value="{{image.content_org}}">
+{% endif %}
+</form>
+
+
+<div class="fullbox">
+
+{% get_first_object imgcolln as first %}
+
+<div class="fullimage" style="opacity:1;" >
+
+      <img class="mainimg" src="{% admin_media_prefix %}img/{{first.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}_display_1024" width="650px">
+
+
+
+</div>   <!--closing div fullimage!-->
+
+<div class="image_scroll">
+
+    <div id="imagescroll">
+
+      {% for each in imgcolln %}
+      
+      <img class="inactive" id="{% admin_media_prefix %}img/{{each.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}_display_1024" src="{% admin_media_prefix %}img/{{each.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}-thumbnail">
+      {% endfor %}
+
+      </div>
+    <div class="clearfix"></div>
+    <a class="prev" id="imagescroll_prev" href="#"><span>prev</span></a>
+    <a class="next" id="imagescroll_next" href="#"><span>next</span></a>
+    <div class="pagination" id="imagescroll_pag"></div>
+</div>
+
+
+</div>  <!--closing div fullbox!-->
+
+<!--script for scrollable image collection!-->
+<script type="text/javascript">
+$("#imagescroll").carouFredSel({
+circular: false,
+infinite: false,
+auto : false,
+prev: {
+button: "#imagescroll_prev",
+key: "left"
+},
+next: {
+button: "#imagescroll_next",
+key: "right"
+},
+pagination: "#imagescroll_pag"
+});
+
+$(".inactive").click(function()
+{
+$(".mainimg").attr('src',this.id);
+});
+
+</script>
+
+
+
+
+
+
+{% endblock %}
+
+
+

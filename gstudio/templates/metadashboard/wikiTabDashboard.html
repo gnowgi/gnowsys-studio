@@ -1,0 +1,59 @@
+{% load adminmedia grp_tags %}
+{% load gstudio_tags %}
+<script type="text/javascript" >
+
+function getGraph()
+	{
+
+		$("#view1").html("<div id='chart'></div>");
+			fgraph();
+		$("li").prop("onclick", null);
+	}
+     
+$(window).load(function() {
+ $(".savepagecontent").hide();
+ $("#saveseccontent").hide();
+ $("#savesubsec").hide();
+ $("#savesubsec1").hide();
+ $(".submitresponse").hide();
+ $(".saveseccontent").hide();
+ $(".savecontent").hide(); 
+ $(".savesubsec").hide();
+ $(".submitsubsec").hide();
+ $(".pagedit").hide()
+$(".savesubsec1").hide();
+ $(".submitsubsec1").hide();
+  });
+</script>
+      
+ 
+<style>
+<link href="{% admin_media_prefix %}css/base.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ STATIC_URL }}gstudio/css/screen.css" />
+</style>
+<script src="http://code.jquery.com/jquery-latest.js"></script>	
+    <script src="/static/gstudio/js/tabcontent.js" type="text/javascript"></script>		
+    <link href="/static/gstudio/css/tabcontent.css" rel="stylesheet" type="text/css" />
+	<h1> {{ page_ob.title }} </h1>
+    <div style="width: 100%; margin: 0 auto; padding: 0px 0 0px; font: 1.0em arial;">
+        <ul class="tabs" persist="true">
+            <li onclick="getGraph();"><a href="#" rel="view1">Concept View</a></li>
+            <li><a href="#" rel="view2">Text</a></li>
+            <li><a href="#" rel="view3">Resources</a></li>
+            <li><a href="#" rel="view4">Comments</a></li>
+        </ul>
+        <div class="tabcontents">
+            <div id="view1" class="tabcontent">
+		<div id="chart"></div>
+            </div>
+            <div id="view2" class="tabcontent">
+		 {% include "metadashboard/test2.html"%}
+	    </div>	
+            <div id="view3" class="tabcontent">
+               {% include "metadashboard/wikiResources.html" %} 
+            </div>
+            <div id="view4" class="tabcontent">
+             {% include "metadashboard/wikicomment.html"%}
+	    </div>
+	</div>    
+

@@ -6,9 +6,8 @@ $(window).load(function() {
  $("#savecontent").hide();
 });
 </script>
-<div id="gbobject-{{ object.pk }}" class="hgbobject{% if object.featured %} featured{% endif %} span-16 last">
-  <div class="gbobject-header span-16 last">
-      <h2 class="nodetype-title">
+
+     <!-- <h2 class="nodetype-title">--> <font size=4>
     {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-document'  %}
       <a href="/gstudio/resources/documents/show/{{object.id}}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Document</font>
 
@@ -21,10 +20,20 @@ $(window).load(function() {
       <a href="/gstudio/resources/videos/show/{{object.id}}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Video</font>
       {% else %}
       {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-topic'  %}
-	  <a href="/gstudio/{% show_nodesystem  object.id  %}">{{object.title}}</a>&nbsp; <font size="2" color="black">is a Topic of a Loom-thread</font>
-	 {% else %}
-     {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-section'  %}
-	 <a href="/gstudio/{% show_nodesystem  object.id  %}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Section of a wiki-page</font>
+		{% for each in object.ref.in_gbobject_set_of.all %}
+			{% for each1 in each.system_set.all %}
+			<a href="/gstudio/group/gnowsys-grp/{{each1.id}}">{{object.title}}</a>&nbsp; <font size="2" color="black">is a Topic of a Loom-thread</font><br/>
+			{% endfor %}
+		{% endfor %}
+	 
+      {% else %}
+      {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-section'  %}
+		{% for each in object.ref.in_gbobject_set_of.all %}
+			{% for each1 in each.system_set.all %}
+			 <a href="/gstudio/page/gnowsys-page/{{each1.id}}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Section of a wiki-page</font><br/>
+			{% endfor %}
+		{% endfor %}
+
 	{% else %}
     {% ifequal object.ref.get_nbh.member_of|slugify  'nodetype-ot-reply'  %}
 
@@ -50,19 +59,21 @@ $(window).load(function() {
 	 <a href="/gstudio/{% show_nodesystem  eachobject.id  %}">{{object.title}}</a>&nbsp;<font size="2" color="black"> is a Subsection of a Section wiki-page</font>
 	{% endfor %}
 	{% else %}
-<a href="{{ object.get_absolute_url }}" title="{{ object.title }}" rel="bookmark" id = "{{object.id}}awikiloom"> {{ object.title }} </a><font size="2" color="black">
+<a href="{{ object.ref.get_absolute_url }}" title="{{ object.title }}" rel="bookmark" id = "{{object.id}}awikiloom"> {{ object.title }} </a><font size="2" color="black">
 <script type="text/javascript" >
-var a = "{% show_nodesystem  object.id %}"
+var a = "{{object.ref.system.systemtypes.all|slugify}}"
 if (a != "")
 {
-document.getElementById("{{object.id}}awikiloom").setAttribute("href","/gstudio/"+a);
-space = a.replace( "/", " " );
-b = space.match("group")
-c = space.match("page")
-if(b == "group"){
+
+space = a.replace( "-", " " );
+b = space.match("meeting")
+c = space.match("wikipage")
+if(b == "meeting"){
+document.getElementById("{{object.id}}awikiloom").setAttribute("href","/gstudio/group/gnowsys-grp/{{object.id}}");
 document.write("is a Loom thread" );
 }
-if(c == "page"){
+if(c == "wikipage"){
+document.getElementById("{{object.id}}awikiloom").setAttribute("href","/gstudio/page/gnowsys-page/{{object.id}}");
 document.write("is a Wiki page" );
 }
 
@@ -81,7 +92,6 @@ document.write("is a {{object.nodemodel}}");
 }
 </script>
 </font>
-	
       
 
 {% endifequal %}
@@ -92,189 +102,8 @@ document.write("is a {{object.nodemodel}}");
        {% endifequal %}
        {% endifequal %}
 
-
 <!-- <a href="{{ object.ref.get_edit_url }}" target="_blank" >[edit]</a>  -->
-    </h2>
+  <!--  </h2>-->
+</font><br/><br/>
 		
      
-           <table border="1" cellspacing="0">
-	<b>Versions:&nbsp;</b>
-        {% for sid in object.ref.get_ssid  %}
-	   
-	      
-	     <a href="/objects/display/viewhistory/{{ sid }}/{{ forloop.counter }}" title= "{{ object.title }} {{ object.id }}.{{ forloop.counter }}" style="color:#FFA500"><b>+</b></a> &nbsp;
-	 
-        {% endfor %}
-	   </table>
-	
-    <p class="gbobject-info">
-      {% if object.ref.authors.count %}
-      {% trans "Written by" %}
-      {% for author in object.ref.authors.all %}
-      <span class="vcard author">
-        <a href="{% url objectapp_author_detail author %}" class="fn nickname url" rel="author"
-           title="{% blocktrans with author as author %}Show {{ author }} gbobjects{% endblocktrans %}">{{ author }}</a>
-      </span>{% if not forloop.last %}, {% endif %}
-      {% endfor %}
-      {% trans "on" %}
-      {% else %}
-      {% trans "Written on" %}
-      {% endif %}
-      <abbr class="published" title="{{ object.creation_date|date:"c" }}Z">{{ object.creation_date|date:"DATE_FORMAT" }}</abbr>
-      {% if object.objecttypes.count %}
-      {% trans "in" %}
-      {% for Objecttype in object.objecttypes.all %}
-      <a href="{{ Objecttype.get_absolute_url }}" title="{{ Objecttype }}" rel="tag Objecttype">{{ Objecttype }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}.
-    </p>
-
-</div>
-
-
-<p>
-             <b>Name: </b> {{ object.title }} <br/>
-	
-
-               {% if object.get_rendered_nbh.plural %}
-                                <b> Plural Name :<nbsp></b>
-                                         {{object.get_rendered_nbh.plural}} <br/>
-                           {% endif %}
-                            {% if object.get_rendered_nbh.altnames %}
-                               <b> Alternate names :<nbsp></b>
-                                         {{object.get_rendered_nbh.altnames}} <br/>
-{% endif %}
-              
-              {% if object.get_rendered_nbh.member_of %}
-                           
-                          
-                                <b> Member of :<nbsp></b>
-
-                                    {% for mkey,mvalue in object.get_rendered_nbh.member_of.items %}
-                                        <a href="{{mvalue}}">{{mkey}}</a>;
-                                    {% endfor %}<br/>
-                           {% endif %}
-			{% if object.content %}
-                            <b>
-					Content:<nbsp>
-				
-				         <!-- <input type="button" id="editdata" value="Edit Content"/><nbsp><nbsp> 
-					  <input type="button" id="savecontent" value="Save Content"/>-->
-					  <input type="hidden" id="objectid" value="{{object.id}}"/>
-		                          
-					  <input type="hidden" id="title" value="{{object.title}}"/>
-					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
-					
-					  
-					</b>
-				   	{{object_content}}<br/>
-
-					{% else %}
-						<b>
-					Content:<nbsp> <!--<input type="button"id="editdata"value="Edit Content"/><nbsp><nbsp>
-					  <input type="button" id="savecontent" value="Save Content"/>-->
-					  <input type="hidden" id="objectid" value="{{object.id}}"/>
-		
-					  <input type="hidden" id="title" value="{{object.title}}"/>
-					  <input type="hidden" id="orgcontent" value="{{object.content_org}}"/>
-					
-					  </b>
-				   	{{object_content}}<br/>
-					
-                          {% endif %}
-		
-
-              {% if object.get_rendered_nbh.relations %}
-                         
-                         
-                                 {% for relkey,relvalue in object.get_rendered_nbh.relations.items %}
-                                          <b>{{relkey}}:<nbsp></b>
-{% for relk, relv in relvalue.items %}
-<a href="{{relv}}">{{relk}}</a>;
-                                        {% endfor %}<br/>
-{% endfor %}
-{% endif %}
-                           
-                           {% if object.get_rendered_nbh.attributes %}
-			   {% for atkey,atvalue in object.get_rendered_nbh.attributes.items %}
-                                 {% if atvalue %}
-			    <b>     {{atkey}}:<nbsp></b>
-                                    
-				    {% for items in atvalue %}
-					{{items}};<nbsp>
-                                    {% endfor %}
-                                 {% endif %}<br/>
-			{% endfor %}                         
-			{% endif %}
-
-</p>
-
-</div>
-  
-
-  <div class="gbobject-body span-16 last">
-    {% if object.image %}
-    <div class="gbobject-image">
-      <p>
-        <a href="{{ object.get_absolute_url }}" rel="bookmark">
-<img src="{{ object.image.url }}" alt="{{ object.title }}" class="left" />
-        </a>
-      </p>
-    </div>
-    {% endif %}
-    <div class="gbobject-content">
-     <!-- {{ object_content }}-->
-    </div>
-  </div>
-
-  <div class="gbobject-footer">
-    <p class="gbobject-tags span-16 last">
-      <strong>{% trans "Tags" %}</strong> :
-      {% tags_for_object object as tag_list %}
-      {% for tag in tag_list %}
-      <a href="{% url objectapp_tag_detail tag %}"
-         title="Tag {{ tag }}" rel="tag">{{ tag }}</a>
-      {% empty %}
-      <span>{% trans "No tags" %}</span>
-      {% endfor %}
-    </p>
-
-    <p class="gbobject-shorturl span-16 last">
-      <strong>{% trans "Short url" %}</strong> :
-      <a href="{{ object.short_url }}" title="{{ object.title }}" rel="shortlink">
-        {{ object.short_url }}
-      </a>
-    </p>
-
-    <p class="gbobject-comments span-16 last">
-      <strong>{% trans "Discussions" %}</strong> :
-      {% with object.comments.count as comment_count %}
-      {% if comment_count %}
-      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
-        {% blocktrans count comment_count as comment_count %}{{ comment_count }} comment{% plural %}{{ comment_count }} comments{% endblocktrans %}
-      </a>
-      {% else %}
-      {% if object.comments_are_open %}
-      {% trans "No comments yet." %}
-      <a href="{{ object.get_absolute_url }}#comments" title="{{ object.title }}">
-        {% trans "Be first to comment!" %}
-      </a>
-      {% else %}
-      {% trans "Comments are closed." %}
-      {% endif %}
-      {% endif %}
-      {% endwith %}
-      {% with object.pingbacks.count as pingback_count %}
-      {% if pingback_count %}
-       <a href="{{ object.get_absolute_url }}#pingbacks" title="{{ object.title }}">
-        {% blocktrans count pingback_count as pingback_count %}{{ pingback_count }} pingback{% plural %}{{ pingback_count }} pingbacks{% endblocktrans %}
-      </a>
-      {% endif %}
-      {% endwith %}
-      {% with object.trackbacks.count as trackback_count %}
-      {% if trackback_count %}
-       <a href="{{ object.get_absolute_url }}#trackbacks" title="{{ object.title }}">
-        {% blocktrans count trackback_count as trackback_count %}{{ trackback_count }} trackback{% plural %}{{ trackback_count }} trackbacks{% endblocktrans %}
-      </a>
-      {% endif %}
-      {% endwith %}
-    </p>
-  </div>

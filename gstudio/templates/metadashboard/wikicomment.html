@@ -1,0 +1,49 @@
+{% load i18n comments gstudio_tags %} 
+{% load gstudio_tags %}
+{% block nodetype-comments %}
+<div id="comments" class="">
+  <h5>{% trans "Comments" %}</h5>
+  {% with page_ob.comments as comment_list %}
+  {% if comment_list.count %}
+  <ol id="comment-list" class="span-15 last">
+    {% for comment in comment_list %}
+    <li id="comment_{{ comment.pk }}" class="comment vcard {% cycle box1,box2 %}{% if comment.user in page_ob.authors.all %} post-author{% endif %} span-15 last">
+      <div class="span-2">
+<img src="{% get_gravatar comment.email 60 "G" %}" class="gravatar photo" alt="{{ comment.user_name }}"/>
+      </div>
+      <div class="comment-body span-13 last">
+<div class="comment-author span-13 last">
+{% if comment.url %}
+<a href="{{ comment.url }}" class="fn url" title = "{{ comment.user_name }}">{{ comment.user_name }}</a>
+{% else %}
+{{ comment.user_name }}
+{% endif %}
+{% trans "on" %} {{ comment.submit_date|date:"SHORT_DATETIME_FORMAT" }}
+</div>
+<div class="span-13 last">
+{{ comment.comment|linebreaks }}
+</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+    {% if not page_ob.comments_are_open %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% else %}
+    {% if page_ob.comments_are_open %}
+  <p>{% trans "No comments yet." %}</p>
+{% if not user.is_authenticated %}
+   <p><a href="/accounts/login/">Login</a> for comments</p>
+{% endif %}
+    {% else %}
+  <p>{% trans "Comments are closed." %}</p>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% if user.is_authenticated %}
+  {% render_comment_form for ot %}
+{% endif %}
+{% endblock %}
+

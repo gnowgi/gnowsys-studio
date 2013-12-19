@@ -1,0 +1,52 @@
+{% if javascriptRate %}
+<script type="text/javascript">
+function rateItFunction(objectId){
+if($("input:radio[name=star1"+objectId+"]").is(':checked'))
+ {
+        	var rate_radio_select = $('input:radio[name=star1'+objectId+']:checked').val();
+		var objectIdToRate = objectId;
+		$.ajax({
+			url: '/gstudio/ajax/rateIt/',
+			type: 'POST',
+			data: {objectid:objectIdToRate,data:rate_radio_select,csrfmiddlewaretoken: '{{ csrf_token }}'},
+		        beforeSend: function() {
+		              $("#ajax_load_image").show();
+		              $("#content").css({"opacity":"0.1",})
+		                              },
+			success: function(data){
+				$('#object_rating'+objectIdToRate).html(data);
+					     },
+		        complete: function(){
+		                $("#ajax_load_image").hide();
+				$("#content").css({"opacity":"",})
+				  }
+
+		}); }
+		
+else{ 
+$("#prompt"+objectId).show();
+}
+}
+//});
+//});
+</script>
+<div id="object_rating{{object.id}}">
+{% endif %}
+{% ifequal object.rating.get_rating 0 %}
+<font color = 'black'>Current rating is: &nbsp;<font > No rating yet </font></font>
+<font id="prompt{{object.id}}" style="display:none;color:red">Select any option to rate</font><br/>
+{% else %}
+<font color = 'black'>Average Current rating is: &nbsp; <font > {{ object.rating.get_rating }} </font></font>&nbsp;<font id="prompt{{object.id}}" style="display:none;color:red">Select any option to rate</font><br/>
+<font color = 'black'>Total Number of votes is:  &nbsp;<font ><b>{{ object.rating_votes }}</b></font> </font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{% endifequal %}
+
+<input name="star1{{object.id}}" type="radio" value=1 title="1 Star" class="star"/>
+<input name="star1{{object.id}}" type="radio" value=2 title="2 Star" class="star"/>
+<input name="star1{{object.id}}" type="radio" value=3 title="3 Star" class="star"/>
+<input name="star1{{object.id}}" type="radio" value=4 title="4 Star" class="star"/>
+<input name="star1{{object.id}}" type="radio" value=5 title="5 Star" class="star"/>
+<input type="button" class="rateItButton" id = "{{object.id}}" onclick="rateItFunction('{{object.id}}')" title="Rate it!!!" value="Rate it!!!">
+{% if javascriptRate %}
+</div>
+{% endif %}

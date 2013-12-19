@@ -54,6 +54,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from gstudio.models import Nodetype
+from django.http import HttpResponseRedirect,Http404
+from gstudio.methods import *
 
 def server_error(request, template_name='500.html'):
     """
@@ -75,5 +77,23 @@ def home_view(request):
     return render_to_response('gstudio/home.html', {'user':request.user,'data':request.POST , 'site':site})
 
 def more_view(request):
-    return render_to_response('gstudio/more.html', {'user':request.user,'data':request.POST })
+    return render_to_response('gstudio/more.html', {'user':request.user,'data':request.POST,'request':request })
+
+def google_view(request):
+    return render_to_response('gstudio/google74cffa303b94cfe6.html', )
+
+def bing_view(request):
+    return render_to_response('gstudio/BingSiteAuth.xml', )
+
+def static_page(request, page_alias): 
+    url= ""
+    try:
+        active = System.objects.get(altnames=page_alias)
+	for each in active.objecttypes.all():
+	    if each.title == "site_specific_detail":
+		url="/gstudio/page/gnowsys-page/"+str(active.id) #active.get_view_object_url()
+		return HttpResponseRedirect(url)
+    except System.DoesNotExist:
+        raise Http404("Page does not exist")
+    raise Http404("Page does not exist")
 

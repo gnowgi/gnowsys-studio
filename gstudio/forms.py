@@ -21,6 +21,7 @@ from django.forms import *
 from django.contrib.admin import widgets  
 from registration.forms import *
 from recaptcha import fields as recaptcha_fields
+
 from registration.forms import RegistrationForm
 
 class RecaptchaRegistrationForm(RegistrationForm):
@@ -31,7 +32,6 @@ class UserRegistrationForm(RegistrationForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
     recaptcha = recaptcha_fields.ReCaptchaField()
-
 
 class MetatypeForm(ModelForm):
 

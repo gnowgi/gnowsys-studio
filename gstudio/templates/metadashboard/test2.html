@@ -1,0 +1,143 @@
+{% load gstudio_tags %}
+
+
+<script type="text/javascript" >
+var availableTags = [];
+var arr=[];
+var arr1=[];
+$.merge(availableTags, {% get_add_tag %})
+var pagedrawer = [];
+$.merge(pagedrawer, {% get_page_drawer %}) 
+$(window).load(function() {
+ 
+ $(".savepagecontent").hide();
+ $("#saveseccontent").hide();
+ $("#savesubsec").hide();
+ $("#savesubsec1").hide();
+ $(".submitresponse").hide();
+ $(".saveseccontent").hide();
+ $(".savecontent").hide(); 
+ $(".savesubsec").hide();
+ $(".submitsubsec").hide();
+ $(".pagedit").hide()
+$(".savesubsec1").hide();
+ $(".submitsubsec1").hide();
+
+  });
+</script>
+     
+<div>
+{% if user.is_authenticated %}
+	<form method="post"  action="/gstudio/page/gnowsys-page/{{page_ob.id}}/">{% csrf_token %}
+	<input type="hidden" class="reptext" name="replytosection" id="sectionreply" style="visibility:hidden;"/></br>
+	<input type="hidden" class="editval" name="edit" value="empty"/>
+	<input type="hidden" value="{{page_ob.id}}" name = "iden" id="ptitle">
+	<input type="hidden" value="{{page_ob.title}}">
+        <input type="hidden" value="{{collection}}" id="iscollection">
+	<input type="hidden" value="{{user.username}}" name ="usr">
+	<input type="hidden" value="{{user.id}}" name = "idusr">
+	<input type="button" class="editpagecontent" name="{{page_ob.content_org}}" value="Edit Content"/></br>
+	<input type="button" class="savepagecontent" name="{{page_ob.id}}" value="Save"/></br>
+	<input type="submit" class="pagedit" value="Submit"/>
+       </form>
+        {% endif %}
+
+<div id="coll">
+	  
+	    {% for each in test %}
+	    {% if each.system.gbobject_set.exists %}
+	    <li class="list"><abbr title="Collection"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/folder.png"></abbr> <a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+	    {% else %}
+	    <li class="list"><abbr title="Page"><img src="/static/gstudio/js/orgitdown/orgitdown/sets/org/images/doc.png"></abbr><a href={{each.get_view_object_url}}> {{each.title}}</a></li>
+            {% endif %}
+	    {% endfor %}
+	         {% if collection %}
+		 {% if user.is_authenticated %}
+
+		 <input type="button" class="addtodrawer" value="Edit Collection" name="addtodrawer"/>
+		 <input type="button" class="htmlexport" value="Export as HTML"/>
+		 {% endif %}
+
+		 {% else %}
+		 {% if user.is_authenticated %}
+
+		 <input type="button" class="addtodrawer" value="Create Collection" name="addtodrawer"/>
+		 <input type="button" class="htmlexport" value="Export as HTML"/>
+		 {% endif %}
+
+		 {% endif %}
+</div>
+<div id="coll1">
+
+</div>        
+
+
+<div id="collection" style="display:none;">
+
+	<table style="width:370px" id="drawertable" width="500px">
+   	 <tr>
+     	  <td style='width:160px;'>
+           	 <b>Pages: <input type="text" id="collectionsearch" value=""></b><br/>
+         	  <select multiple="multiple" id='lstBox1'>
+                  {% for key,value in test1.items %}
+	            <option id={{key}}>{{value}}</option>
+	     
+                  {% endfor %}
+          	    
+           	</select>
+   	 </td> 
+   	 <td style='width:50px;text-align:center;vertical-align:middle;'>
+       <input type='button' id='btnUp' value ='  ^  '/><br/> 
+       <input type='button' id='btnRight' value ='  >  '/><br/>
+       <input type='button' id='btnLeft' value ='  <  '/><br/>
+       <input type='button' id='btnDown' value ='  v  '/><br/> 
+
+    </td>
+    <td style='width:160px;'>
+        <b>Added to Drawer: </b><br/>
+        <select multiple="multiple" name="lstb2" id='lstBox2'>
+          {% for each in test %}
+	     <option id={{each.id}}>{{each.title}}</a></option>
+	  {% endfor %}
+	  </option>
+        </select>
+    </td><br>
+    </tr>
+    <tr>
+    <td>
+      <input type="button"  value="Reset" id="resetdrawer"/>
+      <input type="button"  value="Submit" id="lstvalue"/>
+      <input type="button"  value="Cancel" id="cancel"/>
+      
+      
+ </td>
+    
+</tr>
+</table>
+</div>
+
+         <input id="drawer{{page_ob.id}}"  class="getdrawer" name="texttags" style="visibility:hidden">
+	 <input type="button" id="showcollection" value="Show Drawer" style="visibility:hidden"/>
+       	 <br>
+
+
+<script type="text/javascript" >
+	$(document).ready(function(){
+        $( "#drawer{{page_ob.id}}" ).autocomplete({
+	source: pagedrawer
+        });
+ 	});
+	</script>
+<!--ADDING AND DISPLAY TAG-->
+	{% addtag ot page_ob.id user %}
+
+	<!--ADDING PRIOR PAGE-->
+	{% addpriorpost page_ob.id user %}
+
+	<!-- Add relations for a page -->
+	{% add_res_relation page_ob user %}
+	<br/>
+
+
+
+</div>

@@ -6,49 +6,156 @@
 {% load i18n %}
  {% block title %}Images{% endblock %}
 {% block content %}
-<script src="{% admin_media_prefix %}jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+<script src="/static/gstudio/js/jquery.form.js" type="text/javascript"></script>
+<script src="/static/gstudio/js/main.js" type="text/javascript"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/sets/org/set.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}gstudio/js/orgitdown/orgitdown/jquery.orgitdown.js"></script>
 <script type="text/javascript" >
-$(window).load(function(){ 
+  $(function(){
+          $("#mydropdown").change(function(event){
+            $("option:selected", $(this)).each(function(){
+                var obj = document.getElementById('mydropdown').value;
+                if(obj=="creation_date"){
+		$("#searchfont").show();
+		}
+		else{$("#searchfont").hide();}
+	
+            });
+          });
+        });
+$(window).load(function(){
 var isImage=false;
-$("#content").css({"width": "600px"});});
+$("#content").css({"width": "100%"});});
 $(window).load(function() {
- $("#chart").hide();});
+ $("#chart").hide();});			
 $(window).load(function() {
- $("#graphcss").hide();   
+ $("#graphcss").hide();
+// $(".gbobject-image").hide();
+    
   });
 
 var i = 0;
 
 jQuery(document).ready(function($) {
-    $("#commenteditor").click(function(){
+     $("#commenteditor").click(function(){
+	$(this).replaceWith('<textarea id="gnoweditor" style="visibility:hidden;width:450px"></textarea>');
         isImage=true;
         document.getElementById('gnoweditor').style.visibility="visible";
         $("#gnoweditor").orgitdown(mySettings);
 	<!--document.getElementById('save').style.visibility="visible";-->
+        $(".orgitdownContainer").css({"margin-top":"0px","margin-left":"10px"});
+	$("#submitpostid").hide();//css({"margin-left":"400px","margin-top":"-38px"});
 	$("#commenteditor").hide();
-		
+			
 	});
-     $("#save").click(function(){
-            var org_data = $("#gnoweditor").val();
-	    var encode_data = encodeURIComponent(org_data);
-	    var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));       
- 	    $("#commenttext").val(decode_data);
+	$("#save").click(function(){
+        var org_data = $("#gnoweditor").val();
+	var encode_data = encodeURIComponent(org_data);
+	var decode_data = decodeURIComponent(encode_data.replace(/\+/g, " "));       
+ 	$("#commenttext").val(decode_data);
+        $('.orgitdownContainer').hide();
+	$("#submitpostid").css({"margin-left":"0px","margin-top":"0px"});
+	$("#divpost b").text(decode_data); 
+	$("#editcommenteditor").show();
+	$("#submitpostid").show();
 	   
 	});
+
+     $("#editcommenteditor").click(function(){
+	$('.orgitdownContainer').show();
+	$("#editcommenteditor").hide();
+	$("#submitpostid").hide();
+	});
+    
+
 });
 </script>
-<style type="text/css">
-#div2
-{
-background-color:#E8E8E8 ;
+<!--<script type="text/javascript" >
+jQuery.noConflict();
+jQuery(document).ready(function($) {
+$(".gbobject-image1").live({
+mouseenter: function() {
+var id=this.id;
+var srcid=$(".imgbig"+id).attr("id");
+$(".imgbig"+id).attr("src",srcid);
+$("#divimage"+id).show();
+},
+mouseleave: function() {
+var id1=this.id;
+$("#divimage"+id1).hide();
+//$(this).removeClass("over");
 }
-#div1
-{
-background-color:white
-}
+});});
 
+</script>!-->
+<script type="text/javascript">
+function ajaxmakesure(id) {
+r = confirm("Please confirm delete ")
+if (r==true)
+  {
+	var image_id = "";
+	image_id = id;
+	var ajurl ="/gstudio/resources/images/imagedelete/";
+	$.ajax({
+       	       url:ajurl,
+	       data: {image_ajax_id:image_id},
+	       beforeSend: function() {
+                              $("#ajax_load_image").show();
+                            
+			      $("#content").css({"opacity":"0.1",})
+	   
+                              },
+	       success: function(data){	
+	       		     $('#imageGallery').html(data);
+			     },
+	       complete: function(){
+                             $("#ajax_load_image").hide();imagepost
+			     $("#content").css({"opacity":"",})
+			     },
+   		});
+                             
+       			      
+  }
+else
+  {
+  
+  }
+
+}
+</script>
+
+<script type="text/javascript">
+	jQuery.noConflict();
+        jQuery(document).ready(function($) { 
+            $('#imagepost').submit(function(form) { 
+		form.preventDefault();
+		var formdata={ 
+        		//target: '#imageGallery',   // target element(s) to be updated with server response 
+        		beforeSubmit:  function() {
+                              $("#ajax_load_image").show();
+                            
+			      $("#content").css({"opacity":"0.1",})
+	 
+                              },  // pre-submit callback 
+        		success: function(data){	
+	       		     $('#imageGallery').html(data);
+			     },  // post-submit callback 
+			 complete: function(){
+                             $("#ajax_load_image").hide();
+			     $("#content").css({"opacity":"",})
+				document.getElementById("title").value="";
+				document.getElementById("image").value="";
+				document.getElementById("commenttext").value="";
+			     },
+			url:  "/gstudio/resources/images/imagepost/",        // override for form's 'action' attribute 
+        		type: $('#imagepost').attr('method')
+			};
+			$(this).ajaxSubmit(formdata);
+            }); 
+        });  
+</script>
+
+<style type="text/css">
 #divsearch
 {
 position:absolute;
@@ -56,52 +163,81 @@ position:absolute;
 #upperdiv
 {
 position:relative;
-margin-bottom:35%;
+margin-bottom:220px;
 }
 #divpost
 {
 position:absolute;
 margin-left:52%;
 }
+#preview{
 
+position:absolute;
+
+border:1px solid #ccc;
+
+background:#333;
+
+padding:5px;
+
+display:none;
+
+color:#fff;
+
+}
+
+p{
+
+clear:both;
+
+margin:0;
+
+padding:.5em 0;
+
+}
 </style>
-
-{% autopaginate images 10 %}
-
-<h2 style="color: teal;">Image Library</h2>
+<h2 style="">Image Library</h2>
 <br/>
 <div id="upperdiv">
-
-
 <div id="divsearch">
 <form method="post" action="">
 {% csrf_token %}
 <h4 style="color: black; margin-left: 0px;">Search Image:</h4>
 <p><input type="text" name="simg" value={{val}}></p>
+<font size="1" id="searchfont" style="display:none"><b>YY-MM-DD HH:MM:SS</b></font>
 <br/>
 <p><div align="left">
-<select name="mydropdown">
+<select name="mydropdown" id="mydropdown">
 <option value="title">Title</option>
 <option value="creation_date">Creation Date</option>
 </select>
 </div>
 <input type="submit" value="Search">
 </form>
+{% if user.is_authenticated %}
+<br/><br/><br/>
+<form method="post" action="/gstudio/resources/images/">
+{% csrf_token %}
+<input type="hidden" name="user" value={{user.username}}>
+<input type="submit" name="fav" value="View Favourites">
+</form>
+{% endif %}
 </div>
 {% if user.is_authenticated %}
 <div id="divpost">
-<form enctype="multipart/form-data" method="post" action="">
+<form id ="imagepost" enctype="multipart/form-data" method="post" action="">
 {% csrf_token %}
 
-<h4 style="color: black; margin-left: 0px;">Post Image:</h4>
-Title:&nbsp; <input type="text" name="title1"><br/><br/>
-Image:&nbsp; <input type=file name="image[]" multiple="multiple" /><br/><br/>
-Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Content" >
+<h4 style="color: black; margin-left: 0px;">Submit Image:</h4>
+Title:&nbsp; <input type="text" name="title1" id ="title"><br/><br/>
+Image:&nbsp; <input type="file" name="image[]" multiple="multiple" id="image"/><br/><br/>
+Description:&nbsp;&nbsp;<b></b>
+<input type="button"  id="editcommenteditor"  value="edit" style="display:none" >
+<input type="button"  id="commenteditor"  value="Add Content" >
 <input type="button" class="commentsavecontent" id="save" value="Save" style="visibility:hidden" />
-<input type=text name="contenttext" id="commenttext" style="visibility:hidden" />
+<input type="text" name="contenttext" id="commenttext" style="visibility:hidden" />
 <input type="hidden" name="user" value={{user.username}}><br/><br/>
-<input type="submit" value="  Post  " size="900" name="post" onclick="return myupload();">
-
+<input type="submit" id="submitpostid" value="Submit" size="900" name="post">
 
 </form>
 </div>
@@ -113,115 +249,40 @@ Description:&nbsp;&nbsp;<input type="button"  id="commenteditor"  value="Add Con
 <a href="/gstudio/resources/images/show/{{ reportid }}/"> <font size="4">to see this image click here</font></a><br/><br/><br/>
 {% endif %}
  <div>
-<h4 style="color: teal;">IMAGES</h4>
-{% for image in images %}
-
-
-    <div class="gbobject-image" id = "divimage">
-<script type="text/javascript">
-i = i+1;
-if (i%2 == 0){
-document.getElementById("divimage").setAttribute("id","div1");
-}
-else
-{
-document.getElementById("divimage").setAttribute("id","div2");
-}
-
-
-
-</script>
-      <h2>{{image.title}}</h2>
-       <form method="post" action="">{% csrf_token %}
-       <input type="hidden" name="fulid" value={{image.id}}>
-     <!--  <input type="submit" value="Show" name="Show">-->
-
-<a href="/gstudio/resources/images/show/{{image.id}}/">&nbsp;
-{% for author in image.authors.all %}
-
-	<img src="{% admin_media_prefix %}img/{{image.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}-thumbnail">
-
-{% endfor %}
-</a>
-    <!--   <p> -->
-<!-- <img src="{% admin_media_prefix %}img/{{image.title}}" width="300" height="225" alt="{{ image.title }}" > -->
-       
-<!--       </p> -->
- 
-   <!--  <div class="gbobject-content"> -->
-<!--      <\!-- {{ object_content }}-\-> -->
-<!--     </div> -->
-<!--  </div>--> 
-<!-- <h4>{{image.title}} -->
-<!-- <form method="post" action=""> -->
-<!-- {% csrf_token %} -->
-<!-- <input type="hidden" name="fulid" value={{image.id}}> -->
-<!-- <input type="submit" value="View Fullscreen"> -->
-<!-- </form> -->
-<!-- </h4> -->
-<!-- <font color = 'black'>Posted By : </font> -->
-<!-- {% for author in image.authors.all %} -->
-<!--   <font color = 'teal'>{{author}}</font> -->
-<!-- {% endfor %} -->
-<!-- <br> -->
-<!-- <font color = 'black'>Posted At : </font><font color = 'teal'>{{image.creation_date}}</font> -->
-<!-- <font color = 'black'>Current rating is {{ image.rating.get_rating }} </font> -->
- 
-
-
-{% for author in image.authors.all %}
-	{% ifequal author.username user.username %}
-<input type="hidden" name="pict" value={{image.id}}>
-<input type="submit" name="delete" value="Delete" onclick="return makesure();">
-<input type="hidden" name="user" value={{user.username}}>
-</form>
-<script type="text/javascript">
- function makesure() {
-  if (confirm('Are you sure you want to delete this image?')) {
-    return true;
-  }
-  else {
-    return false;
-  }
- }
-</script>
+{% if fav %}
+<h2 style="">Favourite Images</h2><br/>
 {% else %}
-		<script type="text/javascript">
-		function myFunction()
-		{
-			alert("You are not authorised to delete other users image!");
-		}
-		</script>
- 
-		<input type="button" onclick="myFunction()" value="Delete" style="visibility:hidden" />
-		</form>
+<h4 style="">Image Gallery</h4>
+{% endif %}
+<div id="imageGallery">
+{% autopaginate images 40 %}
+<table>
+    <tr>
+{% for image1 in images %}
+        <td class="gbobject-image1" id = "{{image1.id}}"><a  class="preview" title="{{image1.title}}" rel="{% admin_media_prefix %}img/{{image1.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}_display_1024" href="/gstudio/resources/images/show/{{image1.id}}"><img src="{% admin_media_prefix %}img/{{image1.image|cut:'.jpg'|cut:'.png'|cut:'.JPG'|cut:'.JPEG'|cut:'.jpeg'|cut:'.svg'|cut:'.tif'|cut:'.gif'|cut:'.ogv'}}-thumbnail"></a>
+<form method="post" action="">{% csrf_token %}
+{% for author in image1.authors.all %}
+	{% ifequal author.username user.username %}&nbsp;
+	<input type="hidden" name="fulid" value={{image1.id}}>
+	<!--  <input type="submit" value="Show" name="Show">-->
+	<input type="hidden" name="pict" id="imgid" value={{image1.id}}>
+	<input type="hidden" name="user" value={{user.username}}>
+	<input type="button" id="delete" name="delete" value="Delete" onclick="ajaxmakesure({{image1.id}})" style="margin-top:5px;width:60px">
+
 	{% endifequal %}
 {% endfor %}
+</form>
+        </td>  
+	     
+    {% if not forloop.last and forloop.counter|divisibleby:"8" %}
+</tr>
 
-
-<!-- <br> -->
-<!-- <form method="post" action=""> -->
-<!-- {% csrf_token %} -->
-<!-- <input name="star1" type="radio" value=1 class="star"/> -->
-<!-- <input name="star1" type="radio" value=2 class="star"/> -->
-<!-- <input name="star1" type="radio" value=3 class="star"/> -->
-<!-- <input name="star1" type="radio" value=4 class="star"/> -->
-<!-- <input name="star1" type="radio" value=5 class="star"/> -->
-<!-- </br> -->
-<!-- <input type="hidden" name="imgid" value={{image.id}}> -->
-<!-- <input type="submit" value="Rate it!!!"> -->
-<!-- </form> -->
-<!-- <br> -->
-<!-- <hr width="100%" style="height:5px;" color="black"/> -->
-<!-- <br> -->
-</div>
-
-{% endfor %}
-</div>
-
+ {% endif %} 
+ {% endfor %}
+</table>
  <h2>
 {% paginate %}</h2>
-
+</div>
 {% endblock %}
 </body>
 </html>

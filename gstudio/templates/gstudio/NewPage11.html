@@ -1,0 +1,38 @@
+{%extends "gstudio/base.html"%}
+{%load i18n %}
+{% block title %}New Page{% endblock %}
+{% block content  %}
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+      $(window).load(function() {
+      $("#save1").hide();});
+</script>
+
+{%if user.is_authenticated%}
+{% if errors %}
+<ul>
+{% for error in errors %}
+<li><font color="red">{{ error }} </font></li>
+{% endfor %}
+</ul>
+{% endif %}
+<form action="" method="post">
+{% csrf_token %}
+
+<p>Name of the Page: <input type="text" name="subject"></p>
+<textarea name="page" id="pagecontent" rows="10" cols="50" style="display:none;"></textarea></p>
+
+<p><textarea name="org1" id="orgpage1" rows="10" cols="50" style="display:none;" ></textarea></p></br>
+<input type="button" id="pagecontent1" name="content" value="Add Content"/>
+<input type="button" name="savepage" id="save1" value="Save Page"></p>
+</br>
+<input type="hidden" value={{user.id}} name = "idusr">
+<input type="hidden" value={{user.username}} name = "usr">
+<input type="submit" id="submitpage" value="Submit" style="display:none;"/>
+</form>
+{%else%}
+<p> Sorry! Login To proceed </p>
+
+{%endif%}
+{% endblock %}
+
